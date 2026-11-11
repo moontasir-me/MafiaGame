@@ -1,4 +1,6 @@
-const CACHE='mafia-tong-v4';
-self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(['./','index.html','style.css','app.js','engine.mjs','icon.svg','manifest.webmanifest','i18n.mjs','game-tools.mjs','assets/mafia.png','assets/doctor-male.png','assets/police.png','assets/villager.png','assets/betrayer.png','assets/astrologer.png','assets/bodyguard.png','assets/tong-cover.png'])));self.skipWaiting();});
+const CACHE='mafia-worlds-v7';
+const ART=['mafia','doctor','police','villager','betrayer','astrologer','bodyguard','cover'];
+const APP_ASSETS=['./','index.html','style.css','app.js','engine.mjs','game-tools.mjs','i18n.mjs','seating.mjs','universe.mjs','rhyming-copy.mjs','drag-sort.mjs','culture.mjs','room.html','room.css','room.js','room-service.mjs','vendor/qrcode.mjs','icon.svg','manifest.webmanifest','manifest-en.webmanifest',...['bn','en'].flatMap(lang=>ART.map(role=>`assets/${lang}/${role}.png`))];
+self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(APP_ASSETS)));self.skipWaiting();});
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
-self.addEventListener('fetch',e=>{if(e.request.method==='GET'&&new URL(e.request.url).origin===location.origin)e.respondWith(fetch(e.request).then(r=>{if(r.ok){const copy=r.clone();caches.open(CACHE).then(c=>c.put(e.request,copy))}return r}).catch(()=>caches.match(e.request)));});
+self.addEventListener('fetch',e=>{if(e.request.method==='GET'&&new URL(e.request.url).origin===location.origin&&!new URL(e.request.url).pathname.startsWith('/api/'))e.respondWith(fetch(e.request).then(r=>{if(r.ok){const copy=r.clone();caches.open(CACHE).then(c=>c.put(e.request,copy))}return r}).catch(()=>caches.match(e.request)));});

@@ -93,3 +93,15 @@ export async function passwordHash(password,salt){
  const bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt:Uint8Array.from(salt),iterations:120000,hash:'SHA-256'},key,256);
  return Array.from(new Uint8Array(bits),v=>v.toString(16).padStart(2,'0')).join('');
 }
+
+export function validateManualAssignments(names,config,assignments={}){
+ const configError=validateRoleCounts(names.length,config);if(configError)return configError;
+ if(names.some(name=>!Object.hasOwn(ROLES,assignments[name])))return 'MISSING_ASSIGNMENTS';
+ const expected=roleCounts(names.length,config);
+ if(Object.entries(expected).some(([r,n])=>names.filter(name=>assignments[name]===r).length!==n))return 'ASSIGNMENT_COUNTS';
+ return null;
+}
+export function assignManualRoles(names,config,assignments){
+ const error=validateManualAssignments(names,config,assignments);if(error)throw Error(error);
+ return names.map((name,i)=>({id:crypto.randomUUID(),name,order:i,role:assignments[name],isAlive:true,diedInRound:null,deathCause:null,score:0,winPoints:0,plan:''}));
+}

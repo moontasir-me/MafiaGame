@@ -1,11 +1,11 @@
 {
-  "name": "মাফিয়া · টং আড্ডা",
-  "short_name": "মাফিয়া",
+  "name": "মসনদ · ক্ষমতার অন্তরালে",
+  "short_name": "মসনদ",
   "lang": "bn",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#14221d",
-  "theme_color": "#14221d",
+  "background_color": "#f8f1e3",
+  "theme_color": "#f8f1e3",
   "orientation": "portrait",
   "icons": [
     {

@@ -2,6 +2,8 @@ package com.shoyaeb.mafia;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
+import android.content.ActivityNotFoundException;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,10 +17,23 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import org.json.JSONObject;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /** Offline assets served under a secure origin so Web Crypto is available. */
 public class MainActivity extends Activity {
     private WebView webView;
+    private LocalRoomServer lan;
+    private final ConcurrentHashMap<String, CompletableFuture<String>> requests = new ConcurrentHashMap<>();
+    private String dispatchLan(String path, String body) throws Exception {
+        String id = UUID.randomUUID().toString();
+        CompletableFuture<String> result = new CompletableFuture<>(); requests.put(id,result);
+        runOnUiThread(() -> webView.evaluateJavascript("window.onLanRequest && window.onLanRequest(" + JSONObject.quote(id) + "," + JSONObject.quote(path) + "," + JSONObject.quote(body) + ")",null));
+        try { return result.get(7,TimeUnit.SECONDS); } finally { requests.remove(id); }
+    }
     private static final String HOST = "appassets.androidplatform.net";
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -26,7 +41,7 @@ public class MainActivity extends Activity {
         super.onCreate(state);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         webView = new WebView(this);
-        webView.setBackgroundColor(Color.rgb(20,34,29));
+        webView.setBackgroundColor(Color.rgb(248,241,227));
         webView.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS);
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -37,7 +52,12 @@ public class MainActivity extends Activity {
         webView.addJavascriptInterface(new PrivacyBridge(), "Android");
         webView.setWebViewClient(new WebViewClient() {
             @Override public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                return !HOST.equals(request.getUrl().getHost());
+                if (HOST.equals(request.getUrl().getHost())) return false;
+                Uri url = request.getUrl();
+                if ("http".equals(url.getScheme()) || "https".equals(url.getScheme())) {
+                    try { startActivity(new Intent(Intent.ACTION_VIEW, url)); } catch (ActivityNotFoundException ignored) { }
+                }
+                return true;
             }
             @Override public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
                 Uri uri = request.getUrl();
@@ -64,6 +84,28 @@ public class MainActivity extends Activity {
         return new WebResourceResponse("text/plain", "UTF-8", 404, "Not Found", null, new ByteArrayInputStream(new byte[0]));
     }
     public class PrivacyBridge {
+        @JavascriptInterface public synchronized String startLan() {
+            try { if (lan == null) lan = new LocalRoomServer(getAssets(), MainActivity.this::dispatchLan); return LocalRoomServer.network(); }
+            catch (IOException e) { return "{\"addresses\":[],\"error\":\"PORT\"}"; }
+        }
+        @JavascriptInterface public synchronized void stopLan() {
+            if (lan != null) { lan.close(); lan=null; }
+        }
+        @JavascriptInterface public void lanReply(String id,String json) {
+            CompletableFuture<String> result=requests.get(id); if(result!=null) result.complete(json);
+        }
+        @JavascriptInterface public void setPalette(String hex, boolean light) {
+            if (hex == null || !hex.matches("#[0-9a-fA-F]{6}")) return;
+            runOnUiThread(() -> {
+                int color = Color.parseColor(hex);
+                webView.setBackgroundColor(color);
+                getWindow().setStatusBarColor(color);
+                getWindow().setNavigationBarColor(color);
+                getWindow().getDecorView().setSystemUiVisibility(light ?
+                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR : 0);
+            });
+        }
+
         @JavascriptInterface public void setTheme(String theme) {
             runOnUiThread(() -> {
                 boolean light = "light".equals(theme);
@@ -92,6 +134,8 @@ public class MainActivity extends Activity {
         webView.evaluateJavascript("window.onNativeBack && window.onNativeBack()", null);
     }
     @Override protected void onDestroy() {
+        if (lan != null) lan.close();
+        requests.values().forEach(f -> f.cancel(true));
         webView.removeJavascriptInterface("Android"); webView.destroy(); super.onDestroy();
     }
 }
