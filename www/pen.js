@@ -14,6 +14,15 @@ export const PENS = {
   iteen: { name: 'Matador i-Teen', short: 'আই-টিন', L: 136, m: 0.84, grip: 0.82, body: '#6ec3e8', cap: '#ffffff', note: 'হালকা, জোরে ছোটে' },
   econo: { name: 'Econo DX', short: 'ইকোনো', L: 146, m: 1.05, grip: 0.95, body: '#dfe9ef', cap: '#0b2f6b', note: 'ঘুরে গিয়ে ধাক্কা দেয়' }
 };
+const POWER = 980;
+// Expensive pens for the Pro version: shown on the shelf, locked for now.
+export const PRO_PENS = {
+  montblanc: { name: 'Montblanc Meisterstück 149', note: 'ফাউন্টেন পেন · সোনার নিব', body: '#141414', cap: '#141414', trim: '#d4af37' },
+  parker: { name: 'Parker Sonnet', note: 'ফাউন্টেন পেন · স্টিলের ক্লিপ', body: '#7a1020', cap: '#c9ccd1', trim: '#c9ccd1' },
+  pelikan: { name: 'Pelikan Souverän M800', note: 'ফাউন্টেন পেন · সবুজ ডোরা', body: '#1f5e3a', cap: '#111', trim: '#d4af37' },
+  lamy: { name: 'Lamy 2000', note: 'ফাউন্টেন পেন · মাকরোলন বডি', body: '#2b2b2b', cap: '#2b2b2b', trim: '#b9bcc0' },
+  waterman: { name: 'Waterman Carène', note: 'ফাউন্টেন পেন · ঝকঝকে বার্নিশ', body: '#0c2a5c', cap: '#0c2a5c', trim: '#d4af37' }
+};
 const PEN_KEYS = Object.keys(PENS), penImg = k => `assets/pen/${k}.svg`;
 
 let s = load(), view = 'play', lastScreen = '', world = null, aim = null, raf = 0, modalResolve = null;
@@ -54,25 +63,28 @@ function collide(A, B) {
   const ca = rax * ny - ray * nx, cb = rbx * ny - rby * nx;
   const j = -(1 + .3) * rel / (total + ca * ca / A.I + cb * cb / B.I);
   A.vx -= j * nx / A.m; A.vy -= j * ny / A.m; A.w -= ca * j / A.I; B.vx += j * nx / B.m; B.vy += j * ny / B.m; B.w += cb * j / B.I;
-  if (Math.abs(rel) > 60) sound('notice');
+  if (Math.abs(rel) > 60 && !quiet) sound('notice');
 }
-function step(dt) {
-  const r = s.round, live = r.pens.filter(p => !p.out);
+let quiet = false;
+function step(dt, r = s.round) {
+  const live = r.pens.filter(p => !p.out);
   for (const p of r.pens) {
     if (p.out) { p.fall = Math.min(1, (p.fall || 0) + dt * 2.6); p.x += p.vx * dt * .4; p.y += p.vy * dt * .4; continue; }
-    const v = Math.hypot(p.vx, p.vy), dec = 560 * p.grip * dt;
+    const v = Math.hypot(p.vx, p.vy), dec = 900 * p.grip * dt;
     if (v <= dec) { p.vx = p.vy = 0; } else { p.vx *= (v - dec) / v; p.vy *= (v - dec) / v; }
-    const wd = 7 * p.grip * dt; p.w = Math.abs(p.w) <= wd ? 0 : p.w - Math.sign(p.w) * wd; p.w *= .997;
+    const wd = 12 * p.grip * dt; p.w = Math.abs(p.w) <= wd ? 0 : p.w - Math.sign(p.w) * wd; p.w *= .99;
     p.x += p.vx * dt; p.y += p.vy * dt; p.a += p.w * dt;
   }
   for (let i = 0; i < live.length; i++) for (let k = i + 1; k < live.length; k++) collide(live[i], live[k]);
-  for (const p of live) if (p.x < 0 || p.x > W || p.y < 0 || p.y > H) { p.out = true; p.fall = 0; r.out.push(p.pid); sound('out'); }
+  for (const p of live) if (p.x < 0 || p.x > W || p.y < 0 || p.y > H) { p.out = true; p.fall = 0; r.out.push(p.pid); if (!quiet) sound('out'); }
 }
-const resting = () => s.round.pens.every(p => p.out ? (p.fall || 0) >= 1 : Math.hypot(p.vx, p.vy) < 2 && Math.abs(p.w) < .05);
+const resting = (r = s.round) => r.pens.every(p => p.out ? (p.fall || 0) >= 1 : Math.hypot(p.vx, p.vy) < 2 && Math.abs(p.w) < .05);
 
+function push(p, cx, cy, jx, jy) {
+  p.vx += jx / p.m; p.vy += jy / p.m; p.w += ((cx - p.x) * jy - (cy - p.y) * jx) / p.I; p.w = Math.max(-26, Math.min(26, p.w));
+}
 function flick(p, cx, cy, jx, jy) {
-  p.vx += jx / p.m; p.vy += jy / p.m; p.w += ((cx - p.x) * jy - (cy - p.y) * jx) / p.I;
-  p.w = Math.max(-26, Math.min(26, p.w)); s.round.moving = true; s.round.knockedThisTurn = [];
+  push(p, cx, cy, jx, jy); s.round.moving = true; s.round.knockedThisTurn = [];
   sound('notice'); loop();
 }
 
@@ -84,8 +96,38 @@ function settle() {
   if (live.length <= 1) return endRound(live[0]?.pid || null, fresh);
   const order = s.players.map(p => p.id), alive = new Set(live.map(p => p.pid));
   let i = order.indexOf(r.turn); do { i = (i + 1) % order.length; } while (!alive.has(order[i]));
-  r.turn = order[i]; save(); render();
+  r.turn = order[i]; save(); render(); cpuTurn();
   if (fresh.length) toast(fresh.map(id => byId(id).name).join(' ও ') + ' বেঞ্চ থেকে পড়ে গেছে।');
+}
+/* Computer opponent: tries many flicks on a copy of the bench, keeps the best, then shoots with a little human error. */
+function plan() {
+  const r = s.round, me = r.pens.find(p => p.pid === r.turn), foes = r.pens.filter(p => !p.out && p.pid !== me.pid);
+  const edge = p => Math.min(p.x, W - p.x, p.y, H - p.y);
+  let best = null;
+  quiet = true;
+  for (let n = 0; n < 70; n++) {
+    const foe = foes[n % foes.length], t = .25 + Math.random() * .5, [a0, a1, b0, b1] = ends(me), cx = a0 + (b0 - a0) * t, cy = a1 + (b1 - a1) * t;
+    const [f0, f1, g0, g1] = ends(foe), u = Math.random(), tx = f0 + (g0 - f0) * u, ty = f1 + (g1 - f1) * u, d = Math.hypot(tx - cx, ty - cy) || 1;
+    const force = (.45 + Math.random() * .55) * POWER * me.m, shot = { cx, cy, jx: (tx - cx) / d * force, jy: (ty - cy) / d * force };
+    const sim = JSON.parse(JSON.stringify(r)), sm = sim.pens.find(p => p.pid === me.pid); push(sm, cx, cy, shot.jx, shot.jy);
+    for (let k = 0; k < 900 && !resting(sim); k++) step(1 / 240, sim);
+    const out = sim.pens.filter(p => p.out && p.pid !== me.pid).length, score = out * 100 - (sm.out ? 160 : 0) + sim.pens.filter(p => !p.out && p.pid !== me.pid).reduce((a, p) => a - edge(p) * .15, 0) + (sm.out ? 0 : edge(sm) * .1);
+    if (!best || score > best.score) best = { ...shot, score };
+  }
+  quiet = false;
+  const err = (Math.random() - .5) * .12, c = Math.cos(err), sn = Math.sin(err);
+  return { ...best, jx: best.jx * c - best.jy * sn, jy: best.jx * sn + best.jy * c };
+}
+let cpuTimer = 0;
+function cpuTurn() {
+  clearTimeout(cpuTimer);
+  if (s.phase !== 'play' || view !== 'play' || s.round.moving || !byId(s.round.turn)?.cpu) return;
+  cpuTimer = setTimeout(() => {
+    if (s.phase !== 'play' || s.round.moving || !byId(s.round.turn)?.cpu) return;
+    const me = s.round.pens.find(p => p.pid === s.round.turn), shot = plan(), len = Math.hypot(shot.jx, shot.jy), pull = len / (POWER * me.m) * 200;
+    aim = { pen: me, cx: shot.cx, cy: shot.cy, x: shot.cx, y: shot.cy, sx: shot.cx - shot.jx / len * pull, sy: shot.cy - shot.jy / len * pull }; draw();
+    setTimeout(() => { aim = null; flick(me, shot.cx, shot.cy, shot.jx, shot.jy); }, 650);
+  }, 700);
 }
 function endRound(winner) {
   if (winner) byId(winner).score += 2;
@@ -154,7 +196,7 @@ function bindBench() {
   const c = $('#bench'); if (!c) return; sizeBench();
   const toWorld = e => { const b = c.getBoundingClientRect(); return [(e.clientX - b.left) / b.width * W, (e.clientY - b.top) / b.height * H]; };
   c.onpointerdown = e => {
-    if (s.round.moving) return; const p = s.round.pens.find(q => q.pid === s.round.turn && !q.out); if (!p) return;
+    if (s.round.moving || byId(s.round.turn)?.cpu) return; const p = s.round.pens.find(q => q.pid === s.round.turn && !q.out); if (!p) return;
     const [x, y] = toWorld(e), [a0, a1, b0, b1] = ends(p), ux = b0 - a0, uy = b1 - a1, t = Math.max(0, Math.min(1, ((x - a0) * ux + (y - a1) * uy) / (ux * ux + uy * uy))), cx = a0 + ux * t, cy = a1 + uy * t;
     if (Math.hypot(x - cx, y - cy) > 34) return toast(`${byId(p.pid).name}-এর কলম ধরে টেনে ছাড়ুন।`);
     aim = { pen: p, cx, cy, x, y, sx: x, sy: y }; c.setPointerCapture(e.pointerId); loop();
@@ -163,7 +205,7 @@ function bindBench() {
   const release = () => {
     if (!aim) return; const a = aim; aim = null;
     const dx = a.x - a.sx, dy = a.y - a.sy, len = Math.hypot(dx, dy); if (len < 12) return draw();
-    const power = Math.min(len, 200) / 200 * 760 * a.pen.m; flick(a.pen, a.cx, a.cy, dx / len * power, dy / len * power);
+    const power = Math.min(len, 200) / 200 * POWER * a.pen.m; flick(a.pen, a.cx, a.cy, dx / len * power, dy / len * power);
   };
   c.onpointerup = release; c.onpointercancel = () => { aim = null; draw(); };
 }
@@ -176,15 +218,18 @@ const penPick = (p, i) => `<div class="pen-row" style="--dot:${playerColour(p.na
 function setup() {
   return `${pageHead('কলম যুদ্ধ', 'বেঞ্চের ওপর কলমের লড়াই', 'নিজের কলম টোকা দিয়ে অন্যের কলম বেঞ্চ থেকে ফেলে দিন। বেঞ্চে শেষ যে কলম থাকবে, রাউন্ড তার।')}
   <div class="pen-shelf">${PEN_KEYS.map(k => `<figure><img src="${penImg(k)}" alt="" width="72" height="72"><figcaption><b>${esc(PENS[k].name)}</b><small>${esc(PENS[k].note)}</small></figcaption></figure>`).join('')}</div>
-  <section class="pen-setup" id="players"><h2>খেলোয়াড় (২–৪ জন)</h2>
+  <h2 class="pro-title">${icon('lock')}Pro কলম <small>শীঘ্রই আসছে</small></h2>
+  <div class="pen-shelf pro-shelf">${Object.entries(PRO_PENS).map(([k, p]) => `<button type="button" class="pro-pen" data-action="pro" aria-label="${esc(p.name)}: লক করা, Pro সংস্করণে আসবে"><img src="${penImg(k)}" alt="" width="72" height="72"><span><b>${esc(p.name)}</b><small>${esc(p.note)}</small></span><i>${icon('lock')}Pro</i></button>`).join('')}</div>
+  <section class="pen-setup" id="players"><h2>খেলোয়াড় (২–৪ জন)</h2><p class="pen-hint">একা খেললে নিজের নাম দিন, তারপর কম্পিউটার যোগ করুন।</p>
   <form id="name-form" class="name-form"><input id="player-name" maxlength="20" autocomplete="off" placeholder="নাম লিখুন" aria-label="খেলোয়াড়ের নাম" ${s.players.length >= 4 ? 'disabled' : ''}><button class="btn primary" type="submit" ${s.players.length >= 4 ? 'disabled' : ''}>${icon('plus')}যোগ করুন</button></form>
+  ${s.players.some(p => p.cpu) || s.players.length >= 4 ? '' : button('কম্পিউটারের সাথে খেলুন', 'add-cpu', 'secondary wide cpu-add', 'person')}
   <div class="pen-list">${s.players.map(penPick).join('')}</div>
   <p class="pen-hint">কলমের ছবিতে চাপ দিলে কলম বদলাবে। এক ম্যাচে ${bn(ROUNDS)} রাউন্ড, পরে চাইলে আরও খেলা যাবে।</p>
   ${button('খেলা শুরু', 'start', 'primary wide', 'play', s.players.length < 2 ? 'disabled' : '')}</section>`;
 }
 function play() {
   const r = s.round, p = byId(r.turn), i = s.players.indexOf(p);
-  return `<div class="pen-turn" style="--dot:${playerColour(p.name, i)}">${playerDot(p.name, i)}<span><b>${esc(p.name)}-এর চাল</b><small>${r.moving ? 'কলম চলছে…' : 'নিজের কলম ধরে পেছনে টেনে ছেড়ে দিন'}</small></span><span class="pen-round">রাউন্ড ${bn(s.set.rounds + 1)}/${bn(s.set.total)}</span></div>
+  return `<div class="pen-turn" style="--dot:${playerColour(p.name, i)}">${playerDot(p.name, i)}<span><b>${esc(p.name)}-এর চাল</b><small>${r.moving ? 'কলম চলছে…' : p.cpu ? 'কম্পিউটার নিশানা ঠিক করছে…' : 'নিজের কলম ধরে পেছনে টেনে ছেড়ে দিন'}</small></span><span class="pen-round">রাউন্ড ${bn(s.set.rounds + 1)}/${bn(s.set.total)}</span></div>
   <div class="bench-wrap"><canvas id="bench" aria-label="বেঞ্চ: ${s.round.pens.filter(q => !q.out).map(q => byId(q.pid).name).join(', ')}-এর কলম আছে"></canvas></div>
   <div class="pen-scores">${s.players.map((q, k) => `<span class="${r.pens.find(x => x.pid === q.id)?.out ? 'is-out' : ''}">${playerDot(q.name, k)}${esc(q.name)} <b>${bn(q.score)}</b></span>`).join('')}</div>`;
 }
@@ -228,7 +273,7 @@ function render() {
     if (!name) return; if (s.players.some(p => p.name.toLocaleLowerCase() === name.toLocaleLowerCase())) return toast('এই নাম আগেই আছে।');
     s.players.push({ id: crypto.randomUUID(), name, pen: PEN_KEYS[s.players.length % PEN_KEYS.length], score: 0, history: [] }); save(); render(); $('#player-name')?.focus();
   });
-  if (view === 'play' && s.phase === 'play') { bindBench(); if (s.round.moving) loop(); }
+  if (view === 'play' && s.phase === 'play') { bindBench(); if (s.round.moving) loop(); else cpuTurn(); }
   if (changed) enterScreen($('#screen'));
 }
 function transition() { const el = $('#screen'); el ? leaveScreen(el, render) : render(); }
@@ -236,9 +281,11 @@ function transition() { const el = $('#screen'); el ? leaveScreen(el, render) : 
 function startRound() { placePens(s.players[s.set.rounds % s.players.length].id); s.phase = 'play'; save(); transition(); }
 async function act(action, id) {
   switch (action) {
-    case 'tab-play': case 'tab-rules': case 'tab-ranking': { const next = action.slice(4); if (view === next) return; view = next; return transition(); }
+    case 'tab-play': case 'tab-rules': case 'tab-ranking': { const next = action.slice(4); if (view === next) return; view = next; clearTimeout(cpuTimer); return transition(); }
     case 'app-menu': return openMenu();
     case 'games': location.href = 'index.html'; return;
+    case 'pro': return toast('এই দামি কলমগুলো Pro সংস্করণে খোলা হবে।');
+    case 'add-cpu': if (s.players.some(p => p.cpu) || s.players.length >= 4) return; s.players.push({ id: crypto.randomUUID(), name: 'কম্পিউটার', cpu: true, pen: 'hischool', score: 0, history: [] }); save(); return render();
     case 'cycle-pen': { const p = byId(id); p.pen = PEN_KEYS[(PEN_KEYS.indexOf(p.pen) + 1) % PEN_KEYS.length]; save(); return render(); }
     case 'remove': s.players = s.players.filter(p => p.id !== id); save(); return render();
     case 'start': if (s.players.length < 2) return; s.players.forEach(p => { p.score = 0; p.history = []; }); s.set = { id: crypto.randomUUID(), total: ROUNDS, rounds: 0 }; return startRound();
