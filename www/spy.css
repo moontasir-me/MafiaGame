@@ -49,3 +49,4 @@
 .spy-timer-art{width:56px;height:56px;border-radius:14px;border:2px solid var(--world-accent);object-fit:cover}
 .spy-content .page-head,.spy-content .spy-timer,.spy-content .spy-ballot,.spy-content .spy-roster,.spy-content .spy-verdict{max-width:none;margin-left:0;margin-right:0}
 .spy-hero .world-chip{cursor:default}
+.spy-ballot .generic-person{display:grid;place-items:center;flex:none;width:36px;height:36px;border-radius:50%;font-size:15px;font-weight:600;line-height:1}
