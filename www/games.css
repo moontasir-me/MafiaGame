@@ -12,3 +12,28 @@
 .kalidas-tile{background:linear-gradient(150deg,#fbf3dc,#efe2c2)}.kalidas-tile-art img{inset:12px 18px 0;width:calc(100% - 36px);height:calc(100% - 12px);border-radius:15px}
 .kalidas-tile h2{font-family:inherit}
 @media(max-width:650px){.kalidas-tile-art img{inset:6px 18px 0;width:calc(100% - 36px);height:calc(100% - 6px)}}
+/* জম্ফা home: brand, profile and ranking buttons; tiles carry only a name. */
+.games-brand{font-family:'Li Ador Noirrit','Noto Sans Bengali',Poppins,sans-serif;font-size:30px}
+.game-tiles{margin-top:30px}
+.tile-copy h2{font-family:Poppins,'Li Ador Noirrit','Noto Sans Bengali',sans-serif}
+.tile-copy{padding-bottom:22px}
+.home-actions{display:flex;gap:10px;align-items:center}
+.home-pill{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px 0 8px;border-radius:999px;border:1px solid #cbbfae;background:#faf6ed;color:#302d38;font:600 14px 'Li Ador Noirrit','Noto Sans Bengali',Poppins,sans-serif;cursor:pointer;text-decoration:none;transition:transform .14s,background-color .2s}
+.home-pill:active{transform:scale(.96)}
+.home-pill svg{width:20px;height:20px;margin-left:6px;fill:none;stroke:#b9770e;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.ranking-pill{background:#fff6dc;border-color:#e3c67a}
+.profile-face{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;overflow:hidden;background:#2f3e57;color:#f2c230;font-size:14px}
+.profile-face img,.profile-big img{width:100%;height:100%;object-fit:cover}
+.home-scrim{position:fixed;inset:0;z-index:50;display:grid;place-items:end center;padding:12px;background:#2a2230aa;backdrop-filter:blur(6px);animation:arrive .2s both}
+@media(min-width:651px){.home-scrim{place-items:center}}
+.home-dialog{width:100%;max-width:420px;padding:22px;border-radius:22px;background:#fbf7ef;border:1px solid #d4c9b8;font-family:'Li Ador Noirrit','Noto Sans Bengali',Poppins,sans-serif;animation:arrive .25s both}
+.home-dialog-head{display:flex;justify-content:space-between;align-items:center}
+.home-dialog h2{margin:0;font-size:22px}
+.home-close{width:40px;height:40px;border:0;background:none;font-size:26px;cursor:pointer;color:#746b67}
+.photo-pick{display:flex;align-items:center;gap:14px;margin:18px 0;cursor:pointer;color:#8a5a2b;font-weight:600}
+.profile-big{display:grid;place-items:center;width:84px;height:84px;border-radius:50%;overflow:hidden;background:#2f3e57;color:#f2c230;font-size:34px;border:3px solid #e3c67a}
+.field{display:grid;gap:6px;font-size:13px;color:#746b67}
+.field input{min-height:48px;padding:0 14px;border:1px solid #cbbfae;border-radius:12px;font:inherit;font-size:16px;color:#302d38;background:#fff}
+.home-error{min-height:18px;margin:8px 0;font-size:12px;color:#b03a2e}
+.home-save{width:100%;min-height:50px;border:0;border-radius:12px;background:#302d38;color:#fff8ec;font:inherit;font-weight:600;font-size:15px;cursor:pointer}
+@media(max-width:650px){.home-pill span:not(.profile-face){display:none}.home-pill{padding:0 6px}.ranking-pill{padding:0 10px}}

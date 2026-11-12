@@ -1,6 +1,7 @@
 import { RIDDLES } from './riddles.mjs';
 import { sound, soundEnabled, toggleSound } from './sound.mjs';
-import { esc, icon, rankTable, enterScreen, leaveScreen, appShell, pageHead } from './ui-kit.mjs';
+import { saveMatch, readHistory, hallOfFame } from './history.mjs';
+import { fameTable, playerColour, esc, icon, rankTable, enterScreen, leaveScreen, appShell, pageHead } from './ui-kit.mjs';
 
 const $ = q => document.querySelector(q), $$ = q => [...document.querySelectorAll(q)];
 const bn = n => Number(n).toLocaleString('bn-BD');
@@ -39,14 +40,14 @@ function setup() {
   <details class="cast-drawer"><summary>চরিত্রগুলো দেখুন</summary><div class="cast-grid kalidas-cast"><article class="cast-card"><img class="character-avatar" src="${ART.HIMU}" alt="" width="80" height="80"><h3>হিমু</h3><small>ধাঁধা ধরে</small><p>হলুদ পাঞ্জাবি, খালি পা, রহস্যময় হাসি। প্রশ্ন ছুড়ে দিয়ে চুপ করে থাকে।</p></article><article class="cast-card"><img class="character-avatar" src="${ART.MISIR}" alt="" width="80" height="80"><h3>মিসির আলি</h3><small>উত্তর খোঁজেন · আপনারা</small><p>যুক্তি দিয়ে ভাবেন। ঠিক উত্তরে সবুজ ফ্রেম, না পারলে লাল।</p></article></div></details>
   <section class="panel kalidas-setup" id="players"><div class="list-heading"><span>কারা খেলছেন?</span><span>${bn(s.players.length)} / ২০</span></div>
   <form id="name-form" class="name-form"><div class="input-wrap">${icon('person')}<input id="player-name" placeholder="খেলোয়াড়ের নাম" autocomplete="off" maxlength="20" aria-label="খেলোয়াড়ের নাম"></div><button class="btn primary" type="submit">যোগ করুন${icon('plus')}</button></form>
-  ${s.players.length ? `<div class="name-list">${s.players.map((p, i) => `<div class="name-row kalidas-row ${p.id === newRow ? 'is-new' : ''}"><span class="seat-initial" aria-hidden="true">${esc(p.name.charAt(0))}</span><div class="seat-name"><span class="player-name">${esc(p.name)}</span><small class="seat-number">${bn(i + 1)}</small></div><button type="button" class="icon-btn" data-action="remove" data-id="${p.id}" aria-label="${esc(p.name)} সরান">${icon('trash')}</button></div>`).join('')}</div>` : `<p class="kalidas-hint">নাম না দিলে সবাই মিলে এক দল হয়ে খেলবেন।</p>`}
+  ${s.players.length ? `<div class="name-list">${s.players.map((p, i) => `<div class="name-row kalidas-row ${p.id === newRow ? 'is-new' : ''}"><span class="seat-initial coloured" style="--dot:${playerColour(p.name, i)}" aria-hidden="true">${esc(p.name.charAt(0))}</span><div class="seat-name"><span class="player-name">${esc(p.name)}</span><small class="seat-number">${bn(i + 1)}</small></div><button type="button" class="icon-btn" data-action="remove" data-id="${p.id}" aria-label="${esc(p.name)} সরান">${icon('trash')}</button></div>`).join('')}</div>` : `<p class="kalidas-hint">নাম না দিলে সবাই মিলে এক দল হয়ে খেলবেন।</p>`}
   <div class="spy-prefs one"><label for="seconds">প্রতি ধাঁধার সময়<select id="seconds">${TIMES.map(n => `<option value="${n}" ${s.seconds === n ? 'selected' : ''}>${bn(n)} সেকেন্ড</option>`).join('')}</select></label></div>
   <div class="form-bottom"><small>${s.players.length ? 'সবাই প্রস্তুত?' : 'একা বা দলে'}</small>${button('ধাঁধা শুরু', 'start', 'primary', 'play')}</div></section>`;
 }
 
 function choices() {
   const opts = s.players.length ? [...s.players.map(p => [p.id, p.name]), [NOBODY, 'কেউ পারেনি']] : [[US, 'আমরা পেরেছি'], [NOBODY, 'কেউ পারেনি']];
-  return `<fieldset class="guess-players winner-pick"><legend>${s.players.length ? 'কে ঠিক বলল?' : 'পেরেছেন?'}</legend>${opts.map(([id, name]) => `<label class="guess-option ${id === NOBODY ? 'is-nobody' : ''}"><input type="radio" name="winner" value="${esc(id)}" ${s.choice === id ? 'checked' : ''}><span class="generic-person">${id === NOBODY ? icon('close') : id === US ? icon('check') : esc(name.charAt(0))}</span><strong>${esc(name)}</strong></label>`).join('')}</fieldset>`;
+  return `<fieldset class="guess-players winner-pick"><legend>${s.players.length ? 'কে ঠিক বলল?' : 'পেরেছেন?'}</legend>${opts.map(([id, name]) => `<label class="guess-option ${id === NOBODY ? 'is-nobody' : ''}"><input type="radio" name="winner" value="${esc(id)}" ${s.choice === id ? 'checked' : ''}><span class="generic-person ${id === NOBODY || id === US ? '' : 'coloured'}" style="--dot:${playerColour(name, s.players.findIndex(p => p.id === id))}">${id === NOBODY ? icon('close') : id === US ? icon('check') : esc(name.charAt(0))}</span><strong>${esc(name)}</strong></label>`).join('')}</fieldset>`;
 }
 
 function asking() {
@@ -73,7 +74,8 @@ function summary() {
   const answered = s.asked;
   return `<div class="over-heading"><div class="result-portrait win"><img src="${ART.MISIR}" alt="" width="112" height="112"></div><span class="eyebrow">খেলা শেষ · ${bn(answered)}টি ধাঁধা</span><h1>${!best ? 'খেলা শেষ!' : tie ? 'সমানে সমান!' : s.players.length ? esc(best.name) + ' জিতলেন!' : bn(best.score) + 'টি ধাঁধা ভাঙলেন!'}</h1><p class="lede">${best && !tie && s.players.length ? `${bn(best.score)} পয়েন্ট নিয়ে সবার আগে।` : 'হিমু হাসছে। পরের খেলায় নতুন ধাঁধা আসবে।'}</p></div>
   <section class="rank-section"><h2>ফলাফল</h2><p>ঠিক উত্তরে এক পয়েন্ট।</p>${rankTable(rows(), labels)}</section>
-  <div class="end-actions">${button('আবার খেলুন', 'start', 'primary wide', 'play')}${button('নাম বা সময় বদলান', 'edit', 'secondary wide', 'edit')}</div>`;
+  <div class="end-actions">${button('আবার খেলুন', 'start', 'primary wide', 'play')}${button('নাম বা সময় বদলান', 'edit', 'secondary wide', 'edit')}</div>
+  <section class="fame-section"><h2>${icon('trophy')}হল অব ফেম</h2><p>শেষ ১০০টি খেলায় এক খেলায় সবচেয়ে বেশি ধাঁধা ভাঙা।</p>${fameTable(hallOfFame(readHistory(), 'kalidas'), { caption: 'হল অব ফেম', player: 'খেলোয়াড়', points: 'পয়েন্ট', empty: 'এখনও কেউ হল অব ফেমে ওঠেননি।', number: bn, meta: e => new Date(e.date).toLocaleDateString('bn-BD') + ' · ' + bn(e.games) + 'টি ধাঁধা' })}</section>`;
 }
 
 function rulesScreen() {
@@ -144,7 +146,9 @@ async function act(action, id) {
     case 'end': {
       if (!await confirmDialog('খেলা শেষ করবেন?', s.choice ? 'এই ধাঁধার ফলও যোগ হবে, তারপর ফলাফল দেখাবে।' : 'এই ধাঁধাটি গোনা হবে না। ফলাফলের টেবিল দেখাবে।')) return;
       if (s.choice) record(); else s.asked = Math.max(0, s.asked - 1);
-      s.phase = 'over'; s.endsAt = null; s.choice = null; view = 'play'; save(); sound('win'); return transition();
+      s.phase = 'over'; s.endsAt = null; s.choice = null; view = 'play';
+      if (s.asked) saveMatch({ id: crypto.randomUUID(), game: 'kalidas', games: s.asked, players: s.players.length ? s.players.map(p => ({ name: p.name, points: p.score })) : [{ name: 'সবাই মিলে', points: s.group.score }] });
+      save(); sound('win'); return transition();
     }
     case 'edit': view = 'play'; s.phase = 'setup'; s.endsAt = null; save(); return transition();
     case 'new': if (playing()) return act('end'); view = 'play'; s.phase = 'setup'; save(); return transition();
@@ -166,7 +170,7 @@ function confirmDialog(title, text) {
 function openMenu() {
   closeOverlay();
   const items = [[playing() ? 'খেলা শেষ করুন' : 'নতুন খেলা', playing() ? 'trophy' : 'plus', 'new'], ['শব্দ: ' + (soundEnabled() ? 'চালু' : 'বন্ধ'), 'sound', 'sound'], ['সব খেলায় ফিরে যান', 'back', 'games']];
-  $('#overlay').innerHTML = `<div class="scrim"><section class="dialog app-menu-dialog" role="dialog" aria-modal="true" aria-labelledby="menu-title"><div class="picker-title"><h2 id="menu-title">মেনু</h2><button type="button" id="close-menu" class="icon-btn" aria-label="বন্ধ করুন">${icon('close')}</button></div><div class="app-menu-items">${items.map(([label, ic, a]) => `<button class="btn secondary wide" type="button" data-menu="${a}">${icon(ic)}${label}${icon('arrow')}</button>`).join('')}</div></section></div>`;
+  $('#overlay').innerHTML = `<div class="scrim"><section class="dialog app-menu-dialog" role="dialog" aria-modal="true" aria-labelledby="menu-title"><div class="picker-title"><h2 id="menu-title">মেনু</h2><button type="button" id="close-menu" class="icon-btn" aria-label="বন্ধ করুন">${icon('close')}</button></div><div class="app-menu-items">${items.map(([label, ic, a]) => `<button class="btn secondary wide ${({close:'tone-danger',trophy:'tone-danger',plus:'tone-primary',lock:'tone-primary',spark:'tone-world',person:'tone-people',people:'tone-people',sound:'',back:'tone-quiet'})[ic]||''}" type="button" data-menu="${a}">${icon(ic)}${label}${icon('arrow')}</button>`).join('')}</div></section></div>`;
   $('#close-menu').onclick = closeOverlay;
   $$('[data-menu]').forEach(el => el.onclick = () => { const a = el.dataset.menu; closeOverlay(); if (a === 'sound') { toggleSound(); openMenu(); } else act(a); });
 }

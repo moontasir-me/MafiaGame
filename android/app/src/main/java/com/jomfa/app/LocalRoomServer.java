@@ -1,4 +1,4 @@
-package com.shoyaeb.mafia;
+package com.jomfa.app;
 
 import android.content.res.AssetManager;
 import org.json.JSONArray;

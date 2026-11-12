@@ -57,7 +57,7 @@ export function rankRows(rows) {
 export function rankTable(rows, t) {
   if (!rows.length) return `<div class="rank-empty">${icon('trophy')}<p>${esc(t.empty)}</p></div>`;
   const ranked = rankRows(rows), fmt = t.number || (n => String(n));
-  return `<div class="rank-table-wrap"><table class="rank-table"><caption class="sr-only">${esc(t.caption)}</caption><thead><tr><th scope="col">${esc(t.rank)}</th><th scope="col">${esc(t.player)}</th><th scope="col" class="num">${esc(t.points)}</th></tr></thead><tbody>${ranked.map((row, i) => `<tr class="${row.rank === 1 ? 'leader' : ''}" style="--row:${i}"><td class="rank-cell"><span class="rank-no">${row.rank === 1 ? icon('trophy') : fmt(row.rank)}</span></td><th scope="row"><span class="rank-name">${esc(row.name)}</span>${row.note ? `<small class="rank-note">${esc(row.note)}</small>` : ''}<span class="result-strip">${row.history.length ? row.history.map(h => `<span class="result-avatar ${h.won ? 'win' : 'loss'}" title="${esc(h.label)}"><img src="${esc(h.img)}" alt="" width="34" height="34" loading="lazy"><span class="sr-only">${esc(h.label)}</span></span>`).join('') : `<small class="rank-note">${esc(t.noGames)}</small>`}</span></th><td class="num"><strong>${fmt(row.score)}</strong></td></tr>`).join('')}</tbody></table></div><p class="rank-legend"><span><i class="result-avatar win"></i>${esc(t.win)}</span><span><i class="result-avatar loss"></i>${esc(t.loss)}</span><span>${esc(t.order)}</span></p>`;
+  return `<div class="rank-table-wrap"><table class="rank-table"><caption class="sr-only">${esc(t.caption)}</caption><thead><tr><th scope="col">${esc(t.rank)}</th><th scope="col">${esc(t.player)}</th><th scope="col" class="num">${esc(t.points)}</th></tr></thead><tbody>${ranked.map((row, i) => `<tr class="${row.rank === 1 ? 'leader' : ''}" style="--row:${i}"><td class="rank-cell"><span class="rank-no">${row.rank === 1 ? icon('trophy') : fmt(row.rank)}</span></td><th scope="row"><span class="rank-name">${playerDot(row.name)}${esc(row.name)}</span>${row.note ? `<small class="rank-note">${esc(row.note)}</small>` : ''}<span class="result-strip">${row.history.length ? row.history.map(h => `<span class="result-avatar ${h.won ? 'win' : 'loss'}" title="${esc(h.label)}"><img src="${esc(h.img)}" alt="" width="34" height="34" loading="lazy"><span class="sr-only">${esc(h.label)}</span></span>`).join('') : `<small class="rank-note">${esc(t.noGames)}</small>`}</span></th><td class="num"><strong>${fmt(row.score)}</strong></td></tr>`).join('')}</tbody></table></div>${ranked.some(r => r.history.length) ? `<p class="rank-legend"><span><i class="result-avatar win"></i>${esc(t.win)}</span><span><i class="result-avatar loss"></i>${esc(t.loss)}</span><span>${esc(t.order)}</span></p>` : ''}`;
 }
 
 /* One page frame for both games.
@@ -80,4 +80,20 @@ export function quoteCard(q, { label = '', source = 'Source' } = {}) {
   if (!q) return '';
   const who = q.poet ? `<b>${esc(q.poet)}</b>${q.work ? ` · <cite>${esc(q.work)}</cite>` : ''}` : `<b>${esc(q.credit || '')}</b>`;
   return `<figure class="quote-card${q.kind === 'note' ? ' is-note' : ''}">${label ? `<span class="quote-label">${label}</span>` : ''}<blockquote>${String(q.text).split('\n').map(esc).join('<br>')}</blockquote><figcaption>${who}${q.url ? ` <a href="${esc(q.url)}" target="_blank" rel="noopener">${esc(source)} ↗</a>` : ''}${q.note ? `<small>${esc(q.note)}</small>` : ''}</figcaption></figure>`;
+}
+
+/* A stable colour for each player, so the same name keeps the same circle everywhere. */
+const PLAYER_COLOURS = ['#c0392b', '#2471a3', '#1e8449', '#b9770e', '#7d3c98', '#117a65', '#a04000', '#2e4053', '#c2185b', '#5d6d7e', '#6c3483', '#196f3d'];
+export function playerColour(name = '', index = null) {
+  if (Number.isInteger(index)) return PLAYER_COLOURS[index % PLAYER_COLOURS.length];
+  let h = 7; for (const c of String(name)) h = (h * 31 + c.codePointAt(0)) >>> 0;
+  return PLAYER_COLOURS[h % PLAYER_COLOURS.length];
+}
+export const playerDot = (name, index = null) => `<span class="player-dot" style="--dot:${playerColour(name, index)}" aria-hidden="true">${esc(String(name).charAt(0))}</span>`;
+
+/* Hall of fame: best single-match scores. entries from history.hallOfFame(). */
+export function fameTable(entries, t) {
+  if (!entries.length) return `<div class="rank-empty">${icon('trophy')}<p>${esc(t.empty)}</p></div>`;
+  const fmt = t.number || (n => String(n));
+  return `<div class="rank-table-wrap fame"><table class="rank-table"><caption class="sr-only">${esc(t.caption)}</caption><thead><tr><th scope="col">#</th><th scope="col">${esc(t.player)}</th><th scope="col" class="num">${esc(t.points)}</th></tr></thead><tbody>${entries.map((e, i) => `<tr class="${i === 0 ? 'leader' : ''}" style="--row:${i}"><td class="rank-cell"><span class="rank-no">${i === 0 ? icon('trophy') : fmt(i + 1)}</span></td><th scope="row">${playerDot(e.name)}<span class="rank-name inline">${esc(e.name)}</span><small class="rank-note">${esc(t.meta(e))}</small></th><td class="num"><strong>${fmt(e.points)}</strong></td></tr>`).join('')}</tbody></table></div>`;
 }

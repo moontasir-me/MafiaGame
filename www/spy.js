@@ -2,7 +2,8 @@ import { newSpySession, addSpyPlayer, removeSpyPlayer, dealSpy, spyIdentity, nex
 import { newTimer, startTimer, pauseTimer, secondsLeft } from './game-tools.mjs';
 import { sound, soundEnabled, toggleSound } from './sound.mjs';
 import { characterImage } from './characters.mjs';
-import { esc, icon, tapCard, bindTapCard, setTapCard, rankTable, enterScreen, leaveScreen, appShell, pageHead } from './ui-kit.mjs';
+import { readHistory, saveMatch, overallRanking, hallOfFame } from './history.mjs';
+import { fameTable, playerColour, esc, icon, tapCard, bindTapCard, setTapCard, rankTable, enterScreen, leaveScreen, appShell, pageHead } from './ui-kit.mjs';
 
 const $ = q => document.querySelector(q), $$ = q => [...document.querySelectorAll(q)];
 const bn = n => Number(n).toLocaleString('bn-BD');
@@ -32,12 +33,12 @@ const ROLE = { WORD: 'গোয়েন্দা', SPY: 'গুপ্তচর'
 
 function setup() {
   const last = s.lastSpyId && byId(s.lastSpyId);
-  return `<section class="hero minimal-hero spy-hero"><div class="hero-copy"><span class="world-chip">${icon('lens')}গোয়েন্দা খেলা · এক ফোন, হোস্ট ছাড়া</span><h1>সবাই গোয়েন্দা।<br><em>একজন গুপ্তচর।</em></h1><p>সবার নোটবুকে একই গোপন শব্দ। শুধু গুপ্তচরের পাতা ফাঁকা, তবু সে এমন ভাব করবে যেন সব জানে। সূত্র মিলিয়ে তাকে ধরুন।</p><div class="hero-buttons"><a class="btn primary" href="#players">${s.players.length ? 'খেলোয়াড় দেখুন' : 'খেলোয়াড় যোগ করুন'}${icon('arrow')}</a></div></div><div class="hero-art spy-cover"><img src="assets/spy/cover.svg" width="640" height="420" alt="বৃষ্টির রাতে ল্যাম্পপোস্টের নিচে আতশকাচ হাতে গোয়েন্দা; দেয়ালের আড়াল থেকে উঁকি দিচ্ছে কালো চশমার গুপ্তচর"></div></section>
+  return `<section class="hero minimal-hero spy-hero"><div class="hero-copy"><h1>সবাই গোয়েন্দা।<br><em>একজন গুপ্তচর।</em></h1><p>সবার নোটবুকে একই গোপন শব্দ। শুধু গুপ্তচরের পাতা ফাঁকা, তবু সে এমন ভাব করবে যেন সব জানে। সূত্র মিলিয়ে তাকে ধরুন।</p><div class="hero-buttons"><a class="btn primary" href="#players">${s.players.length ? 'খেলোয়াড় দেখুন' : 'খেলোয়াড় যোগ করুন'}${icon('arrow')}</a></div></div><div class="hero-art spy-cover"><img src="assets/spy/cover.svg" width="640" height="420" alt="বৃষ্টির রাতে ল্যাম্পপোস্টের নিচে আতশকাচ হাতে গোয়েন্দা; দেয়ালের আড়াল থেকে উঁকি দিচ্ছে কালো চশমার গুপ্তচর"></div></section>
   <details class="cast-drawer"><summary>চরিত্রগুলো দেখুন</summary><div class="cast-grid spy-cast"><article class="cast-card"><img class="character-avatar" src="${portrait('WORD')}" alt="" width="80" height="80"><h3>গোয়েন্দা</h3><small>শব্দ জানেন · বাকি সবাই</small><p>আতশকাচ হাতে সূত্র মেলান, অসঙ্গতি খোঁজেন।</p></article><article class="cast-card"><img class="character-avatar" src="${portrait('SPY')}" alt="" width="80" height="80"><h3>গুপ্তচর</h3><small>শব্দ জানে না · একজন</small><p>কালো চশমা, তোলা কলার। শব্দ জানে না, জানার ভান করে।</p></article></div></details>
   <section class="panel spy-setup" id="players"><div class="list-heading"><span>কারা খেলছেন?</span><span>${bn(s.players.length)} / ২০</span></div>
   <form id="name-form" class="name-form"><div class="input-wrap">${icon('person')}<input id="player-name" placeholder="খেলোয়াড়ের নাম" autocomplete="off" maxlength="20" aria-label="খেলোয়াড়ের নাম"></div><button class="btn primary" type="submit">যোগ করুন${icon('plus')}</button></form>
-  ${s.players.length ? `<div class="name-list">${s.players.map((p, i) => `<div class="name-row spy-row ${p.id === newRow ? 'is-new' : ''}"><span class="seat-initial" aria-hidden="true">${esc(p.name.charAt(0))}</span><div class="seat-name"><span class="player-name">${esc(p.name)}</span><small class="seat-number">${bn(i + 1)}</small></div><button type="button" class="icon-btn" data-action="remove" data-id="${p.id}" aria-label="${esc(p.name)} সরান">${icon('trash')}</button></div>`).join('')}</div>` : `<div class="empty">${icon('people')}<h3>প্রথম নামটি লিখুন</h3><p>৩ থেকে ২০ জন। কোনো হোস্ট লাগবে না।</p></div>`}
-  <div class="spy-prefs"><label for="minutes">আলোচনার সময়<select id="minutes">${[1, 2, 3, 4, 5, 7, 10, 15, 20, 30].map(n => `<option value="${n}" ${s.duration === n * 60 ? 'selected' : ''}>${bn(n)} মিনিট</option>`).join('')}</select></label><label for="pool">শব্দের তালিকা<select id="pool"><option value="common" ${s.pool === 'common' ? 'selected' : ''}>সহজ · ৫৫৮ শব্দ</option><option value="extended" ${s.pool === 'extended' ? 'selected' : ''}>বড় · ২০,০০০ শব্দরূপ</option></select></label></div>
+  ${s.players.length ? `<div class="name-list">${s.players.map((p, i) => `<div class="name-row spy-row ${p.id === newRow ? 'is-new' : ''}"><span class="seat-initial coloured" style="--dot:${playerColour(p.name, i)}" aria-hidden="true">${esc(p.name.charAt(0))}</span><div class="seat-name"><span class="player-name">${esc(p.name)}</span><small class="seat-number">${bn(i + 1)}</small></div><button type="button" class="icon-btn" data-action="remove" data-id="${p.id}" aria-label="${esc(p.name)} সরান">${icon('trash')}</button></div>`).join('')}</div>` : `<div class="empty">${icon('people')}<h3>প্রথম নামটি লিখুন</h3><p>৩ থেকে ২০ জন। কোনো হোস্ট লাগবে না।</p></div>`}
+  <div class="spy-prefs"><label for="minutes">আলোচনার সময়<select id="minutes">${[1, 2, 3, 4, 5, 7, 10, 15, 20, 30].map(n => `<option value="${n}" ${s.duration === n * 60 ? 'selected' : ''}>${bn(n)} মিনিট</option>`).join('')}</select></label><label for="pool">স্তর<select id="pool"><option value="common" ${s.pool === 'common' ? 'selected' : ''}>সহজ</option><option value="extended" ${s.pool === 'extended' ? 'selected' : ''}>কঠিন</option></select></label></div>
   ${last ? `<p class="spy-start-note">${icon('arrow')} গতবার গুপ্তচর ছিলেন <strong>${esc(last.name)}</strong>; এবার ফোন শুরু হবে তাঁর হাত থেকে।</p>` : ''}
   <div class="form-bottom"><small>${s.players.length < 3 ? 'কমপক্ষে ৩ জন লাগবে' : 'সবাই এসে গেছেন?'}</small>${button('কেস শুরু করুন', 'start', 'primary', 'arrow', s.players.length < 3 ? 'disabled' : '')}</div></section>`;
 }
@@ -71,8 +72,8 @@ function playing() {
   return `${pageHead(`কেস ${caseOf(s.gameId)}`, vote ? 'কে গুপ্তচর?' : 'এবার কথা হোক।', `${bn(alive.length)} জন খেলায় আছেন · পরিচয় গোপন রাখুন`)}
   ${s.verdict ? `<div class="finale-result spy-verdict">${icon(s.verdict.left ? 'logout' : 'shield')}<div><strong>${esc(s.verdict.name)}</strong><p>${s.verdict.left ? 'খেলা ছেড়েছেন।' : 'গোয়েন্দাই ছিলেন। গুপ্তচর এখনও আপনাদের মধ্যেই আছে।'}</p></div></div>` : ''}
   ${timerBlock()}
-  ${vote ? `<form id="spy-ballot" class="spy-ballot"><fieldset class="guess-players"><legend>সবাই মিলে একজনকে বাদ দিন</legend>${alive.map(p => `<label class="guess-option"><input type="radio" name="candidate" value="${p.id}" ${choice === p.id ? 'checked' : ''} required><span class="generic-person">${esc(p.name.charAt(0))}</span><strong>${esc(p.name)}</strong></label>`).join('')}</fieldset><button class="btn primary wide" type="submit" ${choice ? '' : 'disabled'}>ভোট চূড়ান্ত করুন${icon('lock')}</button></form>` : ''}
-  <details class="cast-drawer spy-roster"><summary>খেলোয়াড়দের অবস্থা</summary><div class="name-list">${s.players.map(p => `<div class="name-row spy-row ${p.alive ? '' : 'is-out'}"><span class="seat-initial" aria-hidden="true">${esc(p.name.charAt(0))}</span><div class="seat-name"><span class="player-name">${esc(p.name)}</span><small class="seat-number">${p.quit ? 'খেলা ছেড়েছেন' : !p.alive ? 'বাদ পড়েছেন' : bn(p.score) + ' পয়েন্ট'}</small></div>${p.alive ? button('ছেড়ে যান', 'leave', 'text', '', `data-id="${p.id}"`) : ''}</div>`).join('')}</div></details>`;
+  ${vote ? `<form id="spy-ballot" class="spy-ballot"><fieldset class="guess-players"><legend>সবাই মিলে একজনকে বাদ দিন</legend>${alive.map(p => `<label class="guess-option"><input type="radio" name="candidate" value="${p.id}" ${choice === p.id ? 'checked' : ''} required><span class="generic-person coloured" style="--dot:${playerColour(p.name, s.players.indexOf(p))}">${esc(p.name.charAt(0))}</span><strong>${esc(p.name)}</strong></label>`).join('')}</fieldset><button class="btn primary wide" type="submit" ${choice ? '' : 'disabled'}>ভোট চূড়ান্ত করুন${icon('lock')}</button></form>` : ''}
+  <details class="cast-drawer spy-roster"><summary>খেলোয়াড়দের অবস্থা</summary><div class="name-list">${s.players.map(p => `<div class="name-row spy-row ${p.alive ? '' : 'is-out'}"><span class="seat-initial coloured" style="--dot:${playerColour(p.name, s.players.indexOf(p))}" aria-hidden="true">${esc(p.name.charAt(0))}</span><div class="seat-name"><span class="player-name">${esc(p.name)}</span><small class="seat-number">${p.quit ? 'খেলা ছেড়েছেন' : !p.alive ? 'বাদ পড়েছেন' : bn(p.score) + ' পয়েন্ট'}</small></div>${p.alive ? button('ছেড়ে যান', 'leave', 'text', '', `data-id="${p.id}"`) : ''}</div>`).join('')}</div></details>`;
 }
 
 function rankingRows() {
@@ -81,16 +82,17 @@ function rankingRows() {
 const rankLabels = { caption: 'Spy র‍্যাঙ্কিং', rank: '#', player: 'খেলোয়াড় · শেষ পাঁচ খেলা', points: 'পয়েন্ট', win: 'সবুজ ফ্রেম জয়', loss: 'লাল ফ্রেম পরাজয়', order: 'নতুন খেলা বাঁ দিকে', empty: 'এখনও কোনো কেস শেষ হয়নি।', noGames: 'এখনও খেলেননি', number: bn };
 
 function rankingScreen() {
-  const canReset = s.players.some(p => p.score || p.history.length) && ['setup', 'over'].includes(s.phase);
-  return `${pageHead('র‍্যাঙ্কিং · মোট পয়েন্ট', 'কে এগিয়ে?', 'শুধু শেষ হওয়া কেসের ফল। চলমান খেলার পরিচয় এখানে দেখা যায় না।')}${rankTable(rankingRows(), rankLabels)}${canReset ? `<button class="btn text wide" type="button" data-action="reset-scores">${icon('trash')}পয়েন্ট মুছে নতুন খাতা</button>` : ''}`;
+  const rows = overallRanking(readHistory(), 'spy').map(r => ({ name: r.name, score: r.points, note: bn(r.matches) + 'টি ম্যাচ', history: r.recent.map(h => ({ won: h.won, img: portrait('WORD'), label: h.won ? 'ম্যাচে প্রথম' : 'প্রথম নয়' })) }));
+  return `${pageHead('র‍্যাঙ্কিং', 'Spy র‍্যাঙ্কিং', 'শেষ হওয়া প্রতিটি ম্যাচের মোট পয়েন্ট।')}${s.set?.games.length ? matchPanel() : ''}<section class="rank-section"><h2>সব ম্যাচ মিলিয়ে</h2>${rankTable(rows, { ...rankLabels, empty: 'এখনও কোনো ম্যাচ শেষ হয়নি।' })}</section>${famePanel()}<a class="btn secondary wide" href="ranking.html?game=spy">${icon('trophy')}সব খেলার র‍্যাঙ্কিং</a>`;
 }
 
 function results() {
   const spy = byId(s.spyId), won = s.winner === 'WORD';
   return `<div class="over-heading"><div class="result-portrait win"><img src="${portrait(won ? 'WORD' : 'SPY')}" alt="" width="112" height="112"></div><span class="eyebrow">কেস ${caseOf(s.gameId)} · ${won ? 'সমাধান' : 'অমীমাংসিত'}</span><h1>${won ? 'গুপ্তচর ধরা পড়েছে!' : 'গুপ্তচর পালিয়ে গেল!'}</h1><p class="lede"><strong>${esc(spy.name)}</strong> ছিলেন গুপ্তচর। ${won ? 'গোয়েন্দাদের সূত্র মিলে গেল।' : 'কেউ তাকে ধরতে পারেনি।'}</p></div>
   <div class="spy-word-reveal"><span>গোপন শব্দটি ছিল</span><strong>${esc(s.word)}</strong></div>
-  <section class="rank-section"><h2>র‍্যাঙ্কিং</h2><p>মোট পয়েন্ট আর শেষ পাঁচ খেলার ফল।</p>${rankTable(rankingRows(), rankLabels)}</section>
-  <div class="end-actions">${button('আবার খেলুন · নতুন কেস', 'rematch', 'primary wide', 'play')}${button('নাম বা সময় বদলান', 'edit', 'secondary wide', 'edit')}<small class="spy-start-note">পরের খেলায় ফোন শুরু হবে ${esc(spy.name)} থেকে।</small></div>`;
+  ${matchPanel()}
+  <div class="end-actions">${matchActions()}${button('নাম বা সময় বদলান', 'edit', 'text wide', 'edit')}</div>
+  ${famePanel()}`;
 }
 
 /* ---------- Shell (shared with Mafia) ---------- */
@@ -99,6 +101,7 @@ function screenKey() { return view !== 'play' ? view : s.phase === 'reveal' ? 'r
 function crumb() { return view === 'rules' ? 'নিয়ম' : view === 'ranking' ? 'র‍্যাঙ্কিং' : ({ setup: 'গোয়েন্দা বনাম গুপ্তচর', reveal: 'কেস ' + caseOf(s.gameId), discussion: 'কেস ' + caseOf(s.gameId), vote: 'ভোট · কেস ' + caseOf(s.gameId), over: 'রায় · কেস ' + caseOf(s.gameId) })[s.phase]; }
 
 function render() {
+  if (s.phase === 'over' && s.set && s.gameId && !s.set.games.includes(s.gameId)) { s.set.games.push(s.gameId); save(); }
   const draft = $('#player-name')?.value, focused = document.activeElement?.id;
   const key = screenKey(), changed = key !== lastScreen; lastScreen = key;
   const privateReveal = view === 'play' && s.phase === 'reveal';
@@ -139,7 +142,7 @@ async function act(action, id) {
       case 'tab-play': case 'tab-rules': case 'tab-ranking': { const next = action.slice(4); if (view === next) return; hide(); view = next; return transition(); }
       case 'app-menu': return openMenu();
       case 'remove': removeSpyPlayer(s, id); break;
-      case 'start': view = 'play'; dealSpy(s); shown = false; seen = false; save(); sound('notice'); return transition();
+      case 'start': view = 'play'; if (!s.set) { s.set = { id: crypto.randomUUID(), total: 5, games: [] }; s.players.forEach(p => { p.score = 0; }); } dealSpy(s); shown = false; seen = false; save(); sound('notice'); return transition();
       case 'next': {
         if (!seen) return;
         const card = $('[data-tap-card]');
@@ -155,6 +158,8 @@ async function act(action, id) {
       case 'new':
         if (!['setup', 'over'].includes(s.phase) && !await confirmDialog('এই খেলা ছেড়ে যাবেন?', 'এই খেলার ফল যোগ হবে না। নাম রেখে নতুন খেলা শুরু করতে পারবেন।')) return;
         view = 'play'; resetSpy(s); shown = false; seen = false; save(); return transition();
+      case 'more-game': s.set.total++; return act('rematch');
+      case 'end-match': return endMatch();
       case 'reset-scores':
         if (!await confirmDialog('সব পয়েন্ট মুছবেন?', 'নাম থাকবে, কিন্তু পয়েন্ট আর শেষ পাঁচ খেলার ইতিহাস মুছে যাবে।')) return;
         s.players.forEach(p => { p.score = 0; p.history = []; }); save(); toast('পয়েন্ট মুছে নতুন খাতা খোলা হলো।'); break;
@@ -188,7 +193,7 @@ function openMenu() {
   closeOverlay();
   const playing = !['setup', 'over'].includes(s.phase);
   const items = [[playing ? 'এই খেলা ছেড়ে নতুন খেলা' : 'নতুন খেলা', playing ? 'close' : 'plus', 'new'], ['শব্দ: ' + (soundEnabled() ? 'চালু' : 'বন্ধ'), 'sound', 'sound'], ['সব খেলায় ফিরে যান', 'back', 'games']];
-  $('#overlay').innerHTML = `<div class="scrim"><section class="dialog app-menu-dialog" role="dialog" aria-modal="true" aria-labelledby="menu-title"><div class="picker-title"><h2 id="menu-title">মেনু</h2><button type="button" id="close-menu" class="icon-btn" aria-label="বন্ধ করুন">${icon('close')}</button></div><div class="app-menu-items">${items.map(([label, ic, action]) => `<button class="btn secondary wide" type="button" data-menu="${action}">${icon(ic)}${label}${icon('arrow')}</button>`).join('')}</div></section></div>`;
+  $('#overlay').innerHTML = `<div class="scrim"><section class="dialog app-menu-dialog" role="dialog" aria-modal="true" aria-labelledby="menu-title"><div class="picker-title"><h2 id="menu-title">মেনু</h2><button type="button" id="close-menu" class="icon-btn" aria-label="বন্ধ করুন">${icon('close')}</button></div><div class="app-menu-items">${items.map(([label, ic, action]) => `<button class="btn secondary wide ${({close:'tone-danger',trophy:'tone-danger',plus:'tone-primary',lock:'tone-primary',spark:'tone-world',person:'tone-people',people:'tone-people',sound:'',back:'tone-quiet'})[ic]||''}" type="button" data-menu="${action}">${icon(ic)}${label}${icon('arrow')}</button>`).join('')}</div></section></div>`;
   $('#close-menu').onclick = closeOverlay;
   $$('[data-menu]').forEach(el => el.onclick = () => { const a = el.dataset.menu; closeOverlay(); if (a === 'sound') { toggleSound(); openMenu(); } else act(a); });
   trapKeys($('.app-menu-dialog'), closeOverlay); $('#close-menu').focus();
@@ -212,3 +217,22 @@ setInterval(() => {
 
 tickSpy(s); save(); render();
 if ('serviceWorker' in navigator && !window.Android && location.protocol !== 'file:') navigator.serviceWorker.register('./sw.js').catch(() => { });
+
+/* A match is a set of games: 5 to start, and more can be added once they are played. Points add up across the set. */
+function matchPanel() {
+  const st = s.set; if (!st) return '';
+  return `<section class="rank-section"><div class="set-progress"><b>ম্যাচ · খেলা ${bn(st.games.length)} / ${bn(st.total)}</b><span class="pips">${Array.from({ length: st.total }, (_, i) => `<i class="${i < st.games.length ? 'done' : ''}"></i>`).join('')}</span></div><h2>ম্যাচের পয়েন্ট</h2><p>এই ম্যাচের সব খেলার পয়েন্ট যোগ করে।</p>${rankTable(rankingRows(), rankLabels)}</section>`;
+}
+function matchActions() {
+  const st = s.set, played = st?.games.length || 0;
+  if (!st) return button('নতুন ম্যাচ', 'rematch', 'primary wide', 'play');
+  return `${played < st.total ? button(`পরের খেলা (${bn(played + 1)} / ${bn(st.total)})`, 'rematch', 'primary wide', 'play') : button('আরও একটি খেলা যোগ করুন', 'more-game', 'primary wide', 'plus')}${button('ম্যাচ শেষ করুন ও ফল সেভ করুন', 'end-match', 'secondary wide', 'trophy')}`;
+}
+function famePanel() {
+  return `<section class="fame-section"><h2>${icon('trophy')}হল অব ফেম</h2><p>শেষ ১০০টি ম্যাচে এক ম্যাচে সবচেয়ে বেশি পয়েন্ট।</p>${fameTable(hallOfFame(readHistory(), 'spy'), { caption: 'হল অব ফেম', player: 'খেলোয়াড়', points: 'পয়েন্ট', empty: 'এখনও কেউ হল অব ফেমে ওঠেননি।', number: bn, meta: e => new Date(e.date).toLocaleDateString('bn-BD') + ' · ' + bn(e.games) + 'টি খেলা' })}</section>`;
+}
+async function endMatch() {
+  if (!await confirmDialog('ম্যাচ শেষ করবেন?', 'ম্যাচের ফল র‍্যাঙ্কিংয়ে সেভ হবে, তারপর নতুন করে শুরু।')) return;
+  if (s.set?.games.length) saveMatch({ id: s.set.id, game: 'spy', games: s.set.games.length, players: s.players.map(p => ({ name: p.name, points: p.score })) });
+  s.set = null; s.players.forEach(p => { p.score = 0; }); resetSpy(s); view = 'play'; save(); toast('ম্যাচের ফল সেভ হয়েছে'); transition();
+}

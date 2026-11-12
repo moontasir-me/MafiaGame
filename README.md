@@ -1,4 +1,4 @@
-# Mafia, Spy & কহেন কবি কালিদাস
+# জম্ফা — Mafia, Spy & কহেন কবি কালিদাস
 
 A light-themed mobile social deduction game for **5–20 players plus a separate host**. The app name stays **Mafia**; the universe picker changes the cast, language, quotations, artwork, and paper motif.
 

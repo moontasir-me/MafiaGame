@@ -1,9 +1,9 @@
 plugins { id 'com.android.application' }
 android {
-    namespace 'com.shoyaeb.mafia'
+    namespace 'com.jomfa.app'
     compileSdk 35
     defaultConfig {
-        applicationId 'com.shoyaeb.mafia'
+        applicationId 'com.jomfa.app'
         minSdk 26
         targetSdk 35
         versionCode 13
