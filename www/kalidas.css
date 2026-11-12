@@ -56,3 +56,4 @@
 .riddle-actions .btn:only-child{grid-column:1/-1}
 .riddle-help{display:block;text-align:center;font-size:12px;color:var(--muted);margin:8px 0 6px}
 .end-game{margin-top:8px;color:#9b2a21!important}
+.hero-riddle{margin:6px 0 22px;padding:4px 0 4px 18px;border-left:4px solid var(--accent);font-size:clamp(19px,4.6vw,24px);line-height:1.7}.hero-riddle cite{display:block;margin-top:6px;font-size:12px;font-style:normal;color:var(--muted)}
