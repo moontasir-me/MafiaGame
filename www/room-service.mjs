@@ -31,7 +31,7 @@ export class RoomService{
    const r={id,invite:token(),hostId:me.id,locale:b.gameType==='spy'?'bn':['en','classic'].includes(b.locale)?b.locale:'bn',gameType:b.gameType==='spy'?'spy':'mafia',members:[me],phase:'lobby',edition:0,version:1,timer:newTimer(),round:0,votes:{},votingOpen:false,event:{type:'CREATED',name:me.name},touched:this.now(),config:defaultRoleCounts(5),game:null};
    this.rooms.set(id,r);return {room:id,token:me.token,view:this.view(r,me)};
   }
-  const r=this.rooms.get(String(b.room||'').toUpperCase());if(!r)fail('ROOM_GONE');
+  const r=this.rooms.get(String(b.room||'').toUpperCase());if(!r||r.closed)fail('ROOM_GONE');
   if(path==='/api/join'){
    if(b.invite!==r.invite)fail('INVITE');if(r.phase!=='lobby')fail('STARTED');if(r.members.length>=21)fail('FULL');
    if(b.profile?.id&&r.members.some(p=>p.profileId===b.profile.id))fail('ALREADY_JOINED');
@@ -48,7 +48,13 @@ export class RoomService{
    if(me.id!==r.hostId)fail('HOST_ONLY');if(r.phase==='lobby')fail('PHASE');const p=r.game.players.find(p=>p.id===b.id);if(!p)fail('PLAYER');return {id:p.id,name:p.name,role:p.role,characterIndex:p.characterIndex};
   }
   if(path!=='/api/action')fail('NOT_FOUND');const a=b.action||{},host=()=>{if(me.id!==r.hostId)fail('HOST_ONLY');};
-  if(a.type==='quit'){if(me.id===r.hostId)fail('HOST_CANNOT_QUIT');if(r.phase==='lobby'){r.members=r.members.filter(p=>p.id!==me.id);this.touch(r,{type:'QUIT',name:me.name});return {left:true};}if(!['playing','last-chance'].includes(r.phase))fail('PHASE');me.quit=true;me.isAlive=false;if(r.gameType==='spy'){if(!r.game.players.some(p=>p.role==='SPY'&&p.isAlive))finishSpy(this,r,'WORD');else if(r.game.players.filter(p=>p.isAlive).length<=2)finishSpy(this,r,'SPY');}this.touch(r,{type:r.phase==='over'?'RESULT':'QUIT',name:me.name});return this.view(r,me);}
+  const quitGame=()=>{me.quit=true;me.isAlive=false;delete r.votes[me.id];if(r.gameType==='spy'){if(!r.game.players.some(p=>p.role==='SPY'&&p.isAlive))finishSpy(this,r,'WORD');else if(r.game.players.filter(p=>p.isAlive).length<=2)finishSpy(this,r,'SPY');}};
+  if(a.type==='quit'){if(me.id===r.hostId)fail('HOST_CANNOT_QUIT');if(r.phase==='lobby'){r.members=r.members.filter(p=>p.id!==me.id);this.touch(r,{type:'QUIT',name:me.name});return {left:true};}if(!['playing','last-chance'].includes(r.phase))fail('PHASE');quitGame();this.touch(r,{type:r.phase==='over'?'RESULT':'QUIT',name:me.name});return this.view(r,me);}
+  // Leave the room for good, at any moment. Mid-game the seat stays in the game record (as quit) so results stay correct;
+  // the session key is revoked at once and the seat is cleared at the next rematch.
+  if(a.type==='leave'){if(me.id===r.hostId)fail('HOST_CANNOT_QUIT');if(r.phase==='lobby')r.members=r.members.filter(p=>p.id!==me.id);else{if(['playing','last-chance'].includes(r.phase)&&!me.quit)quitGame();me.left=true;me.token=token();}this.touch(r,{type:'LEFT',name:me.name});return {left:true};}
+  // The host can close the room at any moment; everyone else is told the room has closed.
+  if(a.type==='close'){if(me.id!==r.hostId)fail('HOST_ONLY');r.closed=true;r.members.forEach(p=>{p.token=token();});this.touch(r,{type:'CLOSED',name:me.name});return {left:true,closed:true};}
   if(r.gameType==='spy'&&spyAction(this,r,me,a))return this.view(r,me);
   if(a.type==='vote'){
    if(!this.voteOpen(r))fail('VOTING_CLOSED');if(me.id===r.hostId||!r.game.players.some(p=>p.id===me.id&&p.isAlive))fail('CANNOT_VOTE');if(Object.hasOwn(r.votes,me.id))fail('ALREADY_VOTED');
@@ -61,7 +67,7 @@ export class RoomService{
   switch(a.type){
    case 'universe':if(!['bn','en','classic'].includes(a.locale))fail('UNIVERSE');if(a.locale==='classic'&&r.phase!=='lobby'&&r.game?.players.some(p=>['ASTROLOGER','BODYGUARD'].includes(p.role)))fail('CLASSIC_ROLES');r.locale=a.locale;if(a.locale==='classic'){r.config.ASTROLOGER=0;r.config.BODYGUARD=0;}this.touch(r,{type:'UNIVERSE'});break;
    case 'transfer':{
-    if(!['lobby','over'].includes(r.phase))fail('HOST_BETWEEN_GAMES');const p=r.members.find(p=>p.id===a.id);if(!p)fail('PLAYER');const previous=r.members.find(p=>p.id===r.hostId);previous.role=null;previous.isAlive=true;r.hostId=p.id;p.role='HOST';p.isAlive=false;this.touch(r,{type:'HOST',name:p.name});break;
+    if(!['lobby','over'].includes(r.phase))fail('HOST_BETWEEN_GAMES');const p=r.members.find(p=>p.id===a.id&&!p.left);if(!p)fail('PLAYER');const previous=r.members.find(p=>p.id===r.hostId);previous.role=null;previous.isAlive=true;r.hostId=p.id;p.role='HOST';p.isAlive=false;this.touch(r,{type:'HOST',name:p.name});break;
    }
    case 'kick':if(r.phase!=='lobby'||a.id===r.hostId)fail('PHASE');r.members=r.members.filter(p=>p.id!==a.id);this.touch(r,{type:'ROSTER'});break;
    case 'start':{
@@ -87,7 +93,7 @@ export class RoomService{
    case 'score':{const p=r.members.find(p=>p.id===a.id);if(!p||p.id===r.hostId)fail('PLAYER');updateScore(p,a.score);if(typeof a.plan==='string')p.plan=a.plan.slice(0,500);this.syncProfile(p);this.touch(r,{type:'SCORE'});break;}
    case 'finish':if(r.phase!=='playing')fail('PHASE');if(!['MAFIA','VILLAGER'].includes(a.winner))fail('WINNER');if(a.winner==='VILLAGER'&&canGuessPolice(r.game)){beginVillageFinale(r.game);r.phase='last-chance';}else{finalizeVictory(r.game,a.winner);r.phase='over';this.recordResult(r);}r.timer=pauseTimer(r.timer,this.now());this.touch(r,{type:r.phase==='over'?'RESULT':'FINALE'});break;
    case 'skip-guess':if(r.phase!=='last-chance')fail('PHASE');resolveFinalGuess(r.game,null);r.phase='over';this.recordResult(r);this.touch(r,{type:'RESULT'});break;
-   case 'rematch':if(r.phase!=='over')fail('PHASE');r.phase='lobby';r.spyWord=null;r.lastVoteResult=null;r.game=null;r.timer=newTimer();r.votes={};r.votingOpen=false;r.members.forEach(p=>{p.role=p.id===r.hostId?'HOST':null;p.plan='';p.quit=false;p.isAlive=p.id!==r.hostId;});this.touch(r,{type:'REMATCH'});break;
+   case 'rematch':if(r.phase!=='over')fail('PHASE');r.members=r.members.filter(p=>!p.left||p.id===r.hostId);r.phase='lobby';r.spyWord=null;r.lastVoteResult=null;r.game=null;r.timer=newTimer();r.votes={};r.votingOpen=false;r.members.forEach(p=>{p.role=p.id===r.hostId?'HOST':null;p.plan='';p.quit=false;p.isAlive=p.id!==r.hostId;});this.touch(r,{type:'REMATCH'});break;
    default:fail('ACTION');
   }
   return this.view(r,me);
@@ -99,7 +105,7 @@ export class RoomService{
   view.lastVoteResult=r.lastVoteResult?{round:r.lastVoteResult.round,eliminated:r.lastVoteResult.eliminated.map(p=>({...p}))}:null;
   view.votes={confirmed:Object.keys(r.votes).length,eligible:alive.length,counts:Object.fromEntries(alive.map(p=>[p.id,Object.values(r.votes).filter(id=>id===p.id).length])),candidates:alive.map(p=>({id:p.id,name:p.name}))};
   if(open&&!isHost)view.candidates=alive.map(p=>({id:p.id,name:p.name}));
-  if(isHost){view.invite=r.invite;view.counts={...r.config};view.players=rankedPlayers(r.members.filter(p=>p.id!==r.hostId)).map(p=>({id:p.id,name:p.name,photo:p.photo,rank:rankedPlayers(r.members).find(q=>q.id===p.id).rank,score:p.score,plan:p.plan,quit:!!p.quit,isAlive:p.isAlive}));}
+  if(isHost){view.invite=r.invite;view.counts={...r.config};view.players=rankedPlayers(r.members.filter(p=>p.id!==r.hostId)).map(p=>({id:p.id,name:p.name,photo:p.photo,rank:rankedPlayers(r.members).find(q=>q.id===p.id).rank,score:p.score,plan:p.plan,quit:!!p.quit,left:!!p.left,isAlive:p.isAlive}));}
   if(r.phase==='last-chance'&&me.role==='MAFIA'&&!isHost)view.targets=r.game.players.map(p=>({id:p.id,name:p.name}));return view;
  }
 }

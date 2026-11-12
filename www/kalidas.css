@@ -40,3 +40,19 @@
 .answer-actions .right-btn{background:#2f7a46!important;border-color:#2f7a46!important;color:#fff!important}
 .answer-actions .wrong-btn{background:#fbe9e7!important;border-color:#e4a59d!important;color:#9b2a21!important}
 @media(max-width:650px){.spy-prefs{gap:10px}.spy-prefs select{padding:10px 8px;font-size:12px}}
+.spy-prefs.one{grid-template-columns:1fr}
+.winner-pick{margin:4px 0 14px}
+.winner-pick legend{font-weight:600;margin-bottom:8px}
+.winner-pick{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.winner-pick legend{grid-column:1/-1}
+.winner-pick .guess-option{margin:0;min-height:54px;transition:border-color .18s,background-color .18s,transform .14s}
+.winner-pick .guess-option:has(:checked){border-color:#2f7a46;background:#e7f3ea;transform:translateY(-1px)}
+.winner-pick .guess-option.is-nobody:has(:checked){border-color:#c2392b;background:#fbe9e7}
+.winner-pick .generic-person{background:var(--world-dark);color:var(--world-accent)}
+.winner-pick .is-nobody .generic-person{background:#8d8780;color:#fff}
+.winner-pick .generic-person .icon{width:16px;height:16px}
+.riddle-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.riddle-actions .btn{width:100%;justify-content:center}
+.riddle-actions .btn:only-child{grid-column:1/-1}
+.riddle-help{display:block;text-align:center;font-size:12px;color:var(--muted);margin:8px 0 6px}
+.end-game{margin-top:8px;color:#9b2a21!important}
