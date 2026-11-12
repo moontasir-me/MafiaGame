@@ -51,3 +51,4 @@
 .room-page .last-five{gap:clamp(4px,2vw,13px);flex-wrap:wrap}
 .room-page .room-quote{display:block;max-width:100%}
 @media(max-width:650px){.room-page main{padding:0 12px 24px}.room-page .invitation{grid-template-columns:minmax(0,1fr)}.room-page .room-counts{grid-template-columns:repeat(2,minmax(0,1fr))}.room-page .room-world-art{width:100%}.room-page .room-header{flex-wrap:wrap}.room-page .personal-stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.room-page .vote-choice input[type=radio],.room-page .vote-choice input[type=checkbox]{width:20px;min-width:20px;max-width:20px;height:20px;flex:0 0 20px;padding:0;margin:0}
