@@ -14,7 +14,7 @@ export const PENS = {
   iteen: { name: 'Matador i-Teen', short: 'আই-টিন', L: 136, m: 0.84, grip: 0.82, body: '#6ec3e8', cap: '#ffffff', note: 'হালকা, জোরে ছোটে' },
   econo: { name: 'Econo DX', short: 'ইকোনো', L: 146, m: 1.05, grip: 0.95, body: '#dfe9ef', cap: '#0b2f6b', note: 'ঘুরে গিয়ে ধাক্কা দেয়' }
 };
-const POWER = 980;
+const POWER = 1250;
 // Expensive pens for the Pro version: shown on the shelf, locked for now.
 export const PRO_PENS = {
   montblanc: { name: 'Montblanc Meisterstück 149', note: 'ফাউন্টেন পেন · সোনার নিব', body: '#141414', cap: '#141414', trim: '#d4af37' },
@@ -70,9 +70,9 @@ function step(dt, r = s.round) {
   const live = r.pens.filter(p => !p.out);
   for (const p of r.pens) {
     if (p.out) { p.fall = Math.min(1, (p.fall || 0) + dt * 2.6); p.x += p.vx * dt * .4; p.y += p.vy * dt * .4; continue; }
-    const v = Math.hypot(p.vx, p.vy), dec = 900 * p.grip * dt;
+    const v = Math.hypot(p.vx, p.vy), dec = 1500 * p.grip * dt;
     if (v <= dec) { p.vx = p.vy = 0; } else { p.vx *= (v - dec) / v; p.vy *= (v - dec) / v; }
-    const wd = 12 * p.grip * dt; p.w = Math.abs(p.w) <= wd ? 0 : p.w - Math.sign(p.w) * wd; p.w *= .99;
+    const wd = 20 * p.grip * dt; p.w = Math.abs(p.w) <= wd ? 0 : p.w - Math.sign(p.w) * wd; p.w *= .985;
     p.x += p.vx * dt; p.y += p.vy * dt; p.a += p.w * dt;
   }
   for (let i = 0; i < live.length; i++) for (let k = i + 1; k < live.length; k++) collide(live[i], live[k]);
@@ -137,14 +137,32 @@ function endRound(winner) {
 
 /* ---------- Drawing ---------- */
 
+// The bench is drawn once per size into its own canvas: rough old wood with what students scratch into it.
+const CARVINGS = [['রনি + মিতু', 70, 120, -.12, 20], ['পরীক্ষা কবে?', 330, 210, .08, 17], ['৯ম শ্রেণি খ শাখা', 120, 560, -.05, 16], ['আমি পাস করবই', 300, 680, .1, 18], ['বাংলা ১ম পত্র', 360, 430, -.2, 15], ['টিফিনে মাঠে', 110, 330, .14, 16], ['স্যার আসছে!!', 290, 70, -.06, 17], ['A + B = ♥', 400, 300, .25, 15], ['২+২=৫', 60, 700, -.3, 16], ['রোল ৩৭', 230, 470, .04, 14]];
+let deskCache = null;
 function drawDesk(g) {
-  const wood = g.createLinearGradient(0, 0, W, H); wood.addColorStop(0, '#b98250'); wood.addColorStop(1, '#8e5a2c');
-  g.fillStyle = wood; g.fillRect(0, 0, W, H);
-  g.strokeStyle = '#6b3f1a'; g.globalAlpha = .18; g.lineWidth = 1.2;
-  for (let y = 18; y < H; y += 26) { g.beginPath(); g.moveTo(0, y); for (let x = 0; x <= W; x += 30) g.lineTo(x, y + Math.sin((x + y) / 47) * 5); g.stroke(); }
-  g.globalAlpha = .22; g.fillStyle = '#1b2c5a'; g.beginPath(); g.ellipse(70, 470, 26, 15, .5, 0, 7); g.fill();
-  g.globalAlpha = .3; g.strokeStyle = '#3b210c'; g.lineWidth = 2; g.font = '600 22px Poppins, sans-serif'; g.strokeText('জম্ফা + ১০ক', 196, 92);
-  g.globalAlpha = 1; g.strokeStyle = '#5a3312'; g.lineWidth = 6; g.strokeRect(3, 3, W - 6, H - 6);
+  const k = g.getTransform().a, size = Math.round(W * k);
+  if (deskCache?.size !== size) {
+    const c = document.createElement('canvas'); c.width = size; c.height = Math.round(H * k); const d = c.getContext('2d'); d.scale(k, k);
+    let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    const wood = d.createLinearGradient(0, 0, W, H); wood.addColorStop(0, '#a87346'); wood.addColorStop(.5, '#946036'); wood.addColorStop(1, '#7c4c27');
+    d.fillStyle = wood; d.fillRect(0, 0, W, H);
+    d.strokeStyle = '#5b3414'; d.lineWidth = 1.3;
+    for (let y = 8; y < H; y += 11) { d.globalAlpha = .1 + rnd() * .14; d.beginPath(); d.moveTo(0, y); for (let x = 0; x <= W; x += 24) d.lineTo(x, y + Math.sin((x + y * 3) / 61) * 6 + rnd() * 2); d.stroke(); }
+    for (let i = 0; i < 2600; i++) { d.globalAlpha = .05 + rnd() * .12; d.fillStyle = rnd() > .5 ? '#3b1f08' : '#d9a877'; d.fillRect(rnd() * W, rnd() * H, 1 + rnd() * 2, 1 + rnd() * 1.5); }
+    d.strokeStyle = '#3b1f08'; d.lineWidth = 1;
+    for (let i = 0; i < 70; i++) { const x = rnd() * W, y = rnd() * H, a = rnd() * 7, l = 8 + rnd() * 40; d.globalAlpha = .15 + rnd() * .2; d.beginPath(); d.moveTo(x, y); d.lineTo(x + Math.cos(a) * l, y + Math.sin(a) * l); d.stroke(); }
+    for (const [x, y, rx, ry] of [[92, 470, 30, 17], [380, 150, 18, 11], [250, 740, 22, 9]]) { d.globalAlpha = .22; d.fillStyle = '#16244d'; d.beginPath(); d.ellipse(x, y, rx, ry, .5, 0, 7); d.fill(); }
+    d.globalAlpha = .55; d.fillStyle = '#4a2a0e'; for (const [x, y, r] of [[420, 610, 9], [40, 260, 6]]) { d.beginPath(); d.ellipse(x, y, r, r * .7, .3, 0, 7); d.fill(); }
+    d.textAlign = 'center';
+    for (const [t, x, y, a, f] of CARVINGS) { d.save(); d.translate(x, y); d.rotate(a); d.font = `600 ${f}px Poppins, sans-serif`; d.globalAlpha = .4; d.strokeStyle = '#2e1806'; d.lineWidth = 1.6; d.strokeText(t, 0, 0); d.globalAlpha = .25; d.strokeStyle = '#e0b07a'; d.lineWidth = .8; d.strokeText(t, .8, .8); d.restore(); }
+    d.globalAlpha = .4; d.strokeStyle = '#2e1806'; d.lineWidth = 1.6; d.save(); d.translate(390, 520); d.rotate(.1);
+    for (const v of [12, 24]) { d.beginPath(); d.moveTo(v, 0); d.lineTo(v, 36); d.moveTo(0, v); d.lineTo(36, v); d.stroke(); }
+    d.beginPath(); d.arc(6, 6, 4, 0, 7); d.moveTo(14, 26); d.lineTo(22, 34); d.moveTo(22, 26); d.lineTo(14, 34); d.stroke(); d.restore();
+    d.globalAlpha = 1; d.strokeStyle = '#4a280c'; d.lineWidth = 7; d.strokeRect(3.5, 3.5, W - 7, H - 7);
+    deskCache = { size, c };
+  }
+  g.drawImage(deskCache.c, 0, 0, W, H);
 }
 function drawPen(g, p, colour, active) {
   const spec = PENS[byId(p.pid)?.pen] || PENS.pinpoint, L = p.L, f = p.out ? 1 - (p.fall || 0) : 1;
