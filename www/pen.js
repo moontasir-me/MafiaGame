@@ -7,7 +7,7 @@ import { esc, icon, appShell, pageHead, rankTable, fameTable, playerColour, play
 
 const $ = q => document.querySelector(q), $$ = q => [...document.querySelectorAll(q)];
 const bn = n => Number(n).toLocaleString('bn-BD');
-const KEY = 'pen.v1', ROUNDS = 5, W = 360, H = 600, R = 7;
+const KEY = 'pen.v1', ROUNDS = 5, W = 480, H = 780, R = 7;
 export const PENS = {
   pinpoint: { name: 'Matador Pinpoint', short: 'পিনপয়েন্ট', L: 150, m: 1, grip: 1, body: '#f4f6f8', cap: '#1d4fa3', note: 'মাঝারি ওজন, সোজা চলে' },
   hischool: { name: 'Matador Hi-School', short: 'হাই-স্কুল', L: 162, m: 1.22, grip: 1.1, body: '#fdf7e6', cap: '#c62828', note: 'লম্বা আর ভারী, সহজে পড়ে না' },
@@ -28,7 +28,7 @@ const byId = id => s.players.find(p => p.id === id);
 function placePens(starter) {
   const n = s.players.length, pens = s.players.map((p, i) => {
     const t = Math.PI / 2 + (i / n) * Math.PI * 2, spec = PENS[p.pen];
-    return { pid: p.id, x: W / 2 + Math.cos(t) * 100, y: H / 2 + Math.sin(t) * 170, a: t + Math.PI / 2 + (Math.random() - .5) * .7, vx: 0, vy: 0, w: 0, out: false, L: spec.L, m: spec.m, grip: spec.grip, I: spec.m * spec.L * spec.L / 12 };
+    return { pid: p.id, x: W / 2 + Math.cos(t) * 140, y: H / 2 + Math.sin(t) * 230, a: t + Math.PI / 2 + (Math.random() - .5) * .7, vx: 0, vy: 0, w: 0, out: false, L: spec.L, m: spec.m, grip: spec.grip, I: spec.m * spec.L * spec.L / 12 };
   });
   s.round = { pens, turn: starter, out: [], moving: false };
 }
@@ -52,7 +52,7 @@ function collide(A, B) {
   const vax = A.vx - A.w * ray, vay = A.vy + A.w * rax, vbx = B.vx - B.w * rby, vby = B.vy + B.w * rbx;
   const rel = (vbx - vax) * nx + (vby - vay) * ny; if (rel > 0) return;
   const ca = rax * ny - ray * nx, cb = rbx * ny - rby * nx;
-  const j = -(1 + .45) * rel / (total + ca * ca / A.I + cb * cb / B.I);
+  const j = -(1 + .3) * rel / (total + ca * ca / A.I + cb * cb / B.I);
   A.vx -= j * nx / A.m; A.vy -= j * ny / A.m; A.w -= ca * j / A.I; B.vx += j * nx / B.m; B.vy += j * ny / B.m; B.w += cb * j / B.I;
   if (Math.abs(rel) > 60) sound('notice');
 }
@@ -60,7 +60,7 @@ function step(dt) {
   const r = s.round, live = r.pens.filter(p => !p.out);
   for (const p of r.pens) {
     if (p.out) { p.fall = Math.min(1, (p.fall || 0) + dt * 2.6); p.x += p.vx * dt * .4; p.y += p.vy * dt * .4; continue; }
-    const v = Math.hypot(p.vx, p.vy), dec = 380 * p.grip * dt;
+    const v = Math.hypot(p.vx, p.vy), dec = 560 * p.grip * dt;
     if (v <= dec) { p.vx = p.vy = 0; } else { p.vx *= (v - dec) / v; p.vy *= (v - dec) / v; }
     const wd = 7 * p.grip * dt; p.w = Math.abs(p.w) <= wd ? 0 : p.w - Math.sign(p.w) * wd; p.w *= .997;
     p.x += p.vx * dt; p.y += p.vy * dt; p.a += p.w * dt;
@@ -127,9 +127,9 @@ function draw() {
   for (const p of r.pens) drawPen(g, p, playerColour(byId(p.pid).name, idx(p.pid)), !r.moving && p.pid === r.turn && !p.out);
   for (const p of r.pens) if (!p.out) { const n = byId(p.pid).name; g.font = '600 12px Poppins, sans-serif'; g.textAlign = 'center'; g.fillStyle = '#fffaf0'; g.strokeStyle = '#3b210c'; g.lineWidth = 3; g.strokeText(n, p.x, p.y - 22); g.fillText(n, p.x, p.y - 22); }
   if (aim) {
-    const dx = aim.sx - aim.x, dy = aim.sy - aim.y, len = Math.min(Math.hypot(dx, dy), 150), u = Math.hypot(dx, dy) || 1, ex = aim.cx - dx / u * len * .9, ey = aim.cy - dy / u * len * .9;
+    const dx = aim.sx - aim.x, dy = aim.sy - aim.y, len = Math.min(Math.hypot(dx, dy), 200), u = Math.hypot(dx, dy) || 1, ex = aim.cx - dx / u * len * .9, ey = aim.cy - dy / u * len * .9;
     g.setLineDash([6, 6]); g.strokeStyle = '#fffaf0'; g.lineWidth = 3; g.beginPath(); g.moveTo(aim.cx, aim.cy); g.lineTo(ex, ey); g.stroke(); g.setLineDash([]);
-    g.fillStyle = len > 110 ? '#e5533d' : '#f2c230'; g.beginPath(); g.arc(ex, ey, 6, 0, 7); g.fill();
+    g.fillStyle = len > 150 ? '#e5533d' : '#f2c230'; g.beginPath(); g.arc(ex, ey, 6, 0, 7); g.fill();
     g.strokeStyle = '#ffffff88'; g.lineWidth = 2; g.beginPath(); g.arc(aim.cx, aim.cy, 10 + len / 6, 0, 7); g.stroke();
   }
 }
@@ -147,7 +147,7 @@ function loop() {
 }
 function sizeBench() {
   const c = $('#bench'); if (!c) return;
-  const box = c.parentElement.getBoundingClientRect(), maxH = Math.max(360, innerHeight * .68), cssW = Math.min(box.width, maxH * W / H), dpr = devicePixelRatio || 1;
+  const box = c.parentElement.getBoundingClientRect(), maxH = Math.max(360, innerHeight * .78), cssW = Math.min(box.width, maxH * W / H), dpr = devicePixelRatio || 1;
   c.style.width = cssW + 'px'; c.style.height = cssW * H / W + 'px'; c.width = Math.round(cssW * dpr); c.height = Math.round(cssW * H / W * dpr); draw();
 }
 function bindBench() {
@@ -163,7 +163,7 @@ function bindBench() {
   const release = () => {
     if (!aim) return; const a = aim; aim = null;
     const dx = a.x - a.sx, dy = a.y - a.sy, len = Math.hypot(dx, dy); if (len < 12) return draw();
-    const power = Math.min(len, 150) / 150 * 1050 * a.pen.m; flick(a.pen, a.cx, a.cy, dx / len * power, dy / len * power);
+    const power = Math.min(len, 200) / 200 * 760 * a.pen.m; flick(a.pen, a.cx, a.cy, dx / len * power, dy / len * power);
   };
   c.onpointerup = release; c.onpointercancel = () => { aim = null; draw(); };
 }
