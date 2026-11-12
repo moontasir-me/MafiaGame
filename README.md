@@ -132,6 +132,11 @@ Connected profile edits sync to the room on storage/focus changes and restore, a
 
 52 automated tests, HTTP integration, Android build/lint, a complete leading-zero PIN setup/reveal/unlock flow, and cross-tab live-name synchronization passed. Android hardware rendering should still be confirmed on the user's phone.
 
-## Vercel browser/desktop version
+## Vercel browser/desktop and online multiplayer
 
-Import this repository at https://vercel.com/new. Keep the repository root as Root Directory; vercel.json selects Other and publishes www without a build or installation command. No environment variables are needed. The static deployment supports the shared-screen game; QR rooms require the existing Android/local Node host. See [deployment instructions](design/VERCEL.md) for the supported modes and online multiplayer limitations.
+Connect a Neon Postgres database to the Vercel project and provide its server-only DATABASE_URL, then deploy main. Tables initialize automatically. /room.html creates persistent online rooms with public HTTPS link/QR invitations, no shared hotspot required. All three universes and existing privacy/house rules are supported. [Full setup instructions](design/VERCEL.md).
+
+
+## Version 2.4 — online rooms
+
+Vercel now hosts the game API as well as the browser UI. Neon stores room state; atomic revision checks handle simultaneous players without losing votes. Online invitations use the current website origin, and online host handover no longer depends on the first phone staying connected. The Android hotspot mode remains available independently. Install dependencies with npm ci for local development. Database credentials stay outside www and must never be committed.

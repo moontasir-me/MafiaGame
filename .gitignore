@@ -5,3 +5,8 @@ android/.idea/
 android/local.properties
 android/**/build/
 *.iml
+
+.env
+.env.*
+!.env.example
+.vercel/

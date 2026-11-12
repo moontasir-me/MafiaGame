@@ -1,13 +1,19 @@
 {
   "name": "mafia-host",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "node server.mjs",
     "start": "node server.mjs",
     "test": "node --test tests/*.test.mjs",
-    "check": "node --check www/pin.mjs && node --check www/app.js && node --check www/engine.mjs && node --check www/i18n.mjs && node --check www/game-tools.mjs && node --check www/sw.js && node --check www/seating.mjs && node --check www/universe.mjs && node --check www/drag-sort.mjs && node --check www/rhyming-copy.mjs && node --check www/room.js && node --check www/room-service.mjs && node --check www/culture.mjs && node --check server.mjs && node --check www/characters.mjs && node --check www/profile.mjs && node --check www/local-results.mjs && node --check www/bengali-quotes.mjs && node --check www/sicily-quotes.mjs",
+    "check": "node --check api/room.js && node --check lib/neon-store.mjs && node --check lib/online-rooms.mjs && node --check lib/online-api.mjs && node --check www/pin.mjs && node --check www/app.js && node --check www/engine.mjs && node --check www/i18n.mjs && node --check www/game-tools.mjs && node --check www/sw.js && node --check www/seating.mjs && node --check www/universe.mjs && node --check www/drag-sort.mjs && node --check www/rhyming-copy.mjs && node --check www/room.js && node --check www/room-service.mjs && node --check www/culture.mjs && node --check server.mjs && node --check www/characters.mjs && node --check www/profile.mjs && node --check www/local-results.mjs && node --check www/bengali-quotes.mjs && node --check www/sicily-quotes.mjs",
     "test:lan": "node scripts/check-lan.mjs"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.2.0"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

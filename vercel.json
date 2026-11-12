@@ -1,7 +1,9 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": null,
-  "buildCommand": "",
-  "installCommand": "",
-  "outputDirectory": "www"
+ "$schema":"https://openapi.vercel.sh/vercel.json",
+ "framework":null,
+ "buildCommand":"",
+ "installCommand":"npm ci",
+ "outputDirectory":"www",
+ "functions":{"api/room.js":{"maxDuration":30}},
+ "rewrites":[{"source":"/api/:route","destination":"/api/room?route=:route"}]
 }

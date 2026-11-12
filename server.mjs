@@ -6,16 +6,17 @@ import path from 'node:path';
 import {RoomService} from './www/room-service.mjs';
 const root=fileURLToPath(new URL('./www/',import.meta.url));
 const types={'.ttf':'font/ttf','.html':'text/html; charset=utf-8','.css':'text/css','.js':'text/javascript','.mjs':'text/javascript','.svg':'image/svg+xml','.png':'image/png','.webmanifest':'application/manifest+json'};
-export function createMafiaServer({rooms=new RoomService()}={}){
+export function createMafiaServer({rooms=new RoomService(),onlineApi=null}={}){
  const server=http.createServer(async(req,res)=>{
   const json=(status,value)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(JSON.stringify(value));};
   try{
    const pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
    if(pathname.startsWith('/api/')){
+    if(onlineApi)return onlineApi(req,res);
     if(req.headers.origin&&req.headers.origin!==`http://${req.headers.host}`){json(403,{error:'ORIGIN'});return;}
     if(pathname==='/api/network'&&req.method==='GET'){
      const port=server.address().port;
-     json(200,{addresses:Object.values(networkInterfaces()).flat().filter(a=>a.family==='IPv4'&&!a.internal).map(a=>`http://${a.address}:${port}`)});return;
+     json(200,{mode:'lan',available:true,addresses:Object.values(networkInterfaces()).flat().filter(a=>a.family==='IPv4'&&!a.internal).map(a=>`http://${a.address}:${port}`)});return;
     }
     if(req.method!=='POST'||!req.headers['content-type']?.startsWith('application/json')){json(405,{error:'METHOD'});return;}
     let body='',size=0;for await(const chunk of req){size+=chunk.length;if(size>256000){json(413,{error:'SIZE'});return;}body+=chunk;}
