@@ -58,3 +58,16 @@
 .end-game{margin-top:8px;color:#9b2a21!important}
 .hero-riddle{margin:6px 0 22px;padding:4px 0 4px 18px;border-left:4px solid var(--accent);font-size:clamp(19px,4.6vw,24px);line-height:1.7}.hero-riddle cite{display:block;margin-top:6px;font-size:12px;font-style:normal;color:var(--muted)}
 .winner-pick .generic-person,.spy-ballot .generic-person{display:grid;place-items:center;flex:none;width:36px;height:36px;border-radius:50%;font-size:15px;font-weight:600;line-height:1;text-transform:uppercase;padding:0}.winner-pick .guess-option{gap:12px;padding:10px 14px}.winner-pick .guess-option strong{min-width:0;overflow-wrap:anywhere}
+
+/* Misir Ali's notebook: ruled exercise-book paper, a red margin line, ink-blue handwriting colour. */
+:root[data-universe=kalidas] body{background-color:#f7f1e1;background-image:linear-gradient(90deg,transparent 0 46px,#d9493a55 46px 48px,transparent 48px),repeating-linear-gradient(180deg,transparent 0 31px,#7f9fc455 31px 32px);background-attachment:local}
+:root[data-universe=kalidas] body:after{display:none}
+:root[data-theme][data-universe=kalidas]{--text:#1d2b4a;--muted:#5b6478;--world-dark:#1d2b4a}
+.kalidas-page .kit-main>.content{position:relative}
+.kalidas-page :is(.riddle-card,.panel,.cast-card,.rank-table-wrap,.rules-list article){background:#fffdf6;border:1px solid #d9cfb4;box-shadow:2px 3px 0 #e8dfc6;background-image:repeating-linear-gradient(180deg,transparent 0 27px,#9db6d84d 27px 28px);background-position:0 10px}
+.kalidas-page .riddle-card:before{height:auto;inset:0 auto 0 34px;width:2px;background:#d9493a88;opacity:1}
+.kalidas-page .riddle-card{padding-left:48px;border-radius:6px 14px 14px 6px}
+.kalidas-page .riddle-card:after{content:'';position:absolute;left:12px;top:22px;bottom:22px;width:10px;background:radial-gradient(circle,#efe6cf 0 4px,#cfc3a3 4.5px 5px,transparent 5.5px) 0 0/10px 34px repeat-y}
+.kalidas-page .riddle-text,.kalidas-page .hero-riddle{color:#1d2b4a}
+.kalidas-page .riddle-answer{background:#fff7d6;border:1px dashed #d9493a;transform:rotate(-.6deg)}
+.kalidas-page .hero-riddle{border-left-color:#d9493a}
