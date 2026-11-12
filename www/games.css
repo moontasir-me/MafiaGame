@@ -3,3 +3,6 @@
 /* Fixed artwork bounds preserve the complete illustration at every tile size. */
 .tile-art{position:relative}.tile-art img{position:absolute;inset:0;display:block;width:100%;height:100%;min-width:0;min-height:0;max-width:100%;max-height:100%;object-fit:contain}.mafia-tile-art img{inset:12px 18px 0;width:calc(100% - 36px);height:calc(100% - 12px)}
 @media(max-width:650px){.mafia-tile-art img{inset:6px 18px 0;width:calc(100% - 36px);height:calc(100% - 6px)}}
+/* Spy tile uses the Misir Ali casebook, framed exactly like the Mafia artwork. */
+.spy-tile{background:linear-gradient(150deg,#f4eee4,#e3e4dc)}.spy-tile-art img{inset:12px 18px 0;width:calc(100% - 36px);height:calc(100% - 12px)}.spy-tile-art img,.mafia-tile-art img{border-radius:15px}
+@media(max-width:650px){.spy-tile-art img{inset:6px 18px 0;width:calc(100% - 36px);height:calc(100% - 6px)}}
