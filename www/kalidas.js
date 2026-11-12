@@ -147,7 +147,7 @@ async function act(action, id) {
       if (!await confirmDialog('খেলা শেষ করবেন?', s.choice ? 'এই ধাঁধার ফলও যোগ হবে, তারপর ফলাফল দেখাবে।' : 'এই ধাঁধাটি গোনা হবে না। ফলাফলের টেবিল দেখাবে।')) return;
       if (s.choice) record(); else s.asked = Math.max(0, s.asked - 1);
       s.phase = 'over'; s.endsAt = null; s.choice = null; view = 'play';
-      if (s.asked) saveMatch({ id: crypto.randomUUID(), game: 'kalidas', games: s.asked, players: s.players.length ? s.players.map(p => ({ name: p.name, points: p.score })) : [{ name: 'সবাই মিলে', points: s.group.score }] });
+      if (s.asked) saveMatch({ id: crypto.randomUUID(), game: 'kalidas', games: s.asked, players: rows().map(r => ({ name: r.name, points: r.score, recent: r.history })) });
       save(); sound('win'); return transition();
     }
     case 'edit': view = 'play'; s.phase = 'setup'; s.endsAt = null; save(); return transition();

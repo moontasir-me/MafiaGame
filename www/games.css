@@ -7,8 +7,8 @@
 .spy-tile{background:linear-gradient(150deg,#f4eee4,#e3e4dc)}.spy-tile-art img{inset:12px 18px 0;width:calc(100% - 36px);height:calc(100% - 12px)}.spy-tile-art img,.mafia-tile-art img{border-radius:15px}
 @media(max-width:650px){.spy-tile-art img{inset:6px 18px 0;width:calc(100% - 36px);height:calc(100% - 6px)}}
 /* Three games: three columns on wide screens, one per row on phones. */
-@media(min-width:901px){.game-tiles{grid-template-columns:repeat(3,1fr)}.tile-art{height:200px}.tile-copy h2{font-size:30px}}
-@media(min-width:651px) and (max-width:900px){.game-tiles{grid-template-columns:1fr 1fr}.kalidas-tile{grid-column:1/-1}}
+@media(min-width:901px){.game-tiles{grid-template-columns:repeat(2,1fr)}.tile-art{height:200px}.tile-copy h2{font-size:30px}}
+@media(min-width:651px) and (max-width:900px){.game-tiles{grid-template-columns:1fr 1fr}}
 .kalidas-tile{background:linear-gradient(150deg,#fbf3dc,#efe2c2)}.kalidas-tile-art img{inset:12px 18px 0;width:calc(100% - 36px);height:calc(100% - 12px);border-radius:15px}
 .kalidas-tile h2{font-family:inherit}
 @media(max-width:650px){.kalidas-tile-art img{inset:6px 18px 0;width:calc(100% - 36px);height:calc(100% - 6px)}}
@@ -37,3 +37,5 @@
 .home-error{min-height:18px;margin:8px 0;font-size:12px;color:#b03a2e}
 .home-save{width:100%;min-height:50px;border:0;border-radius:12px;background:#302d38;color:#fff8ec;font:inherit;font-weight:600;font-size:15px;cursor:pointer}
 @media(max-width:650px){.home-pill span:not(.profile-face){display:none}.home-pill{padding:0 6px}.ranking-pill{padding:0 10px}}
+
+.pen-tile{background:linear-gradient(150deg,#e8eedd,#d3dcc2)}.pen-tile-art img{inset:12px 18px 0;width:calc(100% - 36px);height:calc(100% - 12px);border-radius:15px;object-fit:cover}.pen-tile h2{font-family:inherit}

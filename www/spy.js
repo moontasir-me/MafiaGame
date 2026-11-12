@@ -82,7 +82,7 @@ function rankingRows() {
 const rankLabels = { caption: 'Spy র‍্যাঙ্কিং', rank: '#', player: 'খেলোয়াড় · শেষ পাঁচ খেলা', points: 'পয়েন্ট', win: 'সবুজ ফ্রেম জয়', loss: 'লাল ফ্রেম পরাজয়', order: 'নতুন খেলা বাঁ দিকে', empty: 'এখনও কোনো কেস শেষ হয়নি।', noGames: 'এখনও খেলেননি', number: bn };
 
 function rankingScreen() {
-  const rows = overallRanking(readHistory(), 'spy').map(r => ({ name: r.name, score: r.points, note: bn(r.matches) + 'টি ম্যাচ', history: r.recent.map(h => ({ won: h.won, img: portrait('WORD'), label: h.won ? 'ম্যাচে প্রথম' : 'প্রথম নয়' })) }));
+  const rows = overallRanking(readHistory(), 'spy').map(r => ({ name: r.name, score: r.points, note: bn(r.matches) + 'টি ম্যাচ', history: r.recent.map(h => ({ won: h.won, img: h.img || portrait('WORD'), label: h.label || (h.won ? 'ম্যাচে প্রথম' : 'প্রথম নয়') })) }));
   return `${pageHead('র‍্যাঙ্কিং', 'Spy র‍্যাঙ্কিং', 'শেষ হওয়া প্রতিটি ম্যাচের মোট পয়েন্ট।')}${s.set?.games.length ? matchPanel() : ''}<section class="rank-section"><h2>সব ম্যাচ মিলিয়ে</h2>${rankTable(rows, { ...rankLabels, empty: 'এখনও কোনো ম্যাচ শেষ হয়নি।' })}</section>${famePanel()}<a class="btn secondary wide" href="ranking.html?game=spy">${icon('trophy')}সব খেলার র‍্যাঙ্কিং</a>`;
 }
 
@@ -233,6 +233,6 @@ function famePanel() {
 }
 async function endMatch() {
   if (!await confirmDialog('ম্যাচ শেষ করবেন?', 'ম্যাচের ফল র‍্যাঙ্কিংয়ে সেভ হবে, তারপর নতুন করে শুরু।')) return;
-  if (s.set?.games.length) saveMatch({ id: s.set.id, game: 'spy', games: s.set.games.length, players: s.players.map(p => ({ name: p.name, points: p.score })) });
+  if (s.set?.games.length) saveMatch({ id: s.set.id, game: 'spy', games: s.set.games.length, players: s.players.map(p => ({ name: p.name, points: p.score, recent: p.history.slice(0, 5).map(h => ({ won: h.won, img: portrait(h.role), label: `${ROLE[h.role] || h.role} · ${h.won ? 'জয়' : 'পরাজয়'}` })) })) });
   s.set = null; s.players.forEach(p => { p.score = 0; }); resetSpy(s); view = 'play'; save(); toast('ম্যাচের ফল সেভ হয়েছে'); transition();
 }

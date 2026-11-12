@@ -1,7 +1,7 @@
 // One shared record of finished matches (game sets) for every game on this device.
 // A match: {id, game:'mafia'|'spy'|'kalidas', date, games, players:[{name, points}]}
 const KEY = 'jomfa.history.v1', LIMIT = 500;
-export const GAMES = { mafia: 'Mafia', spy: 'Spy', kalidas: 'কহেন কবি কালিদাস' };
+export const GAMES = { mafia: 'Mafia', spy: 'Spy', kalidas: 'কহেন কবি কালিদাস', pen: 'কলম যুদ্ধ' };
 
 export function readHistory(storage = localStorage) {
   try { const list = JSON.parse(storage.getItem(KEY)); return Array.isArray(list) ? list.filter(m => m && GAMES[m.game] && Array.isArray(m.players)) : []; } catch { return []; }
@@ -11,7 +11,8 @@ export function saveMatch(match, storage = localStorage) {
   const list = readHistory(storage);
   if (!match?.players?.length || list.some(m => m.id === match.id)) return false;
   const clean = { id: String(match.id || crypto.randomUUID()), game: match.game, date: match.date || new Date().toISOString(), games: Number(match.games) || 1,
-    players: match.players.map(p => ({ name: String(p.name).slice(0, 40), points: Number.isFinite(p.points) ? p.points : 0 })) };
+    players: match.players.map(p => ({ name: String(p.name).slice(0, 40), points: Number.isFinite(p.points) ? p.points : 0,
+      recent: (Array.isArray(p.recent) ? p.recent : []).slice(0, 5).map(r => ({ won: !!r.won, img: String(r.img || ''), label: String(r.label || '') })) })) };
   list.unshift(clean);
   try { storage.setItem(KEY, JSON.stringify(list.slice(0, LIMIT))); } catch { return false; }
   return true;
@@ -28,7 +29,8 @@ export function overallRanking(list, game = null) {
     for (const p of m.players) {
       const key = p.name.toLocaleLowerCase(), row = rows.get(key) || { name: p.name, points: 0, matches: 0, wins: 0, recent: [] };
       row.points += p.points; row.matches++; if (won.has(key)) row.wins++;
-      if (row.recent.length < 5) row.recent.push({ won: won.has(key), game: m.game });
+      // Last five single games, newest first: the role that player actually had in each game.
+      for (const r of (p.recent?.length ? p.recent : [{ won: won.has(key) }])) if (row.recent.length < 5) row.recent.push({ ...r, game: m.game });
       rows.set(key, row);
     }
   }

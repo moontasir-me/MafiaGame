@@ -4,13 +4,13 @@ import { esc, icon, appShell, pageHead, rankTable, fameTable, playerDot, enterSc
 const $ = q => document.querySelector(q);
 const bn = n => Number(n).toLocaleString('bn-BD');
 const date = d => new Date(d).toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' });
-const ART = { mafia: 'assets/bn/mafia.png', spy: 'assets/spy/detective.svg', kalidas: 'assets/kalidas/misir.svg' };
+const ART = { mafia: 'assets/bn/mafia.png', spy: 'assets/spy/detective.svg', kalidas: 'assets/kalidas/misir.svg', pen: 'assets/pen/pinpoint.svg' };
 let filter = new URLSearchParams(location.search).get('game');
 if (!GAMES[filter]) filter = null;
 
 function overall(list) {
-  const rows = overallRanking(list, filter).map(r => ({ name: r.name, score: r.points, note: `${bn(r.matches)}টি ম্যাচ · ${bn(r.wins)}টিতে প্রথম`, history: r.recent.map(h => ({ won: h.won, img: ART[h.game], label: `${GAMES[h.game]} · ${h.won ? 'প্রথম' : 'প্রথম নয়'}` })) }));
-  return rankTable(rows, { caption: 'সামগ্রিক র‍্যাঙ্কিং', rank: '#', player: 'খেলোয়াড় · শেষ পাঁচ ম্যাচ', points: 'মোট পয়েন্ট', win: 'সবুজ: ম্যাচে প্রথম', loss: 'লাল: প্রথম নয়', order: 'নতুনটি বাঁ দিকে', empty: 'এখনও কোনো ম্যাচ শেষ হয়নি। খেলা শেষ হলে এখানে দেখা যাবে।', noGames: '', number: bn });
+  const rows = overallRanking(list, filter).map(r => ({ name: r.name, score: r.points, note: `${bn(r.matches)}টি ম্যাচ · ${bn(r.wins)}টিতে প্রথম`, history: r.recent.map(h => ({ won: h.won, img: h.img || ART[h.game], label: h.label || `${GAMES[h.game]} · ${h.won ? 'প্রথম' : 'প্রথম নয়'}` })) }));
+  return rankTable(rows, { caption: 'সামগ্রিক র‍্যাঙ্কিং', rank: '#', player: 'খেলোয়াড় · শেষ পাঁচ খেলা', points: 'মোট পয়েন্ট', win: 'সবুজ: জয়', loss: 'লাল: হার', order: 'নতুনটি বাঁ দিকে', empty: 'এখনও কোনো ম্যাচ শেষ হয়নি। খেলা শেষ হলে এখানে দেখা যাবে।', noGames: '', number: bn });
 }
 
 function matches(list) {
@@ -29,7 +29,7 @@ function body() {
 }
 
 function render(animate = true) {
-  const tabs = [['all', 'সব', 'grid'], ['mafia', 'Mafia', 'mask'], ['spy', 'Spy', 'lens'], ['kalidas', 'ধাঁধা', 'spark']].map(([id, label, ic]) => ({ id, label, icon: ic, action: id }));
+  const tabs = [['all', 'সব', 'grid'], ['mafia', 'Mafia', 'mask'], ['spy', 'Spy', 'lens'], ['kalidas', 'ধাঁধা', 'spark'], ['pen', 'কলম', 'edit']].map(([id, label, ic]) => ({ id, label, icon: ic, action: id }));
   $('#app').innerHTML = appShell({ brand: 'জম্ফা', brandSub: 'র‍্যাঙ্কিং', brandIcon: 'trophy', brandAction: 'all', crumb: 'র‍্যাঙ্কিং · ' + (filter ? GAMES[filter] : 'সব খেলা'), active: filter || 'all', tabs, body: body(), contentClass: 'game-content', labels: { back: 'সব খেলা', menu: 'মেনু', sections: 'খেলা বেছে নিন' } });
   document.querySelectorAll('[data-action]').forEach(el => el.onclick = e => {
     e.preventDefault(); const a = el.dataset.action;
