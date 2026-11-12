@@ -22,13 +22,13 @@ try{
  assert.equal((await call(host,{type:'vote',target:sessions[3].view.me.id})).status,400);
  assert.equal((await call(sessions[1],{type:'vote',target:sessions[3].view.me.id})).status,200);
  assert.equal((await call(sessions[1],{type:'vote',target:sessions[2].view.me.id})).status,400);
- assert.equal((await view(host)).data.votes.confirmed,1);
+ for(const s of sessions){const v=(await view(s)).data;assert.equal(v.votes.confirmed,1);assert.equal(v.votes.counts[sessions[3].view.me.id],1);assert.equal(v.lastVoteResult,null);}
  await call(host,{type:'end-round',eliminated:[sessions[4].view.me.id,sessions[5].view.me.id]});
- assert.equal((await view(sessions[4])).data.me.isAlive,false);
+ assert.equal((await view(sessions[4])).data.me.isAlive,false);for(const s of sessions){const result=(await view(s)).data.lastVoteResult;assert.deepEqual(result.eliminated.map(p=>p.side),['VILLAGER','VILLAGER']);assert.ok(!JSON.stringify(result).includes('ASTROLOGER'));}
  await call(host,{type:'finish',winner:'VILLAGER'});await call(sessions[1],{type:'guess',target:sessions[3].view.me.id});
  assert.equal((await view(host)).data.me.score,1);assert.equal((await view(sessions[1])).data.me.score,3);
  const ranks=await post('/api/rankings',{room:host.room,token:sessions[2].token});assert.equal(ranks.data.players.length,6);assert.equal(ranks.data.players.find(p=>p.id===host.view.me.id).history[0].role,'HOST');
- await call(host,{type:'transfer',id:sessions[1].view.me.id});assert.equal((await view(host)).data.isHost,false);assert.equal((await call(host,{type:'rematch'})).status,400);await call(sessions[1],{type:'rematch'});assert.equal((await view(host)).data.me.score,1);
+ await call(host,{type:'rematch'});assert.equal((await view(host)).data.isHost,true);await call(host,{type:'transfer',id:sessions[1].view.me.id});assert.equal((await view(host)).data.isHost,false);assert.equal((await call(host,{type:'rematch'})).status,400);await call(sessions[1],{type:'rematch'});assert.equal((await view(host)).data.me.score,1);
  const bad=await fetch(base+'/api/state',{method:'POST',headers:{'Content-Type':'application/json',Origin:'http://another-site.invalid'},body:JSON.stringify(host)});assert.equal(bad.status,403);
  assert.equal((await fetch(base+'/api/state')).status,405);
  for(const file of ['room.html','vendor/qrcode.mjs','characters.mjs','assets/bn/host.png'])assert.equal((await fetch(base+'/'+file)).status,200);

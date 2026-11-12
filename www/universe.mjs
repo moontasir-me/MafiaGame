@@ -3,7 +3,7 @@ export const UNIVERSES={
  bn:{title:'Mafia',universeName:'পলাশী',subtitle:'পলাশীর দরবার',era:'মুর্শিদাবাদ · ১৭৫৭',
  headline:'দরবারে ছলের খেলা।<br><em>কার হাতে বাংলা?</em>',
  story:'সিরাজ বসেন বিচার নিয়ে,\nদরবার জমে ছল সাজিয়ে।\nকোম্পানির ঘাতক গোপন ঘরে,\nঘসেটিও ফন্দি ধরে।\nপ্রজার মনে প্রশ্ন রয়—\nকার জয়েতে দেশের জয়?',
- castTitle:'দশটি মুখ, কত যে ছল—কার হাতে যাবে শাসনবল?',quote:'দড়ি ধরে মারো টান',quoteCredit:'সত্যজিৎ রায় · হীরক রাজার দেশে',quoteUrl:'https://www.milansagar.com/wall/wall_protibad/wall_protibad10.html',
+ castTitle:'দশটি মুখ, কত যে ছল—কার হাতে যাবে শাসনবল?',quote:"আমি কাকে বিশ্বাস ক’র্‌বো, আমার আপনার কে আছে?",quoteCredit:'গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা',quoteUrl:"https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%9A%E0%A6%A4%E0%A7%81%E0%A6%B0%E0%A7%8D%E0%A6%A5_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95",
  roles:{
  MAFIA:{name:'ঘাতক',tag:'কোম্পানির ছল, গোপনে বল',description:'রাতের ছায়ায় আঘাত হানো,\nপ্রজার চোখে ছদ্মবেশ টানো।\nহারলে শেষে নামটি বলো—\nসেনাপতি ধরলে জয়টা তোলো।'},
  DOCTOR:{name:'রাজবৈদ্য',tag:'ওষুধ হাতে, রক্ষার রাতে',description:'প্রতি রাতে একজন বাঁচাও,\nহোস্টের কাছে নামটি জানাও।\nপ্রজার জয় দুয়ারে এলে,\nদুইটি পয়েন্ট তোমার মেলে।'},

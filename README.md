@@ -59,7 +59,7 @@ Character cards contain short sourced biographies. Mir Jafar and Mir Qasim are c
 
 Enter only players, excluding the host. The menu lets the host set their own name and optional photo. A matching host name cannot be added to the player roster.
 
-The player list is physical **clockwise seating order**. Drag the dotted grip to insert someone between seats; keyboard Space lifts/drops, arrows move, and Escape cancels. The phone passes **to the person on your right**, counterclockwise around inward-facing seats. The preview and reveal screen show named **from → to** arrows. A rematch starts from the **last actual Mafia in the previous reveal order**. Seating can be corrected before dealing.
+The player list defines the phone sequence: **1 → 2 → 3 → 4**, continuing to the last player. Drag a dotted grip to insert someone between positions; keyboard Space lifts/drops, arrows move, and Escape cancels. Named **from → to** arrows guide each handoff. Rematches start at position 1 and keep the current host until an explicit handover.
 
 Roles can be random or manually assigned, with exact configurable counts. The host panel uses a salted PBKDF2 password and supports night/vote eliminations, restore, discussion timers, manual scores, and plan notes. Completed results are recorded locally; the host completion award is idempotent.
 
@@ -82,16 +82,28 @@ Browser preview hosting uses the Node server on a computer; the invitation conta
 
 ## Quotations and artwork
 
-Both universes contain **103 distinct entries**. Polashi has 100 public-domain excerpts from Tagore’s palace drama *Gandharir Abedon* and three very short credited Ray film excerpts. Sicily has one brief credited Puzo excerpt plus 102 original Mafia-themed lines, explicitly identified as original. They are never falsely attributed to Puzo. The complete list is in [QUOTE-CATALOG.md](design/QUOTE-CATALOG.md).
+Both universes contain **103 distinct entries**. Polashi has 103 public-domain excerpts from Girish Chandra Ghosh’s *Sirajoddoula* (1905), each linked to its scene. Sicily has one brief credited Puzo excerpt plus 102 original Mafia-themed lines, explicitly identified as original. They are never falsely attributed to Puzo. The complete list is in [QUOTE-CATALOG.md](design/QUOTE-CATALOG.md).
 
 Twenty named caricatures and two ensemble covers are active under `www/assets/bn` and `www/assets/en`. Portraits use historical portrait conventions or familiar Godfather screen interpretations; covers show the complete cast without a cropping frame. See [art prompts](www/assets/PROMPTS.md). Obsolete archived designs and old workspace preview PNGs were removed; final preview images live outside the app assets.
 
 ## Android build and verification
 
-Android source is included. **APK compilation and physical hotspot-device testing are not verified on this machine**, which has Java 11 and no Android SDK.
+**Mafia 2.1 APK is built and signed for direct installation:** [Download the APK](releases/Mafia-2.1-debug.apk). This is a debug-signed build for personal testing, not a Play Store release. Physical Android/hotspot testing still needs a real device.
 
-Use Android Studio, SDK Platform 35, JDK 17, and Gradle **8.9** (Android Gradle Plugin **8.7.3**). Open `android`, generate a Gradle wrapper if needed (`gradle wrapper --gradle-version 8.9`), sync, and build. The debug APK appears at `android/app/build/outputs/apk/debug/app-debug.apk`.
+Use Android Studio, SDK Platform 35, JDK 17, and Gradle **8.9** (Android Gradle Plugin **8.7.3**). The checked-in wrapper verifies the Gradle distribution checksum. Run `cd android` then `./gradlew assembleDebug lintDebug` with `JAVA_HOME` pointing to JDK 17 and `ANDROID_HOME` pointing to the SDK. The debug APK appears at `android/app/build/outputs/apk/debug/app-debug.apk`.
 
 The app packages `www`, supports Android 8+ with an updated WebView, blocks screenshots/recent-app previews, keeps the screen awake during play, and disables backups. Internet/network permissions support the LAN server. Native hosting must stay in the foreground; hotspot client isolation depends on the device/router. A UI password protects ordinary handoffs, while developer tools/storage access can inspect a local authority’s data.
 
 Automated verification covers host exclusion, authorization, voting deadlines and immutable ballots, two-player round elimination, exactly-once host/victory awards, role identities, private projections, final guesses, cumulative history, snapshots, profile sanitation, handoff seating, and all offline assets. The LAN test uses an actual HTTP host plus five player clients. Browser QA also checks QR joining, photo selection, vote submission/live totals, host changes, both worlds, role privacy, history markers, and rightward named handoffs. The displayed QR was decoded from a browser screenshot and matched its invitation.
+
+## Version 2.1 verification
+
+- 48 automated tests, JavaScript syntax checks, and local HTTP multiplayer integration pass.
+- Android `assembleDebug` and `lintDebug` pass (two advisory portrait-orientation warnings).
+- APK signature verification passes; version 2.1 / code 8, minimum Android 8, target Android 15.
+- Two browser phone sessions verified timer-gated voting, one confirmed vote, matching live totals, and a host-confirmed Doctor elimination shown publicly only as **Villager**.
+- Fixed host through rematches; only explicit handover changes the host. Phone handoffs now always follow player-list order from position 1.
+- Polashi uses only 103 Sirajuddoula literary excerpts; Sicily’s fixed copy and quote deck contain no Bengali.
+- Unused design images and drafts were removed; active character art and source/catalog documentation remain.
+
+Vote totals are public; individual ballots are not published. Only the host confirms eliminations. Public verdicts contain a name and **Mafia/Villager** side, never a precise role or character identity. Each player still sees their own private role; only the host can inspect other current roles. The five-game ranksheet retains completed-game roles.

@@ -1,603 +1,725 @@
-// Public-domain dramatic excerpts. Original edition spelling retained; line breaks normalized.
+// Public-domain excerpts: Girish Chandra Ghosh, Sirajoddoula (1905).
+// Source spelling retained; print line breaks normalized. Each source identifies its scene.
 export const BENGALI_CLASSICS=[
  {
-  "text": "অখণ্ড রাজত্ব জিনি সুখ তোর কই রে দুর্ম্মতি?",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "ধনরত্ন যা পারেন, যতদূর সাধ্য গোপন করুন, সিরাজ-সৈন্য মতিঝিল আক্রমণে অগ্রসর।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "ক্ষুদ্র সুখে ভরেনাক ক্ষত্রিয়ের ক্ষুধা কুরুপতি,—দীপ্তজালা অগ্নিঢালা সুধা জয়রস—ঈর্ষাসিন্ধু মন্থন সঞ্জাত সদ্য করিয়াছি পান,—সুখী নহি, তাত, অদ্য আমি জয়ী।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "আপনার সর্ব্বাপেক্ষা বিশ্বাসপাত্র, প্রধান মন্ত্রণাদাতা মীর নজরআলী, আক্রমণ সংবাদ পাবা মাত্র সৈন্য ল’য়ে পলায়ন করেছে।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "পিতঃ, সুখে ছিনু, যবে একত্রে আছিনু বদ্ধ পাণ্ডবে কৌরবে, কলঙ্ক যেমন থাকে শশাঙ্কের বুকে কর্মহীন গর্বহীন দীপ্তিহীন সুখে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "শীঘ্রই সিরাজ আপন দুর্ব্যবহারে সকল মন্ত্রীকেই প্রকাশ্য শত্রু কর্‌বে।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "আজি পাণ্ডুপুত্রগণে পরাভব বহি বনে যায় চলি,―আজ আমি সুখী নহি, আজ আমি জয়ী।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "যে দিন সিরাজ যুবরাজ হ’লো, সেইদিন হ’তে সুযোগ অনুসন্ধান কচ্ছ।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "পাণ্ডবের কৌরবের এক পিতামহ সে কি ভুলে গেলি?",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "এক্রামদ্দৌলাকে সিংহাসন দেবে প্রতিজ্ঞা করেছিলে, সে সুযোগ হ’লনা, বাছা কবরশায়ী হ’লো।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "ভূলিতে পারিনে সে যে,― এক পিতামহ তবু ধনে মানে তেজে এক নহি।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "কেন মীর নজরআলির কপট প্রেম-বচনে কর্ণপাত করেছিলেম, কেন ভীরু রাজবল্লভকে প্রত্যয় করেছিলেম; কেন আমি ঈর্ষ্যাবশে হোসেনকুলির বধে সম্মত হলেম!",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "যদি হ’ত দূরবর্ত্তী পর নাহি ছিল ক্ষোভ; শর্ব্বরীর শশধর মধ্যাহ্নের তপনেরে দ্বেষ নাহি করে,— কিন্তু প্রাতে এক পূর্ব্ব-উদয়-শিখরে দুই ভ্রাতৃ সূর্য্যলােক কিছুতে না ধরে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "এই কাপুরুষ রাজবল্লভের পরিবর্ত্তে সে জীবিত থাকলে, সিরাজ নিদ্বণ্টকে কখনই সিংহাসন পেত না।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "দুই বনস্পতি মধ্যে রাখে ব্যবধান,―লক্ষ লক্ষ তৃণ একত্রে মিলিয়া থাকে বক্ষে বক্ষে লীন; নক্ষত্র অসংখ্য থাকে সৌভ্রাত্র-বন্ধনে,― এক সূর্য্য এক শশী।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "প্রকাশ শত্রুতায় ফল নাই, স্নেহের আবরণে শত্রুতা গোপন করুন।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "মলিন কিরণে দূর বন-অন্তরালে পাণ্ডু চন্দ্রলেখা আজি অস্ত গেল,―আজি কুরুসূর্য্য একা, আজি আমি জয়ী।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "মা আমি পতিহীনা, সহায়হীনা, আমার সহিত ছলনার প্রয়োজন কি?",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "ক্ষুদ্রজনে বলভাগ করে লয়ে বান্ধবের সনে রহে বলী; রাজদণ্ডে যত খণ্ড হয় তত তার দুর্ব্বলতা, তত তার ক্ষয়।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "নবাবের ইচ্ছা প্রতিরোধ করা আমার শক্তি নাই।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "রাজধর্ম্মে ভ্রাতৃধর্ম্ম বন্ধুধর্ম্ম নাই, শুধু জয়ধর্ম্ম আছে, মহারাজ, তাই আজি আমি চরিতার্থ, আজি জয়ী আমি,― সম্মুখের ব্যবধান গেছে আজি নামি’ পাণ্ডব গৌরবগিরি পঞ্চচূড়াময়।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "আপনি বন্দী নন, নবাব-মাতার ন্যায় রাজপুরে আদরে অবস্থান করবেন।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "যার যাহা বল তাই তার অস্ত্র পিতঃ, যুদ্ধের সম্বল।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "সরল ভাষায় শুনুন,—জনশ্রুতি এইরূপ, যে এক্রামদ্দৌলার পুত্রকে সিংহাসন দেবার ষড়যন্ত্র এই লালকুঠিতে হয়।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "মূঢ়ের মতন ঝাঁপ দিয়ে মৃত্যুমাঝে আত্মসমর্পণ যুদ্ধ নহে,—জয়লাভ এক লক্ষ্য তার,― আজি আমি জয়ী পিতঃ, তাই অহঙ্কার।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "রাজ্যের মঙ্গল হবে, আর ইংরাজ প্রভৃতি রাজ্যের শত্রুরা শাসিত হবে।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "আজি তুমি জয়ী তাই তব নিন্দাধ্বনি পরিপূর্ণ করিয়াছে অম্বর অবনী সমুচ্চ ধিক্কারে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "তুমি নবাব, আমায় বন্দী কর্‌তে এসেছ—এই কথাই তো যথেষ্ট!",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "আর নাহি ডরি, নিন্দারে করিব ধ্বংস কণ্ঠরুদ্ধ করি।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "জনরবে রাজ্যের অমঙ্গল; আপনি রাজপুরবাসিনী হ’লে, সে জনরব থাক্‌বে না।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "নিস্তব্ধ করিয়া দিব মুখরা নগরী স্পর্দ্ধিত রসনা তার দৃঢ়বলে চাপি মাের পাদপীঠতলে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "রাজ্যে ষড়যন্ত্র হচ্ছে, ইংরাজ নবাবের অবাধ্য, নানা প্রকার জনশ্রুতি,—এইজন্য আমার উচ্ছেদ হবে?",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "দুর্য্যোধন নাহি সহে রাজনিন্দা-আলােচনা, দুর্য্যোধন বহে নিজহস্তে নিজনাম।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "নবাব বাহাদুর, বঙ্গ-বিহার-উড়িষ্যার অধিকারী, দণ্ডমুণ্ডের কর্ত্তা!",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "নিন্দারে রসনা হতে দিলে নির্ব্বাসন নিম্নমুখে অন্তরের গূঢ় অন্ধকারে গভীর জটিল মূল সুদূরে প্রসারে, নিত্য বিষতিক্ত করি রাখে চিত্ততল।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "সে অগ্নিময় অশ্রুধারায় নগর দগ্ধ হবে, অট্টালিকা দগ্ধ হবে, রাজ্য ভস্মীভূত হবে, হাহাকার-ধ্বনিতে দিঙ্মণ্ডল পরিপূর্ণ হবে।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "রসনায় নৃত্য করি’ চপল চঞ্চল নিন্দা শ্রান্ত হয়ে পড়ে,—দিয়ো না তাহারে নিঃশব্দে আপন শক্তি বৃদ্ধি করিবারে গােপন হৃদয়দুর্গে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "বুঝলেম, আপনি নবাবের আদেশ পালনে অক্ষম, অবসর গ্রহণ করুন।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "প্রীতিমন্ত্রবলে শান্ত কর বন্দী কর নিন্দা সর্পদলে বংশীরবে হাস্য মুখে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "জনাবকে সুমন্ত্রণা প্রদান কর্‌তে স্বর্গীয় নবাবের নিকট বান্দা প্রতিশ্রুত।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "অব্যক্ত নিন্দায় কোন ক্ষতি নাহি করে রাজ মর্য্যাদায়, ভ্রূক্ষেপ না করি তাহে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "তুমি আর মোহনলাল সমস্ত কার্য্যে নিজ নিজ বিশ্বাসী কর্ম্মচারী নিযুক্ত করো।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "প্রীতি নাহি পাই তাহে খেদ নাহি—কিন্তু স্পর্দ্ধা নাহি চাই মহারাজ!",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "চলুন, নবাব আমাদের আর এখানে একত্র দেখ্‌লে প্রাণদণ্ডের আজ্ঞা দেবে।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "প্রীতিদান স্বেচ্ছার অধীন,— প্রীতিভিক্ষা দিয়ে থাকে দীনতম দীন,— সে প্রীতি বিলাক্ তারা পালিত মার্জ্জারে, দ্বারের কুক্কুরে, আর পাণ্ডবভ্রাতারে, তাহে মাের নাহি কাজ।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "ভয়ে ভীত রাজ্যে যত অমাত্য প্রধান, যোগ্য উপদেশ দানে না করে সাহস।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দ্বিতীয় গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "আমি চাহি ভয় সেই মাের রাজপ্রাপ্য,—আমি চাহি জয় দর্পিতের দর্প নাশি।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "স্বার্থপর অমাত্য সকল, করে সবে স্বার্থ উপাসনা; কারো নাহি মঙ্গল কামনা, চলে জনে জনে নিজ স্বার্থ অনুসারে।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দ্বিতীয় গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "পিতৃস্নেহ মাের কিছু যদি হ্রাস হত শুনি সুকঠোর সুহৃদের নিন্দাবাক্য,―হইত কল্যাণ।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "সেনাপতি মীরজাফর, দিবারাত্র মন্ত্রণা তাহার, কি সুযোগে সিংহাসন করিবে গ্রহণ।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দ্বিতীয় গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "জ্বালাতেছি কালানল ঘোর পুরাতন কুরুবংশ-মহারণ্যতলে,― তবু পুত্র দোষ দিস্ স্নেহ নাই বলে!",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "মাত্র বন্ধু মোহনলাল আর মীরমদন, যে দোঁহারে স্বার্থপর অমাত্যনিচয় নীচ বলি করিছে ঘোষণা।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দ্বিতীয় গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "মণিলােভে কালসর্প করিলি কামনা, দিনু তােরে নিজহস্তে ধরি তার ফণা অন্ধ আমি!",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "প্রভুভক্ত কৃতজ্ঞ দু’জন, চক্ষুঃশূল সবাকার এই হেতু।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দ্বিতীয় গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "রাজায় প্রজায় আজি হবে পরিচয় ঘনিষ্ট কঠিন।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "স্বর্গগত নবাবের আদর্শের পরে স্থির দৃষ্টি করহ স্থাপন।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দ্বিতীয় গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "মহারাজ, মহিষী গান্ধারী দর্শন প্রার্থিনী পদে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "চিন্তা দূর কর মাতা নবাব-মহিষী, দুর্জ্জনের মনস্কাম কভু না পূরিবে।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দ্বিতীয় গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "হায় কেমনে বা সবে সাধ্বী জননীর দৃষ্টি সমুদ্যত বাজ ওরে পুণ্যভীত!",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "বিদ্রোহ সময়— শুন বৎস উপদেশ মম— ভূতপূর্ব্ব নবাবের জানো আচরণ, হ’লে শত দোষে দোষী, করিতেন মার্জ্জনা তাহারে।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দ্বিতীয় গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "কভু কি অপূর্ণ রয় প্রিয়ার প্রার্থনা!",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "নবাব বোধ হচ্ছে, যুদ্ধে যাবার পরামর্শের নিমিত্ত দরবারে ডেকেছে, যে প্রকারে হয়, নবাবকে নিরস্ত কর্‌তে হবে।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · পঞ্চম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A6%9E%E0%A7%8D%E0%A6%9A%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "পাপের সংঘর্ষে যার পড়িছে ভীষণ শানধর্ম্মের কৃপাণে সেই মুঢ়ে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "কিন্তু ভাব্‌ছি সে দিন মতিঝিলে যেরূপ অপমানিত হয়েছিলেম, নবাবের ইচ্ছার প্রতিরোধ কর্‌তে গিয়ে আজ আবার সেরূপ অপমানিত না হই।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · পঞ্চম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A6%9E%E0%A7%8D%E0%A6%9A%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "কুরুকুল-পিতৃ-পিতামহ স্বর্গ হতে এ প্রার্থনা করে অহরহ নরনাথ!",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "অতি সাবধানে নবাবকে ইংরাজ-যুদ্ধে বিরত করা উচিত।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · পঞ্চম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A6%9E%E0%A7%8D%E0%A6%9A%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "ত্যাগ কর ত্যাগ কর তারে― কৌরব-কল্যাণলক্ষ্মী যার অত্যাচারে অশ্রুমুখী প্রতীক্ষিছে বিদায়ের ক্ষণ রাত্রি দিন।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "আমাদের এক ভরসা ইংরাজ, তাদের সঙ্গে যোগ দিলে কতকটা নবাবকে দমনে রাখ্‌তে পারা যাবে।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · পঞ্চম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A6%9E%E0%A7%8D%E0%A6%9A%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "গর্ভভার-জর্জ্জরিতা জাগ্রত হৃৎপিণ্ডতলে বহি নাই তারে?",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "ইংরাজ উচ্ছেদ হ’লে, নবাবের দৌরাত্ম্যে কি আর রক্ষা থাক্‌বে।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · পঞ্চম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A6%9E%E0%A7%8D%E0%A6%9A%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "স্নেহ-বিগলিত চিত্ত শুভ্র দুগ্ধধারে উচ্ছ্বসিয়া উঠে নাই দুই স্তন বাহি’ তার সেই অকলঙ্ক শিশুমুখ চাহি?",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "বিনা আদেশে শত্রুর গতি রোধ কর্‌বার জন্য বাগবাজারে পেরিং নামে একটী দুর্গ নির্ম্মাণ করেছে।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · পঞ্চম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A6%9E%E0%A7%8D%E0%A6%9A%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "তবু কহি, মহারাজ, সেই পুত্র দুর্য্যোধনে ত্যাগ কর আজ।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "এই রাজবিরুদ্ধ আচরণ হ’তে নিরস্ত হবার নিমিত্ত বার বার নবাবদূত প্রেরিত হয়।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · পঞ্চম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A6%9E%E0%A7%8D%E0%A6%9A%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "পুত্রসুখ রাজ্যসুখ অধর্ম্মের পণে জিনি লয়ে চিরদিন বহিব কেমনে দুই কাঁটা বক্ষে আলিঙ্গিয়া?",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "রাজ্যে বিদ্রোহানল প্রজ্জ্বলিত হওয়ায় প্রজার অমঙ্গল, এই নিমিত্ত বার বার ফিরিঙ্গিকে মার্জ্জনা করেছি।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · পঞ্চম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A6%9E%E0%A7%8D%E0%A6%9A%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "হায় প্রিয়ে, ধর্ম্মবশে একবার দিনু ফিরাইয়ে দ্যূতবদ্ধ পাণ্ডবের হৃত রাজধন।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "চারিদিকে শত্রু, সকতজঙ্গ যুদ্ধের নিমিত্ত প্রস্তুত হচ্ছে, সকতজঙ্গকে দমন করা অতি কর্ত্তব্য।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · পঞ্চম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A6%9E%E0%A7%8D%E0%A6%9A%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "পরক্ষণে পিতৃস্নেহ করিল গুঞ্জন শতবার কর্ণে মোর―“কি করিলি ওরে!",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "লোকের মুখে প্রচার, যে ইংরাজদূত আপনাদের সহিত সাক্ষাৎ কর্‌তে আসে, তারা কি নবাবের আদেশ মত কার্য্য কর্‌তে প্রস্তুত?",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · পঞ্চম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A6%9E%E0%A7%8D%E0%A6%9A%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "বারেক যখন নেমেছে পাপের স্রোতে কুরুপুত্রগণ তখন ধর্ম্মের সাথে সন্ধি করা মিছে, পাপের দুয়ারে পাপ সহায় মাগিছে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "হও অনুকুল তোমরা সকলে— কুশলে যাহাতে হয় রাজ্যের শাসন।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · পঞ্চম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A6%9E%E0%A7%8D%E0%A6%9A%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "কি করিলি, হতভাগ্য, বৃদ্ধ, বুদ্ধিহত, দুর্ব্বল দ্বিধায় পড়ি।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "হে অমাত্যগণ, আমায় শত্রু বিবেচনা ক’র্‌বেন না।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · পঞ্চম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A6%9E%E0%A7%8D%E0%A6%9A%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "অপমান-ক্ষত রাজ্য ফিরে দিলে তবু মিলবে না আর পাণ্ডবের মনে—শুধু নব কাষ্ঠভার হুতাশনে দান।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "কিন্তু যদি সত্যই শত্রু হই, আমি আপনাদেরই শত্রু, বাঙ্গ্‌লার শত্রু নই।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · পঞ্চম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A6%9E%E0%A7%8D%E0%A6%9A%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "অপমানিতের করে ক্ষমতার অস্ত্র দেওয়া মরিবার তরে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "আপনাদের আত্মীয়-বান্ধব, স্বদেশনিবাসী নির্ব্বাচিত হবে, কোন বিদেশী রাজকার্য্য প্রাপ্ত হবে না।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · পঞ্চম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A6%9E%E0%A7%8D%E0%A6%9A%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "কোরোনা বিফল ক্রীড়া পাপের সহিত; যদি ডেকে আন তারে, বরণ করিয়া তবে লহ একেবারে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "হিন্দুমুসলমানগণ এক স্বার্থে বাঙ্গলায় আবদ্ধ সে স্বার্থের বিঘ্ন হবে না।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · পঞ্চম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A6%9E%E0%A7%8D%E0%A6%9A%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "”― এই মত পাপবুদ্ধি পিতৃস্নেহরূপে বিঁধিতে লাগিল মোর কর্ণে চুপে চুপে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "যদি আমার প্রতি বিদ্বেষ পরিত্যাগ না করেন, পূর্ণিয়ায় সকতজঙ্গের সঙ্গে যোগদান করুন কিংবা বিদ্রোহীর ধ্বজা উড্ডীন ক’রে যোগ্যজনকে সিংহাসন প্রদান করুন।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · পঞ্চম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A6%9E%E0%A7%8D%E0%A6%9A%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "পুনরায় ফিরানু পাণ্ডবগণে,—দ্যূতছলনায় বিসর্জ্জিনু দীর্ঘ বনবাসে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "যদি ফিরিঙ্গি-যুদ্ধে নবাব অগ্রসর হন, আমরা প্রাণপণে তাঁর সাহায্য ক’র্‌বো।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · পঞ্চম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A6%9E%E0%A7%8D%E0%A6%9A%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "ধর্ম্ম নহে সম্পদের হেতু মহারাজ, নহে সে সুখের ক্ষুদ্র সেতু,― ধর্ম্মেই ধর্ম্মের শেষ।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "সিংহাসনে হয় যদি সকত স্থাপিত, বাঙ্গালার ক্ষতি নাহি তাহে।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · পঞ্চম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A6%9E%E0%A7%8D%E0%A6%9A%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "মূঢ় নারী আমি, ধর্ম্মকথা তোমারে কি বুঝাইব স্বামী, জান ত সকলি।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "হয় যদি বিদ্রোহ সফল, বাঙ্গালায় বঙ্গবাসী হইবে নবাব।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · পঞ্চম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A6%9E%E0%A7%8D%E0%A6%9A%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "হায় মহারাণী, সত্য তব উপদেশ, তীব্র তব বাণী।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "কিন্তু সাবধান— নাহি দিও ফিরিঙ্গিরে সূচ-অগ্র স্থান জানিহ নিশ্চিত— রাজ্যলিপ্সা প্রবল সবার।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · পঞ্চম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A6%9E%E0%A7%8D%E0%A6%9A%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "অধর্ম্মের মধুমাখা বিষফল তুলি আনন্দে নাচিছে পুত্র;―স্নেহমোহে ভুলি সে ফল দিয়োনা তারে ভোগ করিবারে, কেড়ে লও, ফেলে দাও, কাঁদাও তাহারে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "ইংরাজের অমাত্য ইংরাজ, মন্ত্রণায় স্থান নাহি পায় দেশবাসী।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · পঞ্চম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A6%9E%E0%A7%8D%E0%A6%9A%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "ছললব্ধ পাপস্ফীত রাজ্যধনজনে ফেলে রাখি সেও চলে যাক্‌ নির্ব্বাসনে, বঞ্চিত পাণ্ডবদের সমদুঃখভার করুক্‌ বহন।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "শত্রুজ্ঞানে ফিরিঙ্গিরে কর পরিহার; বিদেশী ফিরিঙ্গি কভু নহে আপনার, স্বার্থপর—চাহে মাত্র রাজ্য-অধিকার।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · পঞ্চম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A6%9E%E0%A7%8D%E0%A6%9A%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "ধর্ম্মবিধি বিধাতার,― জাগ্রত আছেন তিনি, ধর্ম্মদণ্ড তাঁর রয়েছে উদ্যত নিত্য,―অয়ি মনস্বিনী, তাঁর রাজ্যে তাঁর কার্য্য করিবেন তিনি।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "আমরা চিরদিনই আপনাদের আশ্রিত, আমরা চিরদিনই আপনাদের বন্ধু।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · ষষ্ঠ গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%B7%E0%A6%B7%E0%A7%8D%E0%A6%A0_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "শুধাই তােমারে যদি কোন প্রজা তব, সতী অবলারে পরগৃহ হতে টানি করে অপমান বিনা দোষে—কি তাহার করিবে বিধান?",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "আপনি আমার আশ্রয়দাতা, আপনারা না আশ্রয় দিলে, নবাব হয়তো প্রাণবধ ক’র্‌তো।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · ষষ্ঠ গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%B7%E0%A6%B7%E0%A7%8D%E0%A6%A0_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "তবে আজ রাজ-পদতলে সমস্ত নারীর হয়ে নয়নের জলে বিচার প্রার্থনা করি।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "ম’শায়, বিজাতী ফিরিঙ্গিকে বিশ্বাস ক’রে অতি অন্যায় করেছি।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · অষ্টম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%85%E0%A6%B7%E0%A7%8D%E0%A6%9F%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "পুরুষে পুরুষে দ্বন্দ্ব স্বার্থ লয়ে বাধে অহরহ,―ভাল মন্দ নাহি বুঝি তার,―দণ্ডনীতি, ভেদনীতি, কূটনীতি কতশত,—পুরুষের রীতি পুরুষেই জানে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "হায়—হায় স্বদেশীকে বিশ্বাস না করার উপযুক্ত শাস্তি পেলেম!",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · অষ্টম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%85%E0%A6%B7%E0%A7%8D%E0%A6%9F%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "বলের বিরােধে বল, ছলের বিরােধে কত জেগে উঠে ছল, কৌশলে কৌশল হানে,—মােরা থাকি দূরে আপনার গৃহকর্ম্মে শান্ত অন্তঃপুরে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "হল্‌ওয়েল, বোধ হয় এখন বুঝেছ, যে বারবার নবাবের অসম্মান করা তোমাদের পক্ষে যুক্তিসিদ্ধ হয় নাই।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দশম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A6%B6%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "তােমরা, হে মহারথী জড়মুর্ত্তিবৎ বসিয়া রহিলে সেথা চাহি মুখে মুখে কেহ বা হাসিলে, কেহ করিলে কৌতুকে কানাকানি,―কোষমাঝে নিশ্চল কৃপণ বজ্র-নিঃশেষিত লুপ্ত বিদ্যুৎ সমান নিদ্রাগত।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "আমার ধারণা ছিল, ড্রেক যেরূপ দাম্ভিকতা প্রকাশ করেছে, সে যুদ্ধে প্রাণ দেবে কদাচ পলায়ন কর্‌বে না।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দশম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A6%B6%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "দূর কর জননীর লাজ, বীরধর্ম্ম করহ উদ্ধার, পদাহত সতীত্বের ঘুচাও ক্রন্দন, অবনত ন্যায়ধর্ম্মে করহ সম্মান,―ত্যাগ কর দুর্য্যোধনে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "নবাবের মার্জ্জনা আছে, তা কি আজও আপনাদের অনুমিত হয় নাই।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দশম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A6%B6%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "পরিতাপ-দহনে জর্জ্জর হৃদয়ে করিছ শুধু নিষ্ফল আঘাত হে মহিষী!",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "উমিচাঁদ, নবাবী অধিকার অপেক্ষা কলিকাতা নিতান্ত নিরাপদ স্থান নয়, এতদিনে ধারণা হ’য়ে থাক্‌বে।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দশম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A6%B6%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "শতগুণ বেদনা কি, নাথ, লাগিছে না মােরে?",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "কৃষ্ণদাস, নবাব-চরিত্র তুমি অবগত ছিলে না, সেই নিমিত্ত কলিকাতায় এসে ইংরাজের শরণ নিয়েছিলে।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দশম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A6%B6%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "প্রভু, দণ্ডিতের সাথে দণ্ডদাতা কাঁদে যবে সমান আঘাতে সর্ব্বশ্রেষ্ঠ সে বিচার।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "বিদেশী আপনার হয়, ইতিহাস-পৃষ্ঠায় এর দৃষ্টান্ত নাই।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দশম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A6%B6%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "যে দণ্ডবেদনা পুত্রেরে পার না দিতে সে কারে দিয়ােনা,― যে তোমার পুত্র নহে তারো পিতা আছে, মহা অপরাধী হবে তুমি তার কাছে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "যাঁর হৃদয়ে ধারণা, যে স্বদেশী অপেক্ষা বিদেশী আপনার হয়, তাঁর সে ধারণা যে সম্পূর্ণ ভ্রম; এই উমিচাঁদ আর কৃষ্ণদাসের প্রতি বিদেশীর ব্যবহার তার প্রত্যক্ষ প্রমাণ।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দশম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A6%B6%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "শুনিয়াছি বিশ্ববিধাতার সবাই সন্তান মােরা,―পুত্রের বিচার নিয়ত করেন তিনি আপনার হাতে নারায়ণ; ব্যথা দেন, ব্যথা পান সাথে, নতুবা বিচারে তাঁর নাই অধিকার,― মূঢ় নারী লভিয়াছি অন্তরে আমার এই শাস্ত্র।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "এই দৃষ্টান্তে যদি বঙ্গবাসীর মনে প্রতীতি জন্মায়, যে শত দোষে দোষী হ’লেও স্বদেশী আপনার, বিদেশী চিরদিনই পর, তাহ’লে আমাদের যুদ্ধশ্রম ও রণব্যয় সফল!",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দশম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A6%B6%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "পাপী পুত্রে ক্ষমা কর যদি নির্ব্বিচারে, মহারাজ, তবে নিরবধি যত দণ্ড দিলে তুমি যত দোষী জনে ফিরিয়া লাগিবে আসি দণ্ডদাতা ভূপে,― ন্যায়ের বিচার তব নির্ম্মমতারূপে পাপ হয়ে তােমারে দাগিবে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "আমায় নবাব মুর্শিদাবাদ রক্ষার নিমিত্ত রেখে গিয়ে দেখছি বড় সুযুক্তির কার্য্য করেছেন।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · একাদশ গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%8F%E0%A6%95%E0%A6%BE%E0%A6%A6%E0%A6%B6_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "ছিঁড়িতে পারিনে মোহডাের, ধর্ম্মকথা শুধু আসি হানে সুকঠোর ব্যর্থ ব্যথা।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "বিদ্রোহী সকতজঙ্গের কর্ম্মচারীরা, এরূপ রাজ্যে প্রজার মনে বিদ্বেষ জন্মাবার চেষ্টা কর্‌বে, আমার ধারণা ছিল না।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · একাদশ গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%8F%E0%A6%95%E0%A6%BE%E0%A6%A6%E0%A6%B6_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "পাপী পুত্র ত্যাজ্য বিধাতার, তাই তারে ত্যজিতে না পারি,—আমি তার একমাত্র; উন্মত্ত তরঙ্গ মাঝখানে যে পুত্র সঁপেছে অঙ্গ তারে কোন্ প্রাণে ছাড়ি যাব।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "হ্যাঁ জনাব, অনেক নির্ব্বোধ প্রজার মনে আতঙ্ক জন্মেছে।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · একাদশ গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%8F%E0%A6%95%E0%A6%BE%E0%A6%A6%E0%A6%B6_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "নতশিরে প্রতীক্ষা করিয়া থাক বিধির বিধিরে ধৈর্য্য ধরি।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "কিন্তু নবাব-আদেশের বিপরীত কার্য্য কি নিমিত্ত হয়েছে?",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দ্বাদশ গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BE%E0%A6%A6%E0%A6%B6_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "যে দিন সুদীর্ঘ রাত্রি পরে সদ্য জেগে উঠে কাল, সংশোধন করে আপনারে, সেদিন দারুণ দুঃখদিন।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "সংবাদ সত্য হ’লে, নবাবীরাজ্যের চিরকলঙ্ক স্বরূপ তাহা জগতে ঘোষিত হবে।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দ্বাদশ গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BE%E0%A6%A6%E0%A6%B6_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "তার পরে নমো নমঃ সুনিশ্চিত পরিণাম, নির্ব্বাক নির্ম্মম দারুণ করুণ শান্তি; নমো নমাে নমঃ কল্যাণ কঠোর কান্ত, ক্ষমা স্নিগ্ধতম।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "এ প্রাণনাশের দায়িত্ব আমারই মস্তকে স্থাপিত হবে।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দ্বাদশ গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BE%E0%A6%A6%E0%A6%B6_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "নমো নমো বিদ্বেষের ভীষণা নির্ব্বৃতি।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "যাহা হবার হয়েছে, কিন্তু এ কার্য্যে রাজ্য কলঙ্কিত!",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দ্বাদশ গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BE%E0%A6%A6%E0%A6%B6_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "কোথা যাও নব বস্ত্রঅলঙ্কারে সাজি বধূ মাের?",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "প্রজার দ্বারা অনায়াসে অর্থের সঙ্কুলান হ’তো।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দ্বাদশ গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BE%E0%A6%A6%E0%A6%B6_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "শত্রু যার আত্মীয় স্বজন আত্মা তার নিত্য শত্রু, ধর্ম্ম শত্রু তার, অজেয় তাহার শত্রু।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "নবাব-দরবারে সাবধানে কথা কও, নচেৎ এখনি বেকুবির দণ্ড হবে।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দ্বাদশ গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BE%E0%A6%A6%E0%A6%B6_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "হা রে মূঢ়, শিক্ষা তবু হল না তোমার, সেই রত্ন নিয়ে তবু এত অহঙ্কার।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "নবাব-অন্নে প্রতিপালিত হ’য়ে নবাব-বিরুদ্ধ আচরণ!",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দ্বাদশ গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BE%E0%A6%A6%E0%A6%B6_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "যুগান্তের উল্কাসম দহিছে না আজ এ মণি-মঞ্জীর তোরে?",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "বিশ্বাসঘাতক, এইমাত্র দরবারে বল্‌লে, অর্থাভাবে সনন্দ আনা হয় নাই, পরক্ষণেই অন্যপ্রকারে দোষ স্খালনের চেষ্টা পাচ্ছ!",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দ্বাদশ গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BE%E0%A6%A6%E0%A6%B6_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "রত্ন-ললাটিকা এ যে তোর সৌভাগ্যের বজ্রানলশিখা।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "স্বর্গীয় নবাব মৃত্যুকালে, বালক সিরাজকে আপনাদের করে অর্পণ ক’রেছিলেন।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দ্বাদশ গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BE%E0%A6%A6%E0%A6%B6_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "তোরে হেরি অঙ্গে মোর ত্রাসের স্পন্দন সঞ্চারিছে,—চিত্তে মোর উঠিছে ক্রন্দন,― আনিছে শঙ্কিত কর্ণে, তোর অলঙ্কার উন্মাদিনী শঙ্করীর তাণ্ডব-ঝঙ্কার।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "মুমূর্ষের শয্যা স্পর্শ ক’রে, ঈশ্বরের নামে প্রতিজ্ঞা করেছেন যে সিরাজকে রক্ষা ক’র্‌বেন।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দ্বাদশ গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BE%E0%A6%A6%E0%A6%B6_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "কভু জয়, কভু পরাজয়,― মধ্যাহ্ন গগনে কভু, কভু অস্তধামে ক্ষত্রিয়মহিমা সূর্য্য উঠে আর নামে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "আপনাদের উপর সিরাজের ভার অর্পণ ক’রে, বৃদ্ধ নিশ্চিন্ত হয়ে প্রাণবায়ু পরিত্যাগ করেছেন।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দ্বাদশ গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BE%E0%A6%A6%E0%A6%B6_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "ক্ষত্রবীরাঙ্গনা মাতঃ সেই কথা স্মরি শঙ্কার বক্ষেতে থাকি সঙ্কটে না ডরি ক্ষণকাল।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "সিরাজ বালক, আপনাদের অনেকের ক্রোড়ে বর্দ্ধিত হ’য়েছে।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দ্বাদশ গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BE%E0%A6%A6%E0%A6%B6_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "দুর্দ্দিন-দুর্য্যোগ যদি আসে, বিমুখ ভাগ্যেরে তবে হানি’ উপহাসে কেমনে মরিতে হয় জানি তাহা দেবি, কেমনে বাঁচিতে হয়, শ্রীচরণ সেবি’ সে শিক্ষাও লভিয়াছি।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "সিরাজ যদি অমর্য্যাদাসূচক কথা ব’লে থাকে, আমি নবাব-মহিষী, সিরাজের পক্ষে আমি মার্জ্জনা প্রার্থনা ক’চ্ছি।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দ্বাদশ গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BE%E0%A6%A6%E0%A6%B6_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "ক্রীড়াচ্ছলে তুলিয়ােনা বিপ্লবের কেতু গৃহমাঝে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "অধিক বলবেন না—অধিক বলবেন না, এই আমি সেলাম ক’রে, নবাবী তরবারী গ্রহণ ক’চ্ছি।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দ্বাদশ গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BE%E0%A6%A6%E0%A6%B6_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "স্বজন-দুর্ভাগ্য লয়ে সর্ব্ব অঙ্গে সাজি গর্ব্ব করিয়ো না মাতঃ!",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "আমরা সকলেই নবাবের নিমিত্ত প্রাণদানে প্রস্তুত।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দ্বাদশ গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BE%E0%A6%A6%E0%A6%B6_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "হয়ে সুসংযত আজ হতে শুদ্ধচিত্তে উপবাসব্রত কর আচরণ,—বেণী করি উন্মোচন শান্ত মনে কর বৎসে দেবতা-অর্চ্চন।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "সিরাজ, স্বর্গীয় নবাবের মৃত্যু-শয্যার পার্শ্বে, কোরাণ স্পর্শ ক’রে, তোমার প্রতিজ্ঞা কি বিস্মৃত হ’য়েছ, মানীর অসম্মান করো?",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দ্বাদশ গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BE%E0%A6%A6%E0%A6%B6_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "এ পাপ-সৌভাগ্য দিনে গর্ব্ব-অহঙ্কারে প্রতিক্ষণে লজ্জা দিয়ােনাক বিধাতারে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "তুমি জনসমাজে নবাব, কিন্তু আমার বালক, আমার আজ্ঞা লঙ্ঘন ক’রো না।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "প্রথম অঙ্ক · দ্বাদশ গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BE%E0%A6%A6%E0%A6%B6_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "খুলে ফেল অলঙ্কার, নব রক্তাম্বর, থামাও উৎসরবাদ্য, রাজআড়ম্বর, অগ্নিগৃহে যাও, পুত্রি, ডাক পুরােহিতে, কালেরে প্রতীক্ষা কর শুদ্ধসত্ত্ব চিতে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "ইহাতে নবাব বাধা প্রদান করেন, দুঃখের বিষয় বটে—রাজ্যে যুদ্ধ-বিগ্রহ বড় অমঙ্গলের কারণ, কিন্তু আমরা নিরস্ত থাকিব না।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "দ্বিতীয় অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "সৌভাগ্যের দিনমণি দুঃখরাত্রি-অবসানে দ্বিগুণ উজ্জ্বল উদিবে হে বৎসগণ!",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "কিন্তু আশ্চর্য্যের বিষয় এই, যে রাজ্যের পরম শত্রু ইংরাজ, কোথায় কি অবস্থায় অবস্থিত, এ সংবাদ কোন অমাত্যেরই গোচর নয়!",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "দ্বিতীয় অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "বায়ু হতে বল, সূর্য্য হতে তেজ, পৃথা হতে ধৈর্য্যক্ষমা কর লাভ, দুঃখব্রত পুত্র মাের!",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "এক্ষণে আমাদের ধারণা হচ্ছে, যে আমাদের ন্যায় অকর্ম্মণ্য সিংহাসনে বহুদিন স্থান পায় না।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "দ্বিতীয় অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "রমা দৈন্যমাঝে গুপ্ত থাকি দীন ছদ্মরূপে ফিরুন্ পশ্চাতে তব, সদা চুপে চুপে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "মীরজাফর খাঁ, আমার নিকট মনোভাব গোপন ক’রো না, আমায় শত্রু জ্ঞান ক’রো না, তোমার রাজ্য-লিপ্সা অচিরে পূর্ণ হবে।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "দ্বিতীয় অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "দুঃখ হতে তােমা তরে করুন্ সঞ্চয় অক্ষয় সম্পদ।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "তোমার হৃদয়ের সয়তানের প্রতিমূর্তি, তোমার সম্মুখে প্রদর্শন কর্‌বার নিমিত্ত উপস্থিত হয়েছি, তুমি আমায় শত্রু জ্ঞান ক’রো না।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "দ্বিতীয় অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "বিনা পাপে দুঃখভােগ অন্তরে জ্বলন্ত তেজ করুক্ সংযােগ― বহ্নিশিখাদগ্ধ দীপ্ত সুবর্ণের প্রায়।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "বাঁদীর কথায় রাজ্য লিপ্সা আবার উত্তেজিত।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "দ্বিতীয় অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "সেই দুঃখে রহিবেন ঋণী ধর্ম্মরাজ বিধি,—যবে শুধিবেন তিনি নিজহস্তে আত্মঋণ, তখন জগতে দেবনর কে দাঁড়াবে তােমাদের পথে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "অমাত্যেরা সকলেই সিরাজের বিরূপ; কিন্তু আমার আশা কি পোষণ কর্‌বে?",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "দ্বিতীয় অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "মাের পুত্র করিয়াছে যত অপরাধ খণ্ডন করুক্‌ সব মাের আশীর্ব্বাদ পুত্রাধিক পুত্রগণ!",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "সকলেরই রাজ্যলিপ্সা, কিন্তু তাদের রাজ্যে অধিকার কি?",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "দ্বিতীয় অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "অন্যায় পীড়ন গভীর কল্যাণসিন্ধু করুক্‌ মন্থন।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "কৌশলে সকলের মনোভাব বুঝে দেখি, সিরাজের প্রতি সকলই বিরূপ।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "দ্বিতীয় অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "ভূলুণ্ঠিতা স্বর্ণলতা, হে বৎসে আমার, হে আমার রাহুগ্রস্ত শশি!",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "ইংরাজের পত্র যদি নবাবকে দেওয়া হতো, তাহলেও নবাব ক্রুদ্ধ হ’তেন, ভাব্‌তেন আমাদের ষড়যন্ত্রে এরূপ পত্র লিখেছে।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "দ্বিতীয় অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "একবার তােল শির, বাক্য মাের কর অবধান।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "কি কর্ত্তব্য নির্দ্ধারিত করুন;—ক্রুদ্ধ নবাবকে কিরূপে শান্ত করা যায়!",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "দ্বিতীয় অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "যে তােমারে অবমানে তারি অপমান জগতে রহিবে নিত্য, কলঙ্ক অক্ষয়।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "এই অর্ব্বাচীন সিরাজের পরিবর্ত্তে যদি রাজা রায়দুর্লভ বা আপনাদের মধ্যে অপর কেউ গদী প্রাপ্ত হ’তেন, রাজ্য নিরাপদ হ’তো।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "দ্বিতীয় অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "তব অপমানরাশি বিশ্বজগন্ময় ভাগ করে লইয়াছে সর্ব্ব কুলাঙ্গনা কাপুরুষতার হস্তে সতীর লাঞ্ছনা।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "মহাভয়ে দিন যামিনী অতিবাহিত করতে হ’তো না।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "দ্বিতীয় অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "যাও বৎসে, পতি সাথে অমলিন মুখ, অরণ্যেরে কর স্বর্গ, দুঃখে কর সুখ।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "স্বরূপ বলেছেন—স্বরূপ বলেছেন—খাঁ সাহেবের গদী হ’লে রাজ্য সুখের হয়।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "দ্বিতীয় অঙ্ক · প্রথম গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A5%E0%A6%AE_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "বধূ মাের, সুদুঃসহ পতিদুঃখব্যথা বক্ষে ধরি, সতীত্বের লভ সার্থকতা।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "আমি কাকে বিশ্বাস ক’র্‌বো, আমার আপনার কে আছে?",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "চতুর্থ অঙ্ক · দ্বিতীয় গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%9A%E0%A6%A4%E0%A7%81%E0%A6%B0%E0%A7%8D%E0%A6%A5_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  },
  {
-  "text": "তুমি হবে একাকিনী সর্ব্বপ্রীতি, সর্ব্বসেবা, জননী, গেহিনী,― সতীত্বের শ্বেতপদ্ম সম্পূর্ণ সৌরভে শতদলে প্রস্ফুটিয়া জাগিবে গৌরবে।",
-  "credit": "রবীন্দ্রনাথ ঠাকুর · গান্ধারীর আবেদন",
-  "url": "https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন",
-  "kind": "public-domain-excerpt"
+  "text": "যখন লোকভয়, ধর্ম্মভয়, মনুষ্যত্ব বর্জ্জন করেছে, তখন কি কথায় দুরভিসন্ধি পরিত্যাগ ক’র্‌বে?",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "চতুর্থ অঙ্ক · দ্বিতীয় গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%9A%E0%A6%A4%E0%A7%81%E0%A6%B0%E0%A7%8D%E0%A6%A5_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
+ },
+ {
+  "text": "রাজ্য প্রাপ্ত হ’লেও কি স্বদেশের গৌরবের প্রতি দৃষ্টি রাখবে না?",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "চতুর্থ অঙ্ক · দ্বিতীয় গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%9A%E0%A6%A4%E0%A7%81%E0%A6%B0%E0%A7%8D%E0%A6%A5_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
+ },
+ {
+  "text": "বিশ্বাসঘাতকতা সকলের বদনে অঙ্কিত—নয়ন-কোণে বিশ্বাসঘাতকতা প্রকাশ পাচ্ছে।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "চতুর্থ অঙ্ক · দ্বিতীয় গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%9A%E0%A6%A4%E0%A7%81%E0%A6%B0%E0%A7%8D%E0%A6%A5_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A6%E0%A7%8D%E0%A6%AC%E0%A6%BF%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
+ },
+ {
+  "text": "যদিচ মীরমদন পতিত, তোমরা জনে জনে তাঁর অনুসরণ করো, জনে জনে মীরমদন হও, স্বদেশের নিমিত্ত প্রাণ দিতে কাতর হ’য়ো না, মীরমদনের দৃষ্টান্ত অনুসরণ করো।",
+  "kind": "public-domain-excerpt",
+  "credit": "গিরিশচন্দ্র ঘোষ · সিরাজদ্দৌলা",
+  "location": "চতুর্থ অঙ্ক · তৃতীয় গর্ভাঙ্ক",
+  "url": "https://bn.wikisource.org/wiki/%E0%A6%B8%E0%A6%BF%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A6%A6%E0%A7%8D%E0%A6%A6%E0%A7%8C%E0%A6%B2%E0%A6%BE_(%E0%A6%97%E0%A6%BF%E0%A6%B0%E0%A6%BF%E0%A6%B6%E0%A6%9A%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0_%E0%A6%98%E0%A7%8B%E0%A6%B7,_%E0%A7%A7%E0%A7%AF%E0%A7%A6%E0%A7%AB)/%E0%A6%9A%E0%A6%A4%E0%A7%81%E0%A6%B0%E0%A7%8D%E0%A6%A5_%E0%A6%85%E0%A6%99%E0%A7%8D%E0%A6%95/%E0%A6%A4%E0%A7%83%E0%A6%A4%E0%A7%80%E0%A6%AF%E0%A6%BC_%E0%A6%97%E0%A6%B0%E0%A7%8D%E0%A6%AD%E0%A6%BE%E0%A6%99%E0%A7%8D%E0%A6%95"
  }
 ];

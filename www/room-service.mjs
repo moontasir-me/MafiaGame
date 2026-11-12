@@ -66,7 +66,7 @@ export class RoomService{
     const dealt=assignCharacterIndexes(a.assignments?assignManualRoles(names,counts,a.assignments):assignRoles(names,counts));
     const quotes=Array.from({length:103},(_,i)=>i);for(let i=quotes.length-1;i>0;i--){const j=randomInt(i+1);[quotes[i],quotes[j]]=[quotes[j],quotes[i]];}
     players.forEach((p,i)=>Object.assign(p,dealt[i],{id:p.id,token:p.token,score:p.score,history:p.history,photo:p.photo,profileId:p.profileId,quoteIndex:quotes[i]}));
-    r.config=counts;r.game={id:crypto.randomUUID(),hostId:r.hostId,playerIds:players.map(p=>p.id),players,currentRound:1,status:'host',awardsApplied:false,finalGuess:null,resultRecorded:false};r.phase='playing';r.edition++;r.round=1;r.timer=newTimer();r.votes={};r.votingOpen=false;this.touch(r,{type:'DEALT'});break;
+    r.config=counts;r.game={id:crypto.randomUUID(),hostId:r.hostId,playerIds:players.map(p=>p.id),players,currentRound:1,status:'host',awardsApplied:false,finalGuess:null,resultRecorded:false};r.phase='playing';r.lastVoteResult=null;r.edition++;r.round=1;r.timer=newTimer();r.votes={};r.votingOpen=false;this.touch(r,{type:'DEALT'});break;
    }
    case 'timer':{
     if(r.phase!=='playing')fail('PHASE');if(this.voteOpen(r))r.votingOpen=true;
@@ -77,14 +77,14 @@ export class RoomService{
    }
    case 'round':
    case 'end-round':{
-    if(r.phase!=='playing')fail('PHASE');const ids=a.eliminated||[];if(!Array.isArray(ids)||ids.length>2||new Set(ids).size!==ids.length)fail('TWO_MAX');for(const id of ids)if(!r.game.players.some(p=>p.id===id&&p.isAlive))fail('PLAYER');for(const id of ids)eliminatePlayer(r.game,id,'VOTE');r.round++;r.game.currentRound=r.round;r.votes={};r.votingOpen=false;r.timer=newTimer(r.timer.duration);this.touch(r,{type:'ROUND'});break;
+    if(r.phase!=='playing')fail('PHASE');const ids=a.eliminated||[];if(!Array.isArray(ids)||ids.length>2||new Set(ids).size!==ids.length)fail('TWO_MAX');for(const id of ids)if(!r.game.players.some(p=>p.id===id&&p.isAlive))fail('PLAYER');r.lastVoteResult={round:r.round,eliminated:ids.map(id=>{const p=r.game.players.find(p=>p.id===id);return {id:p.id,name:p.name,side:teamOf(p.role)};})};for(const id of ids)eliminatePlayer(r.game,id,'VOTE');r.round++;r.game.currentRound=r.round;r.votes={};r.votingOpen=false;r.timer=newTimer(r.timer.duration);this.touch(r,{type:'ROUND'});break;
    }
-   case 'eliminate':if(r.phase!=='playing')fail('PHASE');eliminatePlayer(r.game,a.id,a.cause);this.touch(r,{type:'ROSTER'});break;
+   case 'eliminate':{if(r.phase!=='playing')fail('PHASE');eliminatePlayer(r.game,a.id,a.cause);if(a.cause==='VOTE'){const p=r.game.players.find(p=>p.id===a.id);r.lastVoteResult={round:r.round,eliminated:[{id:p.id,name:p.name,side:teamOf(p.role)}]};}this.touch(r,{type:'ROSTER'});break;}
    case 'restore':{if(r.phase!=='playing')fail('PHASE');const p=r.game.players.find(p=>p.id===a.id);if(!p)fail('PLAYER');p.isAlive=true;p.diedInRound=null;p.deathCause=null;this.touch(r,{type:'ROSTER'});break;}
    case 'score':{const p=r.members.find(p=>p.id===a.id);if(!p||p.id===r.hostId)fail('PLAYER');updateScore(p,a.score);if(typeof a.plan==='string')p.plan=a.plan.slice(0,500);this.syncProfile(p);this.touch(r,{type:'SCORE'});break;}
    case 'finish':if(r.phase!=='playing')fail('PHASE');if(!['MAFIA','VILLAGER'].includes(a.winner))fail('WINNER');if(a.winner==='VILLAGER'&&canGuessPolice(r.game)){beginVillageFinale(r.game);r.phase='last-chance';}else{finalizeVictory(r.game,a.winner);r.phase='over';this.recordResult(r);}r.timer=pauseTimer(r.timer,this.now());this.touch(r,{type:r.phase==='over'?'RESULT':'FINALE'});break;
    case 'skip-guess':if(r.phase!=='last-chance')fail('PHASE');resolveFinalGuess(r.game,null);r.phase='over';this.recordResult(r);this.touch(r,{type:'RESULT'});break;
-   case 'rematch':if(r.phase!=='over')fail('PHASE');r.phase='lobby';r.game=null;r.timer=newTimer();r.votes={};r.votingOpen=false;r.members.forEach(p=>{p.role=p.id===r.hostId?'HOST':null;p.plan='';p.isAlive=p.id!==r.hostId;});this.touch(r,{type:'REMATCH'});break;
+   case 'rematch':if(r.phase!=='over')fail('PHASE');r.phase='lobby';r.lastVoteResult=null;r.game=null;r.timer=newTimer();r.votes={};r.votingOpen=false;r.members.forEach(p=>{p.role=p.id===r.hostId?'HOST':null;p.plan='';p.isAlive=p.id!==r.hostId;});this.touch(r,{type:'REMATCH'});break;
    default:fail('ACTION');
   }
   return this.view(r,me);
@@ -93,8 +93,10 @@ export class RoomService{
  view(r,me){
   const isHost=r.hostId===me.id,rank=rankedPlayers(r.members).find(p=>p.id===me.id)?.rank,open=this.voteOpen(r),alive=r.game?.players.filter(p=>p.isAlive)||[];
   const view={room:r.id,locale:r.locale,edition:r.edition,version:r.version,phase:r.phase,round:r.round,serverNow:this.now(),timer:{...r.timer},hostName:r.members.find(p=>p.id===r.hostId)?.name,isHost,count:r.members.length-1,event:{...r.event},winner:r.game?.winner||null,voteOpen:open,canVote:open&&!isHost&&me.isAlive&&!Object.hasOwn(r.votes,me.id),voted:Object.hasOwn(r.votes,me.id),me:{id:me.id,name:me.name,photo:me.photo,role:isHost?'HOST':me.role,characterIndex:me.characterIndex,quoteIndex:me.quoteIndex,rank,score:me.score,history:me.history.map(h=>({...h})),plan:me.plan,isAlive:!isHost&&me.isAlive}};
+  view.lastVoteResult=r.lastVoteResult?{round:r.lastVoteResult.round,eliminated:r.lastVoteResult.eliminated.map(p=>({...p}))}:null;
+  view.votes={confirmed:Object.keys(r.votes).length,eligible:alive.length,counts:Object.fromEntries(alive.map(p=>[p.id,Object.values(r.votes).filter(id=>id===p.id).length])),candidates:alive.map(p=>({id:p.id,name:p.name}))};
   if(open&&!isHost)view.candidates=alive.map(p=>({id:p.id,name:p.name}));
-  if(isHost){view.invite=r.invite;view.counts={...r.config};view.players=rankedPlayers(r.members.filter(p=>p.id!==r.hostId)).map(p=>({id:p.id,name:p.name,photo:p.photo,rank:rankedPlayers(r.members).find(q=>q.id===p.id).rank,score:p.score,plan:p.plan,isAlive:p.isAlive}));view.votes={confirmed:Object.keys(r.votes).length,eligible:alive.length,counts:Object.fromEntries(alive.map(p=>[p.id,Object.values(r.votes).filter(id=>id===p.id).length]))};}
+  if(isHost){view.invite=r.invite;view.counts={...r.config};view.players=rankedPlayers(r.members.filter(p=>p.id!==r.hostId)).map(p=>({id:p.id,name:p.name,photo:p.photo,rank:rankedPlayers(r.members).find(q=>q.id===p.id).rank,score:p.score,plan:p.plan,isAlive:p.isAlive}));}
   if(r.phase==='last-chance'&&me.role==='MAFIA'&&!isHost)view.targets=r.game.players.map(p=>({id:p.id,name:p.name}));return view;
  }
 }

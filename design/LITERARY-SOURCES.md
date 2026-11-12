@@ -4,15 +4,9 @@
 
 Full catalog: [QUOTE-CATALOG.md](QUOTE-CATALOG.md). Runtime data lives in `www/culture.mjs`, `www/bengali-quotes.mjs`, and `www/sicily-quotes.mjs`.
 
-Polashi contains 100 public-domain sentence excerpts from Rabindranath Tagore’s **Gandharir Abedon**, in the 1912 edition of *Kahini*. Source spelling is retained and printed line breaks are normalized. The royal-court drama concerns victory, envy, loyalty, family duty, and justice.
+Polashi contains **103 public-domain excerpts from Girish Chandra Ghosh’s _Sirajoddoula_ (1905)**. Ghosh died in 1912. Each entry links to the exact act and scene in the Wikisource transcription. Source spelling is retained and print line breaks are normalized. These are dramatic dialogue and verse about Siraj, court conspiracy, loyalty, and Plassey; the play’s dialogue is literature, not historical evidence for character biographies.
 
-- [Wikisource — কাহিনী/গান্ধারীর আবেদন](https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন)
-
-Three brief Satyajit Ray film excerpts total ten words, with individual credits:
-
-- [Satyajit Ray Society — Goopy Gyne Bagha Byne](https://satyajitray.org/goopy-gyne-bagha-byne-the-adventures-of-goopy-and-bagha/)
-- [National Book Agency — Dori Dhore Maro Taan](https://www.nationalbookagency.com/books/dori-dhore-maro-taan/4241)
-- [Sahityika — Satyajit’s music, part four](https://sahityika.in/2026/07/30/সত্যজিতের-সঙ্গীত-চতুর্থ/)
+- [1905 edition and scene index](https://bn.wikisource.org/wiki/নির্ঘণ্ট:সিরাজদ্দৌলা_-_গিরিশচন্দ্র_ঘোষ.pdf)
 
 Sicily contains one short excerpt from Mario Puzo’s **The Sicilian**, with [source credit](https://www.goodreads.com/work/quotes/812174-the-sicilian?page=1), and 102 original lines. Original lines are explicitly credited as original game writing and are not represented as Puzo quotations.
 

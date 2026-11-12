@@ -1,13 +1,8 @@
 import {BENGALI_CLASSICS} from './bengali-quotes.mjs';
 import {SICILY_ORIGINALS} from './sicily-quotes.mjs';
 import {characterFor} from './characters.mjs';
-// Short, credited film excerpts; the surrounding court verse is original.
 export const QUOTES={
- bn:[...BENGALI_CLASSICS,
-  {text:'মহারাজা তোমারে সেলাম',credit:'সত্যজিৎ রায় · গুপী গাইন বাঘা বাইন',url:'https://satyajitray.org/goopy-gyne-bagha-byne-the-adventures-of-goopy-and-bagha/'},
-  {text:'দড়ি ধরে মারো টান',credit:'সত্যজিৎ রায় · হীরক রাজার দেশে',url:'https://www.nationalbookagency.com/books/dori-dhore-maro-taan/4241'},
-  {text:'মোরা আসি ধেয়ে',credit:'সত্যজিৎ রায় · গুপী বাঘা ফিরে এলো',url:'https://sahityika.in/2026/07/30/সত্যজিতের-সঙ্গীত-চতুর্থ/'},
- ],
+ bn:[...BENGALI_CLASSICS],
  en:[...SICILY_ORIGINALS,
   {text:'A man’s first duty is to keep himself alive.',credit:'Mario Puzo · The Sicilian',url:'https://www.goodreads.com/work/quotes/812174-the-sicilian?page=1'},
   {text:'At this table, a promise can cost more than a betrayal.',credit:'An original Sicilian affair',url:null},
