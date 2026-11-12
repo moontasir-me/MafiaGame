@@ -1,10 +1,12 @@
-import {BENGALI_CLASSICS} from './bengali-quotes.mjs';
+import {FREEDOM_QUOTES} from './freedom-quotes.mjs';
 import {characterFor} from './characters.mjs';
 export const QUOTES={
- bn:[...BENGALI_CLASSICS],
+ bn:[...FREEDOM_QUOTES],
  en:[{text:'A man’s first duty is to keep himself alive.',credit:'Mario Puzo · The Sicilian',url:'https://www.goodreads.com/work/quotes/812174-the-sicilian?page=1'}]
 };
 QUOTES.classic=[{text:'The truth will out.',credit:'William Shakespeare · The Merchant of Venice',url:'https://en.wikisource.org/wiki/The_Merchant_of_Venice_(1919)_Yale/Act_2'},{text:'False face must hide what the false heart doth know.',credit:'William Shakespeare · Macbeth',url:'https://en.wikisource.org/wiki/Macbeth_(1918)_Yale/Act_1'}];
+// A line that suits the moment (night, vote, result…); falls back to the whole deck. Stable for a given seed.
+export function quoteFor(locale,moment,seed=0){const deck=QUOTES[locale]||QUOTES.bn,fit=deck.filter(q=>q.moment===moment),pool=fit.length?fit:deck;return pool[Math.abs(Number(seed)||0)%pool.length];}
 export function nextQuote(locale,storage=localStorage){
  const deck=QUOTES[locale],key='mafia.quote.'+locale;
  const previous=Number(storage.getItem(key)??-1),index=(previous+1+Math.floor(Math.random()*(deck.length-1)))%deck.length;

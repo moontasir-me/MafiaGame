@@ -59,3 +59,25 @@ export function rankTable(rows, t) {
   const ranked = rankRows(rows), fmt = t.number || (n => String(n));
   return `<div class="rank-table-wrap"><table class="rank-table"><caption class="sr-only">${esc(t.caption)}</caption><thead><tr><th scope="col">${esc(t.rank)}</th><th scope="col">${esc(t.player)}</th><th scope="col" class="num">${esc(t.points)}</th></tr></thead><tbody>${ranked.map((row, i) => `<tr class="${row.rank === 1 ? 'leader' : ''}" style="--row:${i}"><td class="rank-cell"><span class="rank-no">${row.rank === 1 ? icon('trophy') : fmt(row.rank)}</span></td><th scope="row"><span class="rank-name">${esc(row.name)}</span>${row.note ? `<small class="rank-note">${esc(row.note)}</small>` : ''}<span class="result-strip">${row.history.length ? row.history.map(h => `<span class="result-avatar ${h.won ? 'win' : 'loss'}" title="${esc(h.label)}"><img src="${esc(h.img)}" alt="" width="34" height="34" loading="lazy"><span class="sr-only">${esc(h.label)}</span></span>`).join('') : `<small class="rank-note">${esc(t.noGames)}</small>`}</span></th><td class="num"><strong>${fmt(row.score)}</strong></td></tr>`).join('')}</tbody></table></div><p class="rank-legend"><span><i class="result-avatar win"></i>${esc(t.win)}</span><span><i class="result-avatar loss"></i>${esc(t.loss)}</span><span>${esc(t.order)}</span></p>`;
 }
+
+/* One page frame for both games.
+   Top bar: back to the game chooser · game title + where you are · Menu.
+   Sections (Play / Rules / Rankings): bottom tabs on phones, sidebar on wide screens. */
+export function appShell({ brand, brandSub, brandIcon, brandAction, crumb, tabs, active, hideTabs = false, body, contentClass = '', labels, credit = 'Developed by Tanim' }) {
+  const item = (t, cls) => `<button type="button" class="${cls}${t.id === active ? ' is-active' : ''}" data-action="${t.action}"${t.id === active ? ' aria-current="page"' : ''}>${icon(t.icon)}<span>${t.label}</span></button>`;
+  return `<div class="kit-shell${hideTabs ? ' no-tabs' : ''}">
+<aside class="kit-side"><a class="kit-brand" href="#" data-action="${brandAction}"><span class="kit-brand-icon">${icon(brandIcon)}</span><span>${brand}<small>${brandSub}</small></span></a>${hideTabs ? '' : `<nav class="kit-side-nav" aria-label="${esc(labels.sections)}">${tabs.map(t => item(t, 'kit-side-item')).join('')}</nav>`}</aside>
+<main class="kit-main"><header class="kit-top"><a class="kit-pill kit-back" href="index.html">${icon('back')}<span>${labels.back}</span></a><div class="kit-title"><strong>${brand}</strong><small>${crumb}</small></div><button type="button" class="kit-pill kit-menu" data-action="app-menu" aria-haspopup="dialog">${menuIcon()}<span>${labels.menu}</span></button></header>
+<div class="content ${contentClass}" id="screen">${body}</div><footer class="app-credit">${credit}</footer></main>
+${hideTabs ? '' : `<nav class="kit-tabs" aria-label="${esc(labels.sections)}">${tabs.map(t => item(t, 'kit-tab')).join('')}</nav>`}</div>`;
+}
+
+/* The page title block every screen starts with, always left-aligned. */
+export const pageHead = (kicker, title, text = '') => `<header class="page-head">${kicker ? `<span class="eyebrow">${kicker}</span>` : ''}<h1>${title}</h1>${text ? `<p class="lede">${text}</p>` : ''}</header>`;
+
+/* A quotation, or a game note, in one consistent block. */
+export function quoteCard(q, { label = '', source = 'Source' } = {}) {
+  if (!q) return '';
+  const who = q.poet ? `<b>${esc(q.poet)}</b>${q.work ? ` · <cite>${esc(q.work)}</cite>` : ''}` : `<b>${esc(q.credit || '')}</b>`;
+  return `<figure class="quote-card${q.kind === 'note' ? ' is-note' : ''}">${label ? `<span class="quote-label">${label}</span>` : ''}<blockquote>${String(q.text).split('\n').map(esc).join('<br>')}</blockquote><figcaption>${who}${q.url ? ` <a href="${esc(q.url)}" target="_blank" rel="noopener">${esc(source)} ↗</a>` : ''}${q.note ? `<small>${esc(q.note)}</small>` : ''}</figcaption></figure>`;
+}
