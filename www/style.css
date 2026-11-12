@@ -61,3 +61,17 @@ body:before{content:'';position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 .single-host-card{display:flex;align-items:center;gap:17px;padding:17px;margin:20px 0;border:1px solid #84604166;border-radius:15px;background:linear-gradient(120deg,#d3d4c277,#fff7e8)}.single-host-card .character-avatar{width:83px;height:83px;border-radius:12px}.single-host-card p{font-size:12px;color:#625a4c}.identity-name{font-size:20px;margin:5px 0 15px;color:#846041}.identity-history{font-size:11px;text-align:left;margin:15px 0;line-height:1.9}.identity-history summary{cursor:pointer}.handoff-label{font-size:11px;border:1px solid #84604144;padding:10px;border-radius:12px;color:#775536}.profile-picture-preview{width:85px;height:85px;margin:0 auto 23px;border-radius:50%;border:1px solid #84604166;overflow:hidden;display:grid;place-items:center;background:#d3d4c2;color:#846041;font-size:30px}.profile-picture-preview img{width:100%;height:100%;object-fit:cover}#local-profile-form label{display:block;font-size:12px;margin:15px 0 7px}#local-profile-form input{width:100%;padding:11px;border:1px solid var(--border);border-radius:9px;background:#fff8ec;color:#132845}#local-profile-form p{font-size:12px}
 
 body{isolation:isolate}
+
+/* Phone layout: use the available screen width and keep header targets reachable. */
+@media(max-width:650px){
+ .content{width:100%;max-width:none;padding:24px 12px 28px}
+ .topbar{height:auto;min-height:68px;margin:0 12px;padding:10px 0;gap:8px;flex-wrap:wrap}
+ .mobile-brand{flex-shrink:0;font-size:24px}
+ .header-controls{gap:6px;flex-shrink:0;margin-left:auto}
+ .universe-toggle{min-height:48px;padding:9px 11px;font-size:12px}
+ .app-menu-toggle{width:48px;height:48px;min-height:48px}
+ .hero,.hero-copy,.panel,.name-row{min-width:0}
+ .hero h1{font-size:clamp(30px,8.5vw,43px)}
+}
+
+@media(max-width:650px){.hero-copy>p,.world-story{font-size:15px;line-height:1.85}.hero-buttons .btn{font-size:14px}}

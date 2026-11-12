@@ -1,4 +1,4 @@
-const CACHE='mafia-polashi-v9';
+const CACHE='mafia-polashi-v10';
 const ART=['host','mafia','mafia-2','mafia-3','doctor','police','villager','betrayer','astrologer','bodyguard','cover'];
 const APP_ASSETS=['./','index.html','style.css','app.js','engine.mjs','game-tools.mjs','i18n.mjs','seating.mjs','universe.mjs','rhyming-copy.mjs','drag-sort.mjs','culture.mjs','characters.mjs','profile.mjs','local-results.mjs','bengali-quotes.mjs','sicily-quotes.mjs','room.html','room.css','room.js','room-service.mjs','vendor/qrcode.mjs','icon.svg','manifest.webmanifest','manifest-en.webmanifest',...['bn','en'].flatMap(lang=>ART.map(role=>`assets/${lang}/${role}.png`))];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(APP_ASSETS)));self.skipWaiting();});

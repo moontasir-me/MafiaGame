@@ -1,6 +1,6 @@
-# Mafia 2.1 for Android
+# Mafia 2.1.1 for Android
 
-[Download the APK](Mafia-2.1-debug.apk). Open this page on your phone and choose the download button to save the APK, then install it. Android may ask you to allow installs from the browser or file manager used to open it.
+[Download the APK](Mafia-2.1.1-debug.apk). Open this page on your phone and choose the download button to save the APK, then install it. Android may ask you to allow installs from the browser or file manager used to open it.
 
 Requires Android 8 or later and a current Android System WebView. This APK is signed with a development/debug key for personal testing, not a Play Store release. A future production build signed with a different key may require uninstalling this build first; that clears locally saved games and scores.
 

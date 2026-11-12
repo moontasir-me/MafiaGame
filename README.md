@@ -88,7 +88,7 @@ Twenty named caricatures and two ensemble covers are active under `www/assets/bn
 
 ## Android build and verification
 
-**Mafia 2.1 APK is built and signed for direct installation:** [Download the APK](releases/Mafia-2.1-debug.apk). This is a debug-signed build for personal testing, not a Play Store release. Physical Android/hotspot testing still needs a real device.
+**Mafia 2.1.1 APK is built and signed for direct installation:** [Download the APK](releases/Mafia-2.1.1-debug.apk). This is a debug-signed build for personal testing, not a Play Store release. Physical Android/hotspot testing still needs a real device.
 
 Use Android Studio, SDK Platform 35, JDK 17, and Gradle **8.9** (Android Gradle Plugin **8.7.3**). The checked-in wrapper verifies the Gradle distribution checksum. Run `cd android` then `./gradlew assembleDebug lintDebug` with `JAVA_HOME` pointing to JDK 17 and `ANDROID_HOME` pointing to the SDK. The debug APK appears at `android/app/build/outputs/apk/debug/app-debug.apk`.
 
@@ -107,3 +107,7 @@ Automated verification covers host exclusion, authorization, voting deadlines an
 - Unused design images and drafts were removed; active character art and source/catalog documentation remain.
 
 Vote totals are public; individual ballots are not published. Only the host confirms eliminations. Public verdicts contain a name and **Mafia/Villager** side, never a precise role or character identity. Each player still sees their own private role; only the host can inspect other current roles. The five-game ranksheet retains completed-game roles.
+
+## Version 2.1.1 phone layout fix
+
+The Android activity now places the WebView inside native safe-area margins for status/navigation bars, display cutouts, and the keyboard. It resizes the actual viewport instead of applying WebView padding. Theme updates preserve the layout flags. Both game modes use 12px phone gutters, 48px header controls, and larger introductory/action text. Browser checks at 320px and 360px found no horizontal overflow and reachable header controls. Android build/lint and all 48 tests pass. The APK uses the same development signing certificate as 2.1 and a higher version code, so it can update the installed app without clearing its data. Physical-device verification of the reported overlap remains necessary.

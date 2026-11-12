@@ -7,6 +7,10 @@ import android.content.ActivityNotFoundException;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Build;
+import android.graphics.Insets;
+import android.view.WindowInsets;
+import android.widget.FrameLayout;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
@@ -87,13 +91,34 @@ public class MainActivity extends Activity {
                 catch (IOException e) { return empty(); }
             }
         });
-        setContentView(webView);
-        // Keep Android 15 edge-to-edge content clear of status/navigation bars.
-        webView.setOnApplyWindowInsetsListener((v, insets) -> {
-            v.setPadding(insets.getSystemWindowInsetLeft(), insets.getSystemWindowInsetTop(),
-                    insets.getSystemWindowInsetRight(), insets.getSystemWindowInsetBottom());
-            return insets.consumeSystemWindowInsets();
+        // Resize the actual WebView viewport, rather than padding WebView content.
+        // This also protects fixed HTML headers/dialogs on Android 15 edge-to-edge.
+        FrameLayout safeArea = new FrameLayout(this);
+        safeArea.setBackgroundColor(Color.rgb(240,228,204));
+        safeArea.addView(webView, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        if (Build.VERSION.SDK_INT >= 30) getWindow().setDecorFitsSystemWindows(false);
+        safeArea.setOnApplyWindowInsetsListener((v, insets) -> {
+            int left, top, right, bottom;
+            if (Build.VERSION.SDK_INT >= 30) {
+                Insets safe = insets.getInsets(WindowInsets.Type.systemBars()
+                        | WindowInsets.Type.displayCutout() | WindowInsets.Type.ime());
+                left=safe.left; top=safe.top; right=safe.right; bottom=safe.bottom;
+            } else {
+                left=insets.getSystemWindowInsetLeft(); top=insets.getSystemWindowInsetTop();
+                right=insets.getSystemWindowInsetRight(); bottom=insets.getSystemWindowInsetBottom();
+            }
+            FrameLayout.LayoutParams layout=(FrameLayout.LayoutParams) webView.getLayoutParams();
+            if (layout.leftMargin!=left || layout.topMargin!=top
+                    || layout.rightMargin!=right || layout.bottomMargin!=bottom) {
+                layout.setMargins(left,top,right,bottom);
+                webView.setLayoutParams(layout);
+            }
+            // The native container owns safe areas; don't apply them again in CSS.
+            return Build.VERSION.SDK_INT >= 30 ? WindowInsets.CONSUMED : insets.consumeSystemWindowInsets();
         });
+        setContentView(safeArea);
+        safeArea.requestApplyInsets();
         webView.loadUrl("https://" + HOST + "/index.html");
     }
     private WebResourceResponse empty() {
@@ -117,8 +142,10 @@ public class MainActivity extends Activity {
                 webView.setBackgroundColor(color);
                 getWindow().setStatusBarColor(color);
                 getWindow().setNavigationBarColor(color);
-                getWindow().getDecorView().setSystemUiVisibility(light ?
-                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR : 0);
+                int appearance = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+                if (Build.VERSION.SDK_INT >= 27) appearance |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+                View decor = getWindow().getDecorView();
+                decor.setSystemUiVisibility((decor.getSystemUiVisibility() & ~appearance) | (light ? appearance : 0));
             });
         }
 
@@ -129,8 +156,10 @@ public class MainActivity extends Activity {
                 webView.setBackgroundColor(color);
                 getWindow().setStatusBarColor(color);
                 getWindow().setNavigationBarColor(color);
-                getWindow().getDecorView().setSystemUiVisibility(light ?
-                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR : 0);
+                int appearance = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+                if (Build.VERSION.SDK_INT >= 27) appearance |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+                View decor = getWindow().getDecorView();
+                decor.setSystemUiVisibility((decor.getSystemUiVisibility() & ~appearance) | (light ? appearance : 0));
             });
         }
         // Secure is intentionally always on: also protects the recent-app preview.
