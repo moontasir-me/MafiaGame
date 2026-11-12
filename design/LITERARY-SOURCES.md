@@ -1,26 +1,32 @@
 # Literary and historical sources
 
-The longer stories and interface verse are original game writing. Short excerpts alone carry their original author/work credits. No full film song or script is reproduced.
+## Quote collections
 
-## Rotating Bengali excerpts
+Full catalog: [QUOTE-CATALOG.md](QUOTE-CATALOG.md). Runtime data lives in `www/culture.mjs`, `www/bengali-quotes.mjs`, and `www/sicily-quotes.mjs`.
 
-Satyajit Ray: three brief excerpts across **Goopy Gyne Bagha Byne**, **Hirak Rajar Deshe**, and **Goopy Bagha Phire Elo**. The combined film-lyric excerpts contain ten words. Credits remain in Bengali in Mosnod.
+Polashi contains 100 public-domain sentence excerpts from Rabindranath Tagore’s **Gandharir Abedon**, in the 1912 edition of *Kahini*. Source spelling is retained and printed line breaks are normalized. The royal-court drama concerns victory, envy, loyalty, family duty, and justice.
+
+- [Wikisource — কাহিনী/গান্ধারীর আবেদন](https://bn.wikisource.org/wiki/কাহিনী/গান্ধারীর_আবেদন)
+
+Three brief Satyajit Ray film excerpts total ten words, with individual credits:
 
 - [Satyajit Ray Society — Goopy Gyne Bagha Byne](https://satyajitray.org/goopy-gyne-bagha-byne-the-adventures-of-goopy-and-bagha/)
 - [National Book Agency — Dori Dhore Maro Taan](https://www.nationalbookagency.com/books/dori-dhore-maro-taan/4241)
 - [Sahityika — Satyajit’s music, part four](https://sahityika.in/2026/07/30/সত্যজিতের-সঙ্গীত-চতুর্থ/)
 
-## Sicily
+Sicily contains one short excerpt from Mario Puzo’s **The Sicilian**, with [source credit](https://www.goodreads.com/work/quotes/812174-the-sicilian?page=1), and 102 original lines. Original lines are explicitly credited as original game writing and are not represented as Puzo quotations.
 
-One ten-word excerpt from Mario Puzo’s **The Sicilian**, with [source credit](https://www.goodreads.com/work/quotes/812174-the-sicilian?page=1). Other rotating hero sayings are original and explicitly labeled as such, not attributed to Puzo.
+## Character histories
 
-## Historical context
+- [Banglapedia — Sirajuddaula](https://en.banglapedia.org/index.php/Sirajuddaula): Siraj’s reign and downfall, Mir Madan’s appointment, and Mohanlal’s position.
+- [National Army Museum — Clive at Plassey](https://collection.nam.ac.uk/detail.php?acc=1968-06-269-1): Clive’s command and Mir Jafar’s role.
+- [Mir Jafar](https://en.wikipedia.org/wiki/Mir_Jafar): two reigns; death in Murshidabad in 1765 after prolonged illness, with leprosy reported.
+- [LACMA — Mir Jafar portrait](https://collections.lacma.org/object/29901): historical portrait conventions and reign dates.
+- [Banglapedia — Mir Qasim](https://en.banglapedia.org/index.php/Mir_Qasim): reign 1760–1763, later resistance to the Company, and death near Delhi in 1777.
+- [Banglapedia — Ghaseti Begum](https://en.banglapedia.org/index.php/Ghaseti_Begum): court politics, confinement, and the traditional account of drowning in the Buriganga. The app preserves uncertainty in that death account.
+- [Medical-history paper — Hakim Ali Gilani](https://pubmed.ncbi.nlm.nih.gov/12575701/): physician under Akbar and Jahangir, an earlier era than Siraj.
+- [Dictionary of Scientific Biography — Varahamihira](https://mathshistory.st-andrews.ac.uk/DSB/Varahamihira.pdf): astronomer/astrologer and author.
+- [Banglapedia — Lalon Shah](https://en.banglapedia.org/index.php/Lalon_Shah): later Bengali Baul tradition.
+- [Encyclopedia.com — The Godfather](https://www.encyclopedia.com/arts/educational-magazines/godfather): the novel’s characters and plot, including Jules Segal, Neri, Brasi, and the Corleone family.
 
-The game is fictional court intrigue, not a reconstruction of the events of 1757. Historical subtitles stay attached to appropriate roles; a separate learning-card deck shuffles on page load and each new single-phone game.
-
-- [National Army Museum — Clive at Plassey](https://collection.nam.ac.uk/detail.php?acc=1968-06-269-1): Clive commanded the Company’s forces, and Mir Jafar’s role in the conspiracy and succession.
-- [Banglapedia — Umichand](https://en.banglapedia.org/index.php/Umichand): merchant and intermediary, not a commander. He appears in the learning deck rather than being labeled Senapati.
-- [Roar — Mir Madan](https://archive.roar.media/bangla/main/history/mir-madan-the-commandar-who-fought-till-death): commander who fought for Siraj; the game’s investigation mechanic is fictional.
-- [Medical-history paper — Hakim Ali Gilani](https://pubmed.ncbi.nlm.nih.gov/12575701/): physician under Akbar and Jahangir. The app explicitly says he was from an earlier Mughal period, not Siraj’s personal physician.
-
-Villager, astrologer, and guard are labeled fictional collective characters where a documented individual cannot be established. The app does not invent historical names to fill those slots.
+Historical names supply character identities, while the game’s role powers remain house rules. Mir Qasim’s card explicitly records his later conflict with the Company; the Mafia grouping is not presented as a historical alliance. Not every figure lived during Siraj’s reign, so their cards show their own era. Portraits are generated caricatures using portrait conventions, rather than claims of authenticated contemporary likenesses for every figure.

@@ -12,6 +12,6 @@ test('every offline asset exists, including both worlds and the QR client',async
  for(const url of urls)await access(new URL('../www/'+(url==='./'?'index.html':url),import.meta.url));
  for(const lang of ['bn','en']){
   const files=await readdir(new URL('../www/assets/'+lang+'/',import.meta.url));
-  assert.deepEqual(files.sort(),['cover.png',...Object.keys(ROLES).map(r=>r.toLowerCase()+'.png')].sort());
+  assert.deepEqual(files.sort(),['cover.png','host.png','mafia-2.png','mafia-3.png',...Object.keys(ROLES).map(r=>r.toLowerCase()+'.png')].sort());
  }
 });

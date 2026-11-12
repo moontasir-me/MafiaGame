@@ -1,120 +1,97 @@
-# মসনদ / Mafia — A Sicilian Affair
+# Mafia — Polashi & Sicily
 
-A Bengali and English social deduction game with pass-the-phone and QR multiplayer modes for 5–20 players, with two illustrated worlds:
+A light-themed mobile social deduction game for **5–20 players plus a separate host**. The app name stays **Mafia**; the universe picker changes the cast, language, quotations, artwork, and paper motif.
 
-- Bengali: a fictional Nawabi court after Sirajuddaulah’s death. Ghatok (East India Company), Rajboiddo, Senapati, Proja, Mir Zafar, Jotishi and Peyada.
-- English: a Sicilian village with Mafia, Doctor, Police, Villager, Betrayer, Witch and Spy.
+- **Polashi / পলাশী:** Mughal floral motifs, textured cream paper, Bengali literary excerpts, and named historical figures.
+- **Sicily:** vintage Italian acanthus ornament, antique paper, and characters from Mario Puzo’s *The Godfather*.
 
-## Run the preview
+## Run
 
-Node.js 20+ is required; there are no npm dependencies.
+Node.js 20+; no npm install is required.
 
 ```sh
 npm start
+npm test
+npm run check
+npm run test:lan
 ```
 
-Open http://localhost:5173. Run `npm test` for game-rule tests and `npm run check` for JavaScript syntax checks.
+Open `http://localhost:5173`. Use the menu’s separate-phone option for QR multiplayer. The QR encoder is vendored with its MIT license; no external QR service or cloud room is used.
 
-## Seating and role assignment
+## The host is not a player
 
-The names list is physical **clockwise seating order**. Drag the dotted grip to insert a player between other rows; intervening players shift one seat. On a keyboard, use Space to lift, arrow keys to move, Space to drop, and Escape to cancel. Names, manual role choices and the rematch starter stay associated with the person when seats change.
+The host controls dealing, timing, votes, eliminations, investigations, scoring, and results. They receive **no player role**, cannot vote, cannot be attacked or eliminated, and are excluded from the 5–20 player count. Their controller portrait is **Siraj ud-Daulah** in Polashi and **Vito Corleone** in Sicily.
 
-The phone travels **counterclockwise**. The seating preview shows the actual reveal sequence. A rematch begins with the **last actual Mafia/Ghatok in the previous reveal order**, regardless of elimination order. It retains names and configured role counts, then lets the host correct seats before starting. A fresh game starts from the first seat.
+A completed result awards the host **1 point exactly once**. Cancelled or unfinished games award nothing. Host duties transfer **between games**, preventing anyone from controlling a game while holding a player role. Scores and the last five completed results stay with the person when they become a player or host in the next game.
 
-The top of role configuration offers **Random roles** or **Host assigns**. Every role count is configurable, except there must be at least one actual Mafia. Remaining players become villagers/Proja. The Mafia team (including Betrayers) must begin in the minority.
+## Points
 
-In manual mode the host selects one role per named player. The app blocks incomplete assignments and counts that do not match the configuration. Roles are assigned only when the host locks the game, and remain fixed after saving or reopening.
+| Result | Automatic points |
+| --- | --- |
+| Mafia win | Actual Mafia: 3 each; Betrayer: 2 each |
+| Village win | Doctor and Police: 2 each; other village roles: 1 each; Betrayer: 0 |
+| Completed game | Host: 1 |
 
-## House rules
+Eliminated winning teammates receive their normal victory points. Manual player points add to automatic awards. Reloading or repeating a result cannot award a second time.
 
-| Stable role | Bengali | English | Team / ability |
-| --- | --- | --- | --- |
-| MAFIA | ঘাতক | Mafia | Mafia team; night attack |
-| DOCTOR | রাজবৈদ্য | Doctor | Village; protect one person each night |
-| POLICE | সেনাপতি | Police | Village; investigate through the host |
-| VILLAGER | প্রজা | Villager | Village; discussion and voting |
-| BETRAYER | মীরজাফর | Betrayer | Optional Mafia teammate; counts at parity |
-| ASTROLOGER | জ্যোতিষী | Witch | Optional villager; immune to Mafia night attacks, vulnerable to votes |
-| BODYGUARD | পেয়াদা | Spy | Optional villager; protection resolved by the host |
+Before a village victory, actual Mafia share **one final Police/Senapati guess**. Any configured Police player counts, alive or out. A correct guess flips the winner; a wrong or skipped guess preserves the village win. With no Police, the guess step is skipped. A surviving Betrayer cannot continue night attacks after all actual Mafia are gone.
 
-The host narrates night actions, protection and voting in person. Elimination controls distinguish a night attack from a vote-out and block night attacks on Jotishi/Witch. The host can restore a player to correct a mistake.
+## Cast
 
-The village can win once all actual Mafia are eliminated. A surviving Betrayer cannot continue night attacks alone. The Mafia team can win by reaching parity with the others. The app suggests the outcome; the host confirms.
+| Game role | Polashi identity | Sicily identity |
+| --- | --- | --- |
+| Host | Siraj ud-Daulah | Vito Corleone |
+| Mafia 1 | Robert Clive | Michael Corleone |
+| Mafia 2 | Mir Jafar | Sonny Corleone |
+| Mafia 3 | Mir Qasim | Emilio Barzini |
+| Doctor / Rajboiddo | Hakim Ali Gilani | Dr. Jules Segal |
+| Police / Senapati | Mir Madan | Al Neri |
+| Betrayer | Ghaseti Begum | Carlo Rizzi |
+| Gonok / Consigliere | Varahamihira | Tom Hagen |
+| Protector / Spy | Mohanlal | Luca Brasi |
+| Villager | Lalon Shah | Amerigo Bonasera |
 
-Before a village victory, the Mafia team may make **one shared final Police/Senapati guess**. Any actual Police player counts, alive or eliminated. A correct guess flips the result to a Mafia win. A wrong or skipped guess preserves the village win. With no Police configured, the guess step is skipped. The guess screen shows names without roles or role-specific avatars; victory points are awarded only after the guess is resolved.
+Additional copies of a role reuse its identity set. In single-phone mode, the numbered Mafia identities follow actual reveal order. Gonok/Consigliere survives Mafia night attacks but can be voted out. The host narrates protection and investigation in person; a private host-only inspection supports resolving night actions.
 
-## Points and rankings
+Character cards contain short sourced biographies. Mir Jafar and Mir Qasim are called **Nawabs**, with their reigns and deaths described separately. Mir Qasim’s later conflict with the Company is retained. Ghaseti’s death account is identified as a traditional account. Earlier/later figures such as Ali Gilani, Varahamihira, and Lalon carry their own eras. See [literary and historical sources](design/LITERARY-SOURCES.md).
 
-- Mafia team victory: each Mafia and Betrayer receives **3 points**.
-- Village victory: each Doctor/Rajboiddo and Police/Senapati receives **2 points**, with no investigation-success condition.
-- Other winning villagers receive **1 point each**, including Jotishi/Witch and Peyada/Spy.
-- Eliminated players on the winning team also receive points.
-- Victory points add to the host’s manual points **once**. Results show the automatic award separately; reloading cannot award it again.
-- The host can open the ranking sheet during any round to record points and plan notes. Ties share competition ranks (1, 1, 3). Rematches start with fresh points.
+## One-phone mode
 
-## Other features
+Enter only players, excluding the host. The menu lets the host set their own name and optional photo. A matching host name cannot be added to the player roster.
 
-Private role handoffs, salted PBKDF2 host passwords, saved/resumed games, a 1–30 minute discussion timer, a permanently light palette, and a remembered universe choice. The browser caches both worlds after its first successful load; HTTPS or localhost is required for secure browser features.
+The player list is physical **clockwise seating order**. Drag the dotted grip to insert someone between seats; keyboard Space lifts/drops, arrows move, and Escape cancels. The phone passes **to the person on your right**, counterclockwise around inward-facing seats. The preview and reveal screen show named **from → to** arrows. A rematch starts from the **last actual Mafia in the previous reveal order**. Seating can be corrected before dealing.
 
-The public interface has no developer credit or technical connectivity slogans. Quotes carry author/work credits and source links. See [literary sources](design/LITERARY-SOURCES.md) and [generated-art prompts](www/assets/PROMPTS.md).
+Roles can be random or manually assigned, with exact configurable counts. The host panel uses a salted PBKDF2 password and supports night/vote eliminations, restore, discussion timers, manual scores, and plan notes. Completed results are recorded locally; the host completion award is idempotent.
 
-## Android build
+## QR multiplayer
 
-Android source is included; a compiled APK is not included. Android compilation and device behavior require verification with the Android SDK.
+1. On an Android phone with the built app, enable its hotspot in system settings. Open QR mode and create a room. Keep this original device and app open.
+2. Everyone connects to that hotspot first, then scans the room QR in their camera and enters a name. Guests use their regular browser, including on iPhone; no install is needed.
+3. The host configures and deals roles once 5–20 players join. The host is a sixth person in a five-player game.
+4. Each player gets only their own current role, points, rank, notes, and synchronized timer. Roles start hidden, hide with a second tap, and hide on blur/backgrounding. A new random quote is assigned for each game, with distinct quote indexes across players.
+5. When the discussion deadline expires, living players see a **radio-button ballot**. They select one person and confirm once. A confirmed vote cannot change that round. The host receives live totals.
+6. The host can finish a round manually, choosing **zero, one, or two** living players for elimination. This clears the ballots, advances the round, and resets the timer. The host is never a candidate. Night eliminations remain separate controls for players only.
+7. The ranksheet button opens cumulative standings plus each person’s **last five completed games**. Small role portraits carry green win/completion markers or red loss markers, with accessible text labels. It never reveals ongoing roles.
+8. The menu edits name/photo and opens the world picker. Photos are optional, resized locally, stored with the profile, and shared only with the local room. The native Android chooser requires no broad photo-library permission.
+9. The host can change the room’s universe. Everyone changes together without redealing. Past-game portraits keep their original universe; captions use the current interface language.
+10. After the result, transfer host duties if desired, then rematch. Connected players, cumulative points, and history persist. The original hotspot/server device remains the connection point.
 
-1. Install Android Studio, Android SDK Platform 35, JDK 17 and Gradle **8.9** (the project pins Android Gradle Plugin **8.7.3**).
-2. From `android`, run `gradle wrapper --gradle-version 8.9` to generate a wrapper, or configure Android Studio to use your local Gradle 8.9 installation. The standard wrapper is not included in this repository.
-3. Open the `android` directory in Android Studio and let Gradle sync.
-4. Run on a connected phone or choose **Build → Build App Bundle(s) / APK(s) → Build APK(s)**.
-5. The debug APK appears at `android/app/build/outputs/apk/debug/app-debug.apk`.
+Updates use authenticated requests every 700 ms and a clock synchronized to the authority’s deadline. Rejoining with the same browser storage restores the session. Lost connections hide exposed cards and show reconnection status. Notifications cover dealing, host/world changes, results, and timer expiry.
 
-The Android project packages `www` directly, supports Android 8.0+ with an updated System WebView, uses portrait orientation, blocks screenshots/recent-app previews and keeps the screen awake during play. Internet/network permissions enable its local hotspot HTTP server; it uses no cloud room service. Host credentials and game data use WebView local storage with Android backups disabled. The UI lock protects normal pass-the-phone use; someone with developer tools or app-storage access can inspect saved roles. Browser screenshots cannot be blocked.
+Browser preview hosting uses the Node server on a computer; the invitation contains that computer’s LAN address on port **5173**. A static browser page cannot start a phone hotspot server. Android includes a foreground local HTTP transport and serves the same assets and authority logic. Rooms expire after six inactive hours and close if the original server/app is killed. Local HTTP is intended for a trusted hotspot, not internet hosting.
 
-Toolchain reference: https://developer.android.com/build/releases/agp-8-7-0-release-notes
+## Quotations and artwork
 
-## Verification
+Both universes contain **103 distinct entries**. Polashi has 100 public-domain excerpts from Tagore’s palace drama *Gandharir Abedon* and three very short credited Ray film excerpts. Sicily has one brief credited Puzo excerpt plus 102 original Mafia-themed lines, explicitly identified as original. They are never falsely attributed to Puzo. The complete list is in [QUOTE-CATALOG.md](design/QUOTE-CATALOG.md).
 
-Automated tests cover all supported standard configurations, custom counts, manual assignments, seat insertion/reordering, counterclockwise order, last-Mafia rematches, immunity, team parity, final guesses, exactly-once awards, saved-state migration, passwords, timers and ranking ties.
+Twenty named caricatures and two ensemble covers are active under `www/assets/bn` and `www/assets/en`. Portraits use historical portrait conventions or familiar Godfather screen interpretations; covers show the complete cast without a cropping frame. See [art prompts](www/assets/PROMPTS.md). Obsolete archived designs and old workspace preview PNGs were removed; final preview images live outside the app assets.
 
-Browser checks verified manual assignments across ten players, counterclockwise handoffs, a rematch starter after seat reordering, Witch vote-out/restore and blocked night attacks, a correct final Police guess, a Mafia victory with preserved manual points, saved results without duplicate awards, and the next rematch’s last-Mafia starter.
+## Android build and verification
 
-## Presentation and interaction
+Android source is included. **APK compilation and physical hotspot-device testing are not verified on this machine**, which has Java 11 and no Android SDK.
 
-- Seating now uses a dotted drag grip with insertion ordering, touch/pointer handling, edge auto-scroll, and keyboard lift/move/drop/cancel support. Orders save on drop; cancelling restores the original list.
-- Hero art is shown at its full natural proportions with no arch, clipping mask, decorative border or cropped frame.
-- The former language control is a universe picker. Only Mosnod and Sicily are offered. Mosnod’s built-in interface uses Bengali; Sicily’s uses English. Player-entered names and notes remain exactly as entered. A world change keeps game state and manual assignments.
-- Both worlds always use light colors, including install metadata and the Android system-bar palette. The former theme button is an extensible menu containing existing relevant game actions.
-- The Bengali story, character copy and explanatory guidance use original rhythmic court satire. The rotating short Ray excerpts remain clearly credited. The Sicilian hero uses original writing about loyalty, favors and power; its Puzo quotation remains separate and credited.
-- Browser verification covered pointer dragging, keyboard movement and cancellation, saved order after reload, preserved rematch starter, a script-pure home screen for each world, the picker/menu, and uncropped hero proportions.
+Use Android Studio, SDK Platform 35, JDK 17, and Gradle **8.9** (Android Gradle Plugin **8.7.3**). Open `android`, generate a Gradle wrapper if needed (`gradle wrapper --gradle-version 8.9`), sync, and build. The debug APK appears at `android/app/build/outputs/apk/debug/app-debug.apk`.
 
-## QR multiplayer (version 1.5)
+The app packages `www`, supports Android 8+ with an updated WebView, blocks screenshots/recent-app previews, keeps the screen awake during play, and disables backups. Internet/network permissions support the LAN server. Native hosting must stay in the foreground; hotspot client isolation depends on the device/router. A UI password protects ordinary handoffs, while developer tools/storage access can inspect a local authority’s data.
 
-Open **Menu → Play on separate phones**, or `/room.html`. The top-right universe picker offers **Mosnod** and **Sicily**, with the same ensemble illustrations, light navy/cream/sage/tan gradients, literary credits, and private illustrated role cards as the single-phone game. The host can change the entire room’s universe without changing roles, scores, or the timer. Players’ names and notes are preserved verbatim.
-
-### Playing on phones
-
-1. On an Android phone with the built app, turn on its hotspot in system settings. Open QR mode and create a room. Keep this phone and the app open throughout the game.
-2. Connect every player’s phone to that hotspot. Choose the hotspot’s address in the invitation panel, then scan its QR with each phone’s camera. This is a room-invitation QR; hotspot connection happens first in the phone’s Wi-Fi settings.
-3. Each guest enters a unique name. Guests use their normal browser; no installation is needed, including on iPhone.
-4. With 5–20 players, the host configures role counts, chooses automatic or manual assignment, and deals roles. Each phone gets only its own role and personal rank, points, notes, and timer. Role cards start hidden, hide with another tap, and hide on blur/backgrounding.
-5. The host runs night/vote eliminations, restores mistakes, records scores and plan notes in styled sheets, and controls the shared discussion timer. A host-only role inspection in a score sheet supports resolving night investigations; this information is never broadcast to other players and closes on backgrounding.
-6. **Make host** transfers controls immediately and notifies the room. The original hotspot/server device remains the connection point even after transferring the facilitator role. Other phones keep their roles and sessions.
-7. The final Police/Senapati guess is shared across actual Mafia players. The first accepted guess resolves the result. Host skip and exactly-once victory awards use the same house rules as single-phone mode. Rematch keeps connected players and host, but resets roles and points.
-
-### Browser development preview
-
-Run `npm start` on a computer connected to the same hotspot or local Wi-Fi. The server binds port **5173** on the computer. Create the room at `http://localhost:5173/room.html`; its invitation uses the computer’s LAN address, discovered by `/api/network`. This computer is the connection point for the browser preview. A static browser page alone cannot start a phone hotspot server; the Android source includes that transport.
-
-Updates use authenticated requests every 700 ms, plus a local clock synchronized to the authority’s deadline. Reconnecting with the same browser storage restores the same player, role, and score. Lost connections hide exposed cards and show a reconnecting state. Local in-page notifications announce role assignment, host/world changes, results, and timer expiry. Rooms live in server memory, expire after six hours without activity, and close if the server/app is killed. Use a trusted local network: LAN transport is HTTP, not encrypted.
-
-### Verification and limits
-
-- `npm test`: game rules, private projections, host authorization/revocation, universe changes, final guesses, immunity, scoring, rematches, timers, and seating.
-- `npm run check`: syntax checks for all application and server modules.
-- `npm run test:lan`: real HTTP clients test joining, role privacy, host transfer, timer, inspection permissions, origin checks, and static routes.
-- Browser QA: five-player table with separate host/player origins, both universes, manual deal, tap-to-hide, shared timer, score/plan sheet, host handoff, session recovery after reload, both final-guess results, Jotishi night immunity, vote-out/restore, and rematch.
-- The displayed QR was decoded from the actual browser screenshot with macOS Vision and matched its invitation URL.
-- Phone layouts verified at 414 px. Active art is limited to the two worlds; 19 old design/preview files (28.9 MiB) were removed.
-- **Android APK compilation and physical hotspot-device testing are still required.** This machine has Java 11 and no Android SDK; the project requires JDK 17 and SDK 35. Native hosting must remain in the foreground, and some hotspot/router configurations isolate clients.
-
-The QR encoder is vendored under `www/vendor`, with its MIT license. No npm installation or third-party QR service is required to run the game.
+Automated verification covers host exclusion, authorization, voting deadlines and immutable ballots, two-player round elimination, exactly-once host/victory awards, role identities, private projections, final guesses, cumulative history, snapshots, profile sanitation, handoff seating, and all offline assets. The LAN test uses an actual HTTP host plus five player clients. Browser QA also checks QR joining, photo selection, vote submission/live totals, host changes, both worlds, role privacy, history markers, and rightward named handoffs. The displayed QR was decoded from a browser screenshot and matched its invitation.

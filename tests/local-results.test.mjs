@@ -1,0 +1,5 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';
+import {recordLocalResult} from '../www/local-results.mjs';import {readProfile,saveProfile} from '../www/profile.mjs';
+const store=()=>{const data=new Map();return {getItem:k=>data.get(k),setItem:(k,v)=>data.set(k,v)};};
+test('single-phone host gets one completion point exactly once and retains the profile history',()=>{const storage=store(),profile=saveProfile({...readProfile(storage),name:'Controller'},storage),game={id:'one',status:'over',hostProfile:profile,winner:'MAFIA',players:[{name:'A',role:'MAFIA',score:3,winPoints:3},{name:'B',role:'BETRAYER',score:2,winPoints:2}]};assert.equal(recordLocalResult(game,'bn',storage),true);assert.equal(recordLocalResult(game,'bn',storage),false);assert.equal(readProfile(storage).score,1);assert.equal(readProfile(storage).history[0].role,'HOST');const ledger=JSON.parse(storage.getItem('mafia.local-ledger.v2'));assert.equal(ledger[1].score,2);});
+test('unfinished single-phone games do not award the host',()=>{const storage=store();assert.equal(recordLocalResult({status:'host'},'en',storage),false);assert.equal(readProfile(storage).score,0);});

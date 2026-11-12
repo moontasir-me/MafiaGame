@@ -6,8 +6,7 @@ import path from 'node:path';
 import {RoomService} from './www/room-service.mjs';
 const root=fileURLToPath(new URL('./www/',import.meta.url));
 const types={'.html':'text/html; charset=utf-8','.css':'text/css','.js':'text/javascript','.mjs':'text/javascript','.svg':'image/svg+xml','.png':'image/png','.webmanifest':'application/manifest+json'};
-export function createMafiaServer(){
- const rooms=new RoomService();
+export function createMafiaServer({rooms=new RoomService()}={}){
  const server=http.createServer(async(req,res)=>{
   const json=(status,value)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(JSON.stringify(value));};
   try{
@@ -19,7 +18,7 @@ export function createMafiaServer(){
      json(200,{addresses:Object.values(networkInterfaces()).flat().filter(a=>a.family==='IPv4'&&!a.internal).map(a=>`http://${a.address}:${port}`)});return;
     }
     if(req.method!=='POST'||!req.headers['content-type']?.startsWith('application/json')){json(405,{error:'METHOD'});return;}
-    let body='',size=0;for await(const chunk of req){size+=chunk.length;if(size>16384){json(413,{error:'SIZE'});return;}body+=chunk;}
+    let body='',size=0;for await(const chunk of req){size+=chunk.length;if(size>256000){json(413,{error:'SIZE'});return;}body+=chunk;}
     const data=JSON.parse(body);if(!data||typeof data!=='object'||Array.isArray(data))throw Error('REQUEST');
     json(200,await rooms.handle(pathname,data));return;
    }

@@ -78,7 +78,7 @@ final class LocalRoomServer implements AutoCloseable {
                 if (path.equals("/api/network") && request[0].equals("GET")) { reply(out,200,"application/json",network().getBytes(StandardCharsets.UTF_8)); return; }
                 if (!request[0].equals("POST") || !headers.getOrDefault("content-type","").startsWith("application/json")) { reply(out,405,"application/json","{\"error\":\"METHOD\"}".getBytes(StandardCharsets.UTF_8)); return; }
                 int length = Integer.parseInt(headers.getOrDefault("content-length","0"));
-                if (length < 1 || length > 16384) { reply(out,413,"application/json","{\"error\":\"SIZE\"}".getBytes(StandardCharsets.UTF_8)); return; }
+                if (length < 1 || length > 256000) { reply(out,413,"application/json","{\"error\":\"SIZE\"}".getBytes(StandardCharsets.UTF_8)); return; }
                 byte[] body = new byte[length]; int read = 0;
                 while (read < length) { int n = in.read(body,read,length-read); if (n < 0) throw new EOFException(); read += n; }
                 JSONObject result = new JSONObject(dispatcher.dispatch(path,new String(body,StandardCharsets.UTF_8)));

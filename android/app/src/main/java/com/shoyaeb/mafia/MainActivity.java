@@ -14,6 +14,8 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebChromeClient;
+import android.webkit.ValueCallback;
 import android.webkit.WebViewClient;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -27,6 +29,8 @@ import java.util.concurrent.TimeUnit;
 public class MainActivity extends Activity {
     private WebView webView;
     private LocalRoomServer lan;
+    private ValueCallback<Uri[]> photoCallback;
+    private static final int PICK_PROFILE_PHOTO = 41;
     private final ConcurrentHashMap<String, CompletableFuture<String>> requests = new ConcurrentHashMap<>();
     private String dispatchLan(String path, String body) throws Exception {
         String id = UUID.randomUUID().toString();
@@ -47,8 +51,20 @@ public class MainActivity extends Activity {
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         settings.setAllowFileAccess(false);
-        settings.setAllowContentAccess(false);
+        settings.setAllowContentAccess(true);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback, FileChooserParams params) {
+                if (photoCallback != null) photoCallback.onReceiveValue(null);
+                photoCallback = callback;
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("image/*");
+                try { startActivityForResult(intent, PICK_PROFILE_PHOTO); }
+                catch (ActivityNotFoundException e) { photoCallback.onReceiveValue(null); photoCallback=null; }
+                return true;
+            }
+        });
         webView.addJavascriptInterface(new PrivacyBridge(), "Android");
         webView.setWebViewClient(new WebViewClient() {
             @Override public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
@@ -126,6 +142,13 @@ public class MainActivity extends Activity {
             });
         }
     }
+    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_PROFILE_PHOTO && photoCallback != null) {
+            photoCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data));
+            photoCallback = null;
+        }
+    }
     @Override protected void onPause() {
         webView.evaluateJavascript("window.onNativePause && window.onNativePause()", null);
         super.onPause();
@@ -134,6 +157,7 @@ public class MainActivity extends Activity {
         webView.evaluateJavascript("window.onNativeBack && window.onNativeBack()", null);
     }
     @Override protected void onDestroy() {
+        if (photoCallback != null) { photoCallback.onReceiveValue(null); photoCallback=null; }
         if (lan != null) lan.close();
         requests.values().forEach(f -> f.cancel(true));
         webView.removeJavascriptInterface("Android"); webView.destroy(); super.onDestroy();

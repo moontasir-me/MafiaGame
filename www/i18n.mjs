@@ -1,11 +1,11 @@
 import {WORLD_OPTIONS} from './universe.mjs';
 import {rhythmicBengali} from './rhyming-copy.mjs';
-const savedWorld=localStorage.getItem('mafia.universe');
-export let universeId=WORLD_OPTIONS.some(w=>w.id===savedWorld)?savedWorld:(localStorage.getItem('mafia.language')==='en'?'sicily':'mosnod');
+const storedWorld=localStorage.getItem('mafia.universe');const savedWorld=storedWorld==='mosnod'?'polashi':storedWorld;
+export let universeId=WORLD_OPTIONS.some(w=>w.id===savedWorld)?savedWorld:(localStorage.getItem('mafia.language')==='en'?'sicily':'polashi');
 export let language=WORLD_OPTIONS.find(w=>w.id===universeId).locale;
 export const tr=(bn,en)=>language==='en'?en:rhythmicBengali(bn);
 export function setUniverse(id){const world=WORLD_OPTIONS.find(w=>w.id===id);if(!world)return false;universeId=id;language=world.locale;localStorage.setItem('mafia.universe',id);localStorage.setItem('mafia.language',language);return true;}
-export function setLanguage(value){setUniverse(value==='en'?'sicily':'mosnod');}
+export function setLanguage(value){setUniverse(value==='en'?'sicily':'polashi');}
 const entries = [
 ['মাফিয়া','Mafia'],['ডাক্তার','Doctor'],['পুলিশ','Police'],['সাধারণ','Villager'],['গ্রামবাসী','Villager'],['সিটিজেন','Villagers'],
 ['চেনা মুখ। অচেনা পরিচয়।','Familiar faces. Secret identities.'],['তোমার আসর','YOUR GAME NIGHT'],['হোম','Home'],['কীভাবে খেলবে','How to play'],['কীভাবে খেলবে?','How to play?'],['চলমান গেম','Current game'],['অফলাইন, সবসময়','Always offline'],['লগইন নেই। ইন্টারনেট নেই।','No login. No internet.'],['শুধু তুমি আর তোমার বন্ধুরা।','Just you and your friends.'],['তৈরি Shoyaeb-এর আড্ডার জন্য','Made for Shoyaeb’s game nights'],['আড্ডার নতুন ঠিকানা','Your new game-night ritual'],['খেলার নিয়ম','Game rules'],['নতুন গেম','New game'],['রোল সেটআপ','Role setup'],['হোস্ট লক','Host lock'],['গোপন পরিচয়','Secret identities'],['কন্ট্রোল রুম','Control room'],['ফলাফল','Results'],['রাত নামুক, খেলা জমুক','Night falls. The game begins.'],

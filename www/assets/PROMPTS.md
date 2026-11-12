@@ -1,62 +1,43 @@
-# Generated art
+# Active caricature assets and prompt set
 
-Built-in imagegen tool, November 12, 2026. Fourteen unique adult male portraits and two group covers.
+Built-in image-generation tool, November 12, 2026. Twenty named portraits and two ensemble covers. New images replaced the superseded role art; no unused variants are packaged.
 
-Saved paths:
+Palette: navy #132845, cream #f0e4cc, sage #d3d4c2, tan #846041, with restrained gold/red accents. No text, logos, or watermarks. Every portrait keeps the whole head and shoulders inside margins.
 
-- `www/assets/bn/mafia.png`
-- `www/assets/bn/doctor.png`
-- `www/assets/bn/police.png`
-- `www/assets/bn/villager.png`
-- `www/assets/bn/betrayer.png`
-- `www/assets/bn/astrologer.png`
-- `www/assets/bn/bodyguard.png`
-- `www/assets/bn/cover.png`
-- `www/assets/en/mafia.png`
-- `www/assets/en/doctor.png`
-- `www/assets/en/police.png`
-- `www/assets/en/villager.png`
-- `www/assets/en/betrayer.png`
-- `www/assets/en/astrologer.png`
-- `www/assets/en/bodyguard.png`
-- `www/assets/en/cover.png`
+## Polashi shared portrait prompt
 
-Final prompt set:
+Square mobile Mafia avatar; sophisticated funny Mughal-miniature editorial caricature, delicate hand ink and stippled watercolor on antique cream paper; expressive readable face, full turban and shoulders, restrained Mughal floral ornament. Historical portrait conventions rather than a film actor.
 
-```json
-{
-  "method": "Built-in imagegen tool",
-  "date": "2026-11-12",
-  "portraitTemplate": "Use case: illustration-story. Asset type: unique square character portrait for a mobile social deduction game. Subject: [subject]. [universe] ALL characters adult males. Funny, dignified and sharply distinctive caricature, expressive face, polished hand-drawn editorial illustration, bold ink outlines, warm textured shading. Bust portrait centered and fully inside frame, ornate circular muted backdrop on cream square canvas. Palette ivory, antique gold, burgundy, forest green, navy. Readable at tiny avatar sizes. No text, no watermark, no logos.",
-  "universes": {
-    "bn": "Fictional post-Siraj Bengali Nawabi court universe inspired by 1757 Murshidabad.",
-    "en": "Fictional vintage Sicilian village Mafia universe inspired by 1930s Palermo."
-  },
-  "subjects": {
-    "bn": {
-      "mafia": "a sly adult male British East India Company officer in mid-18th-century Bengal, red military coat, tricorn hat, white wig, comically curled moustache, holding a sealed conspiracy letter; role Ghatok",
-      "doctor": "a kindly older plump Bengali male royal physician Rajboiddo, round spectacles, cream and sage Mughal robes, embroidered cap, moustache, copper medicine bowl and herbs",
-      "police": "a proud Bengali male Senapati royal general, huge expressive moustache, deep indigo Mughal tunic, saffron plumed turban, ornamental curved sword, raised suspicious eyebrow",
-      "villager": "a poor Bengali male peasant Proja, patched cotton kurta, simple headwrap and gamcha, weathered kindly face, slight moustache, empty clay bowl, sharp knowing grin; respectful affectionate humor",
-      "betrayer": "Mir Zafar as an elderly Bengali male court noble, emerald jeweled turban, fine gold-and-green robe, narrow moustache and pointed beard, sly sideways glance, hands clasped over a secret letter",
-      "astrologer": "an eccentric Bengali male royal astrologer Jotishi, flowing white beard, plum Mughal robe, star-decorated cap, copper astrolabe, huge round spectacles, cheerful confident grin",
-      "bodyguard": "a burly Bengali male palace Peyada guard, rust-orange Mughal tunic, striped turban, broad curled moustache, ornamental spear and round shield, enormous shoulders and comically earnest face"
-    },
-    "en": {
-      "mafia": "an original middle-aged Sicilian male Mafia boss, broad smiling face, slick black hair, curled moustache, cream double-breasted 1930s suit, burgundy tie, holding espresso, theatrical confidence",
-      "doctor": "an original Sicilian male village doctor, balding head, silver moustache, round spectacles, olive tweed suit and bow tie, vintage medical bag and stethoscope, kindly grin",
-      "police": "an original Sicilian male police officer in vintage navy Carabinieri uniform and hat, narrow face and thick moustache, suspicious squint, magnifying glass enlarging one eye",
-      "villager": "an original poor Sicilian male fisherman villager, flat cap, patched brown waistcoat and linen shirt, weathered face, stubbly beard, holding a small fish, suspicious grin",
-      "betrayer": "an original slim Sicilian male Betrayer, sharply parted black hair, pencil moustache, plum pinstriped suit, crossed fingers behind his back, too-innocent smile",
-      "astrologer": "an original adult MALE Sicilian witch or stregone, elderly man with long silver beard, black wide-brimmed hat, deep purple cloak, tarot cards and olive-wood wand, hilarious intense eyes; clearly male",
-      "bodyguard": "an original adult Sicilian male spy, tall thin man, camel trench coat and fedora, neat moustache, tiny vintage folding camera partly hidden, comically furtive sideways eyes"
-    }
-  },
-  "covers": {
-    "bn": "Use case: illustration-story. Asset type: wide landscape ensemble cover for a Bengali historical social deduction game. Five portraits are identity references for Ghatok (British East India Company officer), Rajboiddo physician, Senapati general, Mir Zafar, and Jotishi astrologer. Create a NEW coherent scene with these five unique men PLUS a poor Bengali male peasant in patched cotton kurta, red gamcha and simple headwrap holding a clay bowl, PLUS a burly male palace Peyada guard in rust-orange tunic and striped turban holding an ornamental spear and round shield. EXACTLY SEVEN UNIQUE ADULT MALE CHARACTERS, all faces visible, each once. They gather in a fictional Murshidabad Nawabi palace courtyard after Sirajuddaulah's death; a vacant ornate throne in the background, Mughal arches, river and domes, gold and ivory textiles. Playful suspicious glances, exaggerated comic expressions, plotting over a low court table. Warm polished hand-drawn editorial caricature matching the portraits. Imperial indigo, burgundy, antique gold, cream and emerald. All heads in the central 70 percent of the frame with clear space above and in corners so an arch-shaped UI crop will not hide faces. Wide landscape, no typography, no labels, no logos, no watermark, no extra people.",
-    "en": "Use case: illustration-story. Asset type: wide landscape ensemble cover for an English Sicilian Mafia social deduction game. Five portraits are identity references for Mafia boss, Police, Betrayer, MALE Witch, and Spy. Create a NEW coherent scene with these five unique men PLUS an older balding male doctor in olive tweed suit, round spectacles and bow tie carrying a vintage medical bag, PLUS a poor weathered male Sicilian fisherman villager in flat cap and patched brown waistcoat carrying a small fish. EXACTLY SEVEN UNIQUE ADULT MALE CHARACTERS, each once, all faces visible. They gather around a little table in a 1930s Sicilian village piazza, ochre stone archways, lemon trees, old car, espresso cups, chess pieces, playful suspicious glances and comic expressions. Warm polished hand-drawn editorial caricature matching the portraits. Burgundy, antique gold, ivory, charcoal and olive. All heads in central 70 percent of frame with breathing room at top and corners so an arch-shaped UI crop will not hide faces. Wide landscape, no words, no labels, no logos, no watermark, no extra people."
-  }
-}
-```
+## Sicily shared portrait prompt
 
-Earlier unused artwork and superseded preview images were removed. The two world folders contain the active artwork packaged in the app.
+Square mobile Mafia avatar; witty, dignified vintage Italian crime-novel editorial caricature, hand ink and watercolor stipples on antique paper; charcoal suits, readable faces, restrained Renaissance acanthus ornament. No food jokes. Recognizable Godfather screen interpretations where applicable; a literary character portrait for Jules Segal.
+
+## Polashi identities
+
+- `www/assets/bn/host.png` — **সিরাজউদ্দৌলা**. Identity direction: বাংলার নবাব সিরাজ পলাশীতে পরাজিত হন ১৭৫৭ সালের ২৩ জুন। পরে বন্দি অবস্থায় তাঁকে হত্যা করা হয়। এই আসরে তিনি হোস্ট—পরিচয় বণ্টন ও বিচার তাঁর হাতে।
+- `www/assets/bn/mafia.png` — **রবার্ট ক্লাইভ**. Identity direction: পলাশীতে ইস্ট ইন্ডিয়া কোম্পানির বাহিনীর নেতৃত্বে ছিলেন ক্লাইভ। বিজয়ের পর বাংলায় কোম্পানির প্রভাব বাড়ে।
+- `www/assets/bn/mafia-2.png` — **মীর জাফর**. Identity direction: সিরাজের পর কোম্পানির সমর্থনে নবাব হন মীর জাফর। মীর কাসিমের পর দ্বিতীয়বার ক্ষমতায় ফেরেন। দীর্ঘ অসুস্থতার পর ১৭৬৫ সালের ৫ ফেব্রুয়ারি মুর্শিদাবাদে মারা যান; কুষ্ঠরোগে ভোগার উল্লেখ পাওয়া যায়।
+- `www/assets/bn/mafia-3.png` — **মীর কাসিম**. Identity direction: মীর জাফরের জামাতা মীর কাসিম ১৭৬০ সালে নবাব হন। পরে কোম্পানির সঙ্গে সংঘাতে জড়ান; বক্সারে তাঁর জোট পরাজিত হয়। ১৭৭৭ সালে দিল্লির কাছে নিঃস্ব অবস্থায় মারা যান।
+- `www/assets/bn/betrayer.png` — **ঘসেটি বেগম**. Identity direction: আলীবর্দী খানের জ্যেষ্ঠ কন্যা ঘসেটি সিরাজবিরোধী দরবারি জোটে যুক্ত ছিলেন। পরে তাঁকে ঢাকার জিঞ্জিরায় বন্দি রাখা হয়। মীরনের নির্দেশে স্থানান্তরের পথে বুড়িগঙ্গায় ডুবিয়ে মারার বর্ণনা প্রচলিত।
+- `www/assets/bn/police.png` — **মীর মদন**. Identity direction: সিরাজ মীর মদনকে বখশি পদে বসান। পলাশীতে সিরাজের পক্ষে লড়াই করেন এবং যুদ্ধে নিহত হন।
+- `www/assets/bn/bodyguard.png` — **মোহনলাল**. Identity direction: সিরাজ মোহনলালকে দেওয়ানখানার পেশকার পদে উন্নীত করেন। দরবারে তাঁর প্রভাব ছিল এবং তিনি সিরাজের বিশ্বস্ত সহযোগী ছিলেন।
+- `www/assets/bn/doctor.png` — **হাকিম আলী গিলানি**. Identity direction: চিকিৎসক ও চিকিৎসাবিষয়ক লেখক আলী গিলানি আকবর ও জাহাঙ্গীরের দরবারে কাজ করেন। তাঁর সময় সিরাজের আগের মুঘল যুগ।
+- `www/assets/bn/astrologer.png` — **বরাহমিহির**. Identity direction: বরাহমিহির ছিলেন জ্যোতির্বিদ ও গণক। বৃহৎসংহিতা ও বৃহজ্জাতক তাঁর গুরুত্বপূর্ণ রচনা। তাঁর সময় পলাশীর বহু শতাব্দী আগে।
+- `www/assets/bn/villager.png` — **লালন শাহ**. Identity direction: বাউল সাধক ও গীতিকার লালন শাহ মানুষের পরিচয় ও সাম্যের কথা বলেছেন। তাঁর জীবনকাল সিরাজের পরের যুগে।
+
+## Sicily identities
+
+- `www/assets/en/host.png` — **Vito Corleone**. Identity direction: The patriarch of the Corleone family. At this table he directs the game, holds no player role, and earns one point for a completed game.
+- `www/assets/en/mafia.png` — **Michael Corleone**. Identity direction: Vito’s youngest son becomes the leader of the Corleone family, choosing its survival over his earlier distance from its affairs.
+- `www/assets/en/mafia-2.png` — **Sonny Corleone**. Identity direction: Vito’s eldest son leads the family during his father’s recovery. Carlo’s betrayal draws him into a fatal ambush.
+- `www/assets/en/mafia-3.png` — **Emilio Barzini**. Identity direction: A powerful rival don whose influence lies behind the conflict with the Corleone family.
+- `www/assets/en/doctor.png` — **Dr. Jules Segal**. Identity direction: The surgeon working in Las Vegas treats Lucy Mancini and helps Johnny Fontane with his voice.
+- `www/assets/en/police.png` — **Al Neri**. Identity direction: A former New York police officer recruited into Michael’s service. His police background supplies this role’s identity.
+- `www/assets/en/bodyguard.png` — **Luca Brasi**. Identity direction: Vito’s formidable enforcer is sent to appear disloyal and gather information among the family’s rivals.
+- `www/assets/en/betrayer.png` — **Carlo Rizzi**. Identity direction: Connie’s husband betrays Sonny by helping lure him into an ambush. The family eventually takes its revenge.
+- `www/assets/en/astrologer.png` — **Tom Hagen**. Identity direction: The family’s lawyer and consigliere, an adviser who weighs alliances, obligations, and the cost of each decision.
+- `www/assets/en/villager.png` — **Amerigo Bonasera**. Identity direction: The undertaker appeals to Don Corleone for justice. His request opens the novel’s world of favors and obligations.
+
+## Ensemble cover prompts
+
+Generate a new coherent wide scene from the portrait identity references. Include all ten distinct faces once, around a game table, with the host centrally directing play. Full heads and shoulders, generous margins, no decorative crop frame, no lettering or watermark. Polashi uses a Mughal garden court with Siraj, Clive, Mir Jafar, Mir Qasim, Ghaseti, Ali Gilani, Mir Madan, Mohanlal, Lalon, and Varahamihira. Sicily uses a vintage Italian interior with Vito, Michael, Sonny, Barzini, Jules Segal, Al Neri, Luca Brasi, Carlo Rizzi, Tom Hagen, and Bonasera. Saved to `www/assets/bn/cover.png` and `www/assets/en/cover.png`.
