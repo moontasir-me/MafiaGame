@@ -1,0 +1,3 @@
+export const validPin=value=>/^\d{4}$/.test(value);
+export const cleanPin=value=>String(value).replace(/[০-৯]/g,d=>'০১২৩৪৫৬৭৮৯'.indexOf(d)).replace(/\D/g,'').slice(0,4);
+export function bindPinFields(root){root.querySelectorAll('[data-pin]').forEach(input=>{const cells=input.parentElement.querySelectorAll('.pin-cell');const refresh=()=>{input.value=cleanPin(input.value);cells.forEach((cell,i)=>{cell.textContent=input.value[i]?'•':'';cell.classList.toggle('filled',i<input.value.length);cell.classList.toggle('active',i===input.value.length&&document.activeElement===input);});};input.addEventListener('input',refresh);input.addEventListener('focus',refresh);input.addEventListener('blur',refresh);refresh();});}

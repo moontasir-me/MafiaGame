@@ -9,6 +9,7 @@ import {secondsLeft} from './game-tools.mjs';
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const params=new URLSearchParams(location.search),invitation=new URLSearchParams(location.hash.slice(1));
 let locale=params.has('lang')?(['en','classic'].includes(params.get('lang'))?params.get('lang'):'bn'):({sicily:'en',classic:'classic'}[localStorage.getItem('mafia.universe')]||'bn'),state=null,session=null,visible=false,connected=true,busy=false,offset=0,addresses=[],address='',config=null,manual=false,assignments=Object.create(null),transportError=false,timerMinutes=null,roundChoices=new Set(),voteChoice='';
+let syncingProfile=false;
 let profile=saveProfile(readProfile());
 const loadQuotes={bn:nextQuote('bn'),en:nextQuote('en'),classic:nextQuote('classic')};
 const native=!!window.Android?.startLan;
@@ -47,7 +48,7 @@ function quoteCard(){const q=state?QUOTES[locale][state.edition%QUOTES[locale].l
 function worldArt(){return `<img class="room-world-art" src="assets/${locale}/cover.png" width="1672" height="941" alt="${locale==='classic'?'The Classic neighborhood gathers for tea':t('পলাশীর দরবারের চরিত্ররা একসাথে','The faces of a Sicilian affair')}">`;}
 function render(){
  document.documentElement.lang=locale==='bn'?'bn':'en';document.documentElement.dataset.universe=locale;window.Android?.setPalette?.(getComputedStyle(document.documentElement).getPropertyValue('--bg').trim(),true);document.title='Mafia · '+UNIVERSES[locale].universeName;
- const draftName=$('#room-name')?.value;app.innerHTML=header()+(state?live():entry());if(draftName&&$('#room-name'))$('#room-name').value=draftName;bind();updateClock();
+ const draftName=$('#room-name')?.value;app.innerHTML=header()+(state?live():entry())+'<footer class="app-credit">Developed by Tanim</footer>';if(draftName&&$('#room-name'))$('#room-name').value=draftName;bind();updateClock();
  if(state?.isHost&&state.phase==='lobby')drawQR();
  $('#room-home').onclick=e=>{if(native&&session){e.preventDefault();leaveNative();}};
 }
@@ -72,7 +73,7 @@ function joinURL(){try{const url=new URL(address);if(!['http:','https:'].include
 function drawQR(){const url=joinURL(),el=$('#invite-qr');if(!url){el.textContent=t('ঠিকানা পেলে সংকেত হবে','Enter the hotspot address to generate the QR code.');return;}const qr=qrcode(0,'M');qr.addData(url);qr.make();el.innerHTML=qr.createSvgTag({cellSize:4,margin:4,scalable:true,alt:t('আসরে যোগের সংকেত','Room invitation QR code')});$('#invite-url').href=url;$('#invite-url').textContent=t('যোগের ঠিকানা','Open invitation');}
 function bind(){
  document.querySelectorAll('[data-do]').forEach(el=>el.onclick=()=>act(el.dataset.do,el.dataset.id));
- $('#connect-form')?.addEventListener('submit',async e=>{e.preventDefault();if(busy)return;busy=true;try{const name=$('#room-name').value;const result=await request(params.has('room')?'/api/join':'/api/create',{room:params.get('room'),invite:invitation.get('invite'),name,locale,profile});session={room:result.room,token:result.token};localStorage.setItem('mafia.room.session',JSON.stringify(session));await network();accept(result.view);}catch(e){error(e);}finally{busy=false;if(state)render();}});
+ $('#connect-form')?.addEventListener('submit',async e=>{e.preventDefault();if(busy)return;busy=true;try{const name=$('#room-name').value.trim()||readProfile().name;const result=await request(params.has('room')?'/api/join':'/api/create',{room:params.get('room'),invite:invitation.get('invite'),name,locale,profile});session={room:result.room,token:result.token};localStorage.setItem('mafia.room.session',JSON.stringify(session));await network();accept(result.view);}catch(e){error(e);}finally{busy=false;if(state)render();}});
  $('#invite-form')?.addEventListener('submit',e=>{e.preventDefault();try{const url=new URL($('#invite-link').value);if(!['http:','https:'].includes(url.protocol)||!url.searchParams.get('room')||!url.hash.includes('invite='))throw Error();location.href=url.href;}catch{notice(t('যোগের পুরো ঠিকানা দাও।','Paste the complete invitation link.'));}});
  $('#lan-address')?.addEventListener('change',e=>{address=e.target.value;drawQR();});
  document.querySelectorAll('[data-count]').forEach(el=>el.oninput=()=>config[el.dataset.count]=Number(el.value));
@@ -107,7 +108,7 @@ function hide(){if($('#inspect-player'))closeDialog();if(visible){visible=false;
 window.addEventListener('blur',hide);document.addEventListener('visibilitychange',()=>{if(document.hidden)hide();});window.onNativePause=hide;window.onNativeBack=()=>{if($('#room-overlay').childElementCount)closeDialog();else if(visible)hide();else openMenu();};
 async function network(){try{const data=native?JSON.parse(Android.startLan()):await (await fetch('/api/network',{cache:'no-store'})).json();if(data.error)throw Error('PORT');transportError=false;addresses=data.addresses||[];address=addresses[0]||(!['localhost','127.0.0.1'].includes(location.hostname)?location.origin:'');}catch{transportError=native;if(native)notice(t('আসরের দরজা খুলল না, অ্যাপটি আবার খোলো।','Could not open the local room server. Reopen the app.'));}}
 let polling=false;
-async function poll(){if(!session||polling||busy)return;polling=true;try{const result=await request('/api/state',session);const was=connected;accept(result);if(!was)render();}catch(e){if(['ROOM_GONE','AUTH'].includes(e.message)){session=null;state=null;localStorage.removeItem('mafia.room.session');connected=true;render();error(e);}else if(connected){connected=false;visible=false;render();}}finally{polling=false;}}
+async function poll(){if(!session||polling||busy||syncingProfile)return;polling=true;try{let result=await request('/api/state',session);if(!state){const latest=readProfile();if(latest.id===profile.id&&latest.name&&(latest.name!==result.me.name||latest.photo!==result.me.photo))result=await request('/api/profile',{...session,name:latest.name,profile:latest});}const was=connected;accept(result);if(!was)render();}catch(e){if(['ROOM_GONE','AUTH'].includes(e.message)){session=null;state=null;localStorage.removeItem('mafia.room.session');connected=true;render();error(e);}else if(connected){connected=false;visible=false;render();}}finally{polling=false;}}
 let dialogCancel=null,dialogFocus=null;
 function closeDialog(){const cancel=dialogCancel;dialogCancel=null;$('#room-overlay').innerHTML='';app.inert=false;document.body.classList.remove('room-dialog-open');if(dialogFocus?.isConnected)dialogFocus.focus();cancel?.();}
 function openDialog(title,html,onClose=null){
@@ -150,3 +151,16 @@ function openMenu(){
 try{const saved=JSON.parse(localStorage.getItem('mafia.room.session'));if(saved&&(!params.get('room')||saved.room===params.get('room')))session=saved;}catch{}
 await network();render();if(session)await poll();
 setInterval(poll,700);setInterval(updateClock,250);
+
+// Publish profile edits made in another app view; membership names remain authoritative.
+
+async function syncConnectedProfile(){
+ const latest=readProfile();
+ if(!state||!session){profile=latest;const field=$('#room-name');if(field&&document.activeElement!==field)field.value=latest.name;return;}
+ if(syncingProfile||busy||latest.id!==profile.id||latest.name===state.me.name&&latest.photo===state.me.photo)return;
+ syncingProfile=true;
+ try{accept(await request('/api/profile',{...session,name:latest.name,profile:latest}));}catch(e){error(e);}finally{syncingProfile=false;}
+}
+window.addEventListener('storage',e=>{if(e.key==='mafia.profile.v2')syncConnectedProfile();});
+window.addEventListener('focus',syncConnectedProfile);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncConnectedProfile();});

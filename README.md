@@ -88,7 +88,7 @@ Twenty named caricatures and two ensemble covers are active under `www/assets/bn
 
 ## Android build and verification
 
-**Mafia 2.1.1 APK is built and signed for direct installation:** [Download the APK](releases/Mafia-2.2-debug.apk). This is a debug-signed build for personal testing, not a Play Store release. Physical Android/hotspot testing still needs a real device.
+**Mafia 2.1.1 APK is built and signed for direct installation:** [Download the APK](releases/Mafia-2.3-debug.apk). This is a debug-signed build for personal testing, not a Play Store release. Physical Android/hotspot testing still needs a real device.
 
 Use Android Studio, SDK Platform 35, JDK 17, and Gradle **8.9** (Android Gradle Plugin **8.7.3**). The checked-in wrapper verifies the Gradle distribution checksum. Run `cd android` then `./gradlew assembleDebug lintDebug` with `JAVA_HOME` pointing to JDK 17 and `ANDROID_HOME` pointing to the SDK. The debug APK appears at `android/app/build/outputs/apk/debug/app-debug.apk`.
 
@@ -121,3 +121,13 @@ World palettes follow the supplied references: yellow/olive for Polashi, cool te
 Character art prompts and implementation notes are in `www/assets/PROMPTS.md`; font provenance is in `www/fonts/README.md`. The APK includes all Classic art and Poppins for offline use.
 
 Version 2.2 validation: 50 automated tests, syntax checks, local HTTP integration, Android build/lint, and browser checks for the English Classic cast, offline Poppins loading, and red expired timer in all three worlds passed.
+
+## Version 2.3 — mobile rendering and host PIN
+
+Separate-phone illustrations use normal compositing with no multiplication/filter overlays. Android explicitly disables WebView algorithmic/forced darkening. Responsive grids, form controls, controller portraits, dialogs and long names shrink/wrap within their container. Browser checks at 320, 360, 390, 768 and 1280px found no horizontal overflow.
+
+New games require an exactly four-digit numeric host PIN, presented as four masked OTP-style cells for setup, confirmation and unlock. Leading zeroes, paste and Bengali-digit normalization are supported. Existing saved passwords remain usable; existing numeric four-digit passwords adopt the PIN presentation after a successful unlock. No saved games are discarded.
+
+Connected profile edits sync to the room on storage/focus changes and restore, and joining can use the saved profile name. The host roster updates automatically from membership. Both modes show the requested small “Developed by Tanim” footer.
+
+52 automated tests, HTTP integration, Android build/lint, a complete leading-zero PIN setup/reveal/unlock flow, and cross-tab live-name synchronization passed. Android hardware rendering should still be confirmed on the user's phone.

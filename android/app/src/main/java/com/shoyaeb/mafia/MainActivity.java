@@ -53,6 +53,9 @@ public class MainActivity extends Activity {
         webView.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS);
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
+        // All three worlds are light; never recolor illustrations in system dark mode.
+        if (Build.VERSION.SDK_INT >= 33) settings.setAlgorithmicDarkeningAllowed(false);
+        else if (Build.VERSION.SDK_INT >= 29) settings.setForceDark(WebSettings.FORCE_DARK_OFF);
         settings.setDomStorageEnabled(true);
         settings.setAllowFileAccess(false);
         settings.setAllowContentAccess(true);

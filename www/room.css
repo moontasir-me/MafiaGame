@@ -32,3 +32,22 @@
 }
 
 @media(max-width:650px){.room-welcome .lede{font-size:14px}.room-help,.room-player small,.vote-wait p{font-size:12px}.room-player-actions .btn{font-size:12px}}
+
+/* Native WebView compositing must not multiply illustrations against the page. */
+.room-page img{mix-blend-mode:normal!important;filter:none!important;opacity:1!important;isolation:auto}
+.room-page main{width:100%;min-width:0;max-width:1040px;margin-inline:auto}
+.room-page :is(section,article,fieldset,.panel,.room-header,.room-title,.room-header-controls,.room-player,.roster-identity,.ledger-person,.room-config,.qr-block){min-width:0;max-width:100%}
+.room-page :is(input,select,textarea){min-width:0;max-width:100%}
+.room-page :is(h1,h2,h3,p,strong,small,label,a){overflow-wrap:anywhere}
+.room-page :is(.room-counts,.manual-room-roles,.personal-stats){grid-auto-columns:minmax(0,1fr)}
+.room-page .room-counts{grid-template-columns:repeat(3,minmax(0,1fr))}
+.room-page .invitation{grid-template-columns:minmax(0,1fr) minmax(0,230px)}
+.room-page .controller-card{display:grid;grid-template-columns:minmax(72px,25%) minmax(0,1fr)}
+.room-page .controller-card>img{width:100%;height:auto;max-height:145px;object-fit:contain}
+.room-page .room-world-art{max-width:100%;height:auto}
+.room-page .room-world-option{grid-template-columns:minmax(60px,25%) minmax(0,1fr) 16px}
+.room-page .room-world-option img{width:100%;max-width:110px}
+.room-page .room-dialog{min-width:0;max-width:min(470px,100%)}
+.room-page .last-five{gap:clamp(4px,2vw,13px);flex-wrap:wrap}
+.room-page .room-quote{display:block;max-width:100%}
+@media(max-width:650px){.room-page main{padding:0 12px 24px}.room-page .invitation{grid-template-columns:minmax(0,1fr)}.room-page .room-counts{grid-template-columns:repeat(2,minmax(0,1fr))}.room-page .room-world-art{width:100%}.room-page .room-header{flex-wrap:wrap}.room-page .personal-stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
