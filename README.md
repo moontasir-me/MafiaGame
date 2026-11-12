@@ -131,3 +131,7 @@ New games require an exactly four-digit numeric host PIN, presented as four mask
 Connected profile edits sync to the room on storage/focus changes and restore, and joining can use the saved profile name. The host roster updates automatically from membership. Both modes show the requested small “Developed by Tanim” footer.
 
 52 automated tests, HTTP integration, Android build/lint, a complete leading-zero PIN setup/reveal/unlock flow, and cross-tab live-name synchronization passed. Android hardware rendering should still be confirmed on the user's phone.
+
+## Vercel browser/desktop version
+
+Import this repository at https://vercel.com/new. Keep the repository root as Root Directory; vercel.json selects Other and publishes www without a build or installation command. No environment variables are needed. The static deployment supports the shared-screen game; QR rooms require the existing Android/local Node host. See [deployment instructions](design/VERCEL.md) for the supported modes and online multiplayer limitations.
