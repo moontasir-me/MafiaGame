@@ -11,7 +11,14 @@ const TIMES = [15, 30, 45, 60, 90, 120], ROUNDS = [5, 10, 20, 30, 50];
 function shuffled(n) { const a = Array.from({ length: n }, (_, i) => i); for (let i = n - 1; i > 0; i--) { const j = crypto.getRandomValues(new Uint32Array(1))[0] % (i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 function fresh() { return { v: 1, phase: 'setup', players: [], seconds: 45, rounds: 10, deck: shuffled(RIDDLES.length), pos: 0, asked: 0, turn: 0, endsAt: null, timedOut: false, current: null, group: { score: 0, history: [] } }; }
 let s = fresh(), view = 'play', lastScreen = '', toastTimer, modalResolve, newRow = null;
-try { const raw = JSON.parse(localStorage.getItem(KEY)); if (raw?.v === 1 && Array.isArray(raw.deck) && raw.deck.length === RIDDLES.length) s = { ...fresh(), ...raw }; } catch { }
+try {
+  const raw = JSON.parse(localStorage.getItem(KEY));
+  if (raw?.v === 1 && Array.isArray(raw.deck) && raw.deck.length <= RIDDLES.length) {
+    // Riddles added since the last visit join the unplayed part of the deck; scores are kept.
+    const known = new Set(raw.deck), added = shuffled(RIDDLES.length).filter(i => !known.has(i));
+    s = { ...fresh(), ...raw, deck: [...raw.deck, ...added] };
+  }
+} catch { }
 
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch { toast('তথ্য সেভ করা যায়নি।'); } };
 function toast(text) { clearTimeout(toastTimer); const t = $('#toast'); t.textContent = text; t.classList.add('visible'); toastTimer = setTimeout(() => t.classList.remove('visible'), 2600); }
@@ -60,7 +67,7 @@ function summary() {
 
 function rulesScreen() {
   const steps = [['ধাঁধা', 'হিমু একটি করে বাংলা ধাঁধা ধরবে। পুরোনো দিনের লোকজ ধাঁধা—ছড়ায়, ছন্দে।'], ['ঘড়ি', 'প্রতিটি ধাঁধার জন্য সময় বেছে নিন। সময় শেষ হলে উত্তর নিজে থেকে দেখা যাবে।'], ['উত্তর', 'না পারলে সময়ের আগেই “উত্তর দেখাও” চাপুন।'], ['পয়েন্ট', 'ঠিক উত্তরে ১ পয়েন্ট। নাম দিলে পালা একে একে ঘুরবে; না দিলে সবাই মিলে এক দল।'], ['নতুন ধাঁধা', 'সব ধাঁধা একবার করে না আসা পর্যন্ত কোনোটি আবার আসবে না।']];
-  return `${pageHead('খেলার নিয়ম', 'কহেন কবি কালিদাস', 'এক ফোনে বাংলা ধাঁধার খেলা। একা বা দলে।')}<div class="rules-list">${steps.map((r, i) => `<article><b>${bn(i + 1)}</b><div><h3>${r[0]}</h3><p>${r[1]}</p></div></article>`).join('')}</div><p class="spy-source">“কহেন কবি কালিদাস” হুমায়ূন আহমেদের মিসির আলি-উপন্যাসের নাম; হিমু ও মিসির আলি তাঁর সৃষ্টি। এই খেলা ভক্তের শ্রদ্ধাঞ্জলি, ছবিগুলো এই অ্যাপের জন্য আঁকা ক্যারিকেচার। ধাঁধা: <a href="https://github.com/Labib1610/BanglaRiddleEval">BanglaRiddleEval</a> (MIT লাইসেন্স), বাংলা ধাঁধার বই থেকে সংকলিত; ${bn(RIDDLES.length)}টি।</p>`;
+  return `${pageHead('খেলার নিয়ম', 'কহেন কবি কালিদাস', 'এক ফোনে বাংলা ধাঁধার খেলা। একা বা দলে।')}<div class="rules-list">${steps.map((r, i) => `<article><b>${bn(i + 1)}</b><div><h3>${r[0]}</h3><p>${r[1]}</p></div></article>`).join('')}</div><p class="spy-source">“কহেন কবি কালিদাস” হুমায়ূন আহমেদের মিসির আলি-উপন্যাসের নাম; হিমু ও মিসির আলি তাঁর সৃষ্টি। এই খেলা ভক্তের শ্রদ্ধাঞ্জলি, ছবিগুলো এই অ্যাপের জন্য আঁকা ক্যারিকেচার। মোট ${bn(RIDDLES.length)}টি ধাঁধা। বেশিরভাগ <a href="https://github.com/Labib1610/BanglaRiddleEval">BanglaRiddleEval</a> (MIT লাইসেন্স) থেকে, যা বাংলা ধাঁধার বই থেকে সংকলিত; বাকিগুলো বিভিন্ন বাংলা ধাঁধার ওয়েবপাতা থেকে বাছাই করা প্রচলিত ধাঁধা।</p>`;
 }
 
 function rankingScreen() {

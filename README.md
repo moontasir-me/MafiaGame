@@ -157,4 +157,4 @@ Sound cues use audio only after interaction, with a menu mute toggle. Motion res
 
 A one-phone riddle game with a per-riddle timer (15–120 s); the answer can be revealed before time runs out. Play solo, as one group, or with named players taking turns. Riddles never repeat until all have been played. The theme pays tribute to Humayun Ahmed's Himu and Misir Ali; the caricatures are original drawings.
 
-Riddles: 1,145 traditional Bangla riddles from [BanglaRiddleEval](https://github.com/Labib1610/BanglaRiddleEval) (MIT License, © 2025 Nurul Labib Sayeedi), de-duplicated and cleaned.
+Riddles: 1,456 in all. 1,145 traditional Bangla riddles come from [BanglaRiddleEval](https://github.com/Labib1610/BanglaRiddleEval) (MIT License, © 2025 Nurul Labib Sayeedi), de-duplicated and cleaned. Another 311 folk and popular riddles were gathered from public Bangla riddle pages and reviewed one by one.
