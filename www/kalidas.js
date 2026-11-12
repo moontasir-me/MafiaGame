@@ -7,6 +7,8 @@ const bn = n => Number(n).toLocaleString('bn-BD');
 const KEY = 'kalidas.v1', ART = { HIMU: 'assets/kalidas/himu.svg', MISIR: 'assets/kalidas/misir.svg' };
 const TIMES = [15, 30, 45, 60, 90, 120];
 const NOBODY = 'nobody', US = 'us';
+// A fresh short folk riddle on every visit (short enough to read at a glance, with a one-word answer).
+const SHORT = RIDDLES.filter(([q, a]) => q.length <= 70 && a.length <= 14 && !/[A-Za-z?]/.test(q)), HERO = SHORT[crypto.getRandomValues(new Uint32Array(1))[0] % SHORT.length] || RIDDLES[0];
 
 // Riddles never repeat until the whole collection has been played once.
 function shuffled(n) { const a = Array.from({ length: n }, (_, i) => i); for (let i = n - 1; i > 0; i--) { const j = crypto.getRandomValues(new Uint32Array(1))[0] % (i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; }
@@ -33,7 +35,7 @@ const playing = () => s.phase === 'ask';
 /* ---------- Screens ---------- */
 
 function setup() {
-  return `<section class="hero minimal-hero kalidas-hero"><div class="hero-copy"><h1>কহেন কবি<br><em>কালিদাস</em></h1><blockquote class="hero-riddle">বন থেকে বেরুল টিয়ে<br>সোনার টোপর মাথায় দিয়ে।<cite>প্রচলিত বাংলা ধাঁধা · উত্তর: আনারস</cite></blockquote><div class="hero-buttons">${button('ধাঁধা শুরু', 'start', 'primary', 'play')}<a class="btn secondary" href="#players">খেলোয়াড় যোগ করুন</a></div></div><div class="hero-art kalidas-cover"><img src="assets/kalidas/cover.svg" width="640" height="420" alt="জানালার বাইরে ল্যাম্পপোস্টের নিচে হলুদ পাঞ্জাবিতে হিমু প্রশ্ন ছুড়ছে; ভেতরে হারিকেনের আলোয় খাতা হাতে মিসির আলি"></div></section>
+  return `<section class="hero minimal-hero kalidas-hero"><div class="hero-copy"><h1>কহেন কবি<br><em>কালিদাস</em></h1><blockquote class="hero-riddle">${HERO[0].split('\n').map(esc).join('<br>')}<cite>প্রচলিত বাংলা ধাঁধা · উত্তর: ${esc(HERO[1])}</cite></blockquote><div class="hero-buttons">${button('ধাঁধা শুরু', 'start', 'primary', 'play')}<a class="btn secondary" href="#players">খেলোয়াড় যোগ করুন</a></div></div><div class="hero-art kalidas-cover"><img src="assets/kalidas/cover.svg" width="640" height="420" alt="জানালার বাইরে ল্যাম্পপোস্টের নিচে হলুদ পাঞ্জাবিতে হিমু প্রশ্ন ছুড়ছে; ভেতরে হারিকেনের আলোয় খাতা হাতে মিসির আলি"></div></section>
   <details class="cast-drawer"><summary>চরিত্রগুলো দেখুন</summary><div class="cast-grid kalidas-cast"><article class="cast-card"><img class="character-avatar" src="${ART.HIMU}" alt="" width="80" height="80"><h3>হিমু</h3><small>ধাঁধা ধরে</small><p>হলুদ পাঞ্জাবি, খালি পা, রহস্যময় হাসি। প্রশ্ন ছুড়ে দিয়ে চুপ করে থাকে।</p></article><article class="cast-card"><img class="character-avatar" src="${ART.MISIR}" alt="" width="80" height="80"><h3>মিসির আলি</h3><small>উত্তর খোঁজেন · আপনারা</small><p>যুক্তি দিয়ে ভাবেন। ঠিক উত্তরে সবুজ ফ্রেম, না পারলে লাল।</p></article></div></details>
   <section class="panel kalidas-setup" id="players"><div class="list-heading"><span>কারা খেলছেন?</span><span>${bn(s.players.length)} / ২০</span></div>
   <form id="name-form" class="name-form"><div class="input-wrap">${icon('person')}<input id="player-name" placeholder="খেলোয়াড়ের নাম" autocomplete="off" maxlength="20" aria-label="খেলোয়াড়ের নাম"></div><button class="btn primary" type="submit">যোগ করুন${icon('plus')}</button></form>
