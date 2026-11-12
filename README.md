@@ -141,10 +141,14 @@ Connect a Neon Postgres database to the Vercel project and provide its server-on
 
 Vercel now hosts the game API as well as the browser UI. Neon stores room state; atomic revision checks handle simultaneous players without losing votes. Online invitations use the current website origin, and online host handover no longer depends on the first phone staying connected. The Android hotspot mode remains available independently. Install dependencies with npm ci for local development. Database credentials stay outside www and must never be committed.
 
-## Version 3.0 — Spy and a quieter interface
+## Version 3.1 — choose Mafia or Spy
 
-Open `spy.html` or choose Spy from the Mafia home/menu. Spy has one Bangla world, one hidden Spy, and a shared secret word for everyone else. Supports 3–20 players plus a separate host, one-phone private reveals with a four-digit host PIN, hotspot rooms, and internet rooms. After discussion, players confirm one vote. The host confirms at most one elimination. Finding the Spy wins for the word team; two remaining players wins for the Spy. Word-team winners receive 1 point each, a winning Spy receives 3, and the host receives 1 on completion.
+The opening screen offers two game tiles. Mafia opens `mafia.html`, preserving its three universes and both single-phone and online multiplayer. Spy opens `spy.html` and runs entirely on one phone, with no host, PIN, room, QR code, or network dependency.
 
-The default deck contains 558 curated everyday words. An optional 20,000-entry frequency-derived Bangla word-form deck includes inflections, names and some less familiar terms; universal familiarity is not claimed. See [dictionary attribution](dictionary/SOURCES.md). The host can supply a custom Bangla word.
+Spy supports 3–20 players. Add everyone's names and choose a discussion duration. Reveal one private identity at a time and hide it before passing the phone. Everyone receives the same Bangla word except one Spy. After the last reveal the discussion timer starts automatically. Expiry turns the timer red and opens the group ballot; players may also end discussion early. A confirmed vote eliminates one person. Finding the Spy wins for the word team; two remaining players wins for the Spy. A new round starts automatically after an incorrect vote while more than two remain. Word-team winners earn 1 point each, a winning Spy earns 3; no host points exist in Spy.
 
-Players can quit during a game and no longer vote, guess, or receive victory points. They can participate again after rematch. A host cannot quit as a player. Sound cues use the device's audio only after interaction, with a menu mute toggle. Animations respect reduced-motion settings. Generated verse has been removed; the remaining quotations are credited literary excerpts.
+Rematches start the phone sequence with the previous Spy and continue through the player list, wrapping around. The menu's new-game/quit control returns to setup without clearing the roster or past scores. Individual players may leave through the player list during discussion or voting and receive no win points. Reveals hide when the app loses focus, timers survive reload, and saved games resume without exposing a private card.
+
+The default deck contains 558 curated everyday words. An optional 20,000-entry frequency-derived Bangla word-form deck includes inflections, names and some less familiar terms; universal familiarity is not claimed. See [dictionary attribution](dictionary/SOURCES.md).
+
+Sound cues use audio only after interaction, with a menu mute toggle. Motion respects reduced-motion settings. Remaining quotations are credited literary excerpts. The new illustrations and visible geometric motifs are local SVG artwork.

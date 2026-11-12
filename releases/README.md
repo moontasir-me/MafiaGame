@@ -1,13 +1,11 @@
-# Mafia & Spy 3.0 for Android
+# Mafia & Spy 3.1 for Android
 
-[Download the APK](Mafia-3.0-debug.apk). Open this page on your phone and download the APK, then install it over the previous version. Android may ask you to allow installs from the browser or file manager used to open it. The signing certificate matches the previous personal-testing builds.
+[Download the APK](Mafia-3.1-debug.apk). Install it over the previous version; the signing certificate is unchanged. Android may ask you to allow installation from your browser or file manager. Requires Android 8+ and a current Android System WebView. This is a debug-signed personal-testing build.
 
-Requires Android 8 or later and a current Android System WebView. This is a debug-signed personal-testing APK, not a Play Store release.
+The new start screen has two tiles: Mafia and Spy. Mafia keeps its universes and multiplayer modes. Spy is now exclusively host-free single-phone play, with private reveals, an automatic discussion timer, group voting and scoring. A rematch starts from the last Spy. Quit/New game returns to setup immediately after confirmation, retaining names and completed scores. The optional 20,000-entry deck includes less familiar word forms; 558 everyday words are the default.
 
-Mafia now includes player quitting, a simpler home and host interface, subtle motion, optional synthesized notification sounds, and credited literary excerpts. Spy is a separate Bangla word game with 3–20 players plus a host, private reveals, voting, points and history. Its default deck has 558 everyday words; the optional extended deck has 20,000 Bangla word forms, including less familiar names and inflections.
+For Mafia hotspot multiplayer, keep the original hosting phone awake with the app open. Internet Mafia rooms are available in [the browser version](https://mafiagame-tau.vercel.app/). Spy needs neither hotspot nor internet.
 
-For hotspot QR multiplayer in the APK, connect friends to the host phone’s hotspot, create a room and scan its QR code. Keep the original phone awake with the app open. For internet multiplayer, open [the browser version](https://mafiagame-tau.vercel.app/) and share the room invitation; no shared hotspot is required.
+Verified: 77 automated tests, Android build/lint, packaged asset equality, signing certificate, browser play-through of private reveals, real discussion timer expiry and red ballot, results, last-Spy rematch, quitting/restarting, and phone-width layout. Physical Android device testing remains to be performed.
 
-Verified: build, Android lint, 69 automated tests, hotspot HTTP regression, single-phone Spy browser flow, mobile layout, and real Neon-backed Mafia/Spy rooms with concurrent voting, timer deadlines, scoring, privacy, handover and quitting. Every bundled web asset and the APK signature were checked. A physical Android device/hotspot test remains to be performed.
-
-SHA-256 is recorded in [SHA256SUMS](SHA256SUMS).
+See [SHA256SUMS](SHA256SUMS) for the APK checksum.
