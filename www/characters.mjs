@@ -29,9 +29,17 @@ export const CHARACTERS={
   VILLAGER:{name:'Amerigo Bonasera',era:'The Godfather · Mario Puzo',history:'The undertaker appeals to Don Corleone for justice. His request opens the novel’s world of favors and obligations.',asset:'villager'}
  }
 };
+CHARACTERS.classic=Object.fromEntries([
+ ['MAFIA','Rana Bhai','mafia','The neighborhood charmer who always has a plan—and an alibi.'],
+ ['DOCTOR','Dr. Babul','doctor','The friendly local doctor with a steady hand and a suspiciously busy night.'],
+ ['VILLAGER','Jamal','villager','A hardworking villager with modest means and excellent instincts.'],
+ ['POLICE','Constable Karim','police','The neighborhood constable who asks one question too many.'],
+ ['BETRAYER','Mintu','betrayer','A tea-stall regular whose loyalties change faster than the gossip.'],
+ ['HOST','Tea Master Kuddus','host','The host pours the tea, deals the roles, and keeps the table in order.']
+].map(([role,name,asset,history])=>[role,{name,asset,history,era:'Classic · Bangladesh'}]));
 export function characterFor(role,locale='bn',index=0){const entry=CHARACTERS[locale][role]||CHARACTERS[locale].VILLAGER;return Array.isArray(entry)?entry[Math.abs(index)%entry.length]:entry;}
-export const characterImage=(role,locale='bn',index=0)=>`assets/${locale}/${characterFor(role,locale,index).asset}.png`;
+export const characterImage=(role,locale='bn',index=0)=>locale==='classic'?`assets/classic/characters.svg#${characterFor(role,locale,index).asset}`:`assets/${locale}/${characterFor(role,locale,index).asset}.png`;
 export function assignCharacterIndexes(players,order=players.map((_,i)=>i)){players.forEach(p=>p.characterIndex=0);let mafia=0;for(const i of order)if(players[i]?.role==='MAFIA')players[i].characterIndex=mafia++;return players;}
 const HISTORICAL_EN={host:'Siraj ud-Daulah',mafia:'Robert Clive','mafia-2':'Mir Jafar','mafia-3':'Mir Qasim',doctor:'Hakim Ali Gilani',police:'Mir Madan',bodyguard:'Mohanlal',villager:'Lalon Shah',betrayer:'Ghaseti Begum',astrologer:'Varahamihira'};
 const SICILIAN_BN={host:'ভিটো করলিওনে',mafia:'মাইকেল করলিওনে','mafia-2':'সনি করলিওনে','mafia-3':'এমিলিও বারজিনি',doctor:'ডক্টর জুলস সেগাল',police:'আল নেরি',bodyguard:'লুকা ব্রাসি',villager:'আমেরিগো বোনাসেরা',betrayer:'কার্লো রিজি',astrologer:'টম হেগেন'};
-export function characterName(role,sourceLocale,index,displayLocale=sourceLocale){const c=characterFor(role,sourceLocale,index);return sourceLocale===displayLocale?c.name:(sourceLocale==='bn'?HISTORICAL_EN:SICILIAN_BN)[c.asset];}
+export function characterName(role,sourceLocale,index,displayLocale=sourceLocale){const c=characterFor(role,sourceLocale,index);if(sourceLocale===displayLocale)return c.name;if(displayLocale!=='bn')return sourceLocale==='bn'?HISTORICAL_EN[c.asset]:c.name;if(sourceLocale==='classic')return ({host:'চায়ের ওস্তাদ কুদ্দুস',mafia:'রানা ভাই',doctor:'ডাক্তার বাবুল',police:'কনস্টেবল করিম',villager:'জামাল',betrayer:'মিন্টু'})[c.asset];return SICILIAN_BN[c.asset];}

@@ -15,3 +15,4 @@ test('every offline asset exists, including both worlds and the QR client',async
   assert.deepEqual(files.sort(),['cover.png','host.png','mafia-2.png','mafia-3.png',...Object.keys(ROLES).map(r=>r.toLowerCase()+'.png')].sort());
  }
 });
+test('Classic has one portrait view for each role and host, plus offline Poppins',async()=>{const {characterImage}=await import('../www/characters.mjs');const svg=await readFile(new URL('../www/assets/classic/characters.svg',import.meta.url),'utf8');for(const role of ['MAFIA','DOCTOR','POLICE','VILLAGER','BETRAYER','HOST']){const path=characterImage(role,'classic');assert.ok(svg.includes(`id="${path.split('#')[1]}"`));}for(const f of ['Poppins-Regular.ttf','Poppins-SemiBold.ttf']){const bytes=await readFile(new URL('../www/fonts/'+f,import.meta.url));assert.ok(bytes.length>100000);}});

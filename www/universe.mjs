@@ -28,8 +28,11 @@ export const UNIVERSES={
  }}
 };
 
+UNIVERSES.classic={...UNIVERSES.en,universeName:'Classic',subtitle:'The neighborhood has secrets',era:'BANGLADESH · THE NEIGHBORHOOD TABLE',headline:'Same friends.<br><em>New suspicions.</em>',story:'Tea is poured. The usual faces gather. Someone is hiding a dangerous secret, someone is keeping you alive, and someone knows more than they say. Trust your friends—carefully.',castTitle:'Five roles. A whole neighborhood of suspects.',quote:'Same friends. New suspicions.',quoteCredit:'Original · Classic',quoteUrl:null,roles:Object.fromEntries(['MAFIA','DOCTOR','VILLAGER','POLICE','BETRAYER'].map(r=>[r,{...UNIVERSES.en.roles[r]}]))};
+export const rolesFor=locale=>Object.keys(UNIVERSES[locale].roles);
 // Add future worlds here; only implemented worlds are offered in the picker.
 export const WORLD_OPTIONS=[
  {id:'polashi',locale:'bn',name:{bn:'পলাশী',en:'Polashi'}},
- {id:'sicily',locale:'en',name:{bn:'সিসিলি',en:'Sicily'}}
+ {id:'sicily',locale:'en',name:{bn:'সিসিলি',en:'Sicily'}},
+ {id:'classic',locale:'classic',name:{bn:'ক্লাসিক',en:'Classic'}}
 ];

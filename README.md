@@ -88,7 +88,7 @@ Twenty named caricatures and two ensemble covers are active under `www/assets/bn
 
 ## Android build and verification
 
-**Mafia 2.1.1 APK is built and signed for direct installation:** [Download the APK](releases/Mafia-2.1.1-debug.apk). This is a debug-signed build for personal testing, not a Play Store release. Physical Android/hotspot testing still needs a real device.
+**Mafia 2.1.1 APK is built and signed for direct installation:** [Download the APK](releases/Mafia-2.2-debug.apk). This is a debug-signed build for personal testing, not a Play Store release. Physical Android/hotspot testing still needs a real device.
 
 Use Android Studio, SDK Platform 35, JDK 17, and Gradle **8.9** (Android Gradle Plugin **8.7.3**). The checked-in wrapper verifies the Gradle distribution checksum. Run `cd android` then `./gradlew assembleDebug lintDebug` with `JAVA_HOME` pointing to JDK 17 and `ANDROID_HOME` pointing to the SDK. The debug APK appears at `android/app/build/outputs/apk/debug/app-debug.apk`.
 
@@ -111,3 +111,13 @@ Vote totals are public; individual ballots are not published. Only the host conf
 ## Version 2.1.1 phone layout fix
 
 The Android activity now places the WebView inside native safe-area margins for status/navigation bars, display cutouts, and the keyboard. It resizes the actual viewport instead of applying WebView padding. Theme updates preserve the layout flags. Both game modes use 12px phone gutters, 48px header controls, and larger introductory/action text. Browser checks at 320px and 360px found no horizontal overflow and reachable header controls. Android build/lint and all 48 tests pass. The APK uses the same development signing certificate as 2.1 and a higher version code, so it can update the installed app without clearing its data. Physical-device verification of the reported overlap remains necessary.
+
+## Version 2.2 — Classic and world themes
+
+Classic is an English-language Bangladeshi neighborhood with Mafia, Doctor, Villager, Police, and optional Betrayer. Six new caricatures include a non-player tea-stall host. Extra Polashi/Sicily roles cannot be dealt in Classic. Choose Classic in the lobby before dealing. Multiplayer universe changes require host authorization; single-phone active games require the unlocked host panel.
+
+World palettes follow the supplied references: yellow/olive for Polashi, cool teal/navy for Sicily, and olive green/off-white/orange for Classic. All screens use bundled Poppins. Per the user's approved fallback, Bengali prefers a locally installed Li Ador Noirrit but uses the system Bengali font when unavailable; the restricted font file is not redistributed. Both timer components turn red at zero and reset to their universe colors when restarted.
+
+Character art prompts and implementation notes are in `www/assets/PROMPTS.md`; font provenance is in `www/fonts/README.md`. The APK includes all Classic art and Poppins for offline use.
+
+Version 2.2 validation: 50 automated tests, syntax checks, local HTTP integration, Android build/lint, and browser checks for the English Classic cast, offline Poppins loading, and red expired timer in all three worlds passed.

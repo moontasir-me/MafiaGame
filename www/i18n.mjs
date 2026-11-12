@@ -3,7 +3,7 @@ import {rhythmicBengali} from './rhyming-copy.mjs';
 const storedWorld=localStorage.getItem('mafia.universe');const savedWorld=storedWorld==='mosnod'?'polashi':storedWorld;
 export let universeId=WORLD_OPTIONS.some(w=>w.id===savedWorld)?savedWorld:(localStorage.getItem('mafia.language')==='en'?'sicily':'polashi');
 export let language=WORLD_OPTIONS.find(w=>w.id===universeId).locale;
-export const tr=(bn,en)=>language==='en'?en:rhythmicBengali(bn);
+export const tr=(bn,en)=>language!=='bn'?en:rhythmicBengali(bn);
 export function setUniverse(id){const world=WORLD_OPTIONS.find(w=>w.id===id);if(!world)return false;universeId=id;language=world.locale;localStorage.setItem('mafia.universe',id);localStorage.setItem('mafia.language',language);return true;}
 export function setLanguage(value){setUniverse(value==='en'?'sicily':'polashi');}
 const entries = [
@@ -49,6 +49,6 @@ export function localize(root=document.body) {
 
  const walk=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
  const nodes=[];while(walk.nextNode())nodes.push(walk.currentNode);
- for(const node of nodes){if(node.parentElement?.closest('script,style,textarea,input,.player-name,.avatar,.player-info > strong,[data-player-name]'))continue;const value=language==='en'?english(node.nodeValue):rhythmicBengali(node.nodeValue);if(value!==node.nodeValue)node.nodeValue=value;}
- root.querySelectorAll('[placeholder],[aria-label],[title]').forEach(el=>{for(const a of ['placeholder','aria-label','title']){const value=el.getAttribute(a);if(value)el.setAttribute(a,language==='en'?english(value):rhythmicBengali(value))}});
+ for(const node of nodes){if(node.parentElement?.closest('script,style,textarea,input,.player-name,.avatar,.player-info > strong,[data-player-name]'))continue;const value=language!=='bn'?english(node.nodeValue):rhythmicBengali(node.nodeValue);if(value!==node.nodeValue)node.nodeValue=value;}
+ root.querySelectorAll('[placeholder],[aria-label],[title]').forEach(el=>{for(const a of ['placeholder','aria-label','title']){const value=el.getAttribute(a);if(value)el.setAttribute(a,language!=='bn'?english(value):rhythmicBengali(value))}});
 }

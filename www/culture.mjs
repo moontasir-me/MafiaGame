@@ -9,6 +9,7 @@ export const QUOTES={
   {text:'Every family has a secret. Tonight, yours has a vote.',credit:'An original Sicilian affair',url:null},
  ]
 };
+QUOTES.classic=QUOTES.en.filter(q=>!q.credit.includes('Puzo')).map(q=>({...q,credit:'Original · Classic'}));
 export function nextQuote(locale,storage=localStorage){
  const deck=QUOTES[locale],key='mafia.quote.'+locale;
  const previous=Number(storage.getItem(key)??-1),index=(previous+1+Math.floor(Math.random()*(deck.length-1)))%deck.length;

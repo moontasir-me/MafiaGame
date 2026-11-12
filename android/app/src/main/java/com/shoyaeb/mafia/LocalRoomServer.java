@@ -91,7 +91,7 @@ final class LocalRoomServer implements AutoCloseable {
             try (InputStream file = assets.open(asset)) {
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream(); byte[] buffer = new byte[8192]; int n;
                 while ((n = file.read(buffer)) != -1) bytes.write(buffer,0,n);
-                String mime = asset.endsWith(".html")?"text/html; charset=utf-8":asset.endsWith(".css")?"text/css":asset.endsWith(".js")||asset.endsWith(".mjs")?"text/javascript":asset.endsWith(".png")?"image/png":asset.endsWith(".svg")?"image/svg+xml":"application/json";
+                String mime = asset.endsWith(".html")?"text/html; charset=utf-8":asset.endsWith(".css")?"text/css":asset.endsWith(".js")||asset.endsWith(".mjs")?"text/javascript":asset.endsWith(".png")?"image/png":asset.endsWith(".svg")?"image/svg+xml":asset.endsWith(".ttf")?"font/ttf":"application/json";
                 reply(out,200,mime,bytes.toByteArray());
             } catch (IOException e) { reply(out,404,"text/plain",new byte[0]); }
         } catch (Exception ignored) { }

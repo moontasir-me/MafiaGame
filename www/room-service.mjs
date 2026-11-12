@@ -27,7 +27,7 @@ export class RoomService{
   if(path==='/api/create'){
    if(this.rooms.size>=64)fail('FULL');const me=this.member(b.name,[],b.profile);me.role='HOST';me.isAlive=false;
    let id;do{id=token().slice(0,6).toUpperCase();}while(this.rooms.has(id));
-   const r={id,invite:token(),hostId:me.id,locale:b.locale==='en'?'en':'bn',members:[me],phase:'lobby',edition:0,version:1,timer:newTimer(),round:0,votes:{},votingOpen:false,event:{type:'CREATED',name:me.name},touched:this.now(),config:defaultRoleCounts(5),game:null};
+   const r={id,invite:token(),hostId:me.id,locale:['en','classic'].includes(b.locale)?b.locale:'bn',members:[me],phase:'lobby',edition:0,version:1,timer:newTimer(),round:0,votes:{},votingOpen:false,event:{type:'CREATED',name:me.name},touched:this.now(),config:defaultRoleCounts(5),game:null};
    this.rooms.set(id,r);return {room:id,token:me.token,view:this.view(r,me)};
   }
   const r=this.rooms.get(String(b.room||'').toUpperCase());if(!r)fail('ROOM_GONE');
@@ -56,13 +56,13 @@ export class RoomService{
   }
   host();
   switch(a.type){
-   case 'universe':if(!['bn','en'].includes(a.locale))fail('UNIVERSE');r.locale=a.locale;this.touch(r,{type:'UNIVERSE'});break;
+   case 'universe':if(!['bn','en','classic'].includes(a.locale))fail('UNIVERSE');if(a.locale==='classic'&&r.phase!=='lobby'&&r.game?.players.some(p=>['ASTROLOGER','BODYGUARD'].includes(p.role)))fail('CLASSIC_ROLES');r.locale=a.locale;if(a.locale==='classic'){r.config.ASTROLOGER=0;r.config.BODYGUARD=0;}this.touch(r,{type:'UNIVERSE'});break;
    case 'transfer':{
     if(!['lobby','over'].includes(r.phase))fail('HOST_BETWEEN_GAMES');const p=r.members.find(p=>p.id===a.id);if(!p)fail('PLAYER');const previous=r.members.find(p=>p.id===r.hostId);previous.role=null;previous.isAlive=true;r.hostId=p.id;p.role='HOST';p.isAlive=false;this.touch(r,{type:'HOST',name:p.name});break;
    }
    case 'kick':if(r.phase!=='lobby'||a.id===r.hostId)fail('PHASE');r.members=r.members.filter(p=>p.id!==a.id);this.touch(r,{type:'ROSTER'});break;
    case 'start':{
-    if(r.phase!=='lobby')fail('PHASE');const players=r.members.filter(p=>p.id!==r.hostId),names=players.map(p=>p.name),counts=a.counts||defaultRoleCounts(names.length);if(validateRoleCounts(names.length,counts))fail('COUNTS');
+    if(r.phase!=='lobby')fail('PHASE');const players=r.members.filter(p=>p.id!==r.hostId),names=players.map(p=>p.name),counts=a.counts||defaultRoleCounts(names.length);if(r.locale==='classic'&&(counts.ASTROLOGER||counts.BODYGUARD))fail('CLASSIC_ROLES');if(validateRoleCounts(names.length,counts))fail('COUNTS');
     const dealt=assignCharacterIndexes(a.assignments?assignManualRoles(names,counts,a.assignments):assignRoles(names,counts));
     const quotes=Array.from({length:103},(_,i)=>i);for(let i=quotes.length-1;i>0;i--){const j=randomInt(i+1);[quotes[i],quotes[j]]=[quotes[j],quotes[i]];}
     players.forEach((p,i)=>Object.assign(p,dealt[i],{id:p.id,token:p.token,score:p.score,history:p.history,photo:p.photo,profileId:p.profileId,quoteIndex:quotes[i]}));

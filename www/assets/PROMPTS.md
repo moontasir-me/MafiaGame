@@ -41,3 +41,6 @@ Square mobile Mafia avatar; witty, dignified vintage Italian crime-novel editori
 ## Ensemble cover prompts
 
 Generate a new coherent wide scene from the portrait identity references. Include all ten distinct faces once, around a game table, with the host centrally directing play. Full heads and shoulders, generous margins, no decorative crop frame, no lettering or watermark. Polashi uses a Mughal garden court with Siraj, Clive, Mir Jafar, Mir Qasim, Ghaseti, Ali Gilani, Mir Madan, Mohanlal, Lalon, and Varahamihira. Sicily uses a vintage Italian interior with Vito, Michael, Sonny, Barzini, Jules Segal, Al Neri, Luca Brasi, Carlo Rizzi, Tom Hagen, and Bonasera. Saved to `www/assets/bn/cover.png` and `www/assets/en/cover.png`.
+
+## Classic neighborhood art
+Built-in image generation: one 3×2 sprite sheet (Rana, Babul, Jamal, Karim, Mintu, Kuddus), consumed through named SVG viewports without altering the art; one landscape tea-stall ensemble. Prompts requested affectionate contemporary Bangladeshi male caricatures, distinct faces and clothes, olive green/off-white/orange accents, no text, no historical or Sicilian costume. Active assets: `classic/characters.svg` and `classic/cover.png`.

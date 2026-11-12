@@ -86,7 +86,7 @@ public class MainActivity extends Activity {
                 file = file.equals("/") ? "index.html" : file.substring(1);
                 String mime = file.endsWith(".html") ? "text/html" : file.endsWith(".css") ? "text/css" :
                         (file.endsWith(".js") || file.endsWith(".mjs")) ? "text/javascript" :
-                        file.endsWith(".png") ? "image/png" : file.endsWith(".svg") ? "image/svg+xml" : "application/json";
+                        file.endsWith(".png") ? "image/png" : file.endsWith(".svg") ? "image/svg+xml" : file.endsWith(".ttf") ? "font/ttf" : "application/json";
                 try { return new WebResourceResponse(mime, "UTF-8", getAssets().open(file)); }
                 catch (IOException e) { return empty(); }
             }
