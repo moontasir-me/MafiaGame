@@ -1,0 +1,42 @@
+/* Riddle game details. Frame, buttons and tables come from style.css + kit.css. */
+.kalidas-hero h1 em{font-style:normal;color:var(--accent)}
+.kalidas-cover img{display:block;width:100%;height:auto;border-radius:18px;box-shadow:0 18px 40px #2f3e571f}
+.kalidas-cast{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.kalidas-cast .cast-card p{font-size:12px;line-height:1.6;color:var(--muted);margin:6px 0 0}
+.kalidas-cast .character-avatar{border-radius:16px;object-fit:cover}
+.kalidas-setup{margin-top:8px}
+.kalidas-page .name-list{display:grid;gap:8px;margin:14px 0 4px}
+.kalidas-page .name-row.kalidas-row{background:var(--surface);border:1px solid color-mix(in srgb,var(--border) 75%,transparent);border-radius:14px;box-shadow:none}
+.kalidas-row .seat-initial{background:var(--world-dark);color:var(--world-accent)}
+.kalidas-hint{font-size:13px;color:var(--muted);margin:12px 0 0}
+.spy-prefs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:22px 0 10px}
+.spy-prefs label{font-size:12px;color:var(--muted)}
+.spy-prefs select{display:block;width:100%;margin-top:6px;min-height:48px;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text);font:inherit;font-size:13px}
+.spy-source{font-size:12px;line-height:1.8;color:var(--muted)}.spy-source a{text-decoration:underline}
+
+.riddle-card{position:relative;margin:4px 0 18px;padding:20px 20px 24px;border:1px solid var(--border);border-radius:22px;background:var(--surface);box-shadow:0 16px 40px #2f3e5714;overflow:hidden}
+.riddle-card:before{content:'';position:absolute;inset:0 0 auto;height:6px;background:repeating-linear-gradient(90deg,var(--world-accent) 0 18px,var(--world-dark) 18px 36px);opacity:.8}
+.riddle-asker{display:flex;align-items:center;gap:12px;margin:6px 0 16px}
+.riddle-asker img{width:52px;height:52px;border-radius:14px;border:2px solid var(--world-accent);object-fit:cover}
+.riddle-asker span{flex:1;min-width:0;line-height:1.35}
+.riddle-asker b{display:block;font-size:14px}
+.riddle-asker small{font-size:12px;color:var(--muted)}
+.riddle-timer{position:relative;width:66px;height:66px;flex:none;display:grid;place-items:center}
+.riddle-timer svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.riddle-timer circle{fill:none;stroke-width:3.4}
+.riddle-timer .track{stroke:color-mix(in srgb,var(--border) 70%,transparent)}
+.riddle-timer .ring{stroke:var(--world-dark);stroke-linecap:round;stroke-dasharray:119.4;transition:stroke-dashoffset .25s linear,stroke .3s}
+.riddle-timer span{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
+.riddle-timer.is-urgent .ring{stroke:#c62828}
+.riddle-timer.is-urgent span{color:#c62828;animation:kit-pulse 1s ease-in-out infinite}
+.riddle-timer.is-done .ring{stroke:var(--green);stroke-dashoffset:0!important}
+.riddle-text{margin:0;font-size:clamp(20px,5.4vw,26px);line-height:1.75;color:var(--text)}
+.riddle-answer{margin-top:18px;padding:14px 16px;border-radius:14px;background:color-mix(in srgb,var(--world-accent) 22%,var(--surface));border:1px dashed var(--accent);animation:kit-pop .35s cubic-bezier(.2,.9,.3,1.2) both}
+.riddle-answer span{display:block;font-size:11px;letter-spacing:1px;color:var(--muted)}
+.riddle-answer strong{display:block;font-size:clamp(24px,6.6vw,32px);line-height:1.4;color:var(--world-dark)}
+.kalidas-ask{margin:0 0 10px;font-weight:600}
+.answer-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.answer-actions .btn{width:100%;justify-content:center}
+.answer-actions .right-btn{background:#2f7a46!important;border-color:#2f7a46!important;color:#fff!important}
+.answer-actions .wrong-btn{background:#fbe9e7!important;border-color:#e4a59d!important;color:#9b2a21!important}
+@media(max-width:650px){.spy-prefs{gap:10px}.spy-prefs select{padding:10px 8px;font-size:12px}}

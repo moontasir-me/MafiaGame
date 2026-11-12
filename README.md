@@ -1,4 +1,4 @@
-# Mafia & Spy
+# Mafia, Spy & কহেন কবি কালিদাস
 
 A light-themed mobile social deduction game for **5–20 players plus a separate host**. The app name stays **Mafia**; the universe picker changes the cast, language, quotations, artwork, and paper motif.
 
@@ -44,16 +44,16 @@ Before a village victory, actual Mafia share **one final Police/Senapati guess**
 | Mafia 1 | Robert Clive | Michael Corleone |
 | Mafia 2 | Mir Jafar | Sonny Corleone |
 | Mafia 3 | Mir Qasim | Emilio Barzini |
-| Doctor / Rajboiddo | Hakim Ali Gilani | Dr. Jules Segal |
+| Doctor / Rajchikitshok | Hakim Ali Gilani | Dr. Jules Segal |
 | Police / Senapati | Mir Madan | Al Neri |
 | Betrayer | Ghaseti Begum | Carlo Rizzi |
-| Gonok / Consigliere | Varahamihira | Tom Hagen |
+| Biggani / Consigliere | Varahamihira | Tom Hagen |
 | Protector / Spy | Mohanlal | Luca Brasi |
-| Villager | Lalon Shah | Amerigo Bonasera |
+| Villager | An unnamed villager | Amerigo Bonasera |
 
-Additional copies of a role reuse its identity set. In single-phone mode, the numbered Mafia identities follow actual reveal order. Gonok/Consigliere survives Mafia night attacks but can be voted out. The host narrates protection and investigation in person; a private host-only inspection supports resolving night actions.
+Additional copies of a role reuse its identity set. In single-phone mode, the numbered Mafia identities follow actual reveal order. Biggani/Consigliere survives Mafia night attacks but can be voted out. The host narrates protection and investigation in person; a private host-only inspection supports resolving night actions.
 
-Character cards contain short sourced biographies. Mir Jafar and Mir Qasim are called **Nawabs**, with their reigns and deaths described separately. Mir Qasim’s later conflict with the Company is retained. Ghaseti’s death account is identified as a traditional account. Earlier/later figures such as Ali Gilani, Varahamihira, and Lalon carry their own eras. See [literary and historical sources](design/LITERARY-SOURCES.md).
+Character cards contain short sourced biographies. Mir Jafar and Mir Qasim are called **Nawabs**, with their reigns and deaths described separately. Mir Qasim’s later conflict with the Company is retained. Ghaseti’s death account is identified as a traditional account. Earlier/later figures such as Ali Gilani, and Varahamihira carry their own eras. See [literary and historical sources](design/LITERARY-SOURCES.md).
 
 ## One-phone mode
 
@@ -152,3 +152,9 @@ Rematches start the phone sequence with the previous Spy and continue through th
 The default deck contains 558 curated everyday words. An optional 20,000-entry frequency-derived Bangla word-form deck includes inflections, names and some less familiar terms; universal familiarity is not claimed. See [dictionary attribution](dictionary/SOURCES.md).
 
 Sound cues use audio only after interaction, with a menu mute toggle. Motion respects reduced-motion settings. Remaining quotations are credited literary excerpts. The new illustrations and visible geometric motifs are local SVG artwork.
+
+## কহেন কবি কালিদাস (Bangla riddles)
+
+A one-phone riddle game with a per-riddle timer (15–120 s); the answer can be revealed before time runs out. Play solo, as one group, or with named players taking turns. Riddles never repeat until all have been played. The theme pays tribute to Humayun Ahmed's Himu and Misir Ali; the caricatures are original drawings.
+
+Riddles: 1,145 traditional Bangla riddles from [BanglaRiddleEval](https://github.com/Labib1610/BanglaRiddleEval) (MIT License, © 2025 Nurul Labib Sayeedi), de-duplicated and cleaned.

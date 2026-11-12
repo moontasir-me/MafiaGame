@@ -6,3 +6,9 @@
 /* Spy tile uses the Misir Ali casebook, framed exactly like the Mafia artwork. */
 .spy-tile{background:linear-gradient(150deg,#f4eee4,#e3e4dc)}.spy-tile-art img{inset:12px 18px 0;width:calc(100% - 36px);height:calc(100% - 12px)}.spy-tile-art img,.mafia-tile-art img{border-radius:15px}
 @media(max-width:650px){.spy-tile-art img{inset:6px 18px 0;width:calc(100% - 36px);height:calc(100% - 6px)}}
+/* Three games: three columns on wide screens, one per row on phones. */
+@media(min-width:901px){.game-tiles{grid-template-columns:repeat(3,1fr)}.tile-art{height:200px}.tile-copy h2{font-size:30px}}
+@media(min-width:651px) and (max-width:900px){.game-tiles{grid-template-columns:1fr 1fr}.kalidas-tile{grid-column:1/-1}}
+.kalidas-tile{background:linear-gradient(150deg,#fbf3dc,#efe2c2)}.kalidas-tile-art img{inset:12px 18px 0;width:calc(100% - 36px);height:calc(100% - 12px);border-radius:15px}
+.kalidas-tile h2{font-family:inherit}
+@media(max-width:650px){.kalidas-tile-art img{inset:6px 18px 0;width:calc(100% - 36px);height:calc(100% - 6px)}}

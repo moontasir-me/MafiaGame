@@ -2,7 +2,7 @@ import { newSpySession, addSpyPlayer, removeSpyPlayer, dealSpy, spyIdentity, nex
 import { newTimer, startTimer, pauseTimer, secondsLeft } from './game-tools.mjs';
 import { sound, soundEnabled, toggleSound } from './sound.mjs';
 import { characterImage } from './characters.mjs';
-import { esc, icon, tapCard, bindTapCard, setTapCard, rankTable, enterScreen, leaveScreen, appShell, pageHead, quoteCard } from './ui-kit.mjs';
+import { esc, icon, tapCard, bindTapCard, setTapCard, rankTable, enterScreen, leaveScreen, appShell, pageHead } from './ui-kit.mjs';
 
 const $ = q => document.querySelector(q), $$ = q => [...document.querySelectorAll(q)];
 const bn = n => Number(n).toLocaleString('bn-BD');
@@ -21,46 +21,41 @@ function toast(text) { clearTimeout(toastTimer); const t = $('#toast'); t.textCo
 const current = () => s.players.find(p => p.id === s.order[s.revealIndex]);
 const byId = id => s.players.find(p => p.id === id);
 
-/* ---------- Humayun Ahmed theme ---------- */
+/* ---------- Detective theme ---------- */
 
-// Every game is a "case", named after a Misir Ali novel by Humayun Ahmed.
-const CASES = ['দেবী', 'নিশীথিনী', 'অন্যভুবন', 'বৃহন্নলা', 'ভয়', 'বিপদ', 'অনীশ', 'আমিই মিসির আলি', 'বাঘবন্দি মিসির আলি', 'কহেন কবি কালিদাস', 'তন্দ্রাবিলাস', 'মিসির আলি আপনি কোথায়?'];
-const caseOf = id => CASES[[...String(id || 'misir')].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % CASES.length];
-// Game notes written in Misir Ali's spirit (original lines, not quotations from the books).
-const NOTES = ['যে খুব তাড়াতাড়ি নিশ্চিত হয়ে যায়, তাকে আরেকটা প্রশ্ন করুন।', 'হিমু অন্যের সূত্র ধার করে। কে আগের জনের কথাই ঘুরিয়ে বলছে?', 'একটা অস্পষ্ট সূত্র দোষের নয়। পরপর দুটো হলে খাতায় লিখে রাখুন।', 'রহস্য মানে তথ্যের অভাব। আরেক পাক সবাইকে শুনুন।', 'চা ঠান্ডা হওয়ার আগে রায় দেবেন না; আগে সবার কথা শেষ হোক।', 'হাসিমুখে চুপ থাকা মানুষটিকে ভুলবেন না। হিমুরা প্রায়ই তা-ই করে।'];
-const note = (i, label = 'মিসির আলির নোট') => quoteCard({ kind: 'note', text: NOTES[Math.abs(i) % NOTES.length], credit: 'খেলার কৌশল · হুমায়ূন আহমেদের মিসির আলিকে শ্রদ্ধা' }, { label });
+// Every game is a numbered case file.
+const caseOf = id => 'নং ' + bn(100 + [...String(id || 'case')].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % 900);
 const portrait = role => characterImage(role);
-const ROLE = { WORD: 'মিসির আলি', SPY: 'হিমু' };
+const ROLE = { WORD: 'গোয়েন্দা', SPY: 'গুপ্তচর' };
 
 /* ---------- Screens ---------- */
 
 function setup() {
   const last = s.lastSpyId && byId(s.lastSpyId);
-  return `<section class="hero minimal-hero spy-hero"><div class="hero-copy"><span class="world-chip">${icon('book')}হুমায়ূন আহমেদের মিসির আলি ও হিমু</span><h1>সবাই মিসির আলি।<br><em>একজন হিমু।</em></h1><p>সবার খাতায় একই শব্দ। শুধু হিমুর পাতা ফাঁকা, তবু সে এমন ভাব করবে যেন সব জানে। যুক্তি দিয়ে খুঁজে বের করুন কে হিমু।</p><div class="hero-buttons"><a class="btn primary" href="#players">${s.players.length ? 'খেলোয়াড় দেখুন' : 'খেলোয়াড় যোগ করুন'}${icon('arrow')}</a></div></div><div class="hero-art spy-cover"><img src="assets/spy/cover.svg" width="640" height="420" alt="বৃষ্টির রাতে হারিকেনের আলোয় খাতা হাতে মিসির আলি; জানালার বাইরে ল্যাম্পপোস্টের নিচে হলুদ পাঞ্জাবিতে হিমু"></div></section>
-  ${note(s.players.length, 'মিসির আলির নোট')}
-  <details class="cast-drawer"><summary>চরিত্রগুলো দেখুন</summary><div class="cast-grid spy-cast"><article class="cast-card"><img class="character-avatar" src="${portrait('WORD')}" alt="" width="80" height="80"><h3>মিসির আলি</h3><small>শব্দ জানেন · বাকি সবাই</small><p>যুক্তিবাদী মনোবিদ। সূত্র মেলান, অসঙ্গতি খোঁজেন।</p></article><article class="cast-card"><img class="character-avatar" src="${portrait('SPY')}" alt="" width="80" height="80"><h3>হিমু</h3><small>গুপ্তচর · একজন</small><p>হলুদ পাঞ্জাবি, খালি পা, নির্বিকার হাসি। শব্দ জানে না, জানার ভান করে।</p></article></div></details>
+  return `<section class="hero minimal-hero spy-hero"><div class="hero-copy"><span class="world-chip">${icon('lens')}গোয়েন্দা খেলা · এক ফোন, হোস্ট ছাড়া</span><h1>সবাই গোয়েন্দা।<br><em>একজন গুপ্তচর।</em></h1><p>সবার নোটবুকে একই গোপন শব্দ। শুধু গুপ্তচরের পাতা ফাঁকা, তবু সে এমন ভাব করবে যেন সব জানে। সূত্র মিলিয়ে তাকে ধরুন।</p><div class="hero-buttons"><a class="btn primary" href="#players">${s.players.length ? 'খেলোয়াড় দেখুন' : 'খেলোয়াড় যোগ করুন'}${icon('arrow')}</a></div></div><div class="hero-art spy-cover"><img src="assets/spy/cover.svg" width="640" height="420" alt="বৃষ্টির রাতে ল্যাম্পপোস্টের নিচে আতশকাচ হাতে গোয়েন্দা; দেয়ালের আড়াল থেকে উঁকি দিচ্ছে কালো চশমার গুপ্তচর"></div></section>
+  <details class="cast-drawer"><summary>চরিত্রগুলো দেখুন</summary><div class="cast-grid spy-cast"><article class="cast-card"><img class="character-avatar" src="${portrait('WORD')}" alt="" width="80" height="80"><h3>গোয়েন্দা</h3><small>শব্দ জানেন · বাকি সবাই</small><p>আতশকাচ হাতে সূত্র মেলান, অসঙ্গতি খোঁজেন।</p></article><article class="cast-card"><img class="character-avatar" src="${portrait('SPY')}" alt="" width="80" height="80"><h3>গুপ্তচর</h3><small>শব্দ জানে না · একজন</small><p>কালো চশমা, তোলা কলার। শব্দ জানে না, জানার ভান করে।</p></article></div></details>
   <section class="panel spy-setup" id="players"><div class="list-heading"><span>কারা খেলছেন?</span><span>${bn(s.players.length)} / ২০</span></div>
   <form id="name-form" class="name-form"><div class="input-wrap">${icon('person')}<input id="player-name" placeholder="খেলোয়াড়ের নাম" autocomplete="off" maxlength="20" aria-label="খেলোয়াড়ের নাম"></div><button class="btn primary" type="submit">যোগ করুন${icon('plus')}</button></form>
   ${s.players.length ? `<div class="name-list">${s.players.map((p, i) => `<div class="name-row spy-row ${p.id === newRow ? 'is-new' : ''}"><span class="seat-initial" aria-hidden="true">${esc(p.name.charAt(0))}</span><div class="seat-name"><span class="player-name">${esc(p.name)}</span><small class="seat-number">${bn(i + 1)}</small></div><button type="button" class="icon-btn" data-action="remove" data-id="${p.id}" aria-label="${esc(p.name)} সরান">${icon('trash')}</button></div>`).join('')}</div>` : `<div class="empty">${icon('people')}<h3>প্রথম নামটি লিখুন</h3><p>৩ থেকে ২০ জন। কোনো হোস্ট লাগবে না।</p></div>`}
   <div class="spy-prefs"><label for="minutes">আলোচনার সময়<select id="minutes">${[1, 2, 3, 4, 5, 7, 10, 15, 20, 30].map(n => `<option value="${n}" ${s.duration === n * 60 ? 'selected' : ''}>${bn(n)} মিনিট</option>`).join('')}</select></label><label for="pool">শব্দের তালিকা<select id="pool"><option value="common" ${s.pool === 'common' ? 'selected' : ''}>সহজ · ৫৫৮ শব্দ</option><option value="extended" ${s.pool === 'extended' ? 'selected' : ''}>বড় · ২০,০০০ শব্দরূপ</option></select></label></div>
-  ${last ? `<p class="spy-start-note">${icon('arrow')} গতবার হিমু ছিলেন <strong>${esc(last.name)}</strong>; এবার ফোন শুরু হবে তাঁর হাত থেকে।</p>` : ''}
+  ${last ? `<p class="spy-start-note">${icon('arrow')} গতবার গুপ্তচর ছিলেন <strong>${esc(last.name)}</strong>; এবার ফোন শুরু হবে তাঁর হাত থেকে।</p>` : ''}
   <div class="form-bottom"><small>${s.players.length < 3 ? 'কমপক্ষে ৩ জন লাগবে' : 'সবাই এসে গেছেন?'}</small>${button('কেস শুরু করুন', 'start', 'primary', 'arrow', s.players.length < 3 ? 'disabled' : '')}</div></section>`;
 }
 
 function rulesScreen() {
-  const steps = [['খাতা বণ্টন', 'ফোন একে একে ঘুরবে। কার্ড ছুঁয়ে নিজের পাতা দেখুন। সবাই মিসির আলি, একই শব্দ পাবেন; একজন হিমু, তার পাতা ফাঁকা।'], ['সূত্র', 'শব্দটা সরাসরি বলবেন না। ছোট সূত্র দিন। খুব সহজ সূত্র দিলে হিমু শব্দটা ধরে ফেলবে।'], ['যুক্তি', 'কার সূত্র বেমানান? আলোচনার সময় শেষে সবাই মিলে একজনকে বাদ দিন।'], ['রায়', 'হিমু বাদ পড়লে রহস্যের মীমাংসা। দুজন বাকি থাকতে হিমু টিকে থাকলে সে হেঁটে চলে যায়, জিতে যায়।'], ['পয়েন্ট', 'হিমুর জয়ে ৩। মিসির আলিদের জয়ে প্রত্যেকে ১। খেলা ছেড়ে গেলে পয়েন্ট নেই।']];
-  return `${pageHead('খেলার নিয়ম', 'মিসির আলি বনাম হিমু', 'এক ফোন, কোনো হোস্ট নেই। ৩ থেকে ২০ জন।')}<div class="rules-list">${steps.map((r, i) => `<article><b>${bn(i + 1)}</b><div><h3>${r[0]}</h3><p>${r[1]}</p></div></article>`).join('')}</div>${note(2)}<p class="spy-source">মিসির আলি ও হিমু হুমায়ূন আহমেদের সৃষ্টি; এই খেলা ভক্তের শ্রদ্ধাঞ্জলি। ছবিগুলো এই অ্যাপের জন্য আঁকা ক্যারিকেচার। শব্দতালিকা: <a href="https://github.com/hermitdave/FrequencyWords">FrequencyWords · CC BY-SA 4.0</a></p>`;
+  const steps = [['শব্দ বণ্টন', 'ফোন একে একে ঘুরবে। কার্ড ছুঁয়ে নিজের পাতা দেখুন। সবাই গোয়েন্দা, একই শব্দ পাবেন; একজন গুপ্তচর, তার পাতা ফাঁকা।'], ['সূত্র', 'শব্দটা সরাসরি বলবেন না। ছোট সূত্র দিন। খুব সহজ সূত্র দিলে গুপ্তচর শব্দটা ধরে ফেলবে।'], ['যুক্তি', 'কার সূত্র বেমানান? আলোচনার সময় শেষে সবাই মিলে একজনকে বাদ দিন।'], ['রায়', 'গুপ্তচর বাদ পড়লে কেস সমাধান। দুজন বাকি থাকতে গুপ্তচর টিকে থাকলে সে পালিয়ে যায়, জিতে যায়।'], ['পয়েন্ট', 'গুপ্তচরের জয়ে ৩। গোয়েন্দাদের জয়ে প্রত্যেকে ১। খেলা ছেড়ে গেলে পয়েন্ট নেই।']];
+  return `${pageHead('খেলার নিয়ম', 'গোয়েন্দা বনাম গুপ্তচর', 'এক ফোন, কোনো হোস্ট নেই। ৩ থেকে ২০ জন।')}<div class="rules-list">${steps.map((r, i) => `<article><b>${bn(i + 1)}</b><div><h3>${r[0]}</h3><p>${r[1]}</p></div></article>`).join('')}</div><p class="spy-source">শব্দতালিকা: <a href="https://github.com/hermitdave/FrequencyWords">FrequencyWords · CC BY-SA 4.0</a></p>`;
 }
 
 function revealBack() {
   const p = current(), id = spyIdentity(s, p.id), spy = id.role === 'SPY';
-  return `<span class="secret-kicker">${esc(p.name)}, আপনি</span><img class="secret-portrait" src="${portrait(id.role)}" alt="" width="128" height="128">${spy ? `<span class="secret-title red">হিমু · গুপ্তচর</span><span class="secret-text">আপনার খাতা ফাঁকা। হলুদ পাঞ্জাবির মতো নির্বিকার থাকুন; অন্যদের সূত্র শুনে শব্দটা আন্দাজ করুন।</span>` : `<span class="secret-sub">মিসির আলি · খাতার শব্দ</span><span class="secret-word">${esc(id.word)}</span><span class="secret-text">শব্দটা সরাসরি বলবেন না। ছোট সূত্র দিন, অসঙ্গতি খুঁজুন।</span>`}<span class="secret-close">আবার ছুঁয়ে ঢেকে দিন</span>`;
+  return `<span class="secret-kicker">${esc(p.name)}, আপনি</span><img class="secret-portrait" src="${portrait(id.role)}" alt="" width="128" height="128">${spy ? `<span class="secret-title red">আপনি গুপ্তচর</span><span class="secret-text">আপনার পাতা ফাঁকা। মুখ শান্ত রাখুন; অন্যদের সূত্র শুনে শব্দটা আন্দাজ করুন, ধরা পড়বেন না।</span>` : `<span class="secret-sub">গোয়েন্দা · গোপন শব্দ</span><span class="secret-word">${esc(id.word)}</span><span class="secret-text">শব্দটা সরাসরি বলবেন না। ছোট সূত্র দিন, অসঙ্গতি খুঁজুন।</span>`}<span class="secret-close">আবার ছুঁয়ে ঢেকে দিন</span>`;
 }
 
 function reveal() {
   const p = current(), prev = s.revealIndex ? byId(s.order[s.revealIndex - 1]) : null, next = byId(s.order[s.revealIndex + 1]);
-  const front = `<span class="tap-seal">${icon('lens')}</span><strong>ছুঁয়ে খাতা খুলুন</strong><small>অন্যরা চোখ সরিয়ে রাখুন। শুধু ${esc(p.name)} দেখবেন।</small><span class="tap-hint"><i></i>কার্ডে ট্যাপ করুন</span>`;
-  return `<section class="reveal-screen"><div class="reveal-step"><span>কেস ফাইল · ${caseOf(s.gameId)}</span><span>${bn(s.revealIndex + 1)} / ${bn(s.order.length)}</span></div><div class="reveal-progress"><i style="width:${(s.revealIndex + 1) / s.order.length * 100}%"></i></div>
+  const front = `<span class="tap-seal">${icon('lens')}</span><strong>ছুঁয়ে নোটবুক খুলুন</strong><small>অন্যরা চোখ সরিয়ে রাখুন। শুধু ${esc(p.name)} দেখবেন।</small><span class="tap-hint"><i></i>কার্ডে ট্যাপ করুন</span>`;
+  return `<section class="reveal-screen"><div class="reveal-step"><span>কেস ${caseOf(s.gameId)}</span><span>${bn(s.revealIndex + 1)} / ${bn(s.order.length)}</span></div><div class="reveal-progress"><i style="width:${(s.revealIndex + 1) / s.order.length * 100}%"></i></div>
   ${prev ? `<p class="handoff"><span>${esc(prev.name)}</span>${icon('arrow')}<b>${esc(p.name)}</b></p>` : ''}<h1>${esc(p.name)}, আপনার পালা</h1><p class="lede">ফোনটি শুধু আপনার হাতে রাখুন।</p>
   ${tapCard({ open: shown, front, back: shown ? revealBack() : '', openLabel: 'কার্ড ছুঁয়ে পরিচয় দেখুন', closeLabel: 'কার্ড ঢেকে দিন' })}
   <div class="reveal-actions">${button(next ? 'পরের খেলোয়াড় · ' + esc(next.name) : 'আলোচনা শুরু করুন', 'next', 'primary wide', 'arrow', seen ? '' : 'disabled')}<small id="next-hint">${seen ? 'ঢেকে দিয়ে ফোনটি এগিয়ে দিন।' : 'কার্ড দেখার পর বোতামটি চালু হবে।'}</small></div></section>`;
@@ -73,10 +68,10 @@ function timerBlock() {
 
 function playing() {
   const alive = s.players.filter(p => p.alive), vote = s.phase === 'vote';
-  return `${pageHead(`কেস ফাইল · ${caseOf(s.gameId)}`, vote ? 'কে হিমু?' : 'এবার কথা হোক।', `${bn(alive.length)} জন খেলায় আছেন · পরিচয় গোপন রাখুন`)}
-  ${s.verdict ? `<div class="finale-result spy-verdict">${icon(s.verdict.left ? 'logout' : 'shield')}<div><strong>${esc(s.verdict.name)}</strong><p>${s.verdict.left ? 'খেলা ছেড়েছেন।' : 'মিসির আলিই ছিলেন। হিমু এখনও আপনাদের মধ্যেই আছে।'}</p></div></div>` : ''}
+  return `${pageHead(`কেস ${caseOf(s.gameId)}`, vote ? 'কে গুপ্তচর?' : 'এবার কথা হোক।', `${bn(alive.length)} জন খেলায় আছেন · পরিচয় গোপন রাখুন`)}
+  ${s.verdict ? `<div class="finale-result spy-verdict">${icon(s.verdict.left ? 'logout' : 'shield')}<div><strong>${esc(s.verdict.name)}</strong><p>${s.verdict.left ? 'খেলা ছেড়েছেন।' : 'গোয়েন্দাই ছিলেন। গুপ্তচর এখনও আপনাদের মধ্যেই আছে।'}</p></div></div>` : ''}
   ${timerBlock()}
-  ${vote ? `<form id="spy-ballot" class="spy-ballot"><fieldset class="guess-players"><legend>সবাই মিলে একজনকে বাদ দিন</legend>${alive.map(p => `<label class="guess-option"><input type="radio" name="candidate" value="${p.id}" ${choice === p.id ? 'checked' : ''} required><span class="generic-person">${esc(p.name.charAt(0))}</span><strong>${esc(p.name)}</strong></label>`).join('')}</fieldset><button class="btn primary wide" type="submit" ${choice ? '' : 'disabled'}>ভোট চূড়ান্ত করুন${icon('lock')}</button></form>` : note(s.round)}
+  ${vote ? `<form id="spy-ballot" class="spy-ballot"><fieldset class="guess-players"><legend>সবাই মিলে একজনকে বাদ দিন</legend>${alive.map(p => `<label class="guess-option"><input type="radio" name="candidate" value="${p.id}" ${choice === p.id ? 'checked' : ''} required><span class="generic-person">${esc(p.name.charAt(0))}</span><strong>${esc(p.name)}</strong></label>`).join('')}</fieldset><button class="btn primary wide" type="submit" ${choice ? '' : 'disabled'}>ভোট চূড়ান্ত করুন${icon('lock')}</button></form>` : ''}
   <details class="cast-drawer spy-roster"><summary>খেলোয়াড়দের অবস্থা</summary><div class="name-list">${s.players.map(p => `<div class="name-row spy-row ${p.alive ? '' : 'is-out'}"><span class="seat-initial" aria-hidden="true">${esc(p.name.charAt(0))}</span><div class="seat-name"><span class="player-name">${esc(p.name)}</span><small class="seat-number">${p.quit ? 'খেলা ছেড়েছেন' : !p.alive ? 'বাদ পড়েছেন' : bn(p.score) + ' পয়েন্ট'}</small></div>${p.alive ? button('ছেড়ে যান', 'leave', 'text', '', `data-id="${p.id}"`) : ''}</div>`).join('')}</div></details>`;
 }
 
@@ -92,9 +87,8 @@ function rankingScreen() {
 
 function results() {
   const spy = byId(s.spyId), won = s.winner === 'WORD';
-  return `<div class="over-heading"><div class="result-portrait win"><img src="${portrait(won ? 'WORD' : 'SPY')}" alt="" width="112" height="112"></div><span class="eyebrow">কেস ফাইল · ${caseOf(s.gameId)} · ${won ? 'রহস্যের মীমাংসা' : 'রহস্য অমীমাংসিত'}</span><h1>${won ? 'হিমু ধরা পড়েছে!' : 'হিমু হেঁটে চলে গেল!'}</h1><p class="lede"><strong>${esc(spy.name)}</strong> ছিলেন হিমু। ${won ? 'মিসির আলিদের যুক্তি জিতল।' : 'খালি পায়ে, নির্বিকার হাসিতে।'}</p></div>
-  <div class="spy-word-reveal"><span>খাতার শব্দটি ছিল</span><strong>${esc(s.word)}</strong></div>
-  ${note(s.round + 3, won ? 'মিসির আলির নোট' : 'পরের কেসের জন্য')}
+  return `<div class="over-heading"><div class="result-portrait win"><img src="${portrait(won ? 'WORD' : 'SPY')}" alt="" width="112" height="112"></div><span class="eyebrow">কেস ${caseOf(s.gameId)} · ${won ? 'সমাধান' : 'অমীমাংসিত'}</span><h1>${won ? 'গুপ্তচর ধরা পড়েছে!' : 'গুপ্তচর পালিয়ে গেল!'}</h1><p class="lede"><strong>${esc(spy.name)}</strong> ছিলেন গুপ্তচর। ${won ? 'গোয়েন্দাদের সূত্র মিলে গেল।' : 'কেউ তাকে ধরতে পারেনি।'}</p></div>
+  <div class="spy-word-reveal"><span>গোপন শব্দটি ছিল</span><strong>${esc(s.word)}</strong></div>
   <section class="rank-section"><h2>র‍্যাঙ্কিং</h2><p>মোট পয়েন্ট আর শেষ পাঁচ খেলার ফল।</p>${rankTable(rankingRows(), rankLabels)}</section>
   <div class="end-actions">${button('আবার খেলুন · নতুন কেস', 'rematch', 'primary wide', 'play')}${button('নাম বা সময় বদলান', 'edit', 'secondary wide', 'edit')}<small class="spy-start-note">পরের খেলায় ফোন শুরু হবে ${esc(spy.name)} থেকে।</small></div>`;
 }
@@ -102,7 +96,7 @@ function results() {
 /* ---------- Shell (shared with Mafia) ---------- */
 
 function screenKey() { return view !== 'play' ? view : s.phase === 'reveal' ? 'reveal:' + s.revealIndex : ['discussion', 'vote'].includes(s.phase) ? `play:${s.round}:${s.phase}` : s.phase; }
-function crumb() { return view === 'rules' ? 'নিয়ম' : view === 'ranking' ? 'র‍্যাঙ্কিং' : ({ setup: 'মিসির আলি বনাম হিমু', reveal: 'কেস · ' + caseOf(s.gameId), discussion: 'কেস · ' + caseOf(s.gameId), vote: 'ভোট · ' + caseOf(s.gameId), over: 'রায় · ' + caseOf(s.gameId) })[s.phase]; }
+function crumb() { return view === 'rules' ? 'নিয়ম' : view === 'ranking' ? 'র‍্যাঙ্কিং' : ({ setup: 'গোয়েন্দা বনাম গুপ্তচর', reveal: 'কেস ' + caseOf(s.gameId), discussion: 'কেস ' + caseOf(s.gameId), vote: 'ভোট · কেস ' + caseOf(s.gameId), over: 'রায় · কেস ' + caseOf(s.gameId) })[s.phase]; }
 
 function render() {
   const draft = $('#player-name')?.value, focused = document.activeElement?.id;
@@ -112,7 +106,7 @@ function render() {
   window.Android?.setPlaying?.(!['setup', 'over'].includes(s.phase));
   document.body.classList.toggle('private-mode', privateReveal);
   const body = view === 'rules' ? rulesScreen() : view === 'ranking' ? rankingScreen() : s.phase === 'setup' ? setup() : s.phase === 'reveal' ? reveal() : s.phase === 'over' ? results() : playing();
-  $('#app').innerHTML = appShell({ brand: 'Spy', brandSub: 'মিসির আলি বনাম হিমু', brandIcon: 'lens', brandAction: 'tab-play', crumb: crumb(), active: view, hideTabs: privateReveal, contentClass: view === 'play' && s.phase === 'setup' ? 'home-content spy-content' : 'game-content spy-content', labels: { back: 'সব খেলা', menu: 'মেনু', sections: 'খেলার অংশ' },
+  $('#app').innerHTML = appShell({ brand: 'Spy', brandSub: 'গোয়েন্দা বনাম গুপ্তচর', brandIcon: 'lens', brandAction: 'tab-play', crumb: crumb(), active: view, hideTabs: privateReveal, contentClass: view === 'play' && s.phase === 'setup' ? 'home-content spy-content' : 'game-content spy-content', labels: { back: 'সব খেলা', menu: 'মেনু', sections: 'খেলার অংশ' },
     tabs: [{ id: 'play', label: 'খেলা', icon: 'play', action: 'tab-play' }, { id: 'rules', label: 'নিয়ম', icon: 'book', action: 'tab-rules' }, { id: 'ranking', label: 'র‍্যাঙ্কিং', icon: 'trophy', action: 'tab-ranking' }], body });
   if (draft && $('#player-name')) $('#player-name').value = draft;
   if (focused === 'player-name') $('#player-name')?.focus();

@@ -1,13 +1,13 @@
 /* Shared Mafia & Spy components. Loaded after style.css on both game pages. */
 
-/* Misir Ali's casebook: rain-dark ink, lamp amber, old ruled paper, a rust case stamp. */
-:root[data-theme][data-universe=misir]{--bg:#efe8dc;--surface:#fbf7f0;--border:#c7baa4;--text:#1f2a3a;--muted:#5c6271;--accent:#9b4a2c;--green:#4e7a5c;--blue:#40607e;--world-dark:#1f2a3a;--world-accent:#d99a3d;--world-mid:#b7c2c9;--world-light:#fbf7f0}
-:root[data-universe=misir] body{background-image:radial-gradient(ellipse at 96% 0,#b7c2c955 0,transparent 52%),radial-gradient(ellipse at 0 100%,#d99a3d1f 0,transparent 45%),linear-gradient(170deg,#f4eee4,#ebe2d3);background-attachment:fixed}
-:root[data-universe=misir] body:after{background-image:url('assets/spy/rain.svg');background-size:180px 180px;opacity:.55}
-:root[data-universe=misir] .brand-icon{background:var(--world-accent);color:var(--world-dark)}
-:root[data-universe=misir] .sidebar{background:linear-gradient(170deg,#1f2a3a,#2b3a4f);color:#f1e9da;border-color:#1f2a3a}
-:root[data-universe=misir] .sidebar :is(.brand,.nav-item,.nav-label,.brand small,.sidebar-bottom){color:#f1e9da}
-:root[data-universe=misir] .sidebar .nav-item.selected{background:#ffffff1a;color:#fff}
+/* Spy noir: rain-dark ink, lamp amber, old ruled paper, a rust case stamp. */
+:root[data-theme][data-universe=noir]{--bg:#efe8dc;--surface:#fbf7f0;--border:#c7baa4;--text:#1f2a3a;--muted:#5c6271;--accent:#9b4a2c;--green:#4e7a5c;--blue:#40607e;--world-dark:#1f2a3a;--world-accent:#d99a3d;--world-mid:#b7c2c9;--world-light:#fbf7f0}
+:root[data-universe=noir] body{background-image:radial-gradient(ellipse at 96% 0,#b7c2c955 0,transparent 52%),radial-gradient(ellipse at 0 100%,#d99a3d1f 0,transparent 45%),linear-gradient(170deg,#f4eee4,#ebe2d3);background-attachment:fixed}
+:root[data-universe=noir] body:after{background-image:url('assets/spy/rain.svg');background-size:180px 180px;opacity:.55}
+:root[data-universe=noir] .brand-icon{background:var(--world-accent);color:var(--world-dark)}
+:root[data-universe=noir] .sidebar{background:linear-gradient(170deg,#1f2a3a,#2b3a4f);color:#f1e9da;border-color:#1f2a3a}
+:root[data-universe=noir] .sidebar :is(.brand,.nav-item,.nav-label,.brand small,.sidebar-bottom){color:#f1e9da}
+:root[data-universe=noir] .sidebar .nav-item.selected{background:#ffffff1a;color:#fff}
 
 /* Motion: short, calm, and always optional. */
 @keyframes kit-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
@@ -189,3 +189,46 @@ main.kit-main{margin:0;min-width:0;min-height:100dvh;display:flex;flex-direction
 .ranking-teaser .btn{white-space:nowrap}
 .unlock-screen,.last-chance{text-align:left}.unlock-screen>.role-orb,.last-chance>.final-guess-icon{margin-left:0!important;margin-right:0!important}
 @media(max-width:560px){.discussion-timer{flex-wrap:wrap;gap:14px}.discussion-timer .timer-actions{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:10px}.discussion-timer .timer-actions .btn{width:100%;justify-content:center}}
+
+/* ---------- Elimination: murder, vote, quit ---------- */
+.elimination-dialog .cause-option{position:relative;overflow:hidden;border-width:1.5px;transition:background-color .2s,border-color .2s,color .2s,transform .14s}
+.elimination-dialog .cause-option:active{transform:scale(.99)}
+.cause-night{background:#141012!important;color:#f3e7e3!important;border-color:#2a1416!important}
+.cause-night small{color:#d9b3ad!important}
+.cause-night:before{content:'';position:absolute;inset:0 0 auto;height:18px;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 24' preserveAspectRatio='none'%3E%3Cpath d='M0 0h120v6c-4 0-5 3-6 8s-5 5-5 0-2-6-6-6-6 2-7 10-6 7-6 0-3-9-9-9-7 3-8 6-5 4-5 0-3-6-8-6-7 2-8 9-6 8-6 0-3-9-8-9-6 2-7 5-4 3-4 0-3-5-7-5Z' fill='%23a10e19'/%3E%3C/svg%3E") top/100% 100% no-repeat}
+.cause-night:has(:checked){box-shadow:0 0 0 2px #a10e19,0 10px 26px #a10e1955}
+.cause-vote{background:#fbe9e7!important;color:#7d1712!important;border-color:#e4a59d!important}
+.cause-vote small{color:#a3433a!important}
+.cause-vote:has(:checked){background:#c62828!important;color:#fff!important;border-color:#c62828!important}
+.cause-vote:has(:checked) small{color:#ffe1dc!important}
+.cause-quit{background:#efedea!important;color:#55524e!important;border-color:#cfcac3!important}
+.cause-quit small{color:#7a766f!important}
+.cause-quit:has(:checked){background:#d9d5cf!important;border-color:#8d8780!important}
+.cause-option.unavailable{opacity:.45}
+.elimination-dialog[data-cause=NIGHT] .cause-submit{background:#120d0e!important;color:#fbeae6!important;border:1px solid #a10e19!important;box-shadow:inset 0 -3px 0 #a10e19,0 10px 24px #a10e1940!important}
+.elimination-dialog[data-cause=VOTE] .cause-submit{background:#c62828!important;color:#fff!important;border-color:#c62828!important}
+.elimination-dialog[data-cause=QUIT] .cause-submit{background:#8d8780!important;color:#fff!important;border-color:#8d8780!important}
+.host-row .icon-btn.eliminate{background:#141012;color:#f3e7e3;border-color:#a10e19}
+
+/* ---------- Mafia win: the whole results page turns dark and blood-red, in every world ---------- */
+:root.mafia-victory[data-theme][data-universe]{color-scheme:dark;--bg:#120809;--surface:#1f0d0f;--border:#4a1a1d;--text:#f6e8e4;--muted:#c9a7a1;--accent:#e0333c;--green:#e0333c;--world-dark:#7a0c12;--world-accent:#e0333c;--world-mid:#3a1214;--world-light:#fbe9e5}
+:root.mafia-victory body{background:radial-gradient(ellipse at 50% -10%,#5a0d12 0,transparent 60%),linear-gradient(180deg,#160909,#0c0506)!important;color:var(--text)}
+:root.mafia-victory body:before,:root.mafia-victory body:after{opacity:.05!important;filter:invert(1)}
+:root.mafia-victory .kit-top{background:#120809e6;border-color:#4a1a1d}
+:root.mafia-victory .kit-main>.content{position:relative}
+:root.mafia-victory .kit-main>.content:before{content:'';position:absolute;left:0;right:0;top:0;height:46px;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 24' preserveAspectRatio='none'%3E%3Cpath d='M0 0h120v6c-4 0-5 3-6 8s-5 5-5 0-2-6-6-6-6 2-7 10-6 7-6 0-3-9-9-9-7 3-8 6-5 4-5 0-3-6-8-6-7 2-8 9-6 8-6 0-3-9-8-9-6 2-7 5-4 3-4 0-3-5-7-5Z' fill='%238a0b12'/%3E%3C/svg%3E") top/100% 100% no-repeat;opacity:.9}
+:root.mafia-victory .result-portrait.win{border-color:#e0333c;box-shadow:0 0 0 6px #e0333c22,0 16px 40px #e0333c44}
+:root.mafia-victory .over-heading h1{color:#ff4b52!important;text-shadow:0 2px 24px #a10e1980}
+:root.mafia-victory :is(.panel,.host-row,.finale-result,.points-awarded,.scoring-legend,.quote-card,.rank-table-wrap,.cast-card,.btn.secondary,.kit-pill,.kit-tabs,.dialog,.score-sheet){background:var(--surface)!important;color:var(--text)!important;border-color:var(--border)!important}
+:root.mafia-victory :is(h1,h2,h3,strong,b,.rank-name,.player-info strong){color:var(--text)}
+:root.mafia-victory :is(small,.lede,p,.eyebrow){color:var(--muted)}
+:root.mafia-victory .btn.primary{background:#a10e19!important;color:#fff!important;border-color:#a10e19!important}
+:root.mafia-victory .btn.text{color:var(--text)!important}
+:root.mafia-victory .kit-tab.is-active{color:#fff;background:#a10e1955}
+:root.mafia-victory .rank-table thead th{background:#2a1214}
+:root.mafia-victory .quote-card{border-left-color:#e0333c!important}
+
+/* কহেন কবি কালিদাস: Himu's yellow panjabi against a rainy night-blue, on old paper. */
+:root[data-theme][data-universe=kalidas]{--bg:#f6efdf;--surface:#fffaf0;--border:#dccb9f;--text:#2a2620;--muted:#6b6151;--accent:#b5651d;--green:#3f7d4f;--blue:#2f3e57;--world-dark:#2f3e57;--world-accent:#f2c230;--world-mid:#e9dcb6;--world-light:#fffaf0}
+:root[data-universe=kalidas] body{background-image:radial-gradient(ellipse at 100% 0,#f2c23033 0,transparent 50%),linear-gradient(170deg,#f8f2e4,#efe4cc);background-attachment:fixed}
+:root[data-universe=kalidas] body:after{background-image:url('assets/spy/rain.svg');background-size:180px 180px;opacity:.4}
