@@ -1,15 +1,10 @@
 import {BENGALI_CLASSICS} from './bengali-quotes.mjs';
-import {SICILY_ORIGINALS} from './sicily-quotes.mjs';
 import {characterFor} from './characters.mjs';
 export const QUOTES={
  bn:[...BENGALI_CLASSICS],
- en:[...SICILY_ORIGINALS,
-  {text:'A man’s first duty is to keep himself alive.',credit:'Mario Puzo · The Sicilian',url:'https://www.goodreads.com/work/quotes/812174-the-sicilian?page=1'},
-  {text:'At this table, a promise can cost more than a betrayal.',credit:'An original Sicilian affair',url:null},
-  {text:'Every family has a secret. Tonight, yours has a vote.',credit:'An original Sicilian affair',url:null},
- ]
+ en:[{text:'A man’s first duty is to keep himself alive.',credit:'Mario Puzo · The Sicilian',url:'https://www.goodreads.com/work/quotes/812174-the-sicilian?page=1'}]
 };
-QUOTES.classic=QUOTES.en.filter(q=>!q.credit.includes('Puzo')).map(q=>({...q,credit:'Original · Classic'}));
+QUOTES.classic=[{text:'The truth will out.',credit:'William Shakespeare · The Merchant of Venice',url:'https://en.wikisource.org/wiki/The_Merchant_of_Venice_(1919)_Yale/Act_2'},{text:'False face must hide what the false heart doth know.',credit:'William Shakespeare · Macbeth',url:'https://en.wikisource.org/wiki/Macbeth_(1918)_Yale/Act_1'}];
 export function nextQuote(locale,storage=localStorage){
  const deck=QUOTES[locale],key='mafia.quote.'+locale;
  const previous=Number(storage.getItem(key)??-1),index=(previous+1+Math.floor(Math.random()*(deck.length-1)))%deck.length;

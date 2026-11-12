@@ -1,4 +1,4 @@
-# Mafia — Polashi & Sicily
+# Mafia & Spy
 
 A light-themed mobile social deduction game for **5–20 players plus a separate host**. The app name stays **Mafia**; the universe picker changes the cast, language, quotations, artwork, and paper motif.
 
@@ -7,7 +7,7 @@ A light-themed mobile social deduction game for **5–20 players plus a separate
 
 ## Run
 
-Node.js 20+; no npm install is required.
+Node.js 22+. Run `npm ci` before starting.
 
 ```sh
 npm start
@@ -16,7 +16,7 @@ npm run check
 npm run test:lan
 ```
 
-Open `http://localhost:5173`. Use the menu’s separate-phone option for QR multiplayer. The QR encoder is vendored with its MIT license; no external QR service or cloud room is used.
+Open `http://localhost:5173`. Use the menu’s separate-phone option for QR multiplayer. The QR encoder is vendored with its MIT license; QR images are generated on the device. Vercel online rooms use Neon Postgres; local hotspot rooms run without cloud storage.
 
 ## The host is not a player
 
@@ -140,3 +140,11 @@ Connect a Neon Postgres database to the Vercel project and provide its server-on
 ## Version 2.4 — online rooms
 
 Vercel now hosts the game API as well as the browser UI. Neon stores room state; atomic revision checks handle simultaneous players without losing votes. Online invitations use the current website origin, and online host handover no longer depends on the first phone staying connected. The Android hotspot mode remains available independently. Install dependencies with npm ci for local development. Database credentials stay outside www and must never be committed.
+
+## Version 3.0 — Spy and a quieter interface
+
+Open `spy.html` or choose Spy from the Mafia home/menu. Spy has one Bangla world, one hidden Spy, and a shared secret word for everyone else. Supports 3–20 players plus a separate host, one-phone private reveals with a four-digit host PIN, hotspot rooms, and internet rooms. After discussion, players confirm one vote. The host confirms at most one elimination. Finding the Spy wins for the word team; two remaining players wins for the Spy. Word-team winners receive 1 point each, a winning Spy receives 3, and the host receives 1 on completion.
+
+The default deck contains 558 curated everyday words. An optional 20,000-entry frequency-derived Bangla word-form deck includes inflections, names and some less familiar terms; universal familiarity is not claimed. See [dictionary attribution](dictionary/SOURCES.md). The host can supply a custom Bangla word.
+
+Players can quit during a game and no longer vote, guess, or receive victory points. They can participate again after rematch. A host cannot quit as a player. Sound cues use the device's audio only after interaction, with a menu mute toggle. Animations respect reduced-motion settings. Generated verse has been removed; the remaining quotations are credited literary excerpts.

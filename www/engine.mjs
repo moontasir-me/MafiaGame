@@ -60,7 +60,7 @@ export function finalizeVictory(game,winner,now=new Date().toISOString()){
  if(!['MAFIA','VILLAGER'].includes(winner))throw Error('INVALID_WINNER');
  if(game.awardsApplied){if(game.winner!==winner)throw Error('ALREADY_FINALIZED');return false;}
  // Calculate all awards before mutating; manual points remain intact.
- const awards=game.players.map(p=>victoryPoints(p,winner));
+ const awards=game.players.map(p=>p.quit?0:victoryPoints(p,winner));
  game.players.forEach((p,i)=>{p.winPoints=awards[i];p.score=(Number.isSafeInteger(p.score)?p.score:0)+awards[i];});
  game.awardsApplied=true;game.winner=winner;game.pendingVictory=null;game.status='over';game.endedAt=now;return true;
 }
