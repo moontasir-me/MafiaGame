@@ -1,121 +1,94 @@
 import { sound, soundEnabled, toggleSound } from './sound.mjs';
 import { saveMatch, readHistory, overallRanking, hallOfFame } from './history.mjs';
 import { esc, icon, appShell, pageHead, rankTable, fameTable, playerColour, playerDot, enterScreen, leaveScreen } from './ui-kit.mjs';
+import { W, H, R, POWER, ends, step, resting, push, simulate } from './pen-physics.mjs';
+import { PENS, PRO_PENS, GEAR, GEAR_KEYS, penStats, ratings, nextPrice } from './pen-gear.mjs';
+import { readAccounts, ensureAccount, findAccount, addCoins, buyGear, toggleGear, fitted } from './accounts.mjs';
 
 /* কলম যুদ্ধ: the school-bench pen fight. Players take turns flicking their own pen;
-   a pen whose middle goes past the edge of the bench has fallen. Last pen on the bench wins the round. */
+   a pen whose middle goes past the edge of the bench has fallen. Last pen on the bench wins the round.
+   Every point won is also a coin for the player's account, spent in the shop on add-ons. */
 
 const $ = q => document.querySelector(q), $$ = q => [...document.querySelectorAll(q)];
 const bn = n => Number(n).toLocaleString('bn-BD');
-const KEY = 'pen.v1', ROUNDS = 5, W = 480, H = 780, R = 7;
-export const PENS = {
-  pinpoint: { name: 'Matador Pinpoint', short: 'পিনপয়েন্ট', L: 150, m: 1, grip: 1, body: '#f4f6f8', cap: '#1d4fa3', note: 'মাঝারি ওজন, সোজা চলে' },
-  hischool: { name: 'Matador Hi-School', short: 'হাই-স্কুল', L: 162, m: 1.22, grip: 1.1, body: '#fdf7e6', cap: '#c62828', note: 'লম্বা আর ভারী, সহজে পড়ে না' },
-  iteen: { name: 'Matador i-Teen', short: 'আই-টিন', L: 136, m: 0.84, grip: 0.82, body: '#6ec3e8', cap: '#ffffff', note: 'হালকা, জোরে ছোটে' },
-  econo: { name: 'Econo DX', short: 'ইকোনো', L: 146, m: 1.05, grip: 0.95, body: '#dfe9ef', cap: '#0b2f6b', note: 'ঘুরে গিয়ে ধাক্কা দেয়' }
-};
-const POWER = 1250;
-// Expensive pens for the Pro version: shown on the shelf, locked for now.
-export const PRO_PENS = {
-  montblanc: { name: 'Montblanc Meisterstück 149', note: 'ফাউন্টেন পেন · সোনার নিব', body: '#141414', cap: '#141414', trim: '#d4af37' },
-  parker: { name: 'Parker Sonnet', note: 'ফাউন্টেন পেন · স্টিলের ক্লিপ', body: '#7a1020', cap: '#c9ccd1', trim: '#c9ccd1' },
-  pelikan: { name: 'Pelikan Souverän M800', note: 'ফাউন্টেন পেন · সবুজ ডোরা', body: '#1f5e3a', cap: '#111', trim: '#d4af37' },
-  lamy: { name: 'Lamy 2000', note: 'ফাউন্টেন পেন · মাকরোলন বডি', body: '#2b2b2b', cap: '#2b2b2b', trim: '#b9bcc0' },
-  waterman: { name: 'Waterman Carène', note: 'ফাউন্টেন পেন · ঝকঝকে বার্নিশ', body: '#0c2a5c', cap: '#0c2a5c', trim: '#d4af37' }
-};
+const KEY = 'pen.v2', ROUNDS = 5;
 const PEN_KEYS = Object.keys(PENS), penImg = k => `assets/pen/${k}.svg`;
+const CPU = {
+  easy: { label: 'সহজ', tries: 24, err: .2, gear: {} },
+  medium: { label: 'মাঝারি', tries: 60, err: .08, gear: { gripper: 1 } },
+  hard: { label: 'কঠিন', tries: 110, err: .03, gear: { gripper: 2, head: 1, tape: 1 } }
+};
 
-let s = load(), view = 'play', lastScreen = '', world = null, aim = null, raf = 0, modalResolve = null;
+let s = load(), view = 'play', lastScreen = '', aim = null, raf = 0, modalResolve = null, shopFor = null;
+let fx = [], shake = 0, banner = null;
 
-function fresh() { return { v: 1, phase: 'setup', players: [], set: null, round: null }; }
-function load() { try { const d = JSON.parse(localStorage.getItem(KEY)); if (d?.v === 1) return d; } catch {} return fresh(); }
-function save() { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch {} }
+function fresh() { return { v: 2, phase: 'setup', players: [], cpuLevel: 'medium', set: null, round: null }; }
+function load() {
+  try {
+    const d = JSON.parse(localStorage.getItem(KEY)); if (d?.v === 2) return d;
+    // Players from the first version become accounts.
+    const old = JSON.parse(localStorage.getItem('pen.v1'));
+    if (old?.players) { const f = fresh(); f.players = old.players.map(p => { if (!p.cpu) try { ensureAccount(p.name); } catch { } return { ...p, score: 0, history: [] }; }); return f; }
+  } catch { }
+  return fresh();
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch { } }
 const byId = id => s.players.find(p => p.id === id);
+const gearOf = p => p.cpu ? CPU[s.cpuLevel].gear : fitted(findAccount(p.name));
 
-/* ---------- Physics ---------- */
+/* ---------- Bench ---------- */
 
 function placePens(starter) {
   const n = s.players.length, pens = s.players.map((p, i) => {
-    const t = Math.PI / 2 + (i / n) * Math.PI * 2, spec = PENS[p.pen];
-    return { pid: p.id, x: W / 2 + Math.cos(t) * 140, y: H / 2 + Math.sin(t) * 230, a: t + Math.PI / 2 + (Math.random() - .5) * .7, vx: 0, vy: 0, w: 0, out: false, L: spec.L, m: spec.m, grip: spec.grip, I: spec.m * spec.L * spec.L / 12 };
+    const t = Math.PI / 2 + (i / n) * Math.PI * 2, gear = gearOf(p);
+    return { pid: p.id, x: W / 2 + Math.cos(t) * 140, y: H / 2 + Math.sin(t) * 230, a: t + Math.PI / 2 + (Math.random() - .5) * .7, vx: 0, vy: 0, w: 0, out: false, gear, ...penStats(p.pen, gear) };
   });
   s.round = { pens, turn: starter, out: [], moving: false };
 }
-const ends = p => { const c = Math.cos(p.a) * p.L / 2, d = Math.sin(p.a) * p.L / 2; return [p.x - c, p.y - d, p.x + c, p.y + d]; };
-function closest(a0x, a0y, a1x, a1y, b0x, b0y, b1x, b1y) {
-  // Closest points between two segments.
-  const ux = a1x - a0x, uy = a1y - a0y, vx = b1x - b0x, vy = b1y - b0y, wx = a0x - b0x, wy = a0y - b0y;
-  const a = ux * ux + uy * uy, b = ux * vx + uy * vy, c = vx * vx + vy * vy, d = ux * wx + uy * wy, e = vx * wx + vy * wy, D = a * c - b * b;
-  let sN, sD = D, tN, tD = D;
-  if (D < 1e-6) { sN = 0; sD = 1; tN = e; tD = c; } else { sN = b * e - c * d; tN = a * e - b * d; if (sN < 0) { sN = 0; tN = e; tD = c; } else if (sN > sD) { sN = sD; tN = e + b; tD = c; } }
-  if (tN < 0) { tN = 0; sN = Math.min(Math.max(-d, 0), a); sD = a; } else if (tN > tD) { tN = tD; sN = Math.min(Math.max(b - d, 0), a); sD = a; }
-  const sc = Math.abs(sN) < 1e-6 ? 0 : sN / sD, tc = Math.abs(tN) < 1e-6 ? 0 : tN / tD;
-  return [a0x + sc * ux, a0y + sc * uy, b0x + tc * vx, b0y + tc * vy];
-}
-function collide(A, B) {
-  const [ax, ay, bx, by] = closest(...ends(A), ...ends(B)), dx = bx - ax, dy = by - ay, dist = Math.hypot(dx, dy);
-  if (dist >= R * 2 || dist < 1e-6) return;
-  const nx = dx / dist, ny = dy / dist, pen = R * 2 - dist, total = 1 / A.m + 1 / B.m;
-  A.x -= nx * pen * (1 / A.m) / total; A.y -= ny * pen * (1 / A.m) / total; B.x += nx * pen * (1 / B.m) / total; B.y += ny * pen * (1 / B.m) / total;
-  const rax = ax - A.x, ray = ay - A.y, rbx = bx - B.x, rby = by - B.y;
-  const vax = A.vx - A.w * ray, vay = A.vy + A.w * rax, vbx = B.vx - B.w * rby, vby = B.vy + B.w * rbx;
-  const rel = (vbx - vax) * nx + (vby - vay) * ny; if (rel > 0) return;
-  const ca = rax * ny - ray * nx, cb = rbx * ny - rby * nx;
-  const j = -(1 + .3) * rel / (total + ca * ca / A.I + cb * cb / B.I);
-  A.vx -= j * nx / A.m; A.vy -= j * ny / A.m; A.w -= ca * j / A.I; B.vx += j * nx / B.m; B.vy += j * ny / B.m; B.w += cb * j / B.I;
-  if (Math.abs(rel) > 60 && !quiet) sound('notice');
-}
-let quiet = false;
-function step(dt, r = s.round) {
-  const live = r.pens.filter(p => !p.out);
-  for (const p of r.pens) {
-    if (p.out) { p.fall = Math.min(1, (p.fall || 0) + dt * 2.6); p.x += p.vx * dt * .4; p.y += p.vy * dt * .4; continue; }
-    const v = Math.hypot(p.vx, p.vy), dec = 1500 * p.grip * dt;
-    if (v <= dec) { p.vx = p.vy = 0; } else { p.vx *= (v - dec) / v; p.vy *= (v - dec) / v; }
-    const wd = 20 * p.grip * dt; p.w = Math.abs(p.w) <= wd ? 0 : p.w - Math.sign(p.w) * wd; p.w *= .985;
-    p.x += p.vx * dt; p.y += p.vy * dt; p.a += p.w * dt;
-  }
-  for (let i = 0; i < live.length; i++) for (let k = i + 1; k < live.length; k++) collide(live[i], live[k]);
-  for (const p of live) if (p.x < 0 || p.x > W || p.y < 0 || p.y > H) { p.out = true; p.fall = 0; r.out.push(p.pid); if (!quiet) sound('out'); }
-}
-const resting = (r = s.round) => r.pens.every(p => p.out ? (p.fall || 0) >= 1 : Math.hypot(p.vx, p.vy) < 2 && Math.abs(p.w) < .05);
 
-function push(p, cx, cy, jx, jy) {
-  p.vx += jx / p.m; p.vy += jy / p.m; p.w += ((cx - p.x) * jy - (cy - p.y) * jx) / p.I; p.w = Math.max(-26, Math.min(26, p.w));
-}
+const effects = {
+  hit(x, y, speed) {
+    if (speed < 40) return;
+    const n = Math.min(14, 3 + speed / 70 | 0);
+    for (let i = 0; i < n; i++) { const a = Math.random() * 7, v = 40 + Math.random() * speed * .25; fx.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: .5 + Math.random() * .3, max: .8, kind: 'dust' }); }
+    shake = Math.max(shake, Math.min(9, speed / 90)); if (speed > 160) sound('hit');
+  },
+  out(p) { sound('out'); shake = 10; navigator.vibrate?.(60); fx.push({ x: Math.max(30, Math.min(W - 30, p.x)), y: Math.max(40, Math.min(H - 20, p.y)), vx: 0, vy: -40, life: 1.4, max: 1.4, kind: 'text', text: byId(p.pid).name + ' পড়ে গেল!' }); }
+};
+
 function flick(p, cx, cy, jx, jy) {
-  push(p, cx, cy, jx, jy); s.round.moving = true; s.round.knockedThisTurn = [];
+  push(p, cx, cy, jx, jy); s.round.moving = true;
   sound('notice'); loop();
 }
 
 function settle() {
   const r = s.round, shooter = byId(r.turn), fresh = r.out.filter(id => !r.counted?.includes(id));
   r.counted = [...(r.counted || []), ...fresh]; r.moving = false;
-  for (const id of fresh) if (id !== shooter.id) shooter.score++;
+  const gain = fresh.filter(id => id !== shooter.id).length;
+  if (gain) { shooter.score += gain; coins(shooter, gain); }
   const live = r.pens.filter(p => !p.out);
-  if (live.length <= 1) return endRound(live[0]?.pid || null, fresh);
+  if (live.length <= 1) return endRound(live[0]?.pid || null);
   const order = s.players.map(p => p.id), alive = new Set(live.map(p => p.pid));
   let i = order.indexOf(r.turn); do { i = (i + 1) % order.length; } while (!alive.has(order[i]));
   r.turn = order[i]; save(); render(); cpuTurn();
-  if (fresh.length) toast(fresh.map(id => byId(id).name).join(' ও ') + ' বেঞ্চ থেকে পড়ে গেছে।');
+  if (fresh.length) toast(fresh.map(id => byId(id).name).join(' ও ') + ' বেঞ্চ থেকে পড়ে গেছে।' + (gain && !shooter.cpu ? ` ${shooter.name} +${bn(gain)} কয়েন।` : ''));
 }
-/* Computer opponent: tries many flicks on a copy of the bench, keeps the best, then shoots with a little human error. */
+function coins(p, n) { if (!p.cpu && addCoins(p.name, n)) setTimeout(() => sound('coin'), 250); }
+
+/* Computer opponent: tries many flicks on a copy of the bench, keeps the best, then shoots with some human error. */
 function plan() {
-  const r = s.round, me = r.pens.find(p => p.pid === r.turn), foes = r.pens.filter(p => !p.out && p.pid !== me.pid);
+  const r = s.round, me = r.pens.find(p => p.pid === r.turn), foes = r.pens.filter(p => !p.out && p.pid !== me.pid), lvl = CPU[s.cpuLevel];
   const edge = p => Math.min(p.x, W - p.x, p.y, H - p.y);
   let best = null;
-  quiet = true;
-  for (let n = 0; n < 70; n++) {
+  for (let n = 0; n < lvl.tries; n++) {
     const foe = foes[n % foes.length], t = .25 + Math.random() * .5, [a0, a1, b0, b1] = ends(me), cx = a0 + (b0 - a0) * t, cy = a1 + (b1 - a1) * t;
     const [f0, f1, g0, g1] = ends(foe), u = Math.random(), tx = f0 + (g0 - f0) * u, ty = f1 + (g1 - f1) * u, d = Math.hypot(tx - cx, ty - cy) || 1;
-    const force = (.45 + Math.random() * .55) * POWER * me.m, shot = { cx, cy, jx: (tx - cx) / d * force, jy: (ty - cy) / d * force };
-    const sim = JSON.parse(JSON.stringify(r)), sm = sim.pens.find(p => p.pid === me.pid); push(sm, cx, cy, shot.jx, shot.jy);
-    for (let k = 0; k < 900 && !resting(sim); k++) step(1 / 240, sim);
+    const force = (.5 + Math.random() * .5) * POWER * me.m, shot = { cx, cy, jx: (tx - cx) / d * force, jy: (ty - cy) / d * force };
+    const sim = JSON.parse(JSON.stringify(r)), sm = sim.pens.find(p => p.pid === me.pid); push(sm, cx, cy, shot.jx, shot.jy); simulate(sim);
     const out = sim.pens.filter(p => p.out && p.pid !== me.pid).length, score = out * 100 - (sm.out ? 160 : 0) + sim.pens.filter(p => !p.out && p.pid !== me.pid).reduce((a, p) => a - edge(p) * .15, 0) + (sm.out ? 0 : edge(sm) * .1);
     if (!best || score > best.score) best = { ...shot, score };
   }
-  quiet = false;
-  const err = (Math.random() - .5) * .12, c = Math.cos(err), sn = Math.sin(err);
+  const err = (Math.random() - .5) * lvl.err * 2, c = Math.cos(err), sn = Math.sin(err);
   return { ...best, jx: best.jx * c - best.jy * sn, jy: best.jx * sn + best.jy * c };
 }
 let cpuTimer = 0;
@@ -125,14 +98,15 @@ function cpuTurn() {
   cpuTimer = setTimeout(() => {
     if (s.phase !== 'play' || s.round.moving || !byId(s.round.turn)?.cpu) return;
     const me = s.round.pens.find(p => p.pid === s.round.turn), shot = plan(), len = Math.hypot(shot.jx, shot.jy), pull = len / (POWER * me.m) * 200;
-    aim = { pen: me, cx: shot.cx, cy: shot.cy, x: shot.cx, y: shot.cy, sx: shot.cx - shot.jx / len * pull, sy: shot.cy - shot.jy / len * pull }; draw();
-    setTimeout(() => { aim = null; flick(me, shot.cx, shot.cy, shot.jx, shot.jy); }, 650);
-  }, 700);
+    aim = { pen: me, cx: shot.cx, cy: shot.cy, x: shot.cx, y: shot.cy, sx: shot.cx - shot.jx / len * pull, sy: shot.cy - shot.jy / len * pull }; loop();
+    setTimeout(() => { aim = null; flick(me, shot.cx, shot.cy, shot.jx, shot.jy); }, 700);
+  }, 750);
 }
 function endRound(winner) {
-  if (winner) byId(winner).score += 2;
+  if (winner) { byId(winner).score += 2; coins(byId(winner), 2); }
   for (const p of s.players) { p.history = [{ won: p.id === winner, img: penImg(p.pen), label: `${PENS[p.pen].name} · ${p.id === winner ? 'রাউন্ড জয়' : 'পড়ে গেছে'}` }, ...(p.history || [])].slice(0, 5); }
-  s.set.rounds++; s.lastWinner = winner; s.phase = 'roundover'; save(); sound(winner ? 'win' : 'notice'); transition();
+  s.set.rounds++; s.lastWinner = winner; s.phase = 'roundover'; save(); sound(winner ? 'win' : 'notice');
+  setTimeout(transition, 500);
 }
 
 /* ---------- Drawing ---------- */
@@ -159,55 +133,92 @@ function drawDesk(g) {
     d.globalAlpha = .4; d.strokeStyle = '#2e1806'; d.lineWidth = 1.6; d.save(); d.translate(390, 520); d.rotate(.1);
     for (const v of [12, 24]) { d.beginPath(); d.moveTo(v, 0); d.lineTo(v, 36); d.moveTo(0, v); d.lineTo(36, v); d.stroke(); }
     d.beginPath(); d.arc(6, 6, 4, 0, 7); d.moveTo(14, 26); d.lineTo(22, 34); d.moveTo(22, 26); d.lineTo(14, 34); d.stroke(); d.restore();
-    d.globalAlpha = 1; d.strokeStyle = '#4a280c'; d.lineWidth = 7; d.strokeRect(3.5, 3.5, W - 7, H - 7);
+    // Lamp light from the classroom window, and a darker rim near the edges so the drop feels real.
+    d.globalAlpha = 1; const light = d.createRadialGradient(W * .3, H * .25, 40, W * .5, H * .5, H * .75); light.addColorStop(0, '#fff3d02e'); light.addColorStop(1, '#00000038'); d.fillStyle = light; d.fillRect(0, 0, W, H);
+    d.strokeStyle = '#4a280c'; d.lineWidth = 7; d.strokeRect(3.5, 3.5, W - 7, H - 7);
     deskCache = { size, c };
   }
   g.drawImage(deskCache.c, 0, 0, W, H);
 }
-function drawPen(g, p, colour, active) {
-  const spec = PENS[byId(p.pid)?.pen] || PENS.pinpoint, L = p.L, f = p.out ? 1 - (p.fall || 0) : 1;
-  if (f <= 0) return;
-  g.save(); g.translate(p.x, p.y); g.rotate(p.a); g.scale(f, f); g.globalAlpha = f;
+
+/* A pen lying flat: nib on the left (-L/2), cap on the right. Add-ons are drawn on it. */
+export function paintPen(g, penKey, gear, L, colour, active, f = 1) {
+  const spec = PENS[penKey] || PENS.pinpoint, gr = gear || {};
+  const body0 = -L / 2 + 15, body1 = L / 2 - (gr.back ? 16 : 0), capL = (body1 - body0) * .32;
   g.fillStyle = '#0000002e'; g.beginPath(); g.roundRect(-L / 2 + 3, -R + 4, L, R * 2, R); g.fill();
   if (active) { g.strokeStyle = colour; g.lineWidth = 4; g.globalAlpha = f * .85; g.beginPath(); g.roundRect(-L / 2 - 6, -R - 6, L + 12, R * 2 + 12, R + 6); g.stroke(); g.globalAlpha = f; }
-  g.fillStyle = '#d9c9a8'; g.beginPath(); g.moveTo(-L / 2, 0); g.lineTo(-L / 2 + 16, -R + 2); g.lineTo(-L / 2 + 16, R - 2); g.closePath(); g.fill();
-  g.fillStyle = '#222'; g.beginPath(); g.arc(-L / 2 + 1, 0, 1.6, 0, 7); g.fill();
-  g.fillStyle = spec.body; g.strokeStyle = '#00000040'; g.lineWidth = 1; g.beginPath(); g.roundRect(-L / 2 + 15, -R, L * .62, R * 2, 2); g.fill(); g.stroke();
-  g.fillStyle = spec.cap; g.beginPath(); g.roundRect(L / 2 - L * .27, -R - 1, L * .27, R * 2 + 2, 4); g.fill(); g.stroke();
-  g.fillRect(L / 2 - L * .22, -R - 4, L * .19, 3.5);
+  const nib = (x0, dir, brass) => { g.fillStyle = brass ? '#c9a13b' : '#d9c9a8'; g.beginPath(); g.moveTo(x0, 0); g.lineTo(x0 + 16 * dir, -R + 2); g.lineTo(x0 + 16 * dir, R - 2); g.closePath(); g.fill(); if (brass) { g.fillStyle = '#f3dc8a'; g.fillRect(x0 + 6 * dir - (dir < 0 ? 4 : 0), -2, 4, 2); } g.fillStyle = '#222'; g.beginPath(); g.arc(x0 + dir, 0, 1.6, 0, 7); g.fill(); };
+  nib(-L / 2, 1, gr.head);
+  if (gr.back) nib(L / 2, -1, false);
+  g.fillStyle = spec.body; g.strokeStyle = '#00000040'; g.lineWidth = 1; g.beginPath(); g.roundRect(body0, -R, body1 - body0 - capL + 2, R * 2, 2); g.fill(); g.stroke();
+  g.fillStyle = spec.cap; g.beginPath(); g.roundRect(body1 - capL, -R - 1, capL, R * 2 + 2, 4); g.fill(); g.stroke();
+  // Grippers: ribbed rubber bands near the nib.
+  for (let i = 0; i < (gr.gripper || 0); i++) { const x = body0 + 2 + i * 12; g.fillStyle = '#2f3a33'; g.beginPath(); g.roundRect(x, -R - 1.5, 10, R * 2 + 3, 3); g.fill(); g.strokeStyle = '#5d6b61'; g.lineWidth = 1; for (let k = 2; k < 10; k += 3) { g.beginPath(); g.moveTo(x + k, -R); g.lineTo(x + k, R); g.stroke(); } }
+  if (gr.tape) { g.save(); g.beginPath(); g.rect(body0 + 38, -R, 34, R * 2); g.clip(); g.fillStyle = '#f1e7b3aa'; g.fillRect(body0 + 38, -R, 34, R * 2); g.strokeStyle = '#c9b56e'; for (let k = -10; k < 44; k += 6) { g.beginPath(); g.moveTo(body0 + 38 + k, -R); g.lineTo(body0 + 46 + k, R); g.stroke(); } g.restore(); }
+  if (gr.clip) { g.fillStyle = '#c7ccd2'; g.strokeStyle = '#7b8189'; g.beginPath(); g.roundRect(body1 - capL + 3, -R - 4.5, capL * .78, 3.6, 1.5); g.fill(); g.stroke(); }
+  else { g.fillStyle = spec.cap; g.fillRect(body1 - capL * .82, -R - 4, capL * .7, 3.5); }
+  if (gr.rubber) { g.fillStyle = '#ef8fa3'; g.strokeStyle = '#b4566b'; g.beginPath(); g.roundRect(body1 - 7, -R - 1.5, 9, R * 2 + 3, 3); g.fill(); g.stroke(); }
   const shine = g.createLinearGradient(0, -R, 0, R); shine.addColorStop(0, '#ffffffaa'); shine.addColorStop(.45, '#ffffff00'); shine.addColorStop(1, '#00000030');
-  g.fillStyle = shine; g.beginPath(); g.roundRect(-L / 2 + 15, -R, L - 15, R * 2, 3); g.fill();
-  g.fillStyle = colour; g.beginPath(); g.arc(L / 2 - L * .13, 0, 3.4, 0, 7); g.fill();
+  g.fillStyle = shine; g.beginPath(); g.roundRect(body0, -R, body1 - body0, R * 2, 3); g.fill();
+  g.fillStyle = colour; g.beginPath(); g.arc(body1 - capL * .45, 0, 3.4, 0, 7); g.fill();
+}
+function drawPen(g, p, colour, active) {
+  const f = p.out ? 1 - (p.fall || 0) : 1; if (f <= 0) return;
+  g.save(); g.translate(p.x, p.y); g.rotate(p.a); g.scale(f, f); g.globalAlpha = f;
+  paintPen(g, byId(p.pid)?.pen, p.gear, p.L, colour, active, f);
   g.restore();
 }
 function draw() {
   const c = $('#bench'); if (!c || !s.round) return;
-  const g = c.getContext('2d'), k = c.width / W; g.setTransform(k, 0, 0, k, 0, 0); drawDesk(g);
+  const g = c.getContext('2d'), k = c.width / W, sx = shake ? (Math.random() - .5) * shake : 0, sy = shake ? (Math.random() - .5) * shake : 0;
+  g.setTransform(k, 0, 0, k, 0, 0); g.fillStyle = '#3b210c'; g.fillRect(0, 0, W, H); g.setTransform(k, 0, 0, k, sx * k, sy * k); drawDesk(g);
   const r = s.round, idx = id => s.players.findIndex(p => p.id === id);
   for (const p of r.pens) drawPen(g, p, playerColour(byId(p.pid).name, idx(p.pid)), !r.moving && p.pid === r.turn && !p.out);
   for (const p of r.pens) if (!p.out) { const n = byId(p.pid).name; g.font = '600 12px Poppins, sans-serif'; g.textAlign = 'center'; g.fillStyle = '#fffaf0'; g.strokeStyle = '#3b210c'; g.lineWidth = 3; g.strokeText(n, p.x, p.y - 22); g.fillText(n, p.x, p.y - 22); }
+  for (const e of fx) {
+    const t = e.life / e.max;
+    if (e.kind === 'dust') { g.globalAlpha = t * .8; g.fillStyle = '#f3dfbf'; g.beginPath(); g.arc(e.x, e.y, 1.5 + (1 - t) * 2.5, 0, 7); g.fill(); }
+    else { g.globalAlpha = Math.min(1, t * 2); g.font = '700 20px Poppins, sans-serif'; g.textAlign = 'center'; g.lineWidth = 5; g.strokeStyle = '#3b210c'; g.fillStyle = '#ffd34d'; g.strokeText(e.text, e.x, e.y); g.fillText(e.text, e.x, e.y); }
+  }
+  g.globalAlpha = 1;
   if (aim) {
-    const dx = aim.sx - aim.x, dy = aim.sy - aim.y, len = Math.min(Math.hypot(dx, dy), 200), u = Math.hypot(dx, dy) || 1, ex = aim.cx - dx / u * len * .9, ey = aim.cy - dy / u * len * .9;
+    const dx = aim.sx - aim.x, dy = aim.sy - aim.y, len = Math.min(Math.hypot(dx, dy), 200), u = Math.hypot(dx, dy) || 1, ex = aim.cx - dx / u * len * .9, ey = aim.cy - dy / u * len * .9, pct = len / 200;
     g.setLineDash([6, 6]); g.strokeStyle = '#fffaf0'; g.lineWidth = 3; g.beginPath(); g.moveTo(aim.cx, aim.cy); g.lineTo(ex, ey); g.stroke(); g.setLineDash([]);
-    g.fillStyle = len > 150 ? '#e5533d' : '#f2c230'; g.beginPath(); g.arc(ex, ey, 6, 0, 7); g.fill();
+    g.fillStyle = pct > .75 ? '#e5533d' : pct > .4 ? '#f2c230' : '#7bd389'; g.beginPath(); g.arc(ex, ey, 6, 0, 7); g.fill();
     g.strokeStyle = '#ffffff88'; g.lineWidth = 2; g.beginPath(); g.arc(aim.cx, aim.cy, 10 + len / 6, 0, 7); g.stroke();
+    // Power bar along the bottom of the bench.
+    g.fillStyle = '#00000066'; g.beginPath(); g.roundRect(W / 2 - 90, H - 34, 180, 14, 7); g.fill();
+    g.fillStyle = pct > .75 ? '#e5533d' : pct > .4 ? '#f2c230' : '#7bd389'; g.beginPath(); g.roundRect(W / 2 - 88, H - 32, 176 * pct, 10, 5); g.fill();
+    g.font = '600 12px Poppins, sans-serif'; g.textAlign = 'center'; g.fillStyle = '#fffaf0'; g.fillText('জোর ' + bn(Math.round(pct * 100)) + '%', W / 2, H - 42);
+  }
+  if (banner) {
+    const t = banner.life / banner.max, a = Math.min(1, t * 3, (1 - t) * 6 + .2);
+    g.globalAlpha = a * .55; g.fillStyle = '#1b0f05'; g.fillRect(0, H / 2 - 50, W, 100); g.globalAlpha = a;
+    g.font = '700 34px Poppins, sans-serif'; g.textAlign = 'center'; g.fillStyle = '#ffd34d'; g.fillText(banner.text, W / 2, H / 2 + 4);
+    g.font = '500 15px Poppins, sans-serif'; g.fillStyle = '#fffaf0'; g.fillText(banner.sub, W / 2, H / 2 + 32); g.globalAlpha = 1;
   }
 }
 const next = f => document.hidden ? -setTimeout(() => f(performance.now()), 50) : requestAnimationFrame(f);
 const stop = () => raf < 0 ? clearTimeout(-raf) : cancelAnimationFrame(raf);
+let loopGen = 0;
 function loop() {
-  stop(); let last = performance.now();
+  stop(); let last = performance.now(); const gen = ++loopGen;
   const tick = now => {
+    if (gen !== loopGen) return;
     // Catch up on the real time that passed (slow phones, background tabs) in small fixed steps.
     const dt = Math.min(3, (now - last) / 1000), n = Math.ceil(dt / .004); last = now;
-    if (s.round?.moving) { for (let i = 0; i < n && !resting(); i++) step(dt / n); if (resting()) { draw(); return settle(); } }
-    draw(); if (s.round?.moving || aim) raf = next(tick);
+    for (const e of fx) { e.life -= dt; e.x += e.vx * dt; e.y += e.vy * dt; e.vx *= .92; e.vy *= .92; }
+    fx = fx.filter(e => e.life > 0); shake = shake > .3 ? shake * Math.pow(.02, dt) : 0;
+    if (banner && (banner.life -= dt) <= 0) banner = null;
+    if (s.round?.moving) { for (let i = 0; i < n && !resting(s.round); i++) step(s.round, dt / n, effects); if (resting(s.round)) { draw(); settle(); if (gen !== loopGen) return; } }
+    if (!$('#bench')) return;
+    draw(); if (s.round?.moving || aim || fx.length || shake || banner) raf = next(tick);
   };
   raf = next(tick);
 }
 function sizeBench() {
   const c = $('#bench'); if (!c) return;
-  const box = c.parentElement.getBoundingClientRect(), maxH = Math.max(360, innerHeight * .78), cssW = Math.min(box.width, maxH * W / H), dpr = devicePixelRatio || 1;
+  const box = c.parentElement.getBoundingClientRect(), maxH = Math.max(360, innerHeight * .74), cssW = Math.min(box.width, maxH * W / H), dpr = devicePixelRatio || 1;
   c.style.width = cssW + 'px'; c.style.height = cssW * H / W + 'px'; c.width = Math.round(cssW * dpr); c.height = Math.round(cssW * H / W * dpr); draw();
 }
 function bindBench() {
@@ -231,20 +242,67 @@ addEventListener('resize', () => sizeBench());
 
 /* ---------- Screens ---------- */
 
-const penPick = (p, i) => `<div class="pen-row" style="--dot:${playerColour(p.name, i)}">${playerDot(p.name, i)}<b>${esc(p.name)}</b><button type="button" class="pen-choice" data-action="cycle-pen" data-id="${p.id}" aria-label="${esc(p.name)}-এর কলম বদলান: এখন ${esc(PENS[p.pen].name)}"><img src="${penImg(p.pen)}" alt="" width="44" height="44"><span><b>${esc(PENS[p.pen].name)}</b><small>${esc(PENS[p.pen].note)}</small></span>${icon('arrow')}</button><button type="button" class="icon-btn" data-action="remove" data-id="${p.id}" aria-label="${esc(p.name)} বাদ দিন">${icon('close')}</button></div>`;
+const stars = n => `<span class="stars" aria-label="৫-এর মধ্যে ${bn(n)}">${'●'.repeat(n)}<i>${'●'.repeat(5 - n)}</i></span>`;
+const statLine = (pen, gear) => { const r = ratings(pen, gear); return `<span class="pen-stats"><span>ওজন ${stars(r.weight)}</span><span>গ্রিপ ${stars(r.grip)}</span><span>নাগাল ${stars(r.reach)}</span></span>`; };
+// Small drawings for the shop shelf.
+const GEAR_ART = {
+  gripper: '<svg viewBox="0 0 64 64"><rect x="8" y="26" width="48" height="12" rx="6" fill="#f4f6f8" stroke="#00000033"/><rect x="14" y="23" width="10" height="18" rx="3" fill="#2f3a33"/><rect x="27" y="23" width="10" height="18" rx="3" fill="#2f3a33"/><rect x="40" y="23" width="10" height="18" rx="3" fill="#2f3a33"/><path d="M17 24v16M20 24v16M30 24v16M33 24v16M43 24v16M46 24v16" stroke="#5d6b61"/></svg>',
+  head: '<svg viewBox="0 0 64 64"><path d="M6 32 26 22v20Z" fill="#c9a13b"/><rect x="24" y="24" width="34" height="16" rx="4" fill="#fdf7e6" stroke="#00000033"/><circle cx="7" cy="32" r="2" fill="#222"/><path d="M12 30h8" stroke="#f3dc8a" stroke-width="2"/></svg>',
+  back: '<svg viewBox="0 0 64 64"><path d="M4 32 18 24v16Z" fill="#d9c9a8"/><path d="M60 32 46 24v16Z" fill="#d9c9a8"/><rect x="17" y="25" width="30" height="14" rx="3" fill="#6ec3e8" stroke="#00000033"/></svg>',
+  tape: '<svg viewBox="0 0 64 64"><rect x="6" y="26" width="52" height="12" rx="5" fill="#dfe9ef" stroke="#00000033"/><rect x="20" y="24" width="24" height="16" fill="#f1e7b3"/><path d="M20 40l8-16M27 40l8-16M34 40l8-16" stroke="#c9b56e"/><circle cx="50" cy="14" r="9" fill="none" stroke="#c9b56e" stroke-width="5"/></svg>',
+  rubber: '<svg viewBox="0 0 64 64"><rect x="6" y="26" width="40" height="12" rx="5" fill="#f4f6f8" stroke="#00000033"/><rect x="44" y="23" width="14" height="18" rx="4" fill="#ef8fa3" stroke="#b4566b"/><path d="M52 14l4-6M58 18l5-3" stroke="#e5533d" stroke-width="2" stroke-linecap="round"/></svg>',
+  clip: '<svg viewBox="0 0 64 64"><rect x="6" y="28" width="52" height="12" rx="5" fill="#1d4fa3"/><path d="M30 26h24a3 3 0 0 1 0 6H34" fill="none" stroke="#7b8189" stroke-width="3"/><rect x="30" y="22" width="26" height="5" rx="2" fill="#c7ccd2"/></svg>'
+};
+const gearCount = gear => Object.values(gear || {}).reduce((a, b) => a + b, 0);
 
+function penPick(p, i) {
+  const acc = !p.cpu && findAccount(p.name), gear = gearOf(p);
+  return `<div class="pen-row" style="--dot:${playerColour(p.name, i)}">${playerDot(p.name, i)}<span class="pen-who"><b>${esc(p.name)}</b><small>${p.cpu ? 'কম্পিউটার · ' + CPU[s.cpuLevel].label : `${icon('spark')}${bn(acc?.coins || 0)} কয়েন${gearCount(gear) ? ' · ' + bn(gearCount(gear)) + 'টি অ্যাড-অন' : ''}`}</small></span>
+  <button type="button" class="pen-choice" data-action="cycle-pen" data-id="${p.id}" aria-label="${esc(p.name)}-এর কলম বদলান: এখন ${esc(PENS[p.pen].name)}"><img src="${penImg(p.pen)}" alt="" width="44" height="44"><span><b>${esc(PENS[p.pen].name)}</b>${statLine(p.pen, gear)}</span>${icon('arrow')}</button>
+  ${p.cpu ? '' : `<button type="button" class="icon-btn shop-btn" data-action="shop" data-id="${acc?.id || ''}" aria-label="${esc(p.name)}-এর দোকান">${icon('spark')}</button>`}<button type="button" class="icon-btn" data-action="remove" data-id="${p.id}" aria-label="${esc(p.name)} বাদ দিন">${icon('close')}</button></div>`;
+}
+function accountChips() {
+  const here = new Set(s.players.map(p => p.name.toLocaleLowerCase())), list = readAccounts().filter(a => !here.has(a.name.toLocaleLowerCase()));
+  return list.length && s.players.length < 4 ? `<div class="acc-chips"><span>অ্যাকাউন্ট থেকে:</span>${list.map(a => `<button type="button" class="acc-chip" data-action="add-acc" data-id="${a.id}">${playerDot(a.name)}${esc(a.name)}<small>${bn(a.coins)}</small></button>`).join('')}</div>` : '';
+}
 function setup() {
-  return `${pageHead('কলম যুদ্ধ', 'বেঞ্চের ওপর কলমের লড়াই', 'নিজের কলম টোকা দিয়ে অন্যের কলম বেঞ্চ থেকে ফেলে দিন। বেঞ্চে শেষ যে কলম থাকবে, রাউন্ড তার।')}
-  <div class="pen-shelf">${PEN_KEYS.map(k => `<figure><img src="${penImg(k)}" alt="" width="72" height="72"><figcaption><b>${esc(PENS[k].name)}</b><small>${esc(PENS[k].note)}</small></figcaption></figure>`).join('')}</div>
-  <h2 class="pro-title">${icon('lock')}Pro কলম <small>শীঘ্রই আসছে</small></h2>
-  <div class="pen-shelf pro-shelf">${Object.entries(PRO_PENS).map(([k, p]) => `<button type="button" class="pro-pen" data-action="pro" aria-label="${esc(p.name)}: লক করা, Pro সংস্করণে আসবে"><img src="${penImg(k)}" alt="" width="72" height="72"><span><b>${esc(p.name)}</b><small>${esc(p.note)}</small></span><i>${icon('lock')}Pro</i></button>`).join('')}</div>
-  <section class="pen-setup" id="players"><h2>খেলোয়াড় (২–৪ জন)</h2><p class="pen-hint">একা খেললে নিজের নাম দিন, তারপর কম্পিউটার যোগ করুন।</p>
+  const cpu = s.players.some(p => p.cpu);
+  return `<section class="pen-hero"><div><span class="eyebrow">কলম যুদ্ধ</span><h1>বেঞ্চের ওপর<br>কলমের লড়াই</h1><p>নিজের কলম টোকা দিয়ে অন্যের কলম বেঞ্চ থেকে ফেলে দিন। প্রতিটা পয়েন্ট আপনার অ্যাকাউন্টে কয়েন হয়ে জমে, দোকান থেকে কলমে গ্রিপার, ভারী মাথা আর আরও জিনিস লাগান।</p></div><img src="assets/pen/cover.svg" alt="" width="640" height="420"></section>
+  <section class="pen-setup" id="players"><h2>খেলোয়াড় (২–৪ জন)</h2><p class="pen-hint">নাম দিলেই অ্যাকাউন্ট খুলে যায়। একা খেললে নিজের নাম দিয়ে কম্পিউটার যোগ করুন।</p>
   <form id="name-form" class="name-form"><input id="player-name" maxlength="20" autocomplete="off" placeholder="নাম লিখুন" aria-label="খেলোয়াড়ের নাম" ${s.players.length >= 4 ? 'disabled' : ''}><button class="btn primary" type="submit" ${s.players.length >= 4 ? 'disabled' : ''}>${icon('plus')}যোগ করুন</button></form>
-  ${s.players.some(p => p.cpu) || s.players.length >= 4 ? '' : button('কম্পিউটারের সাথে খেলুন', 'add-cpu', 'secondary wide cpu-add', 'person')}
+  ${accountChips()}
+  ${cpu || s.players.length >= 4 ? '' : button('কম্পিউটারের সাথে খেলুন', 'add-cpu', 'secondary wide cpu-add', 'person')}
+  ${cpu ? `<div class="cpu-level" role="radiogroup" aria-label="কম্পিউটার কতটা কঠিন">${Object.entries(CPU).map(([k, c]) => `<button type="button" role="radio" aria-checked="${s.cpuLevel === k}" class="${s.cpuLevel === k ? 'is-on' : ''}" data-action="cpu-level" data-id="${k}">${c.label}</button>`).join('')}</div>` : ''}
   <div class="pen-list">${s.players.map(penPick).join('')}</div>
   <p class="pen-hint">কলমের ছবিতে চাপ দিলে কলম বদলাবে। এক ম্যাচে ${bn(ROUNDS)} রাউন্ড, পরে চাইলে আরও খেলা যাবে।</p>
-  ${button('খেলা শুরু', 'start', 'primary wide', 'play', s.players.length < 2 ? 'disabled' : '')}</section>`;
+  ${button('খেলা শুরু', 'start', 'primary wide', 'play', s.players.length < 2 ? 'disabled' : '')}</section>
+  <h2 class="pro-title">${icon('lock')}Pro কলম <small>শীঘ্রই আসছে</small></h2>
+  <div class="pen-shelf pro-shelf">${Object.entries(PRO_PENS).map(([k, p]) => `<button type="button" class="pro-pen" data-action="pro" aria-label="${esc(p.name)}: লক করা, Pro সংস্করণে আসবে"><img src="${penImg(k)}" alt="" width="72" height="72"><span><b>${esc(p.name)}</b><small>${esc(p.note)}</small></span><i>${icon('lock')}Pro</i></button>`).join('')}</div>`;
 }
+
+function shop() {
+  const accounts = readAccounts();
+  if (!accounts.length) return `${pageHead('দোকান', 'কলমের জিনিসপত্র', 'আগে খেলা ট্যাবে নাম দিয়ে অ্যাকাউন্ট খুলুন, তারপর লড়াই জিতে কয়েন জমান।')}`;
+  const acc = accounts.find(a => a.id === shopFor) || accounts.find(a => s.players.some(p => !p.cpu && p.name.toLocaleLowerCase() === a.name.toLocaleLowerCase())) || accounts[0];
+  shopFor = acc.id;
+  const pen = s.players.find(p => p.name.toLocaleLowerCase() === acc.name.toLocaleLowerCase())?.pen || 'pinpoint', gear = fitted(acc);
+  return `${pageHead('দোকান', 'কলমের জিনিসপত্র', 'লড়াইয়ে জেতা প্রতিটা পয়েন্ট এক কয়েন। কেনা জিনিস যেকোনো সময় খুলে রাখা বা আবার লাগানো যায়।')}
+  <div class="acc-chips shop-accs" role="radiogroup" aria-label="কার জন্য কিনবেন">${accounts.map(a => `<button type="button" role="radio" aria-checked="${a.id === acc.id}" class="acc-chip ${a.id === acc.id ? 'is-on' : ''}" data-action="shop" data-id="${a.id}">${playerDot(a.name)}${esc(a.name)}<small>${bn(a.coins)}</small></button>`).join('')}</div>
+  <section class="shop-preview"><canvas id="pen-preview" width="560" height="120" aria-label="${esc(acc.name)}-এর কলম, লাগানো জিনিসসহ"></canvas><div><span class="wallet">${icon('spark')}<b>${bn(acc.coins)}</b> কয়েন</span><small>মোট জেতা ${bn(acc.earned)}</small>${statLine(pen, gear)}</div></section>
+  <div class="shop-grid">${GEAR_KEYS.map(k => {
+    const it = GEAR[k], owned = acc.gear[k], price = nextPrice(k, owned), on = owned && !acc.off[k];
+    return `<article class="shop-item ${owned ? 'is-owned' : ''}"><div class="shop-icon" aria-hidden="true">${GEAR_ART[k]}</div><div class="shop-copy"><h3>${esc(it.name)}${it.max > 1 ? ` <small>${bn(owned)}/${bn(it.max)}</small>` : ''}</h3><p>${esc(it.note)}</p></div><div class="shop-buy">
+    ${price != null ? `<button type="button" class="btn primary" data-action="buy" data-id="${k}" ${acc.coins < price ? 'disabled' : ''}>${icon('spark')}${bn(price)}</button>` : `<span class="sold">${icon('check')}পুরোটা কেনা</span>`}
+    ${owned ? `<button type="button" class="btn text" data-action="wear" data-id="${k}">${on ? 'খুলে রাখুন' : 'লাগান'}</button>` : ''}</div></article>`;
+  }).join('')}</div>`;
+}
+function drawPreview() {
+  const c = $('#pen-preview'), acc = readAccounts().find(a => a.id === shopFor); if (!c || !acc) return;
+  const pen = s.players.find(p => p.name.toLocaleLowerCase() === acc.name.toLocaleLowerCase())?.pen || 'pinpoint', gear = fitted(acc), st = penStats(pen, gear);
+  const g = c.getContext('2d'); g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, c.width, c.height);
+  g.setTransform(2.6, 0, 0, 2.6, c.width / 2, c.height / 2); paintPen(g, pen, gear, st.L, playerColour(acc.name), false);
+}
+
 function play() {
   const r = s.round, p = byId(r.turn), i = s.players.indexOf(p);
   return `<div class="pen-turn" style="--dot:${playerColour(p.name, i)}">${playerDot(p.name, i)}<span><b>${esc(p.name)}-এর চাল</b><small>${r.moving ? 'কলম চলছে…' : p.cpu ? 'কম্পিউটার নিশানা ঠিক করছে…' : 'নিজের কলম ধরে পেছনে টেনে ছেড়ে দিন'}</small></span><span class="pen-round">রাউন্ড ${bn(s.set.rounds + 1)}/${bn(s.set.total)}</span></div>
@@ -255,18 +313,20 @@ const table = () => rankTable(s.players.map(p => ({ name: p.name, score: p.score
 const labels = { caption: 'ম্যাচের ফল', rank: '#', player: 'খেলোয়াড় · শেষ পাঁচ রাউন্ড', points: 'পয়েন্ট', win: 'সবুজ: রাউন্ড জয়', loss: 'লাল: কলম পড়ে গেছে', order: 'নতুনটি বাঁ দিকে', empty: 'এখনও কোনো রাউন্ড শেষ হয়নি।', noGames: 'এখনও খেলেননি', number: bn };
 function roundOver() {
   const w = s.lastWinner && byId(s.lastWinner), done = s.set.rounds >= s.set.total;
-  return `${pageHead(`রাউন্ড ${bn(s.set.rounds)} শেষ`, w ? `${esc(w.name)}-এর কলম টিকে গেছে` : 'সব কলম পড়ে গেছে', w ? `${esc(PENS[w.pen].name)} বেঞ্চে শেষ পর্যন্ত ছিল। +২ পয়েন্ট।` : 'এই রাউন্ডে কেউ জেতেনি।')}
+  return `${pageHead(`রাউন্ড ${bn(s.set.rounds)} শেষ`, w ? `${esc(w.name)}-এর কলম টিকে গেছে` : 'সব কলম পড়ে গেছে', w ? `${esc(PENS[w.pen].name)} বেঞ্চে শেষ পর্যন্ত ছিল। +২ পয়েন্ট${w.cpu ? '' : ', +২ কয়েন'}।` : 'এই রাউন্ডে কেউ জেতেনি।')}
   ${w ? `<div class="result-portrait win pen-winner"><img src="${penImg(w.pen)}" alt="" width="112" height="112"></div>` : ''}
   <section class="rank-section"><h2>ম্যাচের পয়েন্ট</h2>${table()}</section>
   <div class="pen-actions">${done ? button('আরও এক রাউন্ড', 'more', 'secondary', 'plus') : button('পরের রাউন্ড', 'next', 'primary', 'arrow')}${button('ম্যাচ শেষ', 'end', done ? 'primary' : 'text', 'trophy')}</div>`;
 }
 function rules() {
   return `${pageHead('নিয়ম', 'কলম যুদ্ধ', '')}<ol class="plain-rules">
-  <li>প্রত্যেকে একটা কলম বেছে নিন। কলমের ওজন আর দৈর্ঘ্য আলাদা।</li>
+  <li>প্রত্যেকে নাম দিয়ে খেলায় ঢোকেন; নামটাই অ্যাকাউন্ট। একটা ফোনে অনেক অ্যাকাউন্ট রাখা যায়, র‍্যাঙ্কিং পাতা থেকে মোছা যায়।</li>
+  <li>প্রত্যেকে একটা কলম বেছে নিন। কলমের ওজন, গ্রিপ আর দৈর্ঘ্য আলাদা।</li>
   <li>যার চাল, সে নিজের কলমে আঙুল রেখে পেছনে টেনে ছেড়ে দেবে। যত বেশি টানবেন, তত জোরে যাবে।</li>
+  <li>বেঞ্চ খসখসে কাঠের: স্থির কলম হালকা ধাক্কায় নড়ে না, জোরে লাগাতে হয়।</li>
   <li>কলমের মাঝখান বেঞ্চের কিনারা পার হলে কলম পড়ে গেছে।</li>
-  <li>অন্যের কলম ফেললে +১, রাউন্ডে শেষ পর্যন্ত টিকে থাকলে +২।</li>
-  <li>নিজের কলম নিজে ফেলে দিলে কোনো পয়েন্ট নেই।</li>
+  <li>অন্যের কলম ফেললে +১, রাউন্ডে শেষ পর্যন্ত টিকে থাকলে +২। নিজের কলম নিজে ফেলে দিলে কিছু নেই।</li>
+  <li>প্রতিটা পয়েন্ট অ্যাকাউন্টে এক কয়েন। কয়েন দিয়ে দোকান থেকে গ্রিপার, ভারী মাথা, পেছনে বাড়তি মাথা, টেপ, ইরেজার বাম্পার, ক্লিপ কেনা যায়।</li>
   <li>এক ম্যাচে ${bn(ROUNDS)} রাউন্ড। মোট পয়েন্টে ম্যাচের র‍্যাঙ্কিং।</li></ol>`;
 }
 function ranking() {
@@ -275,37 +335,52 @@ function ranking() {
   ${s.set?.rounds ? `<section class="rank-section"><h2>চলমান ম্যাচ</h2>${table()}</section>` : ''}
   <section class="rank-section"><h2>সব ম্যাচ মিলিয়ে</h2>${rankTable(rows, labels)}</section>
   <section class="fame-section"><h2>${icon('trophy')}হল অব ফেম</h2><p>শেষ ১০০টি ম্যাচে এক ম্যাচে সবচেয়ে বেশি পয়েন্ট।</p>${fameTable(hallOfFame(list, 'pen'), { caption: 'হল অব ফেম', player: 'খেলোয়াড়', points: 'পয়েন্ট', empty: 'এখনও কেউ হল অব ফেমে ওঠেননি।', number: bn, meta: e => new Date(e.date).toLocaleDateString('bn-BD') + ' · ' + bn(e.games) + 'টি রাউন্ড' })}</section>
-  <a class="btn secondary wide" href="ranking.html?game=pen">${icon('trophy')}সব খেলার র‍্যাঙ্কিং</a>`;
+  <a class="btn secondary wide" href="ranking.html?game=pen">${icon('trophy')}সব খেলার র‍্যাঙ্কিং ও অ্যাকাউন্ট</a>`;
 }
 const button = (label, action, cls, ic, extra = '') => `<button type="button" class="btn ${cls}" data-action="${action}" ${extra}>${icon(ic)}${label}</button>`;
 
 function screenKey() { return view + s.phase + (s.set?.rounds || 0); }
 function render() {
   const key = screenKey(), changed = key !== lastScreen; lastScreen = key;
-  const body = view === 'rules' ? rules() : view === 'ranking' ? ranking() : s.phase === 'play' ? play() : s.phase === 'roundover' ? roundOver() : setup();
-  $('#app').innerHTML = appShell({ brand: 'কলম যুদ্ধ', brandSub: 'বেঞ্চের খেলা', brandIcon: 'edit', brandAction: 'tab-play', crumb: view === 'rules' ? 'নিয়ম' : view === 'ranking' ? 'র‍্যাঙ্কিং' : s.phase === 'setup' ? 'কলম বাছাই' : `রাউন্ড ${bn(s.set.rounds + (s.phase === 'play' ? 1 : 0))}`, active: view, contentClass: 'game-content pen-content', labels: { back: 'সব খেলা', menu: 'মেনু', sections: 'খেলার অংশ' },
-    tabs: [{ id: 'play', label: 'খেলা', icon: 'play', action: 'tab-play' }, { id: 'rules', label: 'নিয়ম', icon: 'book', action: 'tab-rules' }, { id: 'ranking', label: 'র‍্যাঙ্কিং', icon: 'trophy', action: 'tab-ranking' }], body });
+  const body = view === 'rules' ? rules() : view === 'ranking' ? ranking() : view === 'shop' ? shop() : s.phase === 'play' ? play() : s.phase === 'roundover' ? roundOver() : setup();
+  $('#app').innerHTML = appShell({ brand: 'কলম যুদ্ধ', brandSub: 'বেঞ্চের খেলা', brandIcon: 'edit', brandAction: 'tab-play', crumb: ({ rules: 'নিয়ম', ranking: 'র‍্যাঙ্কিং', shop: 'দোকান' })[view] || (s.phase === 'setup' ? 'কলম বাছাই' : `রাউন্ড ${bn(s.set.rounds + (s.phase === 'play' ? 1 : 0))}`), active: view, contentClass: 'game-content pen-content', labels: { back: 'সব খেলা', menu: 'মেনু', sections: 'খেলার অংশ' },
+    tabs: [{ id: 'play', label: 'খেলা', icon: 'play', action: 'tab-play' }, { id: 'shop', label: 'দোকান', icon: 'spark', action: 'tab-shop' }, { id: 'rules', label: 'নিয়ম', icon: 'book', action: 'tab-rules' }, { id: 'ranking', label: 'র‍্যাঙ্কিং', icon: 'trophy', action: 'tab-ranking' }], body });
   $$('[data-action]').forEach(el => el.onclick = e => { e.preventDefault(); act(el.dataset.action, el.dataset.id); });
   $('#name-form')?.addEventListener('submit', e => {
     e.preventDefault(); const name = $('#player-name').value.trim().replace(/\s+/g, ' ');
-    if (!name) return; if (s.players.some(p => p.name.toLocaleLowerCase() === name.toLocaleLowerCase())) return toast('এই নাম আগেই আছে।');
-    s.players.push({ id: crypto.randomUUID(), name, pen: PEN_KEYS[s.players.length % PEN_KEYS.length], score: 0, history: [] }); save(); render(); $('#player-name')?.focus();
+    if (!name) return; addPlayer(name); $('#player-name')?.focus();
   });
-  if (view === 'play' && s.phase === 'play') { bindBench(); if (s.round.moving) loop(); else cpuTurn(); }
+  if (view === 'shop') drawPreview();
+  if (view === 'play' && s.phase === 'play') { bindBench(); if (s.round.moving || banner || fx.length) loop(); else cpuTurn(); }
   if (changed) enterScreen($('#screen'));
+}
+function addPlayer(name) {
+  if (s.players.length >= 4) return;
+  if (s.players.some(p => p.name.toLocaleLowerCase() === name.toLocaleLowerCase())) return toast('এই নাম আগেই আছে।');
+  let acc; try { acc = ensureAccount(name); } catch (e) { return toast(e.message === 'FULL' ? 'এই ফোনে আর অ্যাকাউন্ট খোলা যাবে না। পুরোনো কোনোটা মুছুন।' : 'একটা নাম দিন।'); }
+  s.players.push({ id: crypto.randomUUID(), name: acc.name, pen: PEN_KEYS[s.players.length % PEN_KEYS.length], score: 0, history: [] }); save(); render();
 }
 function transition() { const el = $('#screen'); el ? leaveScreen(el, render) : render(); }
 
-function startRound() { placePens(s.players[s.set.rounds % s.players.length].id); s.phase = 'play'; save(); transition(); }
+function startRound() {
+  placePens(s.players[s.set.rounds % s.players.length].id); s.phase = 'play'; fx = []; shake = 0;
+  banner = { text: `রাউন্ড ${bn(s.set.rounds + 1)}`, sub: `প্রথম চাল: ${byId(s.round.turn).name}`, life: 1.6, max: 1.6 };
+  save(); transition();
+}
 async function act(action, id) {
   switch (action) {
-    case 'tab-play': case 'tab-rules': case 'tab-ranking': { const next = action.slice(4); if (view === next) return; view = next; clearTimeout(cpuTimer); return transition(); }
+    case 'tab-play': case 'tab-rules': case 'tab-ranking': case 'tab-shop': { const next = action.slice(4); if (view === next) return; view = next; clearTimeout(cpuTimer); return transition(); }
     case 'app-menu': return openMenu();
     case 'games': location.href = 'index.html'; return;
     case 'pro': return toast('এই দামি কলমগুলো Pro সংস্করণে খোলা হবে।');
     case 'add-cpu': if (s.players.some(p => p.cpu) || s.players.length >= 4) return; s.players.push({ id: crypto.randomUUID(), name: 'কম্পিউটার', cpu: true, pen: 'hischool', score: 0, history: [] }); save(); return render();
+    case 'cpu-level': s.cpuLevel = CPU[id] ? id : 'medium'; save(); return render();
+    case 'add-acc': { const a = readAccounts().find(x => x.id === id); if (a) addPlayer(a.name); return; }
     case 'cycle-pen': { const p = byId(id); p.pen = PEN_KEYS[(PEN_KEYS.indexOf(p.pen) + 1) % PEN_KEYS.length]; save(); return render(); }
     case 'remove': s.players = s.players.filter(p => p.id !== id); save(); return render();
+    case 'shop': shopFor = id || shopFor; if (view !== 'shop') { view = 'shop'; return transition(); } return render();
+    case 'buy': try { buyGear(shopFor, id); sound('coin'); toast(GEAR[id].name + ' লাগানো হয়েছে।'); } catch (e) { toast(e.message === 'COINS' ? 'কয়েন কম। আরও লড়াই জিতে আসুন।' : 'এটা আর কেনা যাবে না।'); } return render();
+    case 'wear': toggleGear(shopFor, id); return render();
     case 'start': if (s.players.length < 2) return; s.players.forEach(p => { p.score = 0; p.history = []; }); s.set = { id: crypto.randomUUID(), total: ROUNDS, rounds: 0 }; return startRound();
     case 'next': return startRound();
     case 'more': s.set.total++; return startRound();
@@ -313,7 +388,7 @@ async function act(action, id) {
       if (s.phase === 'setup') return;
       if (!await confirm('ম্যাচ শেষ করবেন?', 'ম্যাচের ফল র‍্যাঙ্কিংয়ে সেভ হবে, তারপর নতুন খেলা শুরু করা যাবে।')) return;
       if (s.set?.rounds) saveMatch({ id: s.set.id, game: 'pen', games: s.set.rounds, players: s.players.map(p => ({ name: p.name, points: p.score, recent: p.history || [] })) });
-      stop(); s = { ...fresh(), players: s.players.map(p => ({ ...p, score: 0, history: [] })) }; save(); view = 'ranking'; return transition();
+      stop(); s = { ...fresh(), cpuLevel: s.cpuLevel, players: s.players.map(p => ({ ...p, score: 0, history: [] })) }; save(); view = 'ranking'; return transition();
   }
 }
 
@@ -340,4 +415,7 @@ addEventListener('keydown', e => { if (e.key === 'Escape' && $('#overlay').inner
 
 // A roll interrupted by a reload resumes from where the pens were last saved.
 if (s.round?.moving) { s.round.moving = false; s.round.pens.forEach(p => { p.vx = p.vy = p.w = 0; if (p.out) p.fall = 1; }); }
+// Players removed from the device accounts since the last visit leave the table.
+if (s.phase === 'setup') s.players = s.players.filter(p => p.cpu || findAccount(p.name));
+if (new URLSearchParams(location.search).get('view') === 'shop') view = 'shop';
 render();

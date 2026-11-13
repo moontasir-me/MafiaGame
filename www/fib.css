@@ -1,0 +1,57 @@
+/* Fibonacci: deep teal chalkboard and golden-ratio gold. Frame, buttons and tables come from style.css + kit.css. */
+:root[data-theme][data-universe=fib]{--bg:#eef3f1;--surface:#fbfdfc;--border:#c9d8d3;--text:#14302e;--muted:#55706b;--accent:#123f3c;--green:#23845a;--world-dark:#123f3c;--world-accent:#e3a92b;--world-mid:#dbe7e3;--world-light:#fbfdfc}
+:root[data-universe=fib] body{background-image:radial-gradient(ellipse at 100% 0,#e3a92b1f 0,transparent 50%),linear-gradient(#14302e08 1px,transparent 1px),linear-gradient(90deg,#14302e08 1px,transparent 1px);background-size:auto,28px 28px,28px 28px;background-attachment:fixed}
+.fib-page .btn.primary{background:#123f3c!important;border-color:#123f3c!important;color:#fff!important}
+.fib-page .btn.primary .icon{color:#f3c55a}
+.fib-hero{position:relative;display:grid;grid-template-columns:1.2fr .8fr;gap:20px;align-items:center;margin:4px 0 24px;padding:26px;border-radius:26px;overflow:hidden;color:#e8f1ee;background:radial-gradient(ellipse at 85% 30%,#f3c55a33,transparent 55%),linear-gradient(155deg,#174b47,#0b2928);box-shadow:0 20px 46px #0b29284d}
+.fib-hero:before{content:'π   √2   ∑   ∫   φ   e   ∞';position:absolute;left:18px;bottom:10px;font-size:15px;letter-spacing:4px;color:#e8f1ee26;white-space:pre}
+.fib-kicker{display:inline-block;padding:4px 12px;border-radius:99px;background:#f3c55a1f;border:1px solid #f3c55a55;color:#f3c55a;font-size:12px;font-weight:600}
+.fib-hero h1{margin:12px 0 10px;font-size:clamp(36px,7vw,56px);letter-spacing:-1px;color:#fff}
+.fib-hero p{margin:0;font-size:13.5px;line-height:1.75;color:#c7dad5}
+.fib-mark{display:block;width:100%;height:auto;color:#f3c55a}
+.fib-hero .fib-mark{filter:drop-shadow(0 0 12px #f3c55a66)}
+@keyframes fib-turn{to{transform:rotate(360deg)}}
+@media(max-width:650px){.fib-hero{grid-template-columns:1fr;padding:20px}.fib-hero .fib-mark{width:60%;margin:auto;order:-1}}
+.fib-title{margin:0 0 12px;font-size:19px}
+.fib-levels{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:0 0 22px}
+@media(max-width:820px){.fib-levels{grid-template-columns:repeat(2,1fr)}}
+.fib-level{--lv:#23845a;position:relative;display:grid;justify-items:start;align-content:start;gap:3px;padding:16px 14px 14px;border:2px solid var(--border);border-radius:18px;background:var(--surface);color:var(--text);font:inherit;text-align:left;cursor:pointer;transition:transform .18s,border-color .2s,box-shadow .2s}
+.fib-level.l2{--lv:#2471a3}.fib-level.l3{--lv:#b9770e}.fib-level.l4{--lv:#7d3c98}
+.fib-num{display:grid;place-items:center;width:38px;height:38px;margin-bottom:6px;border-radius:12px;background:color-mix(in srgb,var(--lv) 14%,#fff);color:var(--lv);font-size:20px;font-weight:700}
+.fib-level b{font-size:18px}.fib-level small{font-size:12px;font-weight:600;color:var(--lv)}.fib-level em{font-style:normal;font-size:12px;line-height:1.55;color:var(--muted)}.fib-level i{margin-top:6px;font-style:normal;font-size:11px;color:var(--muted)}
+.fib-level:hover{transform:translateY(-2px)}
+.fib-level.is-on{border-color:var(--lv);box-shadow:0 0 0 3px color-mix(in srgb,var(--lv) 20%,transparent),0 12px 26px #14302e1a;transform:translateY(-3px)}
+.fib-level.is-on .fib-num{background:var(--lv);color:#fff}
+.fib-setup h2{display:flex;align-items:baseline;gap:8px;margin:0 0 12px;font-size:17px}.fib-setup h2 small{font-size:12px;color:var(--muted);font-weight:500}
+.name-form{display:flex;gap:8px}.name-form input{flex:1;min-width:0;min-height:48px;padding:10px 14px;border:1px solid var(--border);border-radius:12px;background:var(--surface);font:inherit;color:var(--text)}.name-form .btn{width:auto}
+.fib-accs{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:12px 0 0}.fib-accs>span{width:100%;font-size:12px;color:var(--muted)}
+.fib-acc{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:3px 12px 3px 3px;border:1px solid var(--border);border-radius:99px;background:var(--surface);color:var(--text);font:inherit;font-size:13px;cursor:pointer}
+.fib-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin:14px 0 4px}
+.fib-row{display:flex;align-items:center;gap:10px;padding:6px 6px 6px 10px;border:1px solid var(--border);border-left:4px solid var(--dot);border-radius:14px;background:var(--surface)}.fib-row b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px}
+.fib-hint{font-size:12.5px;color:var(--muted);margin:12px 0 4px}
+.fib-count{display:flex;align-items:center;gap:6px;margin:16px 0;padding:4px;border-radius:14px;background:var(--world-mid)}.fib-count span{padding:0 8px;font-size:12px;color:var(--muted)}
+.fib-count button{flex:1;min-height:42px;border:0;border-radius:10px;background:transparent;font:inherit;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer}.fib-count button.is-on{background:var(--surface);color:var(--text);box-shadow:0 2px 8px #14302e26}
+.fib-turn{display:flex;align-items:center;gap:10px;padding:10px 12px;margin:0 0 14px;border-radius:16px;background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--dot)}
+.fib-turn>span:nth-child(2){flex:1;min-width:0;line-height:1.35}.fib-turn b{display:block;font-size:15px}.fib-turn small{font-size:12px;color:var(--muted)}
+.fib-timer{position:relative;width:56px;height:56px;flex:none;display:grid;place-items:center}.fib-timer svg{position:absolute;inset:0;transform:rotate(-90deg)}.fib-timer circle{fill:none;stroke-width:3.4}.fib-timer .track{stroke:var(--world-mid)}.fib-timer .ring{stroke:#123f3c;stroke-linecap:round;stroke-dasharray:119.4;transition:stroke-dashoffset .25s linear}
+.fib-timer span{font-weight:700;font-size:15px}.fib-timer.is-urgent .ring{stroke:#c2392b}.fib-timer.is-urgent span{color:#c2392b;animation:kit-pulse 1s ease-in-out infinite}.fib-timer.is-done .ring{stroke:#e3a92b}
+.fib-card{position:relative;margin:0 0 14px;padding:30px 22px;border-radius:22px;overflow:hidden;background:linear-gradient(155deg,#174b47,#0b2928);color:#fff;box-shadow:0 16px 36px #0b29283d;transition:box-shadow .3s}
+.fib-card .fib-mark{position:absolute;right:-20px;bottom:-24px;width:200px;opacity:.13}
+.fib-q{position:relative;margin:0;font-size:clamp(22px,5.6vw,32px);line-height:1.5;font-weight:600;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.fib-card.is-right{box-shadow:0 0 0 4px #23845a,0 16px 36px #0b29283d}.fib-card.is-wrong{box-shadow:0 0 0 4px #c2392b,0 16px 36px #0b29283d;animation:fib-shake .35s}
+@keyframes fib-shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.fib-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 14px}
+.fib-opt{display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 14px;border:2px solid var(--border);border-radius:16px;background:var(--surface);color:var(--text);font:inherit;font-size:clamp(16px,4.4vw,20px);font-weight:600;text-align:left;cursor:pointer;transition:transform .14s,border-color .2s,background-color .2s}
+.fib-opt i{display:grid;place-items:center;flex:none;width:32px;height:32px;border-radius:10px;background:var(--world-mid);font-style:normal;font-size:14px;color:var(--muted)}
+.fib-opt span{min-width:0;overflow-wrap:anywhere}
+.fib-opt:not(:disabled):hover{border-color:#123f3c;transform:translateY(-2px)}.fib-opt:not(:disabled):active{transform:scale(.97)}
+.fib-opt:disabled{cursor:default;opacity:.55}
+.fib-opt.is-answer{opacity:1;border-color:#23845a;background:#e3f3ea;animation:kit-pop .35s both}.fib-opt.is-answer i{background:#23845a;color:#fff}
+.fib-opt.is-miss{opacity:1;border-color:#c2392b;background:#fbe9e7}.fib-opt.is-miss i{background:#c2392b;color:#fff}
+.fib-why{margin:0 0 12px;padding:12px 14px;border-radius:14px;font-size:14px;line-height:1.7;animation:kit-pop .3s both}.fib-why.right{background:#e3f3ea;color:#14532d}.fib-why.wrong{background:#fdf1e0;color:#6b3d05}
+.fib-scores{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0 4px}.fib-scores span{display:inline-flex;align-items:center;gap:6px;padding:4px 10px 4px 4px;border-radius:99px;background:var(--surface);border:1px solid var(--border);font-size:13px}.fib-scores span.is-turn{border-color:#123f3c;box-shadow:0 0 0 2px #123f3c22}.fib-scores b{color:#b9770e}
+.fib-over{text-align:center;margin:8px 0 18px}.fib-over .fib-mark{width:120px;margin:0 auto 8px;color:#e3a92b}.fib-over h1{margin:6px 0}
+.fib-actions{display:grid;gap:10px;margin:16px 0}
+.plain-rules{padding-left:22px;line-height:1.8}.plain-rules li{margin:6px 0}
+@media(max-width:420px){.fib-options{grid-template-columns:1fr}}
+.fib-page .fib-hero h1{color:#fff}

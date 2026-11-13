@@ -1,7 +1,7 @@
 // One shared record of finished matches (game sets) for every game on this device.
-// A match: {id, game:'mafia'|'spy'|'kalidas', date, games, players:[{name, points}]}
+// A match: {id, game:'mafia'|'spy'|'kalidas'|'pen'|'fib', date, games, players:[{name, points}]}
 const KEY = 'jomfa.history.v1', LIMIT = 500;
-export const GAMES = { mafia: 'Mafia', spy: 'Spy', kalidas: 'কহেন কবি কালিদাস', pen: 'কলম যুদ্ধ' };
+export const GAMES = { mafia: 'Mafia', spy: 'Spy', kalidas: 'কহেন কবি কালিদাস', pen: 'কলম যুদ্ধ', fib: 'Fibonacci' };
 
 export function readHistory(storage = localStorage) {
   try { const list = JSON.parse(storage.getItem(KEY)); return Array.isArray(list) ? list.filter(m => m && GAMES[m.game] && Array.isArray(m.players)) : []; } catch { return []; }
@@ -47,4 +47,11 @@ export function hallOfFame(list, game = null, last = 100, top = 10) {
 export function clearHistory(game = null, storage = localStorage) {
   const keep = game ? readHistory(storage).filter(m => m.game !== game) : [];
   storage.setItem(KEY, JSON.stringify(keep));
+}
+
+/* Takes one player out of every match (when their account is deleted); empty matches go too. */
+export function removePlayer(name, storage = localStorage) {
+  const key = String(name).trim().toLocaleLowerCase();
+  const keep = readHistory(storage).map(m => ({ ...m, players: m.players.filter(p => p.name.toLocaleLowerCase() !== key) })).filter(m => m.players.length);
+  try { storage.setItem(KEY, JSON.stringify(keep)); } catch { }
 }

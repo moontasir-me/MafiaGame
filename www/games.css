@@ -40,3 +40,6 @@
 
 .pen-tile{background:linear-gradient(150deg,#e8eedd,#d3dcc2)}.pen-tile-art img{inset:12px 18px 0;width:calc(100% - 36px);height:calc(100% - 12px);border-radius:15px;object-fit:cover}.pen-tile h2{font-family:inherit}
 
+.fib-tile{background:linear-gradient(150deg,#e2ece8,#c9dbd4)}.fib-tile-art img{inset:12px 18px 0;width:calc(100% - 36px);height:calc(100% - 12px);border-radius:15px;object-fit:cover}
+@media(max-width:650px){.fib-tile-art img{inset:6px 18px 0;width:calc(100% - 36px);height:calc(100% - 6px)}}
+.acc-pill svg{stroke:#2f6b4f}
