@@ -34,15 +34,15 @@ function chips() {
 }
 function setup() {
   if (ONLINE) return `<header class="lamp-head"><div><h1>চতুরঙ্গ</h1><p>অনলাইন: বন্ধু নিজের ফোন থেকে খেলবে। যিনি ঘর খোলেন তিনি সাদা।</p></div></header>${onlineEntry({ len: 5 })}`;
-  return `<header class="lamp-head"><div><h1>চতুরঙ্গ</h1><p class="chess-verse">তোমার নৌকোর মুখোমুখি আমার সৈন্যদল<br>বাঁচার লড়াই...<br>আমার মন্ত্রী খোয়া গেছে একটা চালের ভুল<br>কোথায় দাঁড়াই...</p></div></header>
-  <p class="grandpa-note"><svg viewBox="0 0 60 24" aria-hidden="true"><g fill="none" stroke="#b8893b" stroke-width="2"><circle cx="15" cy="13" r="9"/><circle cx="45" cy="13" r="9"/><path d="M24 12q6-5 12 0M6 10 1 6M54 10l5-4"/></g></svg>ছকের কোণে পিতলের পাত, ঘুঁটিগুলো হাতে হাতে ঘষে মসৃণ।</p>
-  <section class="lamp-panel"><h2>কার সাথে</h2><div class="lamp-seg" role="radiogroup">${[['cpu', 'কম্পিউটার'], ['friends', 'বন্ধুর সাথে']].map(([k, l]) => `<button type="button" role="radio" aria-checked="${s.mode === k}" class="${s.mode === k ? 'is-on' : ''}" data-action="mode" data-id="${k}">${l}</button>`).join('')}</div>
-  ${s.mode === 'cpu' ? `<div class="lamp-seg small" role="radiogroup" aria-label="কম্পিউটার কেমন খেলবে">${Object.entries(LEVELS).map(([k, l]) => `<button type="button" role="radio" aria-checked="${s.level === k}" class="${s.level === k ? 'is-on' : ''}" data-action="level" data-id="${k}">${l.name}</button>`).join('')}</div>` : ''}</section>
-  <section class="lamp-panel"><h2>নাম</h2>
-  <label class="lamp-field"><span class="side-dot w"></span><input id="name-w" maxlength="20" autocomplete="off" placeholder="সাদা ঘুঁটি" value="${esc(s.names[0])}"></label>
-  ${s.mode === 'friends' ? `<label class="lamp-field"><span class="side-dot b"></span><input id="name-b" maxlength="20" autocomplete="off" placeholder="কালো ঘুঁটি" value="${esc(s.names[1])}"></label>` : ''}
+  const mini = 'rnbqkbnr'.split('').slice(2, 6), cells = Array.from({ length: 16 }, (_, k) => { const r = k >> 2, c = k & 3, p = r === 0 ? mini[c] : r === 1 ? 'p' : r === 2 ? (c === 1 ? 'P' : '') : ['R', 'N', 'Q', 'K'][c]; return `<i class="${(r + c) % 2 ? 'dk' : 'lt'}">${p ? `<span class="${p === p.toUpperCase() ? 'w' : 'b'}">${GLYPH[p.toLowerCase()]}\uFE0E</span>` : ''}</i>`; }).join('');
+  const card = (k, glyph, title, sub) => `<button type="button" role="radio" aria-checked="${s.mode === k}" class="cg-card${s.mode === k ? ' is-on' : ''}" data-action="mode" data-id="${k}"><span class="cg-glyph">${glyph}</span><b>${title}</b><small>${sub}</small></button>`;
+  return `<header class="cg-hero"><div class="cg-hero-text"><h1>চতুরঙ্গ</h1><p class="chess-verse">তোমার নৌকোর মুখোমুখি আমার সৈন্যদল<br>বাঁচার লড়াই...<br>আমার মন্ত্রী খোয়া গেছে একটা চালের ভুল<br>কোথায় দাঁড়াই...</p></div><div class="cg-mini" aria-hidden="true">${cells}</div></header>
+  <div class="cg-modes" role="radiogroup" aria-label="কার সাথে">${card('cpu', '♚\uFE0E', 'কম্পিউটারের সাথে', 'একা খেলুন, তিন স্তর')}${card('friends', '♚\uFE0E<em>♔\uFE0E</em>', 'বন্ধুর সাথে', 'এক ফোনে মুখোমুখি')}</div>
+  ${s.mode === 'cpu' ? `<div class="cg-levels" role="radiogroup" aria-label="কম্পিউটার কেমন খেলবে">${Object.entries(LEVELS).map(([k, l], n) => `<button type="button" role="radio" aria-checked="${s.level === k}" class="${s.level === k ? 'is-on' : ''}" data-action="level" data-id="${k}"><span>${'♟\uFE0E'.repeat(n + 1)}</span>${l.name}</button>`).join('')}</div>` : ''}
+  <section class="cg-names"><label class="cg-name"><span class="cg-side w">♔\uFE0E</span><input id="name-w" maxlength="20" autocomplete="off" placeholder="${s.mode === 'cpu' ? 'আপনার নাম' : 'সাদা ঘুঁটির খেলোয়াড়'}" value="${esc(s.names[0])}"></label>
+  ${s.mode === 'friends' ? `<label class="cg-name"><span class="cg-side b">♚\uFE0E</span><input id="name-b" maxlength="20" autocomplete="off" placeholder="কালো ঘুঁটির খেলোয়াড়" value="${esc(s.names[1])}"></label>` : ''}
   ${chips()}</section>
-  ${button('দান শুরু', 'start', 'primary wide', 'play')}`;
+  ${button('দান শুরু', 'start', 'primary wide cg-start', 'play')}`;
 }
 
 function captured(side) {
@@ -97,7 +97,7 @@ function ranking() {
 function render() {
   const key = view + s.phase, changed = key !== lastScreen; lastScreen = key;
   const body = view === 'rules' ? rules() : view === 'ranking' ? ranking() : online && !online.started ? onlineLobby({ code: online.code, members: online.members, me: online.me, host: online.host, min: 2, max: 2, title: 'চতুরঙ্গ · অনলাইন ঘর' }) : online ? playing() : s.phase === 'setup' || ONLINE ? setup() : playing();
-  $('#app').innerHTML = appShell({ brand: 'চতুরঙ্গ', brandSub: 'দাদুর ছক', brandIcon: 'grid', brandAction: 'tab-play', crumb: view === 'rules' ? 'নিয়ম' : view === 'ranking' ? 'র‍্যাঙ্কিং' : s.phase === 'setup' ? 'দান সাজান' : s.end ? 'দান শেষ' : 'দান চলছে', active: view, contentClass: 'game-content lamp-content', labels: SHELL_LABELS, backHref: BACK, tabs: TABS, body });
+  $('#app').innerHTML = appShell({ brand: 'চতুরঙ্গ', brandSub: 'দাদুর ছক', brandIcon: 'grid', brandAction: 'tab-play', crumb: view === 'rules' ? 'নিয়ম' : view === 'ranking' ? 'র‍্যাঙ্কিং' : s.phase === 'setup' ? '' : s.end ? 'দান শেষ' : 'দান চলছে', active: view, contentClass: 'game-content lamp-content', labels: SHELL_LABELS, backHref: BACK, tabs: TABS, body });
   $$('[data-action]').forEach(el => el.onclick = e => { e.preventDefault(); act(el.dataset.action, el.dataset.id); });
   $$('[data-sq]').forEach(el => el.onclick = () => tap(Number(el.dataset.sq)));
   $$('#name-w,#name-b').forEach((el, i) => el.oninput = () => { s.names[el.id === 'name-w' ? 0 : 1] = el.value; save(); });
