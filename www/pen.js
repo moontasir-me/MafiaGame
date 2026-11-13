@@ -14,15 +14,17 @@ const bn = n => Number(n).toLocaleString('bn-BD');
 const KEY = 'pen.v2', ROUNDS = 5;
 const PEN_KEYS = Object.keys(PENS), penImg = k => `assets/pen/${k}.svg`;
 const CPU = {
-  easy: { label: 'সহজ', tries: 24, err: .2, gear: {} },
-  medium: { label: 'মাঝারি', tries: 60, err: .08, gear: { gripper: 1 } },
-  hard: { label: 'কঠিন', tries: 110, err: .03, gear: { gripper: 2, head: 1, tape: 1 } }
+  easy: { label: 'সহজ', tries: 40, err: .25, gear: {} },
+  medium: { label: 'মাঝারি', tries: 150, err: .1, gear: { gripper: 1 } },
+  hard: { label: 'কঠিন', tries: 350, err: .04, gear: { gripper: 2, head: 1, tape: 1 } }
 };
 
 let s = load(), view = 'play', lastScreen = '', aim = null, raf = 0, modalResolve = null, shopFor = null;
 let fx = [], shake = 0, banner = null;
+// The round banner runs on the real clock, so nothing waits on screen repaints.
+const bannerUp = () => { if (banner && performance.now() >= banner.until) banner = null; return !!banner; };
 
-function fresh() { return { v: 2, phase: 'setup', players: [], cpuLevel: 'medium', set: null, round: null }; }
+function fresh() { return { v: 2, phase: 'setup', mode: 'cpu', players: [], cpuLevel: 'medium', set: null, round: null }; }
 function load() {
   try {
     const d = JSON.parse(localStorage.getItem(KEY)); if (d?.v === 2) return d;
@@ -95,12 +97,14 @@ let cpuTimer = 0;
 function cpuTurn() {
   clearTimeout(cpuTimer);
   if (s.phase !== 'play' || view !== 'play' || s.round.moving || !byId(s.round.turn)?.cpu) return;
+  // Wait until the round banner has gone, so the computer never shoots under it.
   cpuTimer = setTimeout(() => {
-    if (s.phase !== 'play' || s.round.moving || !byId(s.round.turn)?.cpu) return;
+    if (s.phase !== 'play' || view !== 'play' || s.round.moving || !byId(s.round.turn)?.cpu) return;
+    if (bannerUp()) return cpuTurn();
     const me = s.round.pens.find(p => p.pid === s.round.turn), shot = plan(), len = Math.hypot(shot.jx, shot.jy), pull = len / (POWER * me.m) * 200;
     aim = { pen: me, cx: shot.cx, cy: shot.cy, x: shot.cx, y: shot.cy, sx: shot.cx - shot.jx / len * pull, sy: shot.cy - shot.jy / len * pull }; loop();
     setTimeout(() => { aim = null; flick(me, shot.cx, shot.cy, shot.jx, shot.jy); }, 700);
-  }, 750);
+  }, bannerUp() ? 400 : 750);
 }
 function endRound(winner) {
   if (winner) { byId(winner).score += 2; coins(byId(winner), 2); }
@@ -191,15 +195,19 @@ function draw() {
     g.fillStyle = pct > .75 ? '#e5533d' : pct > .4 ? '#f2c230' : '#7bd389'; g.beginPath(); g.roundRect(W / 2 - 88, H - 32, 176 * pct, 10, 5); g.fill();
     g.font = '600 12px Poppins, sans-serif'; g.textAlign = 'center'; g.fillStyle = '#fffaf0'; g.fillText('জোর ' + bn(Math.round(pct * 100)) + '%', W / 2, H - 42);
   }
-  if (banner) {
-    const t = banner.life / banner.max, a = Math.min(1, t * 3, (1 - t) * 6 + .2);
+  if (bannerUp()) {
+    const t = (banner.until - performance.now()) / 1600, a = Math.min(1, t * 3, (1 - t) * 6 + .2);
     g.globalAlpha = a * .55; g.fillStyle = '#1b0f05'; g.fillRect(0, H / 2 - 50, W, 100); g.globalAlpha = a;
     g.font = '700 34px Poppins, sans-serif'; g.textAlign = 'center'; g.fillStyle = '#ffd34d'; g.fillText(banner.text, W / 2, H / 2 + 4);
     g.font = '500 15px Poppins, sans-serif'; g.fillStyle = '#fffaf0'; g.fillText(banner.sub, W / 2, H / 2 + 32); g.globalAlpha = 1;
   }
 }
-const next = f => document.hidden ? -setTimeout(() => f(performance.now()), 50) : requestAnimationFrame(f);
-const stop = () => raf < 0 ? clearTimeout(-raf) : cancelAnimationFrame(raf);
+// Next frame: a repaint when the browser gives one, otherwise a timer, so a paused screen never stalls the game.
+const next = f => {
+  let done = false; const go = () => { if (done) return; done = true; cancelAnimationFrame(h.a); clearTimeout(h.b); f(performance.now()); };
+  const h = { a: document.hidden ? 0 : requestAnimationFrame(go), b: setTimeout(go, document.hidden ? 50 : 100) }; return h;
+};
+const stop = () => { if (raf) { cancelAnimationFrame(raf.a); clearTimeout(raf.b); } };
 let loopGen = 0;
 function loop() {
   stop(); let last = performance.now(); const gen = ++loopGen;
@@ -209,7 +217,7 @@ function loop() {
     const dt = Math.min(3, (now - last) / 1000), n = Math.ceil(dt / .004); last = now;
     for (const e of fx) { e.life -= dt; e.x += e.vx * dt; e.y += e.vy * dt; e.vx *= .92; e.vy *= .92; }
     fx = fx.filter(e => e.life > 0); shake = shake > .3 ? shake * Math.pow(.02, dt) : 0;
-    if (banner && (banner.life -= dt) <= 0) banner = null;
+    bannerUp();
     if (s.round?.moving) { for (let i = 0; i < n && !resting(s.round); i++) step(s.round, dt / n, effects); if (resting(s.round)) { draw(); settle(); if (gen !== loopGen) return; } }
     if (!$('#bench')) return;
     draw(); if (s.round?.moving || aim || fx.length || shake || banner) raf = next(tick);
@@ -255,29 +263,31 @@ const GEAR_ART = {
 };
 const gearCount = gear => Object.values(gear || {}).reduce((a, b) => a + b, 0);
 
-function penPick(p, i) {
-  const acc = !p.cpu && findAccount(p.name), gear = gearOf(p);
-  return `<div class="pen-row" style="--dot:${playerColour(p.name, i)}">${playerDot(p.name, i)}<span class="pen-who"><b>${esc(p.name)}</b><small>${p.cpu ? 'কম্পিউটার · ' + CPU[s.cpuLevel].label : `${icon('spark')}${bn(acc?.coins || 0)} কয়েন${gearCount(gear) ? ' · ' + bn(gearCount(gear)) + 'টি অ্যাড-অন' : ''}`}</small></span>
-  <button type="button" class="pen-choice" data-action="cycle-pen" data-id="${p.id}" aria-label="${esc(p.name)}-এর কলম বদলান: এখন ${esc(PENS[p.pen].name)}"><img src="${penImg(p.pen)}" alt="" width="44" height="44"><span><b>${esc(PENS[p.pen].name)}</b>${statLine(p.pen, gear)}</span>${icon('arrow')}</button>
-  ${p.cpu ? '' : `<button type="button" class="icon-btn shop-btn" data-action="shop" data-id="${acc?.id || ''}" aria-label="${esc(p.name)}-এর দোকান">${icon('spark')}</button>`}<button type="button" class="icon-btn" data-action="remove" data-id="${p.id}" aria-label="${esc(p.name)} বাদ দিন">${icon('close')}</button></div>`;
+const humans = () => s.players.filter(p => !p.cpu);
+const vsCpu = () => s.mode === 'cpu';
+function playerCard(p, i) {
+  const acc = !p.cpu && findAccount(p.name), gear = gearOf(p), k = PEN_KEYS.indexOf(p.pen);
+  return `<article class="pc" style="--dot:${playerColour(p.name, i)}"><header>${playerDot(p.name, i)}<span><b>${esc(p.name)}</b><small>${p.cpu ? 'প্রতিপক্ষ' : `${bn(acc?.coins || 0)} কয়েন${gearCount(gear) ? ' · ' + bn(gearCount(gear)) + 'টি জিনিস লাগানো' : ''}`}</small></span>${p.cpu ? '' : `<button type="button" class="icon-btn" data-action="remove" data-id="${p.id}" aria-label="${esc(p.name)} বাদ দিন">${icon('close')}</button>`}</header>
+  <div class="pc-pen"><button type="button" class="pc-arrow" data-action="prev-pen" data-id="${p.id}" aria-label="আগের কলম">‹</button><img src="${penImg(p.pen)}" alt="" width="64" height="64"><span><b>${esc(PENS[p.pen].name)}</b><small>${esc(PENS[p.pen].note)}</small>${statLine(p.pen, gear)}</span><button type="button" class="pc-arrow" data-action="cycle-pen" data-id="${p.id}" aria-label="পরের কলম">›</button></div>
+  <small class="pc-count">কলম ${bn(k + 1)}/${bn(PEN_KEYS.length)}</small>
+  ${p.cpu ? `<div class="cpu-level" role="radiogroup" aria-label="কম্পিউটার কতটা কঠিন">${Object.entries(CPU).map(([key, c]) => `<button type="button" role="radio" aria-checked="${s.cpuLevel === key}" class="${s.cpuLevel === key ? 'is-on' : ''}" data-action="cpu-level" data-id="${key}">${c.label}</button>`).join('')}</div>` : `<button type="button" class="btn secondary wide pc-shop" data-action="shop" data-id="${acc?.id || ''}">${icon('spark')}দোকান: গ্রিপার, ভারী মাথা…</button>`}</article>`;
 }
 function accountChips() {
   const here = new Set(s.players.map(p => p.name.toLocaleLowerCase())), list = readAccounts().filter(a => !here.has(a.name.toLocaleLowerCase()));
-  return list.length && s.players.length < 4 ? `<div class="acc-chips"><span>অ্যাকাউন্ট থেকে:</span>${list.map(a => `<button type="button" class="acc-chip" data-action="add-acc" data-id="${a.id}">${playerDot(a.name)}${esc(a.name)}<small>${bn(a.coins)}</small></button>`).join('')}</div>` : '';
+  return list.length ? `<div class="acc-chips"><span>আগের অ্যাকাউন্ট:</span>${list.map(a => `<button type="button" class="acc-chip" data-action="add-acc" data-id="${a.id}">${playerDot(a.name)}${esc(a.name)}<small>${bn(a.coins)}</small></button>`).join('')}</div>` : '';
 }
 function setup() {
-  const cpu = s.players.some(p => p.cpu);
-  return `<section class="pen-hero"><div><span class="eyebrow">কলম যুদ্ধ</span><h1>বেঞ্চের ওপর<br>কলমের লড়াই</h1><p>নিজের কলম টোকা দিয়ে অন্যের কলম বেঞ্চ থেকে ফেলে দিন। প্রতিটা পয়েন্ট আপনার অ্যাকাউন্টে কয়েন হয়ে জমে, দোকান থেকে কলমে গ্রিপার, ভারী মাথা আর আরও জিনিস লাগান।</p></div><img src="assets/pen/cover.svg" alt="" width="640" height="420"></section>
-  <section class="pen-setup" id="players"><h2>খেলোয়াড় (২–৪ জন)</h2><p class="pen-hint">নাম দিলেই অ্যাকাউন্ট খুলে যায়। একা খেললে নিজের নাম দিয়ে কম্পিউটার যোগ করুন।</p>
-  <form id="name-form" class="name-form"><input id="player-name" maxlength="20" autocomplete="off" placeholder="নাম লিখুন" aria-label="খেলোয়াড়ের নাম" ${s.players.length >= 4 ? 'disabled' : ''}><button class="btn primary" type="submit" ${s.players.length >= 4 ? 'disabled' : ''}>${icon('plus')}যোগ করুন</button></form>
-  ${accountChips()}
-  ${cpu || s.players.length >= 4 ? '' : button('কম্পিউটারের সাথে খেলুন', 'add-cpu', 'secondary wide cpu-add', 'person')}
-  ${cpu ? `<div class="cpu-level" role="radiogroup" aria-label="কম্পিউটার কতটা কঠিন">${Object.entries(CPU).map(([k, c]) => `<button type="button" role="radio" aria-checked="${s.cpuLevel === k}" class="${s.cpuLevel === k ? 'is-on' : ''}" data-action="cpu-level" data-id="${k}">${c.label}</button>`).join('')}</div>` : ''}
-  <div class="pen-list">${s.players.map(penPick).join('')}</div>
-  <p class="pen-hint">কলমের ছবিতে চাপ দিলে কলম বদলাবে। এক ম্যাচে ${bn(ROUNDS)} রাউন্ড, পরে চাইলে আরও খেলা যাবে।</p>
-  ${button('খেলা শুরু', 'start', 'primary wide', 'play', s.players.length < 2 ? 'disabled' : '')}</section>
-  <h2 class="pro-title">${icon('lock')}Pro কলম <small>শীঘ্রই আসছে</small></h2>
-  <div class="pen-shelf pro-shelf">${Object.entries(PRO_PENS).map(([k, p]) => `<button type="button" class="pro-pen" data-action="pro" aria-label="${esc(p.name)}: লক করা, Pro সংস্করণে আসবে"><img src="${penImg(k)}" alt="" width="72" height="72"><span><b>${esc(p.name)}</b><small>${esc(p.note)}</small></span><i>${icon('lock')}Pro</i></button>`).join('')}</div>`;
+  const need = vsCpu() ? 1 : 2, room = vsCpu() ? humans().length < 1 : humans().length < 4, ready = humans().length >= need;
+  return `<header class="pen-head"><img src="assets/pen/cover.svg" alt="" width="640" height="420"><div><h1>কলম যুদ্ধ</h1><p>বেঞ্চে কলম টোকা দিয়ে অন্যের কলম ফেলে দিন। শেষ পর্যন্ত যার কলম টিকে থাকে, রাউন্ড তার।</p></div></header>
+  <ol class="pen-steps">
+  <li><h2><i>১</i>কার সাথে খেলবেন?</h2><div class="pen-modes" role="radiogroup" aria-label="কার সাথে খেলবেন">
+   <button type="button" role="radio" aria-checked="${vsCpu()}" class="${vsCpu() ? 'is-on' : ''}" data-action="mode" data-id="cpu">${icon('person')}<b>কম্পিউটারের সাথে</b><small>একা খেলুন</small></button>
+   <button type="button" role="radio" aria-checked="${!vsCpu()}" class="${vsCpu() ? '' : 'is-on'}" data-action="mode" data-id="friends">${icon('people')}<b>বন্ধুদের সাথে</b><small>২–৪ জন, এক ফোনে পালা করে</small></button></div></li>
+  <li><h2><i>২</i>${vsCpu() ? 'আপনার নাম' : 'খেলোয়াড়দের নাম'}</h2>
+   ${room ? `<form id="name-form" class="name-form"><input id="player-name" maxlength="20" autocomplete="off" placeholder="নাম লিখুন" aria-label="খেলোয়াড়ের নাম"><button class="btn primary" type="submit">${icon('plus')}যোগ</button></form>${accountChips()}<p class="pen-hint">নাম দিলেই অ্যাকাউন্ট খুলে যায়। জেতা পয়েন্ট কয়েন হয়ে জমে।</p>` : `<p class="pen-hint">${humans().map(p => esc(p.name)).join(', ')} খেলছেন। অন্য কাউকে নিতে নিচের কার্ডে ✕ চাপুন।</p>`}
+  </li>
+  <li><h2><i>৩</i>কলম বাছুন</h2>${s.players.length ? `<div class="pc-grid">${s.players.map(playerCard).join('')}</div>` : '<p class="pen-hint">ওপরে নাম দিলে এখানে কলম বাছাই দেখা যাবে।</p>'}</li></ol>
+  <div class="pen-go">${button(ready ? 'খেলা শুরু' : vsCpu() ? 'আগে আপনার নাম দিন' : `আরও ${bn(need - humans().length)} জনের নাম দিন`, 'start', 'primary wide', 'play', ready ? '' : 'disabled')}<small>${bn(ROUNDS)} রাউন্ডের ম্যাচ</small></div>`;
 }
 
 function shop() {
@@ -286,7 +296,8 @@ function shop() {
   const acc = accounts.find(a => a.id === shopFor) || accounts.find(a => s.players.some(p => !p.cpu && p.name.toLocaleLowerCase() === a.name.toLocaleLowerCase())) || accounts[0];
   shopFor = acc.id;
   const pen = s.players.find(p => p.name.toLocaleLowerCase() === acc.name.toLocaleLowerCase())?.pen || 'pinpoint', gear = fitted(acc);
-  return `${pageHead('দোকান', 'কলমের জিনিসপত্র', 'লড়াইয়ে জেতা প্রতিটা পয়েন্ট এক কয়েন। কেনা জিনিস যেকোনো সময় খুলে রাখা বা আবার লাগানো যায়।')}
+  return `${s.phase === 'setup' ? button('খেলায় ফিরুন', 'tab-play', 'text shop-back', 'back') : ''}${pageHead('দোকান', 'কলমের জিনিসপত্র', 'লড়াইয়ে জেতা প্রতিটা পয়েন্ট এক কয়েন। কেনা জিনিস যেকোনো সময় খুলে রাখা বা আবার লাগানো যায়।')}
+  <h2 class="shop-h">কার জন্য কিনবেন?</h2>
   <div class="acc-chips shop-accs" role="radiogroup" aria-label="কার জন্য কিনবেন">${accounts.map(a => `<button type="button" role="radio" aria-checked="${a.id === acc.id}" class="acc-chip ${a.id === acc.id ? 'is-on' : ''}" data-action="shop" data-id="${a.id}">${playerDot(a.name)}${esc(a.name)}<small>${bn(a.coins)}</small></button>`).join('')}</div>
   <section class="shop-preview"><canvas id="pen-preview" width="560" height="120" aria-label="${esc(acc.name)}-এর কলম, লাগানো জিনিসসহ"></canvas><div><span class="wallet">${icon('spark')}<b>${bn(acc.coins)}</b> কয়েন</span><small>মোট জেতা ${bn(acc.earned)}</small>${statLine(pen, gear)}</div></section>
   <div class="shop-grid">${GEAR_KEYS.map(k => {
@@ -294,7 +305,9 @@ function shop() {
     return `<article class="shop-item ${owned ? 'is-owned' : ''}"><div class="shop-icon" aria-hidden="true">${GEAR_ART[k]}</div><div class="shop-copy"><h3>${esc(it.name)}${it.max > 1 ? ` <small>${bn(owned)}/${bn(it.max)}</small>` : ''}</h3><p>${esc(it.note)}</p></div><div class="shop-buy">
     ${price != null ? `<button type="button" class="btn primary" data-action="buy" data-id="${k}" ${acc.coins < price ? 'disabled' : ''}>${icon('spark')}${bn(price)}</button>` : `<span class="sold">${icon('check')}পুরোটা কেনা</span>`}
     ${owned ? `<button type="button" class="btn text" data-action="wear" data-id="${k}">${on ? 'খুলে রাখুন' : 'লাগান'}</button>` : ''}</div></article>`;
-  }).join('')}</div>`;
+  }).join('')}</div>
+  <h2 class="pro-title">${icon('lock')}Pro কলম <small>শীঘ্রই আসছে</small></h2>
+  <div class="pen-shelf pro-shelf">${Object.entries(PRO_PENS).map(([k, p]) => `<button type="button" class="pro-pen" data-action="pro" aria-label="${esc(p.name)}: লক করা, Pro সংস্করণে আসবে"><img src="${penImg(k)}" alt="" width="72" height="72"><span><b>${esc(p.name)}</b><small>${esc(p.note)}</small></span><i>${icon('lock')}Pro</i></button>`).join('')}</div>`;
 }
 function drawPreview() {
   const c = $('#pen-preview'), acc = readAccounts().find(a => a.id === shopFor); if (!c || !acc) return;
@@ -307,7 +320,8 @@ function play() {
   const r = s.round, p = byId(r.turn), i = s.players.indexOf(p);
   return `<div class="pen-turn" style="--dot:${playerColour(p.name, i)}">${playerDot(p.name, i)}<span><b>${esc(p.name)}-এর চাল</b><small>${r.moving ? 'কলম চলছে…' : p.cpu ? 'কম্পিউটার নিশানা ঠিক করছে…' : 'নিজের কলম ধরে পেছনে টেনে ছেড়ে দিন'}</small></span><span class="pen-round">রাউন্ড ${bn(s.set.rounds + 1)}/${bn(s.set.total)}</span></div>
   <div class="bench-wrap"><canvas id="bench" aria-label="বেঞ্চ: ${s.round.pens.filter(q => !q.out).map(q => byId(q.pid).name).join(', ')}-এর কলম আছে"></canvas></div>
-  <div class="pen-scores">${s.players.map((q, k) => `<span class="${r.pens.find(x => x.pid === q.id)?.out ? 'is-out' : ''}">${playerDot(q.name, k)}${esc(q.name)} <b>${bn(q.score)}</b></span>`).join('')}</div>`;
+  <div class="pen-scores">${s.players.map((q, k) => `<span class="${r.pens.find(x => x.pid === q.id)?.out ? 'is-out' : ''}">${playerDot(q.name, k)}${esc(q.name)} <b>${bn(q.score)}</b></span>`).join('')}</div>
+  ${button('ম্যাচ শেষ করুন', 'end', 'text wide pen-end', 'trophy')}`;
 }
 const table = () => rankTable(s.players.map(p => ({ name: p.name, score: p.score, history: (p.history || []).map(h => ({ ...h })) })), labels);
 const labels = { caption: 'ম্যাচের ফল', rank: '#', player: 'খেলোয়াড় · শেষ পাঁচ রাউন্ড', points: 'পয়েন্ট', win: 'সবুজ: রাউন্ড জয়', loss: 'লাল: কলম পড়ে গেছে', order: 'নতুনটি বাঁ দিকে', empty: 'এখনও কোনো রাউন্ড শেষ হয়নি।', noGames: 'এখনও খেলেননি', number: bn };
@@ -351,20 +365,26 @@ function render() {
     if (!name) return; addPlayer(name); $('#player-name')?.focus();
   });
   if (view === 'shop') drawPreview();
-  if (view === 'play' && s.phase === 'play') { bindBench(); if (s.round.moving || banner || fx.length) loop(); else cpuTurn(); }
+  if (view === 'play' && s.phase === 'play') { bindBench(); if (s.round.moving || bannerUp() || fx.length) loop(); cpuTurn(); }
   if (changed) enterScreen($('#screen'));
 }
 function addPlayer(name) {
-  if (s.players.length >= 4) return;
+  if (vsCpu() ? humans().length >= 1 : humans().length >= 4) return toast(vsCpu() ? 'কম্পিউটারের সাথে একজন খেলে। আগের নাম বাদ দিন।' : 'সর্বোচ্চ ৪ জন।');
   if (s.players.some(p => p.name.toLocaleLowerCase() === name.toLocaleLowerCase())) return toast('এই নাম আগেই আছে।');
   let acc; try { acc = ensureAccount(name); } catch (e) { return toast(e.message === 'FULL' ? 'এই ফোনে আর অ্যাকাউন্ট খোলা যাবে না। পুরোনো কোনোটা মুছুন।' : 'একটা নাম দিন।'); }
-  s.players.push({ id: crypto.randomUUID(), name: acc.name, pen: PEN_KEYS[s.players.length % PEN_KEYS.length], score: 0, history: [] }); save(); render();
+  s.players.splice(humans().length, 0, { id: crypto.randomUUID(), name: acc.name, pen: PEN_KEYS[humans().length % PEN_KEYS.length], score: 0, history: [] }); save(); render();
+}
+/* Against the computer: one person plus the computer. With friends: two to four people. */
+function setMode(mode) {
+  s.mode = mode === 'cpu' ? 'cpu' : 'friends';
+  const people = humans();
+  s.players = s.mode === 'cpu' ? [...people.slice(0, 1), { id: crypto.randomUUID(), name: 'কম্পিউটার', cpu: true, pen: 'hischool', score: 0, history: [] }] : people;
 }
 function transition() { const el = $('#screen'); el ? leaveScreen(el, render) : render(); }
 
 function startRound() {
   placePens(s.players[s.set.rounds % s.players.length].id); s.phase = 'play'; fx = []; shake = 0;
-  banner = { text: `রাউন্ড ${bn(s.set.rounds + 1)}`, sub: `প্রথম চাল: ${byId(s.round.turn).name}`, life: 1.6, max: 1.6 };
+  banner = { text: `রাউন্ড ${bn(s.set.rounds + 1)}`, sub: `প্রথম চাল: ${byId(s.round.turn).name}`, until: performance.now() + 1600 };
   save(); transition();
 }
 async function act(action, id) {
@@ -373,7 +393,8 @@ async function act(action, id) {
     case 'app-menu': return openMenu();
     case 'games': location.href = 'index.html'; return;
     case 'pro': return toast('এই দামি কলমগুলো Pro সংস্করণে খোলা হবে।');
-    case 'add-cpu': if (s.players.some(p => p.cpu) || s.players.length >= 4) return; s.players.push({ id: crypto.randomUUID(), name: 'কম্পিউটার', cpu: true, pen: 'hischool', score: 0, history: [] }); save(); return render();
+    case 'mode': setMode(id); save(); return render();
+    case 'prev-pen': { const p = byId(id); p.pen = PEN_KEYS[(PEN_KEYS.indexOf(p.pen) + PEN_KEYS.length - 1) % PEN_KEYS.length]; save(); return render(); }
     case 'cpu-level': s.cpuLevel = CPU[id] ? id : 'medium'; save(); return render();
     case 'add-acc': { const a = readAccounts().find(x => x.id === id); if (a) addPlayer(a.name); return; }
     case 'cycle-pen': { const p = byId(id); p.pen = PEN_KEYS[(PEN_KEYS.indexOf(p.pen) + 1) % PEN_KEYS.length]; save(); return render(); }
@@ -381,14 +402,14 @@ async function act(action, id) {
     case 'shop': shopFor = id || shopFor; if (view !== 'shop') { view = 'shop'; return transition(); } return render();
     case 'buy': try { buyGear(shopFor, id); sound('coin'); toast(GEAR[id].name + ' লাগানো হয়েছে।'); } catch (e) { toast(e.message === 'COINS' ? 'কয়েন কম। আরও লড়াই জিতে আসুন।' : 'এটা আর কেনা যাবে না।'); } return render();
     case 'wear': toggleGear(shopFor, id); return render();
-    case 'start': if (s.players.length < 2) return; s.players.forEach(p => { p.score = 0; p.history = []; }); s.set = { id: crypto.randomUUID(), total: ROUNDS, rounds: 0 }; return startRound();
+    case 'start': if (humans().length < (vsCpu() ? 1 : 2)) return; s.players.forEach(p => { p.score = 0; p.history = []; }); s.set = { id: crypto.randomUUID(), total: ROUNDS, rounds: 0 }; return startRound();
     case 'next': return startRound();
     case 'more': s.set.total++; return startRound();
     case 'end': case 'new':
       if (s.phase === 'setup') return;
       if (!await confirm('ম্যাচ শেষ করবেন?', 'ম্যাচের ফল র‍্যাঙ্কিংয়ে সেভ হবে, তারপর নতুন খেলা শুরু করা যাবে।')) return;
       if (s.set?.rounds) saveMatch({ id: s.set.id, game: 'pen', games: s.set.rounds, players: s.players.map(p => ({ name: p.name, points: p.score, recent: p.history || [] })) });
-      stop(); s = { ...fresh(), cpuLevel: s.cpuLevel, players: s.players.map(p => ({ ...p, score: 0, history: [] })) }; save(); view = 'ranking'; return transition();
+      stop(); s = { ...fresh(), mode: s.mode, cpuLevel: s.cpuLevel, players: s.players.map(p => ({ ...p, score: 0, history: [] })) }; save(); view = 'ranking'; return transition();
   }
 }
 
@@ -416,6 +437,6 @@ addEventListener('keydown', e => { if (e.key === 'Escape' && $('#overlay').inner
 // A roll interrupted by a reload resumes from where the pens were last saved.
 if (s.round?.moving) { s.round.moving = false; s.round.pens.forEach(p => { p.vx = p.vy = p.w = 0; if (p.out) p.fall = 1; }); }
 // Players removed from the device accounts since the last visit leave the table.
-if (s.phase === 'setup') s.players = s.players.filter(p => p.cpu || findAccount(p.name));
+if (s.phase === 'setup') { s.players = s.players.filter(p => p.cpu || findAccount(p.name)); setMode(s.mode || (s.players.some(p => p.cpu) || !s.players.length ? 'cpu' : 'friends')); }
 if (new URLSearchParams(location.search).get('view') === 'shop') view = 'shop';
 render();

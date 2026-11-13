@@ -4,8 +4,8 @@
    - spin friction, so a clipped pen turns a little and then stops turning;
    - static grip: a resting pen soaks up a light knock and only moves when it is hit hard. */
 
-export const W = 480, H = 780, R = 7, POWER = 1600;
-const SLIDE = 1650, DRAG = 1.0, SPIN = 34, SPIN_DRAG = 2.2, HOLD = 100, HOLD_SPIN = 2.4, MAX_SPIN = 18;
+export const W = 480, H = 780, R = 7, POWER = 1700;
+const SLIDE = 1400, DRAG = 0.8, SPIN = 34, SPIN_DRAG = 2.2, HOLD = 60, HOLD_SPIN = 2.4, MAX_SPIN = 18;
 
 export const ends = p => { const c = Math.cos(p.a) * p.L / 2, d = Math.sin(p.a) * p.L / 2; return [p.x - c, p.y - d, p.x + c, p.y + d]; };
 

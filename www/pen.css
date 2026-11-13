@@ -70,3 +70,32 @@
 .shop-buy{grid-column:1/-1;display:flex;gap:8px;align-items:center;margin-top:6px}.shop-buy .btn{width:auto;min-height:40px;padding:8px 16px;gap:6px}.shop-buy .btn.primary{background:#24433a!important;border-color:#24433a!important}.shop-buy .btn.primary .icon{color:#ffd34d}
 .shop-buy .btn:disabled{opacity:.45}
 .sold{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:var(--green)}.sold .icon{width:16px}
+
+/* Setup in three plain steps: who to play, names, pens. */
+.pen-head{display:flex;align-items:center;gap:16px;margin:4px 0 18px}
+.pen-head img{width:120px;height:80px;object-fit:cover;border-radius:14px;flex:none;box-shadow:0 8px 18px #24433a33}
+.pen-head h1{margin:0 0 4px;font-size:clamp(26px,6vw,34px)}.pen-head p{margin:0;font-size:13px;line-height:1.6;color:var(--muted)}
+@media(max-width:480px){.pen-head img{width:84px;height:64px}}
+.pen-steps{list-style:none;margin:0;padding:0;display:grid;gap:18px}
+.pen-steps>li{padding:16px;border:1px solid var(--border);border-radius:20px;background:var(--surface)}
+.pen-steps h2{display:flex;align-items:center;gap:10px;margin:0 0 12px;font-size:16px}
+.pen-steps h2 i{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--world-dark);color:#ffd34d;font-style:normal;font-size:14px}
+.pen-modes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pen-modes button{display:grid;justify-items:start;gap:2px;padding:14px;border:2px solid var(--border);border-radius:16px;background:var(--bg);color:var(--text);font:inherit;text-align:left;cursor:pointer;transition:border-color .2s,transform .15s}
+.pen-modes button .icon{width:26px;height:26px;color:var(--accent);margin-bottom:4px}.pen-modes b{font-size:15px}.pen-modes small{font-size:12px;color:var(--muted)}
+.pen-modes button.is-on{border-color:var(--accent);background:#e3efe6;box-shadow:0 0 0 3px #2f6b4f26}
+.pen-steps .name-form .btn{width:auto}
+.pc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.pc{display:grid;gap:10px;padding:12px;border:1px solid var(--border);border-top:4px solid var(--dot);border-radius:16px;background:var(--bg)}
+.pc header{display:flex;align-items:center;gap:10px}.pc header>span:nth-child(2){flex:1;min-width:0;display:grid;line-height:1.3}.pc header b{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pc header small{font-size:11.5px;color:var(--muted)}
+.pc-pen{display:flex;align-items:center;gap:10px}.pc-pen img{width:60px;height:60px;border-radius:12px;flex:none}.pc-pen>span{flex:1;min-width:0}.pc-pen b{display:block;font-size:14px}.pc-pen small{display:block;font-size:11.5px;color:var(--muted)}
+.pc-arrow{flex:none;width:40px;height:56px;border:1px solid var(--border);border-radius:12px;background:var(--surface);font-size:26px;line-height:1;color:var(--text);cursor:pointer}.pc-arrow:active{transform:scale(.94)}
+.pc-count{text-align:center;font-size:11px;color:var(--muted);margin-top:-6px}
+.pc .cpu-level{margin:0}
+.pc-shop{min-height:44px}.pc-shop .icon{color:#b9770e}
+.pen-go{position:sticky;bottom:calc(76px + env(safe-area-inset-bottom));z-index:3;display:grid;gap:4px;justify-items:center;margin:18px 0 8px;padding:10px;border-radius:18px;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px)}
+@media(min-width:900px){.pen-go{bottom:12px}}
+.pen-go small{font-size:11.5px;color:var(--muted)}
+.shop-back{width:auto!important;margin:0 0 6px;padding-left:0}
+.shop-h{font-size:15px;margin:6px 0 0}
+.pen-end{margin-top:10px;color:#9b2a21!important}

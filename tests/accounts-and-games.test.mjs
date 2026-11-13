@@ -49,9 +49,9 @@ test('a resting pen holds its place against a light knock but moves on a hard hi
   const hard = { pens: [pen('a', 240, 600), pen('b', 240, 480)], out: [] };
   push(hard.pens[0], 240, 600, 0, -POWER); simulate(hard);
   assert.ok(480 - hard.pens[1].y > 60, 'a full flick pushes it well back');
-  const alone = { pens: [pen('a', 240, 700)], out: [] };
-  push(alone.pens[0], 240, 700, 0, -POWER); simulate(alone);
-  assert.ok(700 - alone.pens[0].y < 600, 'a pen on its own stops on the bench');
+  const alone = { pens: [pen('a', 240, 770)], out: [] };
+  push(alone.pens[0], 240, 770, 0, -POWER); simulate(alone);
+  assert.ok(alone.pens[0].y > 0, 'a full flick along the bench stops before the far edge');
 });
 
 test('every riddle has exactly one level and each level has plenty', () => {
