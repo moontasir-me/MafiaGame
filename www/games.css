@@ -39,5 +39,4 @@
 @media(max-width:650px){.home-pill span:not(.profile-face){display:none}.home-pill{padding:0 6px}.ranking-pill{padding:0 10px}}
 
 .pen-tile{background:linear-gradient(150deg,#e8eedd,#d3dcc2)}.pen-tile-art img{inset:12px 18px 0;width:calc(100% - 36px);height:calc(100% - 12px);border-radius:15px;object-fit:cover}.pen-tile h2{font-family:inherit}
-.truth-tile{background:linear-gradient(150deg,#ffe3ee,#ffe9c7)}.truth-tile-art img{inset:12px 18px 0;width:calc(100% - 36px);height:calc(100% - 12px);border-radius:15px;object-fit:cover}
-@media(min-width:651px){.truth-tile{grid-column:1/-1}.truth-tile .tile-art{height:220px}}
+
