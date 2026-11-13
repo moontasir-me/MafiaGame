@@ -234,7 +234,7 @@ function finish() {
 function render() {
   const key = view + s.phase, changed = key !== lastScreen; lastScreen = key;
   const body = view === 'rules' ? rules() : view === 'ranking' ? ranking() : (online ? online.started && s.g : s.phase === 'play' && s.g) ? playing() : setup();
-  $('#app').innerHTML = appShell({ brand: 'ক্যারম', brandSub: 'বোর্ডের খেলা', brandIcon: 'grid', brandAction: 'tab-play', crumb: view === 'rules' ? 'নিয়ম' : view === 'ranking' ? 'র‍্যাঙ্কিং' : s.phase === 'play' || online?.started ? 'খেলা চলছে' : online ? 'অনলাইন ঘর' : 'খেলা সাজান', active: view, contentClass: 'game-content carrom-content', labels: SHELL_LABELS, backHref: BACK, tabs: TABS, body });
+  $('#app').innerHTML = appShell({ brand: 'ক্যারম', brandSub: 'বোর্ডের খেলা', brandIcon: 'carrom', brandAction: 'tab-play', crumb: view === 'rules' ? 'নিয়ম' : view === 'ranking' ? 'র‍্যাঙ্কিং' : s.phase === 'play' || online?.started ? 'খেলা চলছে' : online ? 'অনলাইন ঘর' : 'খেলা সাজান', active: view, contentClass: 'game-content carrom-content', labels: SHELL_LABELS, backHref: BACK, tabs: TABS, body });
   $$('[data-action]').forEach(el => el.onclick = e => { e.preventDefault(); act(el.dataset.action, el.dataset.id); });
   $$('[data-name]').forEach(el => el.oninput = () => { s.names[Number(el.dataset.name)] = el.value; save(); });
   if (view === 'play' && (online ? online.started && s.g : s.phase === 'play')) bindBoard();

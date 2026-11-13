@@ -100,7 +100,7 @@ function screenKey() { return view !== 'play' ? view : s.phase + s.cur; }
 function render() {
   const key = screenKey(), changed = key !== lastScreen; lastScreen = key;
   const body = view === 'rules' ? rules() : view === 'ranking' ? ranking() : s.phase === 'play' ? playing() : s.phase === 'handover' ? handover() : s.phase === 'over' ? summary() : setup();
-  $('#app').innerHTML = appShell({ brand: 'Fibonacci', brandSub: 'অঙ্কের খেলা', brandIcon: 'grid', brandAction: 'tab-play', crumb: view === 'rules' ? 'নিয়ম' : view === 'ranking' ? 'র‍্যাঙ্কিং' : s.phase === 'play' || s.phase === 'handover' ? `${me().name}-এর পালা` : s.phase === 'over' ? 'ফলাফল' : 'খেলা সাজান', active: view, contentClass: 'game-content fib-content', labels: { back: 'সব খেলা', menu: 'মেনু', sections: 'খেলার অংশ' },
+  $('#app').innerHTML = appShell({ brand: 'Fibonacci', brandSub: 'অঙ্কের খেলা', brandIcon: 'spiral', brandAction: 'tab-play', crumb: view === 'rules' ? 'নিয়ম' : view === 'ranking' ? 'র‍্যাঙ্কিং' : s.phase === 'play' || s.phase === 'handover' ? `${me().name}-এর পালা` : s.phase === 'over' ? 'ফলাফল' : 'খেলা সাজান', active: view, contentClass: 'game-content fib-content', labels: { back: 'সব খেলা', menu: 'মেনু', sections: 'খেলার অংশ' },
     tabs: [{ id: 'play', label: 'খেলা', icon: 'play', action: 'tab-play' }, { id: 'rules', label: 'নিয়ম', icon: 'book', action: 'tab-rules' }, { id: 'ranking', label: 'র‍্যাঙ্কিং', icon: 'trophy', action: 'tab-ranking' }], body });
   $$('[data-action]').forEach(el => el.onclick = e => { e.preventDefault(); act(el.dataset.action, el.dataset.id); });
   bindNumberPick(document, 'secs', 10, 900, n => { s.seconds = n; save(); render(); });

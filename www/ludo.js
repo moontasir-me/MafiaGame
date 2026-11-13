@@ -143,7 +143,7 @@ function ranking() {
 function render() {
   const key = view + s.phase, changed = key !== lastScreen; lastScreen = key;
   const body = view === 'rules' ? rules() : view === 'ranking' ? ranking() : s.phase === 'lobby' ? lobby() : s.phase === 'play' && m() ? playing() : setup();
-  $('#app').innerHTML = appShell({ brand: 'লুডু', brandSub: KINDS[s.kind], brandIcon: 'grid', brandAction: 'tab-play', crumb: view === 'rules' ? 'নিয়ম' : view === 'ranking' ? 'র‍্যাঙ্কিং' : s.phase === 'play' ? KINDS[m()?.kind || s.kind] : s.phase === 'lobby' ? 'অনলাইন ঘর' : 'খেলা সাজান', active: view, contentClass: 'game-content ludo-content', labels: SHELL_LABELS, backHref: BACK, tabs: TABS, body });
+  $('#app').innerHTML = appShell({ brand: 'লুডু', brandSub: (m()?.kind || s.kind) === 'snake' ? 'সাপ লুডু' : 'ছক্কার খেলা', brandIcon: 'dice', brandAction: 'tab-play', crumb: view === 'rules' ? 'নিয়ম' : view === 'ranking' ? 'র‍্যাঙ্কিং' : s.phase === 'play' ? KINDS[m()?.kind || s.kind] : s.phase === 'lobby' ? 'অনলাইন ঘর' : 'খেলা সাজান', active: view, contentClass: 'game-content ludo-content', labels: SHELL_LABELS, backHref: BACK, tabs: TABS, body });
   $$('[data-action]').forEach(el => el.onclick = e => { e.preventDefault(); act(el.dataset.action, el.dataset.id); });
   $$('[data-piece]').forEach(el => el.onclick = () => play(Number(el.dataset.piece)));
   $$('[data-name]').forEach(el => el.oninput = () => { s.names[Number(el.dataset.name)] = el.value; save(); });

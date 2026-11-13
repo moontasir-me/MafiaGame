@@ -97,7 +97,7 @@ function ranking() {
 function render() {
   const key = view + s.phase, changed = key !== lastScreen; lastScreen = key;
   const body = view === 'rules' ? rules() : view === 'ranking' ? ranking() : online && !online.started ? onlineLobby({ code: online.code, members: online.members, me: online.me, host: online.host, min: 2, max: 2, title: 'চতুরঙ্গ · অনলাইন ঘর' }) : online ? playing() : s.phase === 'setup' || ONLINE ? setup() : playing();
-  $('#app').innerHTML = appShell({ brand: 'চতুরঙ্গ', brandSub: 'দাদুর ছক', brandIcon: 'grid', brandAction: 'tab-play', crumb: view === 'rules' ? 'নিয়ম' : view === 'ranking' ? 'র‍্যাঙ্কিং' : s.phase === 'setup' ? '' : s.end ? 'দান শেষ' : 'দান চলছে', active: view, contentClass: 'game-content lamp-content', labels: SHELL_LABELS, backHref: BACK, tabs: TABS, body });
+  $('#app').innerHTML = appShell({ brand: 'চতুরঙ্গ', brandSub: 'দাদুর ছক', brandIcon: 'knight', brandAction: 'tab-play', crumb: view === 'rules' ? 'নিয়ম' : view === 'ranking' ? 'র‍্যাঙ্কিং' : s.phase === 'setup' ? '' : s.end ? 'দান শেষ' : 'দান চলছে', active: view, contentClass: 'game-content lamp-content', labels: SHELL_LABELS, backHref: BACK, tabs: TABS, body });
   $$('[data-action]').forEach(el => el.onclick = e => { e.preventDefault(); act(el.dataset.action, el.dataset.id); });
   $$('[data-sq]').forEach(el => el.onclick = () => tap(Number(el.dataset.sq)));
   $$('#name-w,#name-b').forEach((el, i) => el.oninput = () => { s.names[el.id === 'name-w' ? 0 : 1] = el.value; save(); });
