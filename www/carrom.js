@@ -4,6 +4,12 @@ import { saveMatch, readHistory, overallRanking, hallOfFame } from './history.mj
 import { readAccounts, ensureAccount } from './accounts.mjs';
 import { esc, icon, appShell, pageHead, rankTable, fameTable, enterScreen, leaveScreen } from './ui-kit.mjs';
 import { $, $$, bn, toast, confirmBox, openMenu, SHELL_LABELS, TABS, BACK } from './lamp.mjs';
+import { onlineEntry, bindOnlineEntry, onlineLobby, bindLobby, tableApi, isOnlineMode, ONLINE_ERRORS } from './online-ui.mjs';
+// The home page's Online/Offline switch decides which version opens.
+const ONLINE = isOnlineMode() || new URLSearchParams(location.search).has('online');
+/* Online: the shooter's phone runs the shot and shares the result; the other phone replays the same shot, then takes that result.
+   The guest plays black and sees the board turned round, so both shoot from the bottom of their own screen. */
+let online = null, poll = 0, replay = null, sharing = false;
 
 /* ক্যারম: two players on one phone (sitting on opposite sides) or against the computer.
    Slide the striker along your line, then pull back from it and let go. */
@@ -14,10 +20,10 @@ function fresh() { return { v: 1, phase: 'setup', mode: 'cpu', level: 'medium', 
 let s = fresh(), view = 'play', lastScreen = '', moving = false, fell = [], aim = null, sx = S / 2, raf = 0, busy = false;
 try { const d = JSON.parse(localStorage.getItem(KEY)); if (d?.v === 1) s = { ...fresh(), ...d }; } catch { }
 if (s.g) s.g.pieces = s.g.pieces.filter(p => p.id !== 's');
-const save = () => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch { } };
+const save = () => { if (online) return; try { localStorage.setItem(KEY, JSON.stringify(s)); } catch { } };
 const button = (label, action, cls, ic, extra = '') => `<button type="button" class="btn ${cls}" data-action="${action}" ${extra}>${icon(ic)}${label}</button>`;
-const nameOf = side => side === 1 && s.mode === 'cpu' ? `${CPU_NAME} (${CPU_LEVELS[s.level].name})` : s.names[side];
-const cpuTurn = () => s.mode === 'cpu' && s.phase === 'play' && s.g && s.g.turn === 1 && s.g.winner === null;
+const nameOf = side => online ? (online.members[side] || '') : side === 1 && s.mode === 'cpu' ? `${CPU_NAME} (${CPU_LEVELS[s.level].name})` : s.names[side];
+const cpuTurn = () => !online && s.mode === 'cpu' && s.phase === 'play' && s.g && s.g.turn === 1 && s.g.winner === null;
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
 /* ---------- Screens ---------- */
@@ -27,6 +33,8 @@ function chips() {
 }
 const seg = (name, map, value) => `<div class="cr-seg" role="radiogroup">${Object.entries(map).map(([k, l]) => `<button type="button" role="radio" aria-checked="${value === k}" class="${value === k ? 'is-on' : ''}" data-action="${name}" data-id="${k}">${l}</button>`).join('')}</div>`;
 function setup() {
+  if (ONLINE) return online ? onlineLobby({ code: online.code, members: online.members, me: online.me, host: online.host, min: 2, max: 2, title: 'ক্যারম · অনলাইন ঘর' })
+    : `<header class="cr-head"><img src="${ART}" alt="" width="640" height="420"><div><h1>ক্যারম</h1><p>অনলাইন: বন্ধু নিজের ফোন থেকে খেলবে। যিনি ঘর খোলেন তিনি সাদা।</p></div></header>${onlineEntry({ len: 5 })}`;
   return `<header class="cr-head"><img src="${ART}" alt="" width="640" height="420"><div><h1>ক্যারম</h1><p>স্ট্রাইকার টেনে ছাড়ুন, নিজের গুটি পকেটে ফেলুন।</p></div></header>
   <section class="cr-panel"><h2>কার সাথে</h2>${seg('mode', { cpu: 'কম্পিউটার', friends: 'বন্ধুর সাথে' }, s.mode)}${s.mode === 'cpu' ? `<div class="cr-gap">${seg('level', Object.fromEntries(Object.entries(CPU_LEVELS).map(([k, v]) => [k, v.name])), s.level)}</div>` : ''}</section>
   <section class="cr-panel"><h2>নাম</h2><label class="cr-field"><span class="cr-coin white"></span><input data-name="0" maxlength="20" autocomplete="off" placeholder="${s.mode === 'cpu' ? 'আপনার নাম' : 'সাদা গুটি (নিচে বসবেন)'}" value="${esc(s.names[0])}"></label>
@@ -35,8 +43,8 @@ function setup() {
 }
 function seat(side) {
   const g = s.g, on = g.winner === null && g.turn === side && !moving, colour = COLOURS[side];
-  const prompt = on ? (side === 1 && s.mode === 'cpu' ? 'নিশানা ঠিক করছে…' : 'স্ট্রাইকার সরিয়ে টেনে ছাড়ুন') : '';
-  return `<div class="cr-seat ${colour}${on ? ' is-on' : ''}${side === 1 && s.mode === 'friends' ? ' flip' : ''}"><span class="cr-coin ${colour}"></span><span class="cr-who"><b>${esc(nameOf(side))}</b><small>${prompt || `${bn(g.pocketed[side].length)}/৯ গুটি${g.queenBy === side ? ' · রানি' : ''}`}</small></span><strong>${bn(score(g, side))}</strong></div>`;
+  const prompt = on ? (online ? (side === online.me ? 'আপনার শট' : 'শটের অপেক্ষা…') : side === 1 && s.mode === 'cpu' ? 'নিশানা ঠিক করছে…' : 'স্ট্রাইকার সরিয়ে টেনে ছাড়ুন') : '';
+  return `<div class="cr-seat ${colour}${on ? ' is-on' : ''}${!online && side === 1 && s.mode === 'friends' ? ' flip' : ''}"><span class="cr-coin ${colour}"></span><span class="cr-who"><b>${esc(nameOf(side))}</b><small>${prompt || `${bn(g.pocketed[side].length)}/৯ গুটি${g.queenBy === side ? ' · রানি' : ''}`}</small></span><strong>${bn(score(g, side))}</strong></div>`;
 }
 function message(g) {
   const l = g.last; if (!l) return 'প্রথম শট';
@@ -51,9 +59,10 @@ function message(g) {
 }
 function playing() {
   const g = s.g;
-  return `<div class="cr-table">${seat(1)}<div class="cr-board-wrap"><canvas id="board" aria-label="ক্যারম বোর্ড"></canvas></div>${seat(0)}</div>
+  const near = online ? online.me : 0;
+  return `<div class="cr-table">${seat(1 - near)}<div class="cr-board-wrap"><canvas id="board" class="${near ? 'turned' : ''}" aria-label="ক্যারম বোর্ড"></canvas></div>${seat(near)}</div>
   <p class="cr-msg" role="status">${message(g)}</p>
-  ${g.winner !== null ? `<section class="cr-over"><h2>${esc(nameOf(g.winner))} জিতলেন!</h2><p>${bn(score(g, 0))} — ${bn(score(g, 1))}</p>${button('আবার খেলি', 'again', 'primary wide', 'play')}${button('ক্যারমের শুরুর পাতা', 'game-home', 'secondary wide', 'home')}</section>`
+  ${g.winner !== null ? `<section class="cr-over"><h2>${esc(nameOf(g.winner))} জিতলেন!</h2><p>${bn(score(g, 0))} — ${bn(score(g, 1))}</p>${online ? (online.host ? button('আবার খেলি', 'again', 'primary wide', 'play') : '<p class="ol-note">ঘর যিনি খুলেছেন তিনি আবার শুরু করতে পারবেন।</p>') + button('ঘর ছেড়ে দিন', 'leave', 'secondary wide', 'close') : button('আবার খেলি', 'again', 'primary wide', 'play') + button('ক্যারমের শুরুর পাতা', 'game-home', 'secondary wide', 'home')}</section>`
     : button('খেলা ছেড়ে দিন', 'quit', 'text wide', 'close')}`;
 }
 function rules() {
@@ -121,8 +130,9 @@ function draw() {
 }
 
 /* ---------- Shooting ---------- */
-const human = () => s.g && s.g.winner === null && !moving && !busy && !cpuTurn();
+const human = () => s.g && s.g.winner === null && !moving && !busy && !cpuTurn() && (!online || s.g.turn === online.me);
 function shoot(x, vx, vy) {
+  if (online && !replay) sharing = { x, vx, vy };
   const st = striker(s.g.turn, x); st.vx = vx; st.vy = vy; s.g.pieces.push(st); moving = true; fell = []; sound('notice');
   let last = performance.now();
   const tick = now => {
@@ -134,7 +144,10 @@ function shoot(x, vx, vy) {
   raf = requestAnimationFrame(tick);
 }
 async function done() {
-  moving = false; settle(s.g, fell); sx = S / 2;
+  moving = false;
+  if (replay) { const d = replay; replay = null; s.g = d.g; sx = S / 2; if (s.g.winner !== null) finish(); return render(); }
+  settle(s.g, fell); sx = S / 2;
+  if (sharing) { const shot = sharing; sharing = false; sync(shot); }
   if (s.g.winner !== null) finish();
   save(); render();
   if (cpuTurn()) cpuMove();
@@ -147,7 +160,7 @@ async function cpuMove() {
 }
 function bindBoard() {
   const c = $('#board'); if (!c) return; sizeBoard();
-  const world = e => { const b = c.getBoundingClientRect(); return [(e.clientX - b.left) / b.width * S, (e.clientY - b.top) / b.height * S]; };
+  const world = e => { const b = c.getBoundingClientRect(), x = (e.clientX - b.left) / b.width * S, y = (e.clientY - b.top) / b.height * S; return c.classList.contains('turned') ? [S - x, S - y] : [x, y]; };
   let mode = null;
   c.onpointerdown = e => {
     if (!human()) return; const [x, y] = world(e), side = s.g.turn, by = BASE.y[side];
@@ -175,18 +188,20 @@ addEventListener('resize', sizeBoard);
 
 function finish() {
   if (s.saved) return; s.saved = true; sound('win');
-  const g = s.g, sides = s.mode === 'cpu' ? [0] : [0, 1];
+  const g = s.g, sides = online ? [online.me] : s.mode === 'cpu' ? [0] : [0, 1];
   saveMatch({ id: crypto.randomUUID(), game: 'carrom', players: sides.map(side => ({ name: nameOf(side), points: g.winner === side ? 3 : 0, recent: [{ won: g.winner === side, img: ART, label: `ক্যারম · ${bn(score(g, 0))}–${bn(score(g, 1))}` }] })) });
 }
 
 /* ---------- Shell ---------- */
 function render() {
   const key = view + s.phase, changed = key !== lastScreen; lastScreen = key;
-  const body = view === 'rules' ? rules() : view === 'ranking' ? ranking() : s.phase === 'play' && s.g ? playing() : setup();
-  $('#app').innerHTML = appShell({ brand: 'ক্যারম', brandSub: 'বোর্ডের খেলা', brandIcon: 'grid', brandAction: 'tab-play', crumb: view === 'rules' ? 'নিয়ম' : view === 'ranking' ? 'র‍্যাঙ্কিং' : s.phase === 'play' ? 'খেলা চলছে' : 'খেলা সাজান', active: view, contentClass: 'game-content carrom-content', labels: SHELL_LABELS, backHref: BACK, tabs: TABS, body });
+  const body = view === 'rules' ? rules() : view === 'ranking' ? ranking() : (online ? online.started && s.g : s.phase === 'play' && s.g) ? playing() : setup();
+  $('#app').innerHTML = appShell({ brand: 'ক্যারম', brandSub: 'বোর্ডের খেলা', brandIcon: 'grid', brandAction: 'tab-play', crumb: view === 'rules' ? 'নিয়ম' : view === 'ranking' ? 'র‍্যাঙ্কিং' : s.phase === 'play' || online?.started ? 'খেলা চলছে' : online ? 'অনলাইন ঘর' : 'খেলা সাজান', active: view, contentClass: 'game-content carrom-content', labels: SHELL_LABELS, backHref: BACK, tabs: TABS, body });
   $$('[data-action]').forEach(el => el.onclick = e => { e.preventDefault(); act(el.dataset.action, el.dataset.id); });
   $$('[data-name]').forEach(el => el.oninput = () => { s.names[Number(el.dataset.name)] = el.value; save(); });
-  if (view === 'play' && s.phase === 'play') bindBoard();
+  if (view === 'play' && (online ? online.started && s.g : s.phase === 'play')) bindBoard();
+  if (view === 'play' && ONLINE && !online) bindOnlineEntry($('#screen'), { onCreate: name => enter({ op: 'create', name }), onJoin: (name, code) => enter({ op: 'join', name, code }) });
+  if (view === 'play' && online && !online.started) bindLobby($('#screen'), { code: online.code, game: 'ক্যারম', onStart: () => send({ op: 'start' }), onLeave: () => leaveRoom() });
   if (changed) enterScreen($('#screen'));
 }
 const transition = () => leaveScreen($('#screen'), () => { render(); scrollTo({ top: 0, behavior: 'instant' }); });
@@ -205,11 +220,54 @@ async function act(action, id) {
       need.forEach(i => { try { s.names[i] = ensureAccount(s.names[i]).name; } catch { s.names[i] = s.names[i].trim(); } });
       s.g = newGame(); s.saved = false; s.phase = 'play'; sx = S / 2; view = 'play'; save(); sound('notice'); return transition();
     }
-    case 'again': s.g = newGame(); s.saved = false; sx = S / 2; save(); return render();
-    case 'quit': if (await confirmBox('খেলা ছেড়ে দেবেন?', 'র‍্যাঙ্কিংয়ে কিছু যোগ হবে না।', 'হ্যাঁ')) { cancelAnimationFrame(raf); moving = false; s.phase = 'setup'; s.g = null; save(); transition(); } return;
+    case 'again': if (online) return send({ op: 'again' });
+      s.g = newGame(); s.saved = false; sx = S / 2; save(); return render();
+    case 'quit': if (online) return leaveRoom();
+      if (await confirmBox('খেলা ছেড়ে দেবেন?', 'র‍্যাঙ্কিংয়ে কিছু যোগ হবে না।', 'হ্যাঁ')) { cancelAnimationFrame(raf); moving = false; s.phase = 'setup'; s.g = null; save(); transition(); } return;
+    case 'leave': return leaveRoom();
     case 'game-home': view = 'play'; if (s.g?.winner !== null) { s.phase = 'setup'; s.g = null; } save(); return transition();
   }
 }
+
+/* ---------- Online ---------- */
+async function sync(shot) {
+  try { const v = await tableApi({ game: 'carrom', op: 'sync', code: online.code, token: online.token, seq: online.seq, data: { g: s.g }, shot }); online.seq = v.match.seq; }
+  catch (e) { toast(ONLINE_ERRORS[e.message] || 'সংযোগে সমস্যা।'); }
+}
+function adopt(v) {
+  online = { ...online, code: v.code, token: v.token || online?.token, me: v.me, host: v.host, members: v.members, started: v.started };
+  try { sessionStorage.setItem('carrom.online', JSON.stringify({ code: online.code, token: online.token })); } catch { }
+  const m = v.match; if (!m) return;
+  // The host racks the board when a game starts (or starts again).
+  if (m.seq === 0 && !m.data) {
+    online.seq = 0; s.saved = false;
+    if (online.host && !online.dealing) { online.dealing = true; s.g = newGame(); sx = S / 2; sync(null).then(() => { online.dealing = false; }); render(); }
+    return;
+  }
+  if (online.seq !== undefined && m.seq <= online.seq && s.g) return;
+  const first = online.seq === undefined || !s.g; online.seq = m.seq;
+  const shot = m.shot;
+  if (!first && shot && shot.by !== online.me && !moving) {
+    // Play the other phone's shot out here, then take that phone's result.
+    replay = m.data; return shoot(shot.x, shot.vx, shot.vy);
+  }
+  if (shot && shot.by === online.me && !first) return;
+  s.g = m.data.g; s.g.pieces = s.g.pieces.filter(p => p.id !== 's'); if (s.g.winner !== null) finish(); render();
+}
+async function enter(body) {
+  try { online = null; adopt(await tableApi({ game: 'carrom', ...body })); startPolling(); transition(); } catch (e) { online = null; toast(ONLINE_ERRORS[e.message] || 'সংযোগে সমস্যা, আবার চেষ্টা করুন।'); }
+}
+async function send(body) { try { const was = online.started; adopt(await tableApi({ game: 'carrom', code: online.code, token: online.token, ...body })); was ? render() : transition(); } catch (e) { toast(ONLINE_ERRORS[e.message] || 'সংযোগে সমস্যা।'); } }
+function startPolling() {
+  clearInterval(poll);
+  poll = setInterval(async () => {
+    if (!online || document.hidden || moving || sharing) return;
+    try { const n = online.members.length, st = online.started; adopt(await tableApi({ game: 'carrom', op: 'state', code: online.code, token: online.token })); if (online.members.length !== n || online.started !== st) transition(); }
+    catch (e) { if (['ROOM_GONE', 'AUTH'].includes(e.message)) { clearInterval(poll); online = null; s.g = null; toast('ঘরটা আর নেই।'); render(); } }
+  }, 1200);
+}
+async function leaveRoom() { if (!await confirmBox('ঘর ছেড়ে দেবেন?', '', 'হ্যাঁ')) return; clearInterval(poll); cancelAnimationFrame(raf); moving = false; online = null; s.g = null; try { sessionStorage.removeItem('carrom.online'); } catch { } view = 'play'; transition(); }
+if (ONLINE) { s = { ...fresh() }; try { const saved = JSON.parse(sessionStorage.getItem('carrom.online')); if (saved) tableApi({ game: 'carrom', op: 'state', ...saved }).then(v => { online = { ...saved }; adopt(v); startPolling(); render(); }).catch(() => { }); } catch { } }
 
 render();
 if (cpuTurn()) cpuMove();

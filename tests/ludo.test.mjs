@@ -104,3 +104,17 @@ test('ক্যারম: the queen counts only when covered', () => {
   g = C.newGame(); const q2 = g.pieces.find(p => p.id === 'q'), w = g.pieces.find(p => p.kind === 'white'); q2.in = w.in = true;
   C.settle(g, ['q', w.id]); assert.equal(C.score(g, 0), 1 + C.QUEEN_POINTS);
 });
+
+test('online ক্যারম: two players, host racks, only the shooter reports, a win closes the room soon', async () => {
+  const saves = [];
+  class Store extends MemoryLudoStore { async save(id, rev, payload, seconds) { saves.push(seconds); return super.save(id, rev, payload); } }
+  const rooms = new LudoRooms(new Store());
+  const a = await rooms.handle({ op: 'create', name: 'A', game: 'carrom' }), b = await rooms.handle({ op: 'join', name: 'B', code: a.code, game: 'carrom' });
+  await assert.rejects(rooms.handle({ op: 'join', name: 'C', code: a.code, game: 'carrom' }), /FULL/);
+  await rooms.handle({ op: 'start', code: a.code, token: a.token });
+  await assert.rejects(rooms.handle({ op: 'sync', code: a.code, token: b.token, seq: 0, data: { g: { turn: 0, winner: null } } }), /TURN/);
+  await rooms.handle({ op: 'sync', code: a.code, token: a.token, seq: 0, data: { g: { turn: 1, winner: null } } });
+  await assert.rejects(rooms.handle({ op: 'sync', code: a.code, token: a.token, seq: 1, data: { g: { turn: 0, winner: null } } }), /TURN/);
+  await rooms.handle({ op: 'sync', code: a.code, token: b.token, seq: 1, data: { g: { turn: 1, winner: 1 } }, shot: { x: 500, vx: 0, vy: 900 } });
+  assert.equal(saves.at(-1), 600);
+});
