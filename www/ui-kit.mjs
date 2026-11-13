@@ -63,11 +63,11 @@ export function rankTable(rows, t) {
 /* One page frame for both games.
    Top bar: back to the game chooser · game title + where you are · Menu.
    Sections (Play / Rules / Rankings): bottom tabs on phones, sidebar on wide screens. */
-export function appShell({ brand, brandSub, brandIcon, brandAction, crumb, tabs, active, hideTabs = false, body, contentClass = '', labels, credit = 'Developed by Tanim' }) {
+export function appShell({ brand, brandSub, brandIcon, brandAction, homeAction = 'game-home', crumb, tabs, active, hideTabs = false, body, contentClass = '', labels, credit = 'Developed by Tanim' }) {
   const item = (t, cls) => `<button type="button" class="${cls}${t.id === active ? ' is-active' : ''}" data-action="${t.action}"${t.id === active ? ' aria-current="page"' : ''}>${icon(t.icon)}<span>${t.label}</span></button>`;
   return `<div class="kit-shell${hideTabs ? ' no-tabs' : ''}">
 <aside class="kit-side"><a class="kit-brand" href="#" data-action="${brandAction}"><span class="kit-brand-icon">${icon(brandIcon)}</span><span>${brand}<small>${brandSub}</small></span></a>${hideTabs ? '' : `<nav class="kit-side-nav" aria-label="${esc(labels.sections)}">${tabs.map(t => item(t, 'kit-side-item')).join('')}</nav>`}</aside>
-<main class="kit-main"><header class="kit-top"><a class="kit-pill kit-back" href="index.html">${icon('back')}<span>${labels.back}</span></a><div class="kit-title"><strong>${brand}</strong><small>${crumb}</small></div><button type="button" class="kit-pill kit-menu" data-action="app-menu" aria-haspopup="dialog">${menuIcon()}<span>${labels.menu}</span></button></header>
+<main class="kit-main"><header class="kit-top"><a class="kit-pill kit-back" href="index.html">${icon('back')}<span>${labels.back}</span></a><button type="button" class="kit-title" data-action="${homeAction}" aria-label="${esc(brand)}: এই খেলার শুরুর পাতা"><strong>${brand}</strong><small>${crumb}</small></button><button type="button" class="kit-pill kit-menu" data-action="app-menu" aria-haspopup="dialog">${menuIcon()}<span>${labels.menu}</span></button></header>
 <div class="content ${contentClass}" id="screen">${body}</div><footer class="app-credit">${credit}</footer></main>
 ${hideTabs ? '' : `<nav class="kit-tabs" aria-label="${esc(labels.sections)}">${tabs.map(t => item(t, 'kit-tab')).join('')}</nav>`}</div>`;
 }

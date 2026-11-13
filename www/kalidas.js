@@ -95,7 +95,7 @@ function summary() {
   const answered = s.asked;
   return `<div class="over-heading"><div class="result-portrait win"><img src="${ART.MISIR}" alt="" width="112" height="112"></div><span class="eyebrow">খেলা শেষ · ${bn(answered)}টি ধাঁধা</span><h1>${!best ? 'খেলা শেষ!' : tie ? 'সমানে সমান!' : s.players.length ? esc(best.name) + ' জিতলেন!' : bn(best.score) + 'টি ধাঁধা ভাঙলেন!'}</h1><p class="lede">${best && !tie && s.players.length ? `${bn(best.score)} পয়েন্ট নিয়ে সবার আগে।` : 'হিমু হাসছে। পরের খেলায় নতুন ধাঁধা আসবে।'}</p></div>
   <section class="rank-section"><h2>ফলাফল</h2><p>সহজ ধাঁধায় ১, মাঝারিতে ২, কঠিনে ৩ পয়েন্ট।</p>${rankTable(rows(), labels)}</section>
-  <div class="end-actions">${button('আবার খেলুন', 'start', 'primary wide', 'play')}${button('নাম বা সময় বদলান', 'edit', 'secondary wide', 'edit')}</div>
+  <div class="end-actions">${button('আবার খেলুন', 'start', 'primary wide', 'play')}${button('নাম বা সময় বদলান', 'edit', 'secondary wide', 'edit')}${button('কালিদাসের শুরুর পাতা', 'game-home', 'text wide', 'home')}</div>
   <section class="fame-section"><h2>${icon('trophy')}হল অব ফেম</h2><p>শেষ ১০০টি খেলায় এক খেলায় সবচেয়ে বেশি ধাঁধা ভাঙা।</p>${fameTable(hallOfFame(readHistory(), 'kalidas'), { caption: 'হল অব ফেম', player: 'খেলোয়াড়', points: 'পয়েন্ট', empty: 'এখনও কেউ হল অব ফেমে ওঠেননি।', number: bn, meta: e => new Date(e.date).toLocaleDateString('bn-BD') + ' · ' + bn(e.games) + 'টি ধাঁধা' })}</section>`;
 }
 
@@ -178,6 +178,7 @@ async function act(action, id) {
       if (s.asked) saveMatch({ id: crypto.randomUUID(), game: 'kalidas', games: s.asked, players: rows().map(r => ({ name: r.name, points: r.score, recent: r.history })) });
       save(); sound('win'); return transition();
     }
+    case 'game-home': view = 'play'; if (s.phase === 'over') s.phase = 'setup'; save(); return transition();
     case 'edit': view = 'play'; s.phase = 'setup'; s.endsAt = null; save(); return transition();
     case 'new': if (playing()) return act('end'); view = 'play'; s.phase = 'setup'; save(); return transition();
   }

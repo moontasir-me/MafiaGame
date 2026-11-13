@@ -40,7 +40,7 @@ function body() {
 
 function render(animate = true) {
   const tabs = [['all', 'সব', 'grid'], ['mafia', 'Mafia', 'mask'], ['spy', 'Spy', 'lens'], ['kalidas', 'ধাঁধা', 'spark'], ['pen', 'কলম', 'edit'], ['fib', 'অঙ্ক', 'grid']].map(([id, label, ic]) => ({ id, label, icon: ic, action: id }));
-  $('#app').innerHTML = appShell({ brand: 'জম্ফা', brandSub: 'র‍্যাঙ্কিং', brandIcon: 'trophy', brandAction: 'all', crumb: 'র‍্যাঙ্কিং · ' + (filter ? GAMES[filter] : 'সব খেলা'), active: filter || 'all', tabs, body: body(), contentClass: 'game-content', labels: { back: 'সব খেলা', menu: 'মেনু', sections: 'খেলা বেছে নিন' } });
+  $('#app').innerHTML = appShell({ brand: 'জম্ফা', brandSub: 'র‍্যাঙ্কিং', brandIcon: 'trophy', brandAction: 'all', homeAction: 'all', crumb: 'র‍্যাঙ্কিং · ' + (filter ? GAMES[filter] : 'সব খেলা'), active: filter || 'all', tabs, body: body(), contentClass: 'game-content', labels: { back: 'সব খেলা', menu: 'মেনু', sections: 'খেলা বেছে নিন' } });
   document.querySelectorAll('[data-action]').forEach(el => el.onclick = e => {
     e.preventDefault(); const a = el.dataset.action;
     if (a === 'app-menu') return (location.href = 'index.html');

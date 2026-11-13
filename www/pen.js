@@ -351,6 +351,7 @@ function ranking() {
   ${s.set?.rounds ? `<section class="rank-section"><h2>চলমান ম্যাচ</h2>${table()}</section>` : ''}
   <section class="rank-section"><h2>সব ম্যাচ মিলিয়ে</h2>${rankTable(rows, labels)}</section>
   <section class="fame-section"><h2>${icon('trophy')}হল অব ফেম</h2><p>শেষ ১০০টি ম্যাচে এক ম্যাচে সবচেয়ে বেশি পয়েন্ট।</p>${fameTable(hallOfFame(list, 'pen'), { caption: 'হল অব ফেম', player: 'খেলোয়াড়', points: 'পয়েন্ট', empty: 'এখনও কেউ হল অব ফেমে ওঠেননি।', number: bn, meta: e => new Date(e.date).toLocaleDateString('bn-BD') + ' · ' + bn(e.games) + 'টি রাউন্ড' })}</section>
+  ${s.phase === 'setup' ? button('কলম যুদ্ধের শুরুর পাতা', 'game-home', 'primary wide', 'home') : ''}
   <a class="btn secondary wide" href="ranking.html?game=pen">${icon('trophy')}সব খেলার র‍্যাঙ্কিং ও অ্যাকাউন্ট</a>`;
 }
 const button = (label, action, cls, ic, extra = '') => `<button type="button" class="btn ${cls}" data-action="${action}" ${extra}>${icon(ic)}${label}</button>`;
@@ -397,6 +398,7 @@ async function act(action, id) {
     case 'pro': return toast('এই দামি কলমগুলো Pro সংস্করণে খোলা হবে।');
     case 'mode': setMode(id); save(); return render();
     case 'prev-pen': { const p = byId(id); p.pen = PEN_KEYS[(PEN_KEYS.indexOf(p.pen) + PEN_KEYS.length - 1) % PEN_KEYS.length]; save(); return render(); }
+    case 'game-home': clearTimeout(cpuTimer); view = 'play'; return transition();
     case 'cpu-level': s.cpuLevel = CPU[id] ? id : 'medium'; save(); return render();
     case 'add-acc': { const a = readAccounts().find(x => x.id === id); if (a) addPlayer(a.name); return; }
     case 'cycle-pen': { const p = byId(id); p.pen = PEN_KEYS[(PEN_KEYS.indexOf(p.pen) + 1) % PEN_KEYS.length]; save(); return render(); }

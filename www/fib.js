@@ -76,7 +76,7 @@ function summary() {
   const ranked = [...s.players].sort((a, b) => b.score - a.score), best = ranked[0], tie = ranked.length > 1 && ranked[1].score === best.score;
   return `<div class="fib-over">${SPIRAL}<span class="eyebrow">${MODES[s.mode].name} · স্তর ${bn(s.level)} ${lv().name}</span><h1>${s.players.length === 1 ? `${bn(best.score)} পয়েন্ট!` : tie ? 'সমানে সমান!' : esc(best.name) + ' জিতলেন!'}</h1><p class="lede">${s.players.length === 1 ? `${bn(best.right || 0)}টা ঠিক, ${bn(best.wrong || 0)}টা ভুল।` : tie ? 'আরেক দফা হয়ে যাক।' : `${bn(best.score)} পয়েন্ট নিয়ে সবার আগে।`}</p></div>
   <section class="rank-section"><h2>ফলাফল</h2>${rankTable(rows(), labels)}</section>
-  <div class="fib-actions">${button('আবার খেলুন', 'start', 'primary wide', 'play')}${button('ধরন, স্তর বা নাম বদলান', 'edit', 'secondary wide', 'edit')}</div>`;
+  <div class="fib-actions">${button('আবার খেলুন', 'start', 'primary wide', 'play')}${button('ধরন, স্তর বা নাম বদলান', 'edit', 'secondary wide', 'edit')}${button('Fibonacci-র শুরুর পাতা', 'game-home', 'text wide', 'home')}</div>`;
 }
 function rules() {
   return `${pageHead('নিয়ম', 'Fibonacci', '')}<ol class="plain-rules">
@@ -170,6 +170,7 @@ async function act(action, id) {
     case 'pick': return answer(Number(id));
     case 'next': return nextOrEnd();
     case 'stop': if (await confirm('এই দফা শেষ করবেন?', 'এ পর্যন্ত যা পয়েন্ট হয়েছে তা থাকবে।', 'হ্যাঁ, শেষ')) endRun(); return;
+    case 'game-home': view = 'play'; if (s.phase === 'over') s.phase = 'setup'; save(); return transition();
     case 'edit': s.phase = 'setup'; save(); return transition();
     case 'end':
       if (s.phase === 'setup') return;

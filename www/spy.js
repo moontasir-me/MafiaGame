@@ -91,7 +91,7 @@ function results() {
   return `<div class="over-heading"><div class="result-portrait win"><img src="${portrait(won ? 'WORD' : 'SPY')}" alt="" width="112" height="112"></div><span class="eyebrow">কেস ${caseOf(s.gameId)} · ${won ? 'সমাধান' : 'অমীমাংসিত'}</span><h1>${won ? 'গুপ্তচর ধরা পড়েছে!' : 'গুপ্তচর পালিয়ে গেল!'}</h1><p class="lede"><strong>${esc(spy.name)}</strong> ছিলেন গুপ্তচর। ${won ? 'গোয়েন্দাদের সূত্র মিলে গেল।' : 'কেউ তাকে ধরতে পারেনি।'}</p></div>
   <div class="spy-word-reveal"><span>গোপন শব্দটি ছিল</span><strong>${esc(s.word)}</strong></div>
   ${matchPanel()}
-  <div class="end-actions">${matchActions()}${button('নাম বা সময় বদলান', 'edit', 'text wide', 'edit')}</div>
+  <div class="end-actions">${matchActions()}${button('নাম বা সময় বদলান', 'edit', 'secondary wide', 'edit')}${button('Spy-এর শুরুর পাতা', 'game-home', 'text wide', 'home')}</div>
   ${famePanel()}`;
 }
 
@@ -155,6 +155,7 @@ async function act(action, id) {
       case 'end-discussion': if (!await confirmDialog('আলোচনা শেষ করবেন?', 'এখন সবাই মিলে ভোট দিতে পারবেন।')) return; endSpyDiscussion(s); sound('timer'); save(); return transition();
       case 'rematch': view = 'play'; resetSpy(s); dealSpy(s); shown = false; seen = false; save(); return transition();
       case 'edit': view = 'play'; resetSpy(s); save(); return transition();
+      case 'game-home': hide(); view = 'play'; if (s.phase === 'over') { resetSpy(s); save(); } return transition();
       case 'new':
         if (!['setup', 'over'].includes(s.phase) && !await confirmDialog('এই খেলা ছেড়ে যাবেন?', 'এই খেলার ফল যোগ হবে না। নাম রেখে নতুন খেলা শুরু করতে পারবেন।')) return;
         view = 'play'; resetSpy(s); shown = false; seen = false; save(); return transition();
