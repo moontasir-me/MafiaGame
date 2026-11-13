@@ -1,0 +1,29 @@
+/* জায়গা দখল: ballpoint on a squared khata page. */
+:root[data-theme][data-universe=dots]{--bg:#f4f2ea;--surface:#fffefa;--border:#dcd8c8;--text:#22252e;--muted:#6b6f7a;--accent:#1f4fbf;--world-dark:#1d2a4a;--world-accent:#f2b705;--world-mid:#e9eef5;--world-light:#fffefa}
+:root[data-universe=dots] body{background:#f4f2ea}
+.dots-page .btn.primary{background:#1f4fbf!important;border-color:#1a43a3!important;color:#fff!important}.dots-page .btn.primary .icon{color:#fff}
+.dt-head{display:flex;align-items:center;gap:14px;margin:4px 0 18px}.dt-mark{width:64px;height:64px;flex-shrink:0;padding:6px;border-radius:14px;background:#fff;box-shadow:0 4px 14px #0001}
+.dt-head h1{margin:0;font-size:clamp(30px,7vw,42px)}.dt-head p{margin:4px 0 0;color:var(--muted);font-size:14px;line-height:1.6}
+.dt-panel{margin:0 0 12px;padding:14px;border:1px solid var(--border);border-radius:16px;background:var(--surface)}.dt-panel h2{margin:0 0 10px;font-size:15px}
+.dt-seg{display:flex;gap:4px;padding:4px;border-radius:12px;background:#ecebe2;flex:1}.dt-seg button{flex:1;min-height:40px;border:0;border-radius:9px;background:none;color:var(--muted);font:inherit;font-size:14px;cursor:pointer}.dt-seg button.is-on{background:#fff;color:var(--text);font-weight:600;box-shadow:0 2px 6px #0002}
+.dt-gap{margin-top:8px}.dt-row{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.dt-field{display:flex;align-items:center;gap:10px;margin:0 0 8px}.dt-field input{flex:1;min-width:0;min-height:46px;padding:10px 14px;border:1px solid var(--border);border-radius:12px;background:#fff;font:inherit;font-size:15px;color:var(--text)}
+.dt-ink{width:16px;height:16px;flex-shrink:0;border-radius:50%;background:var(--ink)}
+.dt-players{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;max-width:600px;margin:0 auto 10px}
+.dt-p{display:flex;align-items:center;gap:8px;padding:8px 12px;border:2px solid var(--border);border-radius:14px;background:var(--surface);transition:box-shadow .2s,border-color .2s}
+.dt-p b{flex:1;min-width:0;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dt-p strong{font:700 20px Poppins,sans-serif;color:var(--ink)}
+.dt-p.is-turn{border-color:var(--ink);box-shadow:0 0 0 4px color-mix(in srgb,var(--ink) 18%,transparent)}
+/* squared khata paper with a red margin */
+.dt-paper{max-width:600px;margin:0 auto;padding:10px;border-radius:6px;background:linear-gradient(90deg,transparent 22px,#e06a6a55 22px 24px,transparent 24px),repeating-linear-gradient(#0000 0 19px,#8fb0d455 19px 20px),repeating-linear-gradient(90deg,#0000 0 19px,#8fb0d433 19px 20px),#fffef7;box-shadow:0 10px 26px #0002,inset 0 0 0 1px #e5e0cc}
+.dt-board{display:block;width:100%;height:auto;touch-action:manipulation}
+.dt-dots circle{fill:#22252e}
+.dt-line{stroke-width:7;stroke-linecap:round}
+.dt-line.last{animation:ink .35s ease-out}@keyframes ink{from{stroke-dasharray:0 80}to{stroke-dasharray:80 0}}
+.dt-slot{cursor:pointer;outline:none}.dt-slot .hit{stroke:transparent;stroke-width:22;stroke-linecap:round}
+.dt-slot .ghost{stroke-width:6;stroke-linecap:round;stroke-dasharray:2 8;opacity:.0;transition:opacity .15s}
+.dt-slot:hover .ghost,.dt-slot:focus-visible .ghost{opacity:.55}
+@media(hover:none){.dt-slot .ghost{opacity:.12}}
+.dt-box text{font:700 24px 'Noto Sans Bengali',Poppins,sans-serif;text-anchor:middle}
+.dt-box{animation:fillin .3s ease-out}@keyframes fillin{from{opacity:0}}
+.dt-msg{max-width:600px;margin:10px auto 6px;text-align:center;font-size:14px;font-weight:600;min-height:20px}
+.dt-over{max-width:600px;margin:10px auto;text-align:center}.dt-over h2{margin:6px 0;font-size:24px}.dt-over ol{display:grid;gap:6px;max-width:300px;margin:10px auto;padding-left:22px;text-align:left}.dt-over li{display:flex;align-items:center;gap:8px}.dt-over li b{margin-left:auto}.dt-over .btn+.btn{margin-top:8px}

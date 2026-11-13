@@ -129,3 +129,16 @@ test('ক্যারম: shots wear the powder off, each player may powder once
   const run = f => { const p = [C.striker(0)]; p[0].vy = -400; C.simulate(p, 1 / 240, f); return p[0].y; };
   assert.ok(run(0.6) < run(1.6), 'less friction carries the striker further up the board');
 });
+
+import * as D from '../www/dots-engine.mjs';
+test('জায়গা দখল: closing a box keeps the turn, the fourth side owns it, online checks turns', async () => {
+  let g = D.newGame(2, 2, [{ name: 'A' }, { name: 'B' }]);
+  g = D.play(g, 'h:0:0'); g = D.play(g, 'v:0:0'); g = D.play(g, 'v:0:1'); assert.equal(g.turn, 1);
+  g = D.play(g, 'h:1:0'); assert.equal(g.boxes['0:0'], 1); assert.equal(g.turn, 1, 'closing a box draws again');
+  assert.equal(D.play(g, 'h:1:0'), g, 'a drawn line cannot be drawn again');
+  const rooms = new LudoRooms(new MemoryLudoStore());
+  const a = await rooms.handle({ op: 'create', name: 'A', game: 'dots', size: [3, 3] }), b = await rooms.handle({ op: 'join', name: 'B', code: a.code, game: 'dots' });
+  let v = await rooms.handle({ op: 'start', code: a.code, token: a.token }); assert.equal(v.match.rows, 3);
+  await assert.rejects(rooms.handle({ op: 'line', code: a.code, token: b.token, line: 'h:0:0' }), /TURN/);
+  v = await rooms.handle({ op: 'line', code: a.code, token: a.token, line: 'h:0:0' }); assert.equal(v.match.turn, 1);
+});

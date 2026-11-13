@@ -145,3 +145,4 @@ html:has(.village-home),body.village-home{overflow-x:clip}
 .home-poem{font-family:'Noto Serif Bengali','Li Ador Noirrit',serif;font-size:15px!important;line-height:1.9!important;color:#e9e4cf!important;font-style:normal}
 :root[data-light=lamp] .home-poem{color:#ffe2a8!important;text-shadow:0 0 14px #f0a83a55}
 .carrom-tile{background:linear-gradient(160deg,#f6e6c4,#e3c58e)!important}.carrom-tile h2{color:#7a2a14!important}
+.dots-tile{background:linear-gradient(160deg,#fbfaf3,#e9eef5)!important}.dots-tile h2{color:#1f4fbf!important}
