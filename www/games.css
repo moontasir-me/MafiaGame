@@ -111,3 +111,34 @@ body.village-home{background:#0b1020;color:#eef0f7}
 .game-tile.is-off:hover{transform:none}
 .tile-badge{display:inline-block;margin-top:6px;padding:2px 9px;border-radius:99px;background:#2e9b57;color:#fff;font-size:11px;font-weight:600}
 .game-tile.is-off .tile-badge{background:#555}
+
+/* Profile menu */
+.home-actions{position:relative}
+.pill-caret{width:16px!important;height:16px!important;margin:0 0 0 2px!important;stroke:currentColor!important}
+.village-home .profile-pill{padding-right:12px}
+@media(max-width:650px){.village-home .profile-pill span#profile-label{display:inline!important;max-width:28vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
+.profile-menu{position:absolute;right:0;top:calc(100% + 8px);z-index:40;display:grid;min-width:220px;padding:6px;border-radius:16px;background:#151a2c;border:1px solid #ffffff22;box-shadow:0 18px 40px #000a;animation:arrive .16s both}
+.profile-menu[hidden]{display:none}
+.profile-menu :is(a,button){display:flex;align-items:center;gap:10px;min-height:46px;padding:0 12px;border:0;border-radius:10px;background:none;color:#eef0f7;font:500 14.5px 'Li Ador Noirrit','Noto Sans Bengali',Poppins,sans-serif;text-decoration:none;text-align:left;cursor:pointer}
+.profile-menu :is(a,button):hover,.profile-menu :is(a,button):focus-visible{background:#ffffff14;outline:none}
+.profile-menu svg{width:19px;height:19px;flex-shrink:0;fill:none;stroke:#f3c55a;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.profile-menu [aria-checked=false] svg{stroke:#8a90a8}
+/* The hanging lantern */
+.hang-lantern{position:absolute;top:0;left:clamp(14px,6vw,60px);z-index:5;display:grid;justify-items:center;width:54px;padding:0;border:0;background:none;cursor:pointer;transform-origin:50% 0}
+.hang-string{width:2px;height:clamp(70px,11vh,110px);background:linear-gradient(#0000,#6b5a45)}
+.hang-lantern svg{width:46px;height:auto;margin-top:-2px;transition:filter .5s}
+.hang-lantern .lantern-flame,.hang-lantern .lantern-glow{opacity:0;transition:opacity .5s}
+.hang-lantern.is-lit .lantern-flame{opacity:1;transform-origin:30px 46px;animation:flame 1.6s ease-in-out infinite}
+.hang-lantern.is-lit .lantern-glow{opacity:.4}
+.hang-lantern.is-lit svg{filter:drop-shadow(0 0 22px #f0a83acc) drop-shadow(0 0 60px #f0a83a66)}
+.hang-lantern.swing{animation:swing 1.4s ease-out}
+@keyframes swing{0%{transform:rotate(0)}15%{transform:rotate(9deg)}35%{transform:rotate(-6deg)}55%{transform:rotate(3deg)}75%{transform:rotate(-1.5deg)}100%{transform:rotate(0)}}
+.village-home .games-shell{position:relative}
+.village-home .games-header{padding-left:calc(clamp(14px,6vw,60px) + 54px)}
+.home-hero{margin:30px 0 4px}.home-hero p{margin:0}
+:root[data-light=lamp] .village-home .game-tiles{filter:none}
+@media(prefers-reduced-motion:reduce){.hang-lantern.swing{animation:none}}
+.village-home .games-header{position:relative;z-index:30}
+.village-home .home-hero{padding-left:calc(clamp(14px,6vw,60px) + 54px);min-height:70px}
+.profile-menu{background:#151a2c!important;opacity:1}
+html:has(.village-home),body.village-home{overflow-x:clip}

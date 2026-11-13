@@ -1,4 +1,5 @@
 import { readProfile, saveProfile, photoFromFile } from './profile.mjs';
+import { soundEnabled, toggleSound, sound } from './sound.mjs';
 const $ = q => document.querySelector(q);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
@@ -20,10 +21,10 @@ function openProfile() {
   $('#profile-name').focus();
 }
 
-/* Moonlight or the hurricane lamp, remembered on this phone. */
-const light = () => { try { return localStorage.getItem('shitolpati.light') === 'lamp' ? 'lamp' : 'moon'; } catch { return 'moon'; } };
-function paintLight() { document.documentElement.dataset.light = light(); document.querySelectorAll('[data-light-set]').forEach(b => { const on = b.dataset.lightSet === light(); b.classList.toggle('is-on', on); b.setAttribute('aria-checked', on); }); }
-document.querySelectorAll('[data-light-set]').forEach(b => b.onclick = () => { try { localStorage.setItem('shitolpati.light', b.dataset.lightSet); } catch { } paintLight(); });
+/* Always a moonlit night. Tap the hanging hurricane lamp to light it; tap again to put it out. */
+const lit = () => { try { return localStorage.getItem('shitolpati.light') === 'lamp'; } catch { return false; } };
+function paintLight() { const on = lit(); document.documentElement.dataset.light = on ? 'lamp' : 'moon'; const b = $('#lantern'); b.classList.toggle('is-lit', on); b.setAttribute('aria-pressed', on); b.setAttribute('aria-label', on ? 'হারিকেন নিভিয়ে দিন' : 'হারিকেন জ্বালান'); }
+$('#lantern').onclick = () => { try { localStorage.setItem('shitolpati.light', lit() ? 'moon' : 'lamp'); } catch { } paintLight(); $('#lantern').classList.remove('swing'); void $('#lantern').offsetWidth; $('#lantern').classList.add('swing'); if (lit()) sound('notice'); };
 paintLight();
 
 /* Offline: every game, on one phone. Online: only games that have an online room, opened in their online version. */
@@ -43,6 +44,14 @@ document.querySelectorAll('[data-play-set]').forEach(b => b.onclick = () => { tr
 document.querySelectorAll('.game-tile').forEach(a => a.addEventListener('click', e => { if (a.classList.contains('is-off')) e.preventDefault(); }));
 paintPlay();
 
-$('#profile-button').onclick = openProfile;
+/* The profile pill opens a small menu. */
+const menu = $('#profile-menu'), pill = $('#profile-button');
+function paintSound() { const on = soundEnabled(); $('#sound-label').textContent = 'শব্দ: ' + (on ? 'চালু' : 'বন্ধ'); menu.querySelector('[data-menu=sound]').setAttribute('aria-checked', on); }
+function showMenu(open) { menu.hidden = !open; pill.setAttribute('aria-expanded', open); if (open) { paintSound(); menu.querySelector('[role^=menuitem]').focus(); } }
+pill.onclick = e => { e.stopPropagation(); showMenu(menu.hidden); };
+menu.querySelector('[data-menu=profile]').onclick = () => { showMenu(false); openProfile(); };
+menu.querySelector('[data-menu=sound]').onclick = e => { e.stopPropagation(); toggleSound(); paintSound(); };
+document.addEventListener('click', e => { if (!menu.hidden && !menu.contains(e.target)) showMenu(false); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !menu.hidden) { showMenu(false); pill.focus(); } });
 paintProfile();
 if ('serviceWorker' in navigator && !window.Android) navigator.serviceWorker.register('./sw.js').catch(() => {});
