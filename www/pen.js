@@ -226,7 +226,9 @@ function loop() {
 }
 function sizeBench() {
   const c = $('#bench'); if (!c) return;
-  const box = c.parentElement.getBoundingClientRect(), maxH = Math.max(360, innerHeight * .74), cssW = Math.min(box.width, maxH * W / H), dpr = devicePixelRatio || 1;
+  // Fit the bench between its own top and the bottom tab bar, leaving room for the scores under it.
+  const box = c.parentElement.getBoundingClientRect(), tabs = $('.kit-tabs')?.getBoundingClientRect(), bottom = tabs && getComputedStyle($('.kit-tabs')).display !== 'none' ? tabs.top : innerHeight;
+  const maxH = Math.max(320, bottom - Math.max(0, box.top) - 64), cssW = Math.min(box.width, maxH * W / H), dpr = devicePixelRatio || 1;
   c.style.width = cssW + 'px'; c.style.height = cssW * H / W + 'px'; c.width = Math.round(cssW * dpr); c.height = Math.round(cssW * H / W * dpr); draw();
 }
 function bindBench() {

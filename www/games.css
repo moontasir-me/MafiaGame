@@ -43,3 +43,8 @@
 .fib-tile{background:linear-gradient(150deg,#e2ece8,#c9dbd4)}.fib-tile-art img{inset:12px 18px 0;width:calc(100% - 36px);height:calc(100% - 12px);border-radius:15px;object-fit:cover}
 @media(max-width:650px){.fib-tile-art img{inset:6px 18px 0;width:calc(100% - 36px);height:calc(100% - 6px)}}
 .acc-pill svg{stroke:#2f6b4f}
+
+/* Every tile shows its whole picture the same way; small labels stay readable. */
+.pen-tile-art img,.fib-tile-art img{object-fit:contain}
+.tile-top{font-size:11px!important}
+footer{font-size:11px}
