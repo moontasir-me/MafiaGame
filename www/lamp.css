@@ -219,3 +219,5 @@
 :root[data-look=crayon] .lamp-page :is(.dialog,.rank-table-wrap,.fame-section,.rank-empty,.btn.secondary){background:#fffdf6;border-color:#e5d6b4;color:#2b2420}
 :root[data-look=crayon] .rank-table :is(th,td){border-color:#eadfc6}
 :root[data-look=crayon] :is(h1,h2,h3,.kit-title strong){color:#2b2420}
+.seat.flip{transform:rotate(180deg)}
+.seat.is-on{animation:glow 1.6s ease-in-out infinite}

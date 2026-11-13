@@ -54,7 +54,8 @@ function captured(side) {
 function seat(side) {
   const lost = captured(side === 'w' ? 'b' : 'w'), gain = lost.reduce((a, t) => a + VALUE[t], 0) - captured(side).reduce((a, t) => a + VALUE[t], 0);
   const on = !s.end && s.g.turn === side;
-  return `<div class="seat ${side} ${on ? 'is-on' : ''}"><span class="side-dot ${side}"></span><b>${esc(nameOf(side))}</b><span class="took">${lost.map(t => `<i class="${side === 'w' ? 'b' : 'w'}">${GLYPH[t]}︎</i>`).join('')}${gain > 0 ? `<small>+${bn(gain)}</small>` : ''}</span>${on && thinking ? '<em>ভাবছে…</em>' : ''}</div>`;
+  const across = !online && s.mode === 'friends' && side === 'b';
+  return `<div class="seat ${side} ${on ? 'is-on' : ''}${across ? ' flip' : ''}"><span class="side-dot ${side}"></span><b>${esc(nameOf(side))}</b><span class="took">${lost.map(t => `<i class="${side === 'w' ? 'b' : 'w'}">${GLYPH[t]}︎</i>`).join('')}${gain > 0 ? `<small>+${bn(gain)}</small>` : ''}</span>${on && thinking ? '<em>ভাবছে…</em>' : ''}</div>`;
 }
 function board() {
   const g = s.g, targets = s.sel >= 0 ? legal(g).filter(m => m.from === s.sel).map(m => m.to) : [], king = inCheck(g) ? g.b.indexOf(g.turn === 'w' ? 'K' : 'k') : -1;
@@ -125,7 +126,7 @@ function move(m) {
 }
 function cpuMove() {
   thinking = true; render();
-  setTimeout(() => { const m = bestMove(s.g, s.level); thinking = false; if (m && cpuTurn()) move(m); else render(); }, 380);
+  setTimeout(() => { const m = bestMove(s.g, s.level); thinking = false; if (m && cpuTurn()) move(m); else render(); }, 2000);
 }
 async function tap(sq) {
   if (s.end || thinking || cpuTurn() || (online && s.g.turn !== mySide())) return;

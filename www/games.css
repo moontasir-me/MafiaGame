@@ -142,3 +142,5 @@ body.village-home{background:#0b1020;color:#eef0f7}
 .village-home .home-hero{padding-left:calc(clamp(14px,6vw,60px) + 54px);min-height:70px}
 .profile-menu{background:#151a2c!important;opacity:1}
 html:has(.village-home),body.village-home{overflow-x:clip}
+.home-poem{font-family:'Noto Serif Bengali','Li Ador Noirrit',serif;font-size:15px!important;line-height:1.9!important;color:#e9e4cf!important;font-style:normal}
+:root[data-light=lamp] .home-poem{color:#ffe2a8!important;text-shadow:0 0 14px #f0a83a55}

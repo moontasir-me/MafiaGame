@@ -70,3 +70,34 @@
 .ludo-actions{display:grid;gap:8px}
 .ludo-rule-h{font-size:17px;margin:18px 0 6px}
 @media(prefers-reduced-motion:reduce){.piece,.piece.live,.dice-btn .die{animation:none!important;transition:none}}
+
+/* Four seats around the board, one per side, as if the phone lies in the middle of the table. */
+.table4{max-width:560px;margin:0 auto}
+.seat-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.seat4{display:flex;align-items:center;gap:8px;min-height:64px;padding:8px 10px;border:2px solid var(--border);border-radius:16px;background:var(--surface);transition:box-shadow .3s,transform .3s}
+.seat4.empty{visibility:hidden}
+.seat4.flip{transform:rotate(180deg)}
+.seat4-name{display:grid;min-width:0;flex:1}.seat4-name .pawn{display:none}
+.seat4-name b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.seat4-name small{font-size:11.5px;color:var(--muted)}
+.seat4.red{border-color:#d63a3a66}.seat4.green{border-color:#2e9b5766}.seat4.yellow{border-color:#f2b70588}.seat4.blue{border-color:#2f6fd166}
+.seat4.is-turn{border-width:3px;box-shadow:0 0 0 4px color-mix(in srgb,currentColor 25%,transparent),0 10px 24px #0002}
+.seat4.red{color:var(--red)}.seat4.green{color:var(--grn)}.seat4.yellow{color:#c99700}.seat4.blue{color:var(--blu)}
+.seat4.is-turn.red{border-color:var(--red)}.seat4.is-turn.green{border-color:var(--grn)}.seat4.is-turn.yellow{border-color:var(--yel)}.seat4.is-turn.blue{border-color:var(--blu)}
+.seat4.is-turn{animation:seatpulse 1.6s ease-in-out infinite}
+.seat4.flip.is-turn{animation:seatpulse-flip 1.6s ease-in-out infinite}
+@keyframes seatpulse{50%{transform:scale(1.03)}}@keyframes seatpulse-flip{0%,100%{transform:rotate(180deg)}50%{transform:rotate(180deg) scale(1.03)}}
+.seat4 .seat4-name b{color:var(--text)}
+.seat4 .dice-btn{padding:0}.seat4 .dice-btn .die{width:46px;height:46px}
+.seat4-prompt{position:absolute;opacity:0}
+.seat4.is-turn .seat4-name small{display:none}
+.seat4.is-turn .seat4-name:after{content:attr(data-p)}
+.seat4-last .die.small{width:28px;height:28px;opacity:.75;box-shadow:0 2px 0 #d8c9a8}
+.seat4{position:relative}
+.seat4.is-turn:before{content:'';position:absolute;inset:-3px;border-radius:16px;pointer-events:none}
+.ludo-players{display:none}
+.dice-row{display:none}
+.seat4.is-turn .seat4-prompt{position:static;opacity:1;font-size:12px;font-weight:600;max-width:70px;line-height:1.3}
+@media(prefers-reduced-motion:reduce){.seat4.is-turn,.seat4.flip.is-turn{animation:none}}
+.seat4.is-turn{flex-wrap:wrap;row-gap:4px}
+.seat4.is-turn .seat4-name{flex-basis:100%}
+.seat4.is-turn .seat4-prompt{max-width:none;flex:1}

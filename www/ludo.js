@@ -9,7 +9,7 @@ import { onlineEntry, bindOnlineEntry, onlineLobby, bindLobby, tableApi, isOnlin
 const ONLINE = isOnlineMode() || new URLSearchParams(location.search).has('online');
 
 /* লুডু: the four-colour board or সাপ লুডু, on one phone, against the computer, or online with a join code. */
-const KEY = 'ludo.v1', ART = 'assets/ludo/cover.svg', CPU_NAMES = ['টুনটুনি', 'ময়না', 'শালিক'];
+const KEY = 'ludo.v1', ART = 'assets/ludo/cover.svg', CPU_NAMES = ['কম্পিউটার ১', 'কম্পিউটার ২', 'কম্পিউটার ৩'];
 const KINDS = { ludo: 'লুডু', snake: 'সাপ লুডু' };
 const MODES = { local: 'এক ফোনে', cpu: 'কম্পিউটার' };
 const ERR = { ...ONLINE_ERRORS, ROOM_GONE: 'এই কোডের কোনো ঘর নেই।', FULL: 'ঘরে চারজন হয়ে গেছে।', STARTED: 'খেলা শুরু হয়ে গেছে।', NAME_TAKEN: 'এই নাম ঘরে আছে, অন্য নাম দিন।', NAME: 'নাম লিখুন।', TURN: 'এখন আপনার চাল নয়।', COUNTS: 'অন্তত দুজন লাগবে।', RATE_LIMIT: 'একটু পরে আবার চেষ্টা করুন।' };
@@ -97,12 +97,25 @@ function message(x) {
   if (l.piece !== undefined) return `${who} ${bn(l.roll)} চাললেন`;
   return `${who} ${bn(l.roll)} পেলেন`;
 }
+/* The phone lies in the middle of the table. Each colour's seat sits on its own side of the board:
+   red and green across the top (turned to face those players), blue and yellow along the bottom.
+   The dice lives in the seat whose turn it is. Online, everyone has their own phone, so nothing is turned. */
+const SIDES = { top: ['red', 'green'], bottom: ['blue', 'yellow'] };
+function seatCard(x, colour, top) {
+  const k = x.players.findIndex(p => p.colour === colour); if (k < 0) return '<div class="seat4 empty"></div>';
+  const p = x.players[k], turn = k === x.turn && x.winner === null, mine = turn && myTurn(), last = x.last?.by === k ? x.last.roll : null;
+  const prompt = mine ? (x.rolled ? 'ঘুঁটি বাছুন' : 'ছক্কা চালুন') : turn ? (p.cpu ? 'ভাবছে…' : online() ? 'চালের অপেক্ষা…' : 'আপনার চাল') : '';
+  const done = x.kind === 'ludo' ? `${bn(p.tokens.filter(t => t === HOME).length)}/৪ ঘরে` : `ঘর ${bn(p.tokens[0])}`;
+  return `<div class="seat4 ${colour}${turn ? ' is-turn' : ''}${top && !online() && x.players.filter(q => !q.cpu).length > 1 ? ' flip' : ''}"><div class="seat4-name"><span class="pawn ${colour}"></span><b>${esc(p.name)}</b><small>${done}</small></div>
+  ${turn ? `<button type="button" class="dice-btn" data-action="roll" ${mine && !x.rolled && !busy ? '' : 'disabled'} aria-label="${esc(p.name)}: ছক্কা চালুন">${diceFace(x.dice || last || 6, rolling ? 'spin' : '')}</button><small class="seat4-prompt">${prompt}</small>`
+    : last ? `<span class="seat4-last">${diceFace(last, 'small')}</span>` : ''}</div>`;
+}
 function playing() {
-  const x = m(), p = x.players[x.turn], mine = myTurn();
-  const prompt = x.winner !== null ? '' : mine ? (x.rolled ? 'একটা ঘুঁটি বাছুন' : 'দান দিন') : online() ? `${esc(p.name)}-এর চালের অপেক্ষা…` : `${esc(p.name)} ভাবছে…`;
-  return `${strip(x)}<div class="board-wrap">${x.kind === 'snake' ? snakeBoard(x) : ludoBoard(x)}</div>
-  <p class="ludo-msg" role="status">${message(x)}</p>
-  ${x.winner !== null ? over(x) : `<div class="dice-row ${p.colour}"><button type="button" class="dice-btn" data-action="roll" ${mine && !x.rolled && !busy ? '' : 'disabled'} aria-label="দান দিন">${diceFace(x.dice || x.last?.roll || 6, rolling ? 'spin' : '')}</button><span><b>${esc(p.name)}</b><small>${prompt}</small></span></div>`}`;
+  const x = m();
+  return `<div class="table4"><div class="seat-row">${SIDES.top.map(c => seatCard(x, c, true)).join('')}</div>
+  <div class="board-wrap">${x.kind === 'snake' ? snakeBoard(x) : ludoBoard(x)}</div>
+  <div class="seat-row">${SIDES.bottom.map(c => seatCard(x, c, false)).join('')}</div></div>
+  <p class="ludo-msg" role="status">${message(x)}</p>${x.winner !== null ? over(x) : ''}`;
 }
 function over(x) {
   const order = standings(x);
@@ -168,7 +181,7 @@ function startPolling() {
 
 async function doRoll() {
   if (!myTurn() || m().rolled || busy) return;
-  busy = true; rolling = true; render(); sound('vote'); await wait(450);
+  busy = true; rolling = true; render(); sound('vote'); await wait(700);
   try {
     if (online()) adopt(await api({ op: 'roll', code: s.online.code, token: s.online.token }));
     else s.match = roll(m(), 1 + Math.floor(Math.random() * 6));
@@ -176,8 +189,9 @@ async function doRoll() {
   rolling = false; busy = false; save(); render();
   const x = m(); if (!x) return;
   // One choice only: play it without asking.
-  if (x.rolled && myTurn()) { const can = movable(x); if (can.length === 1) { await wait(350); return play(can[0]); } }
-  next();
+  if (x.rolled && myTurn()) { const can = movable(x); if (can.length === 1) { await wait(1000); return play(can[0]); } }
+  if (!x.rolled) await wait(1200); // a roll with nothing to move stays on screen a moment
+  render(); next();
 }
 async function play(i) {
   if (!myTurn() || !m().rolled || busy) return;
@@ -194,11 +208,11 @@ async function play(i) {
 async function next() {
   const x = m(); if (!x || online() || x.winner !== null) return;
   const p = x.players[x.turn]; if (!p.cpu || busy) return;
-  busy = true; await wait(650);
+  busy = true; render(); await wait(2000);
   if (s.match !== x) { busy = false; return; }
-  rolling = true; render(); await wait(400); rolling = false;
+  rolling = true; render(); sound('vote'); await wait(700); rolling = false;
   s.match = roll(x, 1 + Math.floor(Math.random() * 6)); render();
-  if (s.match.rolled && s.match.turn === x.turn) { await wait(600); s.match = move(s.match, choose(s.match, p.cpu)); const l = s.match.last; sound(l?.captured || l?.snake ? 'hit' : 'notice'); }
+  if (s.match.rolled && s.match.turn === x.turn) { await wait(1300); s.match = move(s.match, choose(s.match, p.cpu)); const l = s.match.last; sound(l?.captured || l?.snake ? 'hit' : 'notice'); }
   busy = false; if (s.match.winner !== null) finish(); save(); render(); next();
 }
 function finish() {
@@ -227,7 +241,7 @@ async function act(action, id) {
     case 'fill': { const n = s.mode === 'local' ? s.count : 1, i = s.names.slice(0, n).findIndex(x => !x.trim()); s.names[i >= 0 ? i : 0] = id; save(); return render(); }
     case 'start': {
       const list = names(s.mode === 'local' ? s.count : 1); if (!list) return;
-      const players = s.mode === 'cpu' ? [{ name: list[0] }, ...CPU_NAMES.slice(0, s.cpus).map(n => ({ name: n, cpu: s.level }))] : list.map(n => ({ name: n }));
+      const players = s.mode === 'cpu' ? [...CPU_NAMES.slice(0, s.cpus).map(n => ({ name: n, cpu: s.level })), { name: list[0] }] : list.map(n => ({ name: n }));
       s.match = newMatch(s.kind, players); s.phase = 'play'; s.saved = false; view = 'play'; save(); sound('notice'); transition(); return;
     }
     case 'again': s.match = newMatch(m().kind, m().players.map(p => ({ name: p.name, cpu: p.cpu }))); s.saved = false; save(); render(); return next();
