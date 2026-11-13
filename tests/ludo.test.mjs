@@ -88,3 +88,19 @@ test('online কলম যুদ্ধ: only the shooter (or host) may report, a
   v = await rooms.handle({ op: 'sync', code: a.code, token: b.token, seq: 1, data: { phase: 'play', round: { turn: 'p0' } }, shot: { pid: 'p1', cx: 1, cy: 2, jx: 3, jy: 4 } });
   assert.equal(v.match.shot.by, 1); assert.equal(v.match.seq, 2);
 });
+
+import * as C from '../www/carrom-physics.mjs';
+test('ক্যারম: 9 white, 9 black and the queen, rack without overlap; own coin plays again, striker in a pocket is a foul', () => {
+  const r = C.rack(); assert.equal(r.length, 19); assert.equal(r.filter(p => p.kind === 'white').length, 9);
+  for (let i = 0; i < r.length; i++) for (let j = i + 1; j < r.length; j++) assert.ok(Math.hypot(r[i].x - r[j].x, r[i].y - r[j].y) >= 2 * C.COIN);
+  let g = C.newGame(); const w = g.pieces.find(p => p.kind === 'white'); w.in = true;
+  C.settle(g, [w.id]); assert.equal(g.turn, 0); assert.equal(C.score(g, 0), 1);
+  g.pieces.push({ ...C.striker(0), in: true }); C.settle(g, ['s']); assert.equal(g.turn, 1); assert.equal(C.score(g, 0), 0, 'a pocketed coin goes back');
+});
+test('ক্যারম: the queen counts only when covered', () => {
+  let g = C.newGame(); const q = g.pieces.find(p => p.id === 'q'); q.in = true;
+  C.settle(g, ['q']); assert.equal(g.queenPending, 0); assert.equal(g.turn, 0);
+  C.settle(g, []); assert.equal(g.queenBy, null); assert.equal(q.in, false, 'uncovered queen goes back');
+  g = C.newGame(); const q2 = g.pieces.find(p => p.id === 'q'), w = g.pieces.find(p => p.kind === 'white'); q2.in = w.in = true;
+  C.settle(g, ['q', w.id]); assert.equal(C.score(g, 0), 1 + C.QUEEN_POINTS);
+});
