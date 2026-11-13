@@ -1,17 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- A শীতলপাটি motif: woven cane in a diamond, red border, the small red eye at the heart of the weave. -->
   <defs>
-    <radialGradient id="glow" cx=".5" cy=".55" r=".45"><stop offset="0" stop-color="#f6c35a" stop-opacity=".35"/><stop offset="1" stop-color="#f6c35a" stop-opacity="0"/></radialGradient>
-    <mask id="cres"><rect width="512" height="512" fill="#fff"/><circle cx="392" cy="112" r="40" fill="#000"/></mask>
+    <pattern id="w" width="58" height="58" patternUnits="userSpaceOnUse" patternTransform="translate(256 92) rotate(45)"><rect width="58" height="58" fill="#e2c07c"/><rect width="29" height="29" fill="#c79a52"/><rect x="29" y="29" width="29" height="29" fill="#c79a52"/><path d="M0 29h58M29 0v58" stroke="#9a6f30" stroke-width="3" opacity=".5"/></pattern><clipPath id="d"><path d="M256 92 420 256 256 420 92 256Z"/></clipPath>
   </defs>
-  <rect width="512" height="512" rx="112" fill="#111a3a"/>
-  <circle cx="256" cy="290" r="200" fill="url(#glow)"/>
-  <circle cx="370" cy="128" r="46" fill="#f3ead0" mask="url(#cres)"/>
-  <!-- a hurricane lamp, drawn in a few strokes -->
-  <g fill="none" stroke="#e9b949" stroke-width="22" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M216 150a40 40 0 0 1 80 0"/>
-    <path d="M196 176h120"/>
-    <path d="M206 176 186 236v62l20 52h100l20-52v-62l-20-60"/>
-    <path d="M172 382h168"/>
-  </g>
-  <path d="M256 222c26 30 34 52 18 76a22 22 0 0 1-36 0c-16-24-8-46 18-76Z" fill="#ffd166"/>
+  <rect width="512" height="512" rx="112" fill="#7d1b17"/>
+  <rect x="34" y="34" width="444" height="444" rx="86" fill="none" stroke="#e8c98a" stroke-width="6" opacity=".55"/>
+  <path d="M256 92 420 256 256 420 92 256Z" fill="url(#w)"/>
+  <path d="M256 92 420 256 256 420 92 256Z" fill="none" stroke="#f3dca5" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M256 214 298 256 256 298 214 256Z" fill="#7d1b17"/>
+  <path d="M256 236 276 256 256 276 236 256Z" fill="#f3dca5"/>
 </svg>
