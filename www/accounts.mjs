@@ -52,3 +52,17 @@ export function buyGear(id, key, storage = localStorage) {
 /* Owned add-ons can be taken off and put back for free. */
 export const toggleGear = (id, key, storage = localStorage) => update(id, a => { if (!a.gear[key]) return false; a.off[key] = a.off[key] ? 0 : 1; }, storage);
 export const fitted = acc => Object.fromEntries(Object.entries(acc?.gear || {}).map(([k, v]) => [k, acc.off?.[k] ? 0 : v]));
+
+/* Small tap-to-add chips for the accounts not already in the game. A tap fills the name box and submits it,
+   so the game's own name checks still run. */
+export function accountChips(taken = [], label = 'অ্যাকাউন্ট থেকে') {
+  const here = new Set(taken.map(n => String(n).trim().toLocaleLowerCase())), list = readAccounts().filter(a => !here.has(a.name.toLocaleLowerCase()));
+  const esc = t => String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  return list.length ? `<div class="acc-mini" aria-label="${esc(label)}"><span>${esc(label)}</span>${list.map(a => `<button type="button" data-account="${esc(a.name)}">+ ${esc(a.name)}</button>`).join('')}</div>` : '';
+}
+export function bindAccountChips(root = document) {
+  root.querySelectorAll('[data-account]').forEach(el => el.onclick = e => {
+    e.preventDefault(); const input = root.querySelector('#player-name'), form = root.querySelector('#name-form');
+    if (!input || !form) return; input.value = el.dataset.account; form.requestSubmit();
+  });
+}
