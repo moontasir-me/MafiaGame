@@ -1,11 +1,11 @@
 /* চোর ডাকাত পুলিশ বাবু: four folded chits, four players.
-   বাবু ১০০০, পুলিশ ৮০০, ডাকাত ৫০০, চোর ০. পুলিশ চোর ধরতে পারলে নিজের ৮০০ রাখে;
-   ভুল ধরলে পুলিশ ০ পায় আর চোর পায় ৮০০। */
+   বাবু ১০০০, পুলিশ ৮০০, ডাকাত ৫০০, চোর ৪০০. পুলিশ চোর ধরলে পুলিশ ৮০০, চোর ০;
+   ভুল ধরলে পুলিশ ০, চোর তার ৪০০ রাখে। */
 export const ROLES = {
   babu: { name: 'বাবু', points: 1000, colour: '#b8860b' },
   police: { name: 'পুলিশ', points: 800, colour: '#1f4e8c' },
   dakat: { name: 'ডাকাত', points: 500, colour: '#8b1e1e' },
-  chor: { name: 'চোর', points: 0, colour: '#3d3d3d' }
+  chor: { name: 'চোর', points: 400, colour: '#3d3d3d' }
 };
 export const ORDER = ['babu', 'police', 'dakat', 'chor'];
 
@@ -19,5 +19,5 @@ export function deal(rnd = Math.random) {
 /* roles: role per player index; guess: the player index the police named as চোর. Returns points per player. */
 export function score(roles, guess) {
   const caught = roles[guess] === 'chor';
-  return roles.map(r => r === 'police' ? (caught ? 800 : 0) : r === 'chor' ? (caught ? 0 : 800) : ROLES[r].points);
+  return roles.map(r => r === 'police' ? (caught ? 800 : 0) : r === 'chor' ? (caught ? 0 : 400) : ROLES[r].points);
 }

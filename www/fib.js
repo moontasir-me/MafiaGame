@@ -2,7 +2,7 @@ import { LEVELS, makeQuestion } from './fib-questions.mjs';
 import { sound, soundEnabled, toggleSound } from './sound.mjs';
 import { saveMatch, readHistory, overallRanking, hallOfFame } from './history.mjs';
 import { readAccounts, ensureAccount } from './accounts.mjs';
-import { esc, icon, appShell, pageHead, rankTable, fameTable, playerColour, playerDot, enterScreen, leaveScreen } from './ui-kit.mjs';
+import { numberPick, bindNumberPick, esc, icon, appShell, pageHead, rankTable, fameTable, playerColour, playerDot, enterScreen, leaveScreen } from './ui-kit.mjs';
 
 /* Fibonacci: a quick maths quiz on one phone. Each player plays a full run, then passes the phone.
    Timer mode: as many right answers as possible before the clock runs out; +1 right, −1 wrong.
@@ -41,7 +41,7 @@ function setup() {
   return `<header class="fib-head">${SPIRAL}<div><h1>Fibonacci</h1><p>অঙ্কের দ্রুত প্রশ্ন, চার স্তরে</p></div></header>
   <ol class="fib-steps">
   <li><h2><i>১</i>ধরন</h2><div class="fib-modes" role="radiogroup" aria-label="খেলার ধরন">${Object.entries(MODES).map(([k, m]) => `<button type="button" role="radio" aria-checked="${s.mode === k}" class="${s.mode === k ? 'is-on' : ''}" data-action="mode" data-id="${k}">${MODE_ART[k]}<b>${m.name}</b><small>${m.note}</small></button>`).join('')}</div>
-   ${s.mode === 'timer' ? `<div class="fib-count" role="radiogroup" aria-label="কত সময়"><span>সময়</span>${TIMES.map(n => `<button type="button" role="radio" aria-checked="${s.seconds === n}" class="${s.seconds === n ? 'is-on' : ''}" data-action="time" data-id="${n}">${bn(n)} সেকেন্ড</button>`).join('')}</div>` : ''}</li>
+   ${s.mode === 'timer' ? `<div class="fib-count">${numberPick({ name: 'secs', label: 'কত সেকেন্ড', value: s.seconds, presets: TIMES, min: 10, max: 900, unit: 'সেকেন্ড' })}</div>` : ''}</li>
   <li><h2><i>২</i>স্তর</h2><div class="fib-levels" role="radiogroup" aria-label="স্তর">${LEVELS.map(l => `<button type="button" role="radio" aria-checked="${s.level === l.id}" class="fib-level l${l.id} ${s.level === l.id ? 'is-on' : ''}" data-action="level" data-id="${l.id}"><span class="fib-num">${bn(l.id)}</span><b>${l.name}</b><small>${l.age}</small></button>`).join('')}</div></li>
   <li id="players"><h2><i>৩</i>খেলোয়াড় <small>${bn(s.players.length)} / ৮</small></h2>
   ${s.players.length < 8 ? `<form id="name-form" class="name-form"><input id="player-name" maxlength="20" autocomplete="off" placeholder="নাম লিখুন" aria-label="খেলোয়াড়ের নাম"><button class="btn primary" type="submit">${icon('plus')}যোগ</button></form>` : ''}
@@ -103,6 +103,7 @@ function render() {
   $('#app').innerHTML = appShell({ brand: 'Fibonacci', brandSub: 'অঙ্কের খেলা', brandIcon: 'grid', brandAction: 'tab-play', crumb: view === 'rules' ? 'নিয়ম' : view === 'ranking' ? 'র‍্যাঙ্কিং' : s.phase === 'play' || s.phase === 'handover' ? `${me().name}-এর পালা` : s.phase === 'over' ? 'ফলাফল' : 'খেলা সাজান', active: view, contentClass: 'game-content fib-content', labels: { back: 'সব খেলা', menu: 'মেনু', sections: 'খেলার অংশ' },
     tabs: [{ id: 'play', label: 'খেলা', icon: 'play', action: 'tab-play' }, { id: 'rules', label: 'নিয়ম', icon: 'book', action: 'tab-rules' }, { id: 'ranking', label: 'র‍্যাঙ্কিং', icon: 'trophy', action: 'tab-ranking' }], body });
   $$('[data-action]').forEach(el => el.onclick = e => { e.preventDefault(); act(el.dataset.action, el.dataset.id); });
+  bindNumberPick(document, 'secs', 10, 900, n => { s.seconds = n; save(); render(); });
   $('#name-form')?.addEventListener('submit', e => { e.preventDefault(); if (addPlayer($('#player-name').value.trim())) { render(); $('#player-name')?.focus(); } });
   if (changed) enterScreen($('#screen'));
 }
@@ -161,7 +162,7 @@ async function act(action, id) {
     case 'app-menu': return openMenu();
     case 'games': location.href = 'index.html'; return;
     case 'mode': s.mode = MODES[id] ? id : 'timer'; save(); return render();
-    case 'time': s.seconds = TIMES.includes(Number(id)) ? Number(id) : 60; save(); return render();
+    case 'time': s.seconds = Math.max(10, Math.min(900, Number(id) || 60)); save(); return render();
     case 'level': s.level = Math.max(1, Math.min(4, Number(id))); save(); return render();
     case 'add-acc': { const a = readAccounts().find(x => x.id === id); if (a && addPlayer(a.name)) render(); return; }
     case 'remove': s.players = s.players.filter(p => p.id !== id); save(); return render();

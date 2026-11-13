@@ -82,9 +82,9 @@ test('শতরঞ্জি follows the full chess rules and the computer finds 
   const m = bestMove(g, 'easy', () => 0);
   assert.equal(result(play(g, m)), 'mate');
 });
-test('চোর ডাকাত পুলিশ বাবু: police keeps 800 on a catch, the thief takes it on a miss', () => {
+test('চোর ডাকাত পুলিশ বাবু: police keeps 800 on a catch, the thief keeps 400 on a miss', () => {
   const roles = ['babu', 'police', 'dakat', 'chor'];
   assert.deepEqual(chorScore(roles, 3), [1000, 800, 500, 0]);
-  assert.deepEqual(chorScore(roles, 2), [1000, 0, 500, 800]);
+  assert.deepEqual(chorScore(roles, 2), [1000, 0, 500, 400]);
   assert.deepEqual([...deal()].sort(), ['babu', 'chor', 'dakat', 'police']);
 });

@@ -318,3 +318,13 @@ button.kit-title:active{transform:scale(.98)}
 .acc-mini>span{font-size:12px;color:var(--muted);margin-right:2px}
 .acc-mini button{min-height:30px;padding:3px 11px;border:1px solid var(--border);border-radius:99px;background:var(--surface);color:var(--text);font:inherit;font-size:12.5px;line-height:1.2;cursor:pointer;transition:transform .12s,border-color .2s}
 .acc-mini button:hover{border-color:var(--accent)}.acc-mini button:active{transform:scale(.95)}
+.num-pick{display:grid;gap:6px}
+.num-label{font-size:13px;color:var(--muted)}
+.num-row{display:flex;flex-wrap:wrap;gap:6px}
+.num-row>button,.num-own{min-height:40px;min-width:52px;padding:0 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);font:inherit;font-size:14px;cursor:pointer}
+.num-row>button.is-on,.num-own.is-on{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);font-weight:600}
+.num-own{display:inline-flex;align-items:center;gap:4px;padding:0 8px;cursor:text}
+.num-own input{width:64px;min-height:36px;border:0;background:none;color:inherit;font:inherit;text-align:center;-moz-appearance:textfield}
+.num-own input::-webkit-inner-spin-button{opacity:1}
+.num-own small{font-size:12px;color:var(--muted)}
+.num-hint{font-size:11.5px;color:var(--muted)}

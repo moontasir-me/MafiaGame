@@ -3,7 +3,7 @@ import { LEVELS, byLevel } from './riddle-levels.mjs';
 import { readAccounts, ensureAccount } from './accounts.mjs';
 import { sound, soundEnabled, toggleSound } from './sound.mjs';
 import { saveMatch, readHistory, hallOfFame } from './history.mjs';
-import { fameTable, playerColour, esc, icon, rankTable, enterScreen, leaveScreen, appShell, pageHead } from './ui-kit.mjs';
+import { numberPick, bindNumberPick, fameTable, playerColour, esc, icon, rankTable, enterScreen, leaveScreen, appShell, pageHead } from './ui-kit.mjs';
 
 const $ = q => document.querySelector(q), $$ = q => [...document.querySelectorAll(q)];
 const bn = n => Number(n).toLocaleString('bn-BD');
@@ -59,7 +59,7 @@ function setup() {
   <form id="name-form" class="name-form"><div class="input-wrap">${icon('person')}<input id="player-name" placeholder="খেলোয়াড়ের নাম" autocomplete="off" maxlength="20" aria-label="খেলোয়াড়ের নাম"></div><button class="btn primary" type="submit">যোগ করুন${icon('plus')}</button></form>
   ${accountChips()}
   ${s.players.length ? `<div class="name-list">${s.players.map((p, i) => `<div class="name-row kalidas-row ${p.id === newRow ? 'is-new' : ''}"><span class="seat-initial coloured" style="--dot:${playerColour(p.name, i)}" aria-hidden="true">${esc(p.name.charAt(0))}</span><div class="seat-name"><span class="player-name">${esc(p.name)}</span><small class="seat-number">${bn(i + 1)}</small></div><button type="button" class="icon-btn" data-action="remove" data-id="${p.id}" aria-label="${esc(p.name)} সরান">${icon('trash')}</button></div>`).join('')}</div>` : `<p class="kalidas-hint">নাম না দিলে সবাই মিলে এক দল হয়ে খেলবেন। নাম দিলে অ্যাকাউন্ট খুলে যায়, পয়েন্ট র‍্যাঙ্কিংয়ে জমে।</p>`}
-  <div class="spy-prefs one"><label for="seconds">প্রতি ধাঁধার সময়<select id="seconds">${TIMES.map(n => `<option value="${n}" ${s.seconds === n ? 'selected' : ''}>${bn(n)} সেকেন্ড</option>`).join('')}</select></label></div>
+  <div class="kd-secs">${numberPick({ name: 'secs', label: 'প্রতি ধাঁধার সময়', value: s.seconds, presets: TIMES, min: 5, max: 600, unit: 'সেকেন্ড' })}</div>
   <div class="form-bottom"><small>${LEVELS[s.level].label} ধাঁধা · ${s.players.length ? 'সবাই প্রস্তুত?' : 'একা বা দলে'}</small>${button('ধাঁধা শুরু', 'start', 'primary', 'play')}</div></section>
   <details class="cast-drawer"><summary>চরিত্রগুলো দেখুন</summary><div class="cast-grid kalidas-cast"><article class="cast-card"><img class="character-avatar" src="${ART.HIMU}" alt="" width="80" height="80"><h3>হিমু</h3><small>ধাঁধা ধরে</small><p>হলুদ পাঞ্জাবি, খালি পা, রহস্যময় হাসি। প্রশ্ন ছুড়ে দিয়ে চুপ করে থাকে।</p></article><article class="cast-card"><img class="character-avatar" src="${ART.MISIR}" alt="" width="80" height="80"><h3>মিসির আলি</h3><small>উত্তর খোঁজেন · আপনারা</small><p>যুক্তি দিয়ে ভাবেন। ঠিক উত্তরে সবুজ ফ্রেম, না পারলে লাল।</p></article></div></details>`;
 }
@@ -128,7 +128,7 @@ function bind() {
   $('#name-form')?.addEventListener('submit', e => {
     e.preventDefault(); if (addPlayer($('#player-name').value.trim())) { $('#player-name').value = ''; render(); $('#player-name').focus(); }
   });
-  $('#seconds')?.addEventListener('change', e => { s.seconds = Number(e.target.value); save(); });
+  bindNumberPick(document, 'secs', 5, 600, n => { s.seconds = n; save(); render(); });
   // Picking who got it right never re-renders, so the timer and answer stay put.
   $$('input[name=winner]').forEach(el => el.onchange = () => {
     s.choice = el.value; save();

@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="bn" data-theme="dark" data-universe="lamp"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="only dark"><meta name="theme-color" content="#0b1020"><meta name="description" content="শীতলপাটি — কারেন্ট গেলে উঠোনে পাটি পেতে বসে খেলার খেলাগুলো।"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="kit.css"><link rel="stylesheet" href="lamp.css"><title>শীতলপাটি</title></head>
+<body class="lamp-page pati-page">
+<div class="night" aria-hidden="true"><div class="moon"></div><div class="stars"></div>
+<svg class="village" viewBox="0 0 800 160" preserveAspectRatio="xMidYMax slice"><path d="M0 160V118q60-14 120-4 40-30 70-2l20-6 10-30 6 28 30 8q70-10 140 6 30-4 50-18l40-40 40 40q14 12 40 16 50-10 110 2l12-40 10 40q30 6 60-4 30 4 52 8V160Z" fill="#05070f"/><g fill="#05070f"><path d="M88 118c0-26 2-58 6-80-12-6-30-2-40 8 12-14 30-18 42-12-6-12-22-20-36-18 18-6 34 2 40 14 4-12 18-20 34-18-14 4-26 12-30 22 14-4 30 2 36 14-12-8-28-10-38-6-4 22-6 52-6 76Z"/><path d="M640 120c0-30 2-60 8-84-14-4-28 2-36 12 8-14 24-20 38-16-8-10-22-14-34-10 16-8 32-4 40 8 6-10 20-14 32-10-12 2-22 8-26 16 12-2 24 4 30 14-10-6-22-6-32-2-6 24-8 50-8 72Z"/><path d="M400 128v-26l-6 2 34-30 34 30-6-2v26Z"/></g><rect x="418" y="110" width="10" height="16" fill="#f0a83a" class="hut-window"/></svg></div>
+<main class="pati-shell">
+<header class="pati-top"><a class="kit-pill" href="index.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m5-5-5 5 5 5"/></svg><span>সব খেলা</span></a>
+<div class="light-switch" role="radiogroup" aria-label="আলো"><button type="button" role="radio" data-light-set="moon">চাঁদের আলো</button><button type="button" role="radio" data-light-set="lamp">হারিকেন</button></div></header>
+<section class="pati-hero"><h1>শীতলপাটি</h1><p>কারেন্ট গেছে। উঠোনে পাটি পাতা, মাথার ওপর চাঁদ, পাশে হারিকেন। সবাই গোল হয়ে বসো।</p></section>
+<section class="pati-mat" aria-label="খেলা বেছে নিন">
+<a class="pati-game chess-card" href="shotoronji.html"><img src="assets/shotoronji/cover.svg" alt="" width="640" height="420"><span><b>শতরঞ্জি</b><small>দাদুর কাঠের ছকে দাবা · ২ জন বা কম্পিউটার</small></span></a>
+<a class="pati-game chor-card" href="chor.html"><img src="assets/chor/cover.svg" alt="" width="640" height="420"><span><b>চোর ডাকাত পুলিশ বাবু</b><small>চারটা ভাঁজ করা কাগজ · ৪ জন</small></span></a>
+</section>
+<footer class="app-credit">Developed by Tanim</footer>
+</main>
+<script type="module">
+import { readLight, setLight } from './lamp.mjs';
+const mark = () => document.querySelectorAll('[data-light-set]').forEach(b => { const on = b.dataset.lightSet === readLight(); b.classList.toggle('is-on', on); b.setAttribute('aria-checked', on); });
+document.querySelectorAll('[data-light-set]').forEach(b => b.onclick = () => { setLight(b.dataset.lightSet); mark(); });
+mark();
+</script>
+</body></html>

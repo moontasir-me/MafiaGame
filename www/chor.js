@@ -2,8 +2,8 @@ import { ROLES, deal, score } from './chor-engine.mjs';
 import { sound } from './sound.mjs';
 import { saveMatch, readHistory, overallRanking, hallOfFame } from './history.mjs';
 import { readAccounts, ensureAccount } from './accounts.mjs';
-import { esc, icon, appShell, pageHead, rankTable, fameTable, playerDot, playerColour, enterScreen, leaveScreen } from './ui-kit.mjs';
-import { $, $$, bn, LANTERN, toast, confirmBox, openMenu, SHELL_LABELS, TABS } from './lamp.mjs';
+import { numberPick, bindNumberPick, esc, icon, appShell, pageHead, rankTable, fameTable, playerDot, playerColour, enterScreen, leaveScreen } from './ui-kit.mjs';
+import { $, $$, bn, LANTERN, toast, confirmBox, openMenu, SHELL_LABELS, TABS, BACK } from './lamp.mjs';
 
 /* চোর ডাকাত পুলিশ বাবু on one phone: four players take turns drawing a folded chit and peek alone.
    বাবু speaks up, পুলিশ names the চোর. Ranking points are the total divided by 100. */
@@ -30,7 +30,7 @@ function chips() {
 function setup() {
   return `<header class="lamp-head">${LANTERN}<div><h1>চোর ডাকাত পুলিশ বাবু</h1><p>চারটা কাগজ ভাঁজ করা। পুলিশকে চোর ধরতে হবে।</p></div></header>
   <section class="lamp-panel"><h2>চারজন</h2>${s.names.map((n, i) => `<label class="lamp-field"><span class="side-dot" style="background:${playerColour('', i)}"></span><input data-name="${i}" maxlength="20" autocomplete="off" placeholder="খেলোয়াড় ${bn(i + 1)}" value="${esc(n)}"></label>`).join('')}${chips()}</section>
-  <section class="lamp-panel"><h2>কত দান</h2><div class="lamp-seg small" role="radiogroup">${ROUND_CHOICES.map(n => `<button type="button" role="radio" aria-checked="${s.rounds === n}" class="${s.rounds === n ? 'is-on' : ''}" data-action="rounds" data-id="${n}">${bn(n)}</button>`).join('')}</div></section>
+  <section class="lamp-panel">${numberPick({ name: 'rounds', label: 'কত দান', value: s.rounds, presets: ROUND_CHOICES, min: 1, max: 100, unit: 'দান' })}</section>
   <div class="chit-legend">${Object.keys(ROLES).map(r => roleChit(r)).join('')}</div>
   ${button('কাগজ ভাঁজ করুন', 'start', 'primary wide', 'play')}`;
 }
@@ -60,7 +60,7 @@ function totalsTable() {
 function reveal() {
   const police = who('police'), caught = s.chits[s.owner.indexOf(s.guess)] === 'chor', last = s.round + 1 >= s.rounds;
   return `<section class="lamp-stage">${roundTag()}<h1>${caught ? 'চোর ধরা পড়েছে!' : 'ভুল ধরেছে! চোর পালিয়েছে।'}</h1>
-  <p class="lede">${caught ? `${pname(police)} ঠিক ধরেছেন।` : `${pname(police)} পেলেন ০, ${pname(who('chor'))} পেলেন ${bn(800)}।`}</p>
+  <p class="lede">${caught ? `${pname(police)} ঠিক ধরেছেন।` : `${pname(police)} পেলেন ০, ${pname(who('chor'))} রাখলেন ${bn(400)}।`}</p>
   <div class="chit-table open-all">${[0, 1, 2, 3].map(i => `<div class="chit-owner">${roleChit(roleOf(i), `<em>+${bn(s.gained[i])}</em>`)}<span>${pname(i)}</span></div>`).join('')}</div></section>
   <section class="rank-section"><h2>${last ? 'শেষ ফল' : 'মোট'}</h2>${totalsTable()}</section>
   <div class="lamp-actions">${last ? button('আবার খেলি', 'again', 'primary wide', 'play') + button('চোর ডাকাতের শুরুর পাতা', 'game-home', 'secondary wide', 'home') : button('পরের দান', 'next', 'primary wide', 'arrow')}</div>`;
@@ -70,7 +70,7 @@ function rules() {
   <li>চারজন খেলবেন। প্রতি দানে চারটা ভাঁজ করা কাগজ: বাবু, পুলিশ, ডাকাত, চোর।</li>
   <li>একে একে ফোন হাতে নিয়ে একটা কাগজ তুলুন, একা দেখুন, ভাঁজ করে পরের জনকে দিন।</li>
   <li>বাবু আর পুলিশ নিজেদের পরিচয় দেন। পুলিশ বাকি দুজনের মধ্যে চোরকে দেখিয়ে দেন।</li>
-  <li>বাবু ১০০০, ডাকাত ৫০০। পুলিশ ঠিক ধরলে ৮০০, চোর ০। ভুল ধরলে পুলিশ ০, চোর ৮০০।</li>
+  <li>বাবু ১০০০, পুলিশ ৮০০, ডাকাত ৫০০, চোর ৪০০। পুলিশ চোর ধরে ফেললে চোর পায় ০। ভুল ধরলে পুলিশ পায় ০, চোর রাখে ৪০০।</li>
   <li>সব দান শেষে যার মোট বেশি সে জিতল। র‍্যাঙ্কিংয়ে মোটের একশো ভাগের এক ভাগ যোগ হয়।</li></ol>`;
 }
 const labels = { caption: 'ফলাফল', rank: '#', player: 'খেলোয়াড় · শেষ পাঁচ দান', points: 'পয়েন্ট', win: 'সবুজ: ভালো দান', loss: 'লাল: খারাপ দান', order: 'নতুনটি বাঁ দিকে', empty: 'এখনও কেউ খেলেননি।', noGames: 'এখনও খেলেননি', number: bn };
@@ -86,8 +86,9 @@ function ranking() {
 function render() {
   const key = view + s.phase + s.round + s.drawer, changed = key !== lastScreen; lastScreen = key;
   const body = view === 'rules' ? rules() : view === 'ranking' ? ranking() : ({ draw, peek, guess, reveal }[s.phase] || setup)();
-  $('#app').innerHTML = appShell({ brand: 'চোর ডাকাত পুলিশ বাবু', brandSub: 'হারিকেনের আলোয়', brandIcon: 'people', brandAction: 'tab-play', crumb: view === 'rules' ? 'নিয়ম' : view === 'ranking' ? 'র‍্যাঙ্কিং' : s.phase === 'setup' ? 'খেলা সাজান' : `দান ${bn(s.round + 1)}`, active: view, contentClass: 'game-content lamp-content', labels: SHELL_LABELS, tabs: TABS, body });
+  $('#app').innerHTML = appShell({ brand: 'চোর ডাকাত পুলিশ বাবু', brandSub: 'কাগজ ভাঁজের খেলা', brandIcon: 'people', brandAction: 'tab-play', crumb: view === 'rules' ? 'নিয়ম' : view === 'ranking' ? 'র‍্যাঙ্কিং' : s.phase === 'setup' ? 'খেলা সাজান' : `দান ${bn(s.round + 1)}`, active: view, contentClass: 'game-content lamp-content', labels: SHELL_LABELS, backHref: BACK, tabs: TABS, body });
   $$('[data-action]').forEach(el => el.onclick = e => { e.preventDefault(); act(el.dataset.action, el.dataset.id); });
+  bindNumberPick(document, 'rounds', 1, 100, n => { s.rounds = n; save(); render(); });
   $$('[data-name]').forEach(el => el.oninput = () => { s.names[Number(el.dataset.name)] = el.value; save(); });
   if (changed) enterScreen($('#screen'));
 }

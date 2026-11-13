@@ -63,11 +63,11 @@ export function rankTable(rows, t) {
 /* One page frame for both games.
    Top bar: back to the game chooser · game title + where you are · Menu.
    Sections (Play / Rules / Rankings): bottom tabs on phones, sidebar on wide screens. */
-export function appShell({ brand, brandSub, brandIcon, brandAction, homeAction = 'game-home', crumb, tabs, active, hideTabs = false, body, contentClass = '', labels, credit = 'Developed by Tanim' }) {
+export function appShell({ brand, brandSub, brandIcon, brandAction, homeAction = 'game-home', backHref = 'index.html', crumb, tabs, active, hideTabs = false, body, contentClass = '', labels, credit = 'Developed by Tanim' }) {
   const item = (t, cls) => `<button type="button" class="${cls}${t.id === active ? ' is-active' : ''}" data-action="${t.action}"${t.id === active ? ' aria-current="page"' : ''}>${icon(t.icon)}<span>${t.label}</span></button>`;
   return `<div class="kit-shell${hideTabs ? ' no-tabs' : ''}">
 <aside class="kit-side"><a class="kit-brand" href="#" data-action="${brandAction}"><span class="kit-brand-icon">${icon(brandIcon)}</span><span>${brand}<small>${brandSub}</small></span></a>${hideTabs ? '' : `<nav class="kit-side-nav" aria-label="${esc(labels.sections)}">${tabs.map(t => item(t, 'kit-side-item')).join('')}</nav>`}</aside>
-<main class="kit-main"><header class="kit-top"><a class="kit-pill kit-back" href="index.html">${icon('back')}<span>${labels.back}</span></a><button type="button" class="kit-title" data-action="${homeAction}" aria-label="${esc(brand)}: এই খেলার শুরুর পাতা"><strong>${brand}</strong><small>${crumb}</small></button><button type="button" class="kit-pill kit-menu" data-action="app-menu" aria-haspopup="dialog">${menuIcon()}<span>${labels.menu}</span></button></header>
+<main class="kit-main"><header class="kit-top"><a class="kit-pill kit-back" href="${backHref}">${icon('back')}<span>${labels.back}</span></a><button type="button" class="kit-title" data-action="${homeAction}" aria-label="${esc(brand)}: এই খেলার শুরুর পাতা"><strong>${brand}</strong><small>${crumb}</small></button><button type="button" class="kit-pill kit-menu" data-action="app-menu" aria-haspopup="dialog">${menuIcon()}<span>${labels.menu}</span></button></header>
 <div class="content ${contentClass}" id="screen">${body}</div><footer class="app-credit">${credit}</footer></main>
 ${hideTabs ? '' : `<nav class="kit-tabs" aria-label="${esc(labels.sections)}">${tabs.map(t => item(t, 'kit-tab')).join('')}</nav>`}</div>`;
 }
@@ -96,4 +96,18 @@ export function fameTable(entries, t) {
   if (!entries.length) return `<div class="rank-empty">${icon('trophy')}<p>${esc(t.empty)}</p></div>`;
   const fmt = t.number || (n => String(n));
   return `<div class="rank-table-wrap fame"><table class="rank-table"><caption class="sr-only">${esc(t.caption)}</caption><thead><tr><th scope="col">#</th><th scope="col">${esc(t.player)}</th><th scope="col" class="num">${esc(t.points)}</th></tr></thead><tbody>${entries.map((e, i) => `<tr class="${i === 0 ? 'leader' : ''}" style="--row:${i}"><td class="rank-cell"><span class="rank-no">${i === 0 ? icon('trophy') : fmt(i + 1)}</span></td><th scope="row">${playerDot(e.name)}<span class="rank-name inline">${esc(e.name)}</span><small class="rank-note">${esc(t.meta(e))}</small></th><td class="num"><strong>${fmt(e.points)}</strong></td></tr>`).join('')}</tbody></table></div>`;
+}
+
+/* A number setting: a few quick choices plus a box to type any number in range. */
+const bnNum = n => Number(n).toLocaleString('bn-BD');
+export function numberPick({ name, label, value, presets, min, max, unit = '' }) {
+  const own = !presets.includes(value);
+  return `<div class="num-pick" data-num="${name}"><span class="num-label">${label}</span><div class="num-row">${presets.map(n => `<button type="button" data-num-set="${n}" class="${n === value ? 'is-on' : ''}" aria-pressed="${n === value}">${bnNum(n)}</button>`).join('')}<label class="num-own ${own ? 'is-on' : ''}"><input type="number" inputmode="numeric" min="${min}" max="${max}" step="1" value="${own ? value : ''}" placeholder="অন্য" aria-label="${esc(label)}: নিজে লিখুন (${bnNum(min)}–${bnNum(max)})">${unit ? `<small>${unit}</small>` : ''}</label></div><small class="num-hint">${bnNum(min)} থেকে ${bnNum(max)}${unit ? ' ' + unit : ''}</small></div>`;
+}
+/* onSet(n) gets a whole number already clamped to min..max. */
+export function bindNumberPick(root, name, min, max, onSet) {
+  const box = root.querySelector(`[data-num="${name}"]`); if (!box) return;
+  box.querySelectorAll('[data-num-set]').forEach(b => b.onclick = e => { e.preventDefault(); onSet(Number(b.dataset.numSet)); });
+  const input = box.querySelector('input'), commit = () => { const n = Math.round(Number(input.value)); if (input.value === '' || !Number.isFinite(n)) return; onSet(Math.max(min, Math.min(max, n))); };
+  input.onchange = commit; input.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); commit(); } };
 }

@@ -1,6 +1,6 @@
 import { sound, soundEnabled, toggleSound } from './sound.mjs';
 import { saveMatch, readHistory, overallRanking, hallOfFame } from './history.mjs';
-import { esc, icon, appShell, pageHead, rankTable, fameTable, playerColour, playerDot, enterScreen, leaveScreen } from './ui-kit.mjs';
+import { numberPick, bindNumberPick, esc, icon, appShell, pageHead, rankTable, fameTable, playerColour, playerDot, enterScreen, leaveScreen } from './ui-kit.mjs';
 import { W, H, R, POWER, ends, step, resting, push, simulate } from './pen-physics.mjs';
 import { PENS, PRO_PENS, GEAR, GEAR_KEYS, penStats, ratings, nextPrice } from './pen-gear.mjs';
 import { readAccounts, ensureAccount, findAccount, addCoins, buyGear, toggleGear, fitted } from './accounts.mjs';
@@ -24,7 +24,7 @@ let fx = [], shake = 0, banner = null;
 // The round banner runs on the real clock, so nothing waits on screen repaints.
 const bannerUp = () => { if (banner && performance.now() >= banner.until) banner = null; return !!banner; };
 
-function fresh() { return { v: 2, phase: 'setup', mode: 'cpu', players: [], cpuLevel: 'medium', set: null, round: null }; }
+function fresh() { return { v: 2, phase: 'setup', mode: 'cpu', players: [], cpuLevel: 'medium', rounds: ROUNDS, set: null, round: null }; }
 function load() {
   try {
     const d = JSON.parse(localStorage.getItem(KEY)); if (d?.v === 2) return d;
@@ -288,8 +288,9 @@ function setup() {
   <li><h2><i>২</i>${vsCpu() ? 'আপনার নাম' : 'খেলোয়াড়দের নাম'}</h2>
    ${room ? `<form id="name-form" class="name-form"><input id="player-name" maxlength="20" autocomplete="off" placeholder="নাম লিখুন" aria-label="খেলোয়াড়ের নাম"><button class="btn primary" type="submit">${icon('plus')}যোগ</button></form>${accountChips()}<p class="pen-hint">নাম দিলেই অ্যাকাউন্ট খুলে যায়। জেতা পয়েন্ট কয়েন হয়ে জমে।</p>` : `<p class="pen-hint">${humans().map(p => esc(p.name)).join(', ')} খেলছেন। অন্য কাউকে নিতে নিচের কার্ডে ✕ চাপুন।</p>`}
   </li>
-  <li><h2><i>৩</i>কলম বাছুন</h2>${s.players.length ? `<div class="pc-grid">${s.players.map(playerCard).join('')}</div>` : '<p class="pen-hint">ওপরে নাম দিলে এখানে কলম বাছাই দেখা যাবে।</p>'}</li></ol>
-  <div class="pen-go">${button(ready ? 'খেলা শুরু' : vsCpu() ? 'আগে আপনার নাম দিন' : `আরও ${bn(need - humans().length)} জনের নাম দিন`, 'start', 'primary wide', 'play', ready ? '' : 'disabled')}<small>${bn(ROUNDS)} রাউন্ডের ম্যাচ</small></div>`;
+  <li><h2><i>৩</i>কলম বাছুন</h2>${s.players.length ? `<div class="pc-grid">${s.players.map(playerCard).join('')}</div>` : '<p class="pen-hint">ওপরে নাম দিলে এখানে কলম বাছাই দেখা যাবে।</p>'}</li>
+  <li><h2><i>৪</i>কত রাউন্ড</h2>${numberPick({ name: 'rounds', label: 'এক ম্যাচে', value: s.rounds || ROUNDS, presets: [3, 5, 7], min: 1, max: 50, unit: 'রাউন্ড' })}</li></ol>
+  <div class="pen-go">${button(ready ? 'খেলা শুরু' : vsCpu() ? 'আগে আপনার নাম দিন' : `আরও ${bn(need - humans().length)} জনের নাম দিন`, 'start', 'primary wide', 'play', ready ? '' : 'disabled')}<small>${bn(s.rounds || ROUNDS)} রাউন্ডের ম্যাচ</small></div>`;
 }
 
 function shop() {
@@ -343,7 +344,7 @@ function rules() {
   <li>কলমের মাঝখান বেঞ্চের কিনারা পার হলে কলম পড়ে গেছে।</li>
   <li>অন্যের কলম ফেললে +১, রাউন্ডে শেষ পর্যন্ত টিকে থাকলে +২। নিজের কলম নিজে ফেলে দিলে কিছু নেই।</li>
   <li>প্রতিটা পয়েন্ট অ্যাকাউন্টে এক কয়েন। কয়েন দিয়ে দোকান থেকে গ্রিপার, ভারী মাথা, পেছনে বাড়তি মাথা, টেপ, ইরেজার বাম্পার, ক্লিপ কেনা যায়।</li>
-  <li>এক ম্যাচে ${bn(ROUNDS)} রাউন্ড। মোট পয়েন্টে ম্যাচের র‍্যাঙ্কিং।</li></ol>`;
+  <li>এক ম্যাচে ${bn(s.rounds || ROUNDS)} রাউন্ড (খেলার আগে বদলানো যায়)। মোট পয়েন্টে ম্যাচের র‍্যাঙ্কিং।</li></ol>`;
 }
 function ranking() {
   const list = readHistory(), rows = overallRanking(list, 'pen').map(r => ({ name: r.name, score: r.points, note: bn(r.matches) + 'টি ম্যাচ', history: r.recent.map(h => ({ won: h.won, img: h.img || penImg('pinpoint'), label: h.label || '' })) }));
@@ -367,6 +368,7 @@ function render() {
     e.preventDefault(); const name = $('#player-name').value.trim().replace(/\s+/g, ' ');
     if (!name) return; addPlayer(name); $('#player-name')?.focus();
   });
+  bindNumberPick(document, 'rounds', 1, 50, n => { s.rounds = n; save(); render(); });
   if (view === 'shop') drawPreview();
   if (view === 'play' && s.phase === 'play') { bindBench(); if (s.round.moving || bannerUp() || fx.length) loop(); cpuTurn(); }
   if (changed) enterScreen($('#screen'));
@@ -406,14 +408,14 @@ async function act(action, id) {
     case 'shop': shopFor = id || shopFor; if (view !== 'shop') { view = 'shop'; return transition(); } return render();
     case 'buy': try { buyGear(shopFor, id); sound('coin'); toast(GEAR[id].name + ' লাগানো হয়েছে।'); } catch (e) { toast(e.message === 'COINS' ? 'কয়েন কম। আরও লড়াই জিতে আসুন।' : 'এটা আর কেনা যাবে না।'); } return render();
     case 'wear': toggleGear(shopFor, id); return render();
-    case 'start': if (humans().length < (vsCpu() ? 1 : 2)) return; s.players.forEach(p => { p.score = 0; p.history = []; }); s.set = { id: crypto.randomUUID(), total: ROUNDS, rounds: 0 }; return startRound();
+    case 'start': if (humans().length < (vsCpu() ? 1 : 2)) return; s.players.forEach(p => { p.score = 0; p.history = []; }); s.set = { id: crypto.randomUUID(), total: s.rounds || ROUNDS, rounds: 0 }; return startRound();
     case 'next': return startRound();
     case 'more': s.set.total++; return startRound();
     case 'end': case 'new':
       if (s.phase === 'setup') return;
       if (!await confirm('ম্যাচ শেষ করবেন?', 'ম্যাচের ফল র‍্যাঙ্কিংয়ে সেভ হবে, তারপর নতুন খেলা শুরু করা যাবে।')) return;
       if (s.set?.rounds) saveMatch({ id: s.set.id, game: 'pen', games: s.set.rounds, players: s.players.map(p => ({ name: p.name, points: p.score, recent: p.history || [] })) });
-      stop(); s = { ...fresh(), mode: s.mode, cpuLevel: s.cpuLevel, players: s.players.map(p => ({ ...p, score: 0, history: [] })) }; save(); view = 'ranking'; return transition();
+      stop(); s = { ...fresh(), mode: s.mode, cpuLevel: s.cpuLevel, rounds: s.rounds, players: s.players.map(p => ({ ...p, score: 0, history: [] })) }; save(); view = 'ranking'; return transition();
   }
 }
 
