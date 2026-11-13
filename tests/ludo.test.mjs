@@ -51,3 +51,15 @@ test('online room: join by code, only the player whose turn it is may roll, the 
   await assert.rejects(rooms.handle({ op: 'join', name: 'Joy', code: a.code }), /STARTED/);
   await assert.rejects(rooms.handle({ op: 'state', code: 'ZZZZZ', token: a.token }), /ROOM_GONE/);
 });
+
+test('rooms: a finished ludo game keeps its room 10 minutes, a game in play 2 hours', async () => {
+  const saves = [];
+  class Store extends MemoryLudoStore { async save(id, rev, payload, seconds) { saves.push(seconds); return super.save(id, rev, payload); } }
+  let face = 6; const rooms = new LudoRooms(new Store(), { dice: () => face });
+  const a = await rooms.handle({ op: 'create', name: 'A', kind: 'snake' }), b = await rooms.handle({ op: 'join', name: 'B', code: a.code });
+  await rooms.handle({ op: 'start', code: a.code, token: a.token });
+  assert.equal(saves.at(-1), 7200);
+  const key = 'LUDO-' + a.code, row = rooms.store.rows.get(key); row.payload.match.players[0].tokens[0] = 97; face = 3;
+  await rooms.handle({ op: 'roll', code: a.code, token: a.token }); await rooms.handle({ op: 'move', code: a.code, token: a.token, piece: 0 });
+  assert.equal(saves.at(-1), 600);
+});
