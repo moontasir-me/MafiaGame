@@ -90,7 +90,7 @@ function playing() {
   const g = s.g;
   const near = online ? online.me : 0;
   return `<div class="cr-table">${seat(1 - near)}<div class="cr-board-wrap"><canvas id="board" class="${near ? 'turned' : ''}" aria-label="ক্যারম বোর্ড"></canvas></div>${seat(near)}</div>
-  ${slider(g)}${meter(g)}<p class="cr-msg" role="status">${message(g)}</p>
+  ${meter(g)}<p class="cr-msg" role="status">${message(g)}</p>
   ${g.winner !== null ? `<section class="cr-over"><h2>${esc(nameOf(g.winner))} জিতলেন!</h2><p>${bn(score(g, 0))} — ${bn(score(g, 1))}</p>${online ? (online.host ? button('আবার খেলি', 'again', 'primary wide', 'play') : '<p class="ol-note">ঘর যিনি খুলেছেন তিনি আবার শুরু করতে পারবেন।</p>') + button('ঘর ছেড়ে দিন', 'leave', 'secondary wide', 'close') : button('আবার খেলি', 'again', 'primary wide', 'play') + button('ক্যারমের শুরুর পাতা', 'game-home', 'secondary wide', 'home')}</section>`
     : button('খেলা ছেড়ে দিন', 'quit', 'text wide', 'close')}`;
 }
