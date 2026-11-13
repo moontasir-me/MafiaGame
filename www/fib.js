@@ -12,8 +12,8 @@ const $ = q => document.querySelector(q), $$ = q => [...document.querySelectorAl
 const bn = n => (n < 0 ? '−' : '') + Math.abs(Number(n)).toLocaleString('bn-BD');
 const KEY = 'fib.v2', TIMES = [60, 90, 120], HEARTS = 3, LETTERS = ['ক', 'খ', 'গ', 'ঘ'], ART = 'assets/fib/spiral.svg';
 const MODES = {
-  timer: { name: 'সময়ের খেলা', note: 'ঘড়ি শেষ হওয়ার আগে যত পারেন। ঠিক +১, ভুল −১।', icon: 'clock' },
-  infinity: { name: 'অসীম খেলা', note: 'ঘড়ি নেই, তিনটা প্রাণ। ঠিক +১, ভুলে একটা প্রাণ যায়।', icon: 'heart' }
+  timer: { name: 'সময়ের খেলা', note: 'ঠিক +১ · ভুল −১' },
+  infinity: { name: 'অসীম খেলা', note: '৩টা প্রাণ · ঠিক +১' }
 };
 const math = t => esc(String(t)).replace(/(^|[\s(,=\[])-(?=\d)/g, '$1−');
 
@@ -38,23 +38,22 @@ function accountChips() {
   return list.length && s.players.length < 8 ? `<div class="fib-accs"><span>আগের অ্যাকাউন্ট:</span>${list.map(a => `<button type="button" class="fib-acc" data-action="add-acc" data-id="${a.id}">${playerDot(a.name)}${esc(a.name)}</button>`).join('')}</div>` : '';
 }
 function setup() {
-  return `<header class="fib-head">${SPIRAL}<div><h1>Fibonacci</h1><p>ছোট ছোট অঙ্কের প্রশ্ন। ৯ বছর থেকে বিজ্ঞানের স্নাতক পর্যন্ত, যে যার স্তর বেছে নিন। প্রশ্ন প্রতিবার নতুন করে বানানো হয়।</p></div></header>
+  return `<header class="fib-head">${SPIRAL}<div><h1>Fibonacci</h1><p>অঙ্কের দ্রুত প্রশ্ন, চার স্তরে</p></div></header>
   <ol class="fib-steps">
-  <li><h2><i>১</i>কীভাবে খেলবেন?</h2><div class="fib-modes" role="radiogroup" aria-label="খেলার ধরন">${Object.entries(MODES).map(([k, m]) => `<button type="button" role="radio" aria-checked="${s.mode === k}" class="${s.mode === k ? 'is-on' : ''}" data-action="mode" data-id="${k}">${MODE_ART[k]}<b>${m.name}</b><small>${m.note}</small></button>`).join('')}</div>
+  <li><h2><i>১</i>ধরন</h2><div class="fib-modes" role="radiogroup" aria-label="খেলার ধরন">${Object.entries(MODES).map(([k, m]) => `<button type="button" role="radio" aria-checked="${s.mode === k}" class="${s.mode === k ? 'is-on' : ''}" data-action="mode" data-id="${k}">${MODE_ART[k]}<b>${m.name}</b><small>${m.note}</small></button>`).join('')}</div>
    ${s.mode === 'timer' ? `<div class="fib-count" role="radiogroup" aria-label="কত সময়"><span>সময়</span>${TIMES.map(n => `<button type="button" role="radio" aria-checked="${s.seconds === n}" class="${s.seconds === n ? 'is-on' : ''}" data-action="time" data-id="${n}">${bn(n)} সেকেন্ড</button>`).join('')}</div>` : ''}</li>
-  <li><h2><i>২</i>কোন স্তর?</h2><div class="fib-levels" role="radiogroup" aria-label="স্তর">${LEVELS.map(l => `<button type="button" role="radio" aria-checked="${s.level === l.id}" class="fib-level l${l.id} ${s.level === l.id ? 'is-on' : ''}" data-action="level" data-id="${l.id}"><span class="fib-num">${bn(l.id)}</span><b>${l.name}</b><small>${l.age}</small><em>${l.note}</em></button>`).join('')}</div></li>
-  <li id="players"><h2><i>৩</i>কারা খেলছেন? <small>${bn(s.players.length)} / ৮</small></h2>
+  <li><h2><i>২</i>স্তর</h2><div class="fib-levels" role="radiogroup" aria-label="স্তর">${LEVELS.map(l => `<button type="button" role="radio" aria-checked="${s.level === l.id}" class="fib-level l${l.id} ${s.level === l.id ? 'is-on' : ''}" data-action="level" data-id="${l.id}"><span class="fib-num">${bn(l.id)}</span><b>${l.name}</b><small>${l.age}</small></button>`).join('')}</div></li>
+  <li id="players"><h2><i>৩</i>খেলোয়াড় <small>${bn(s.players.length)} / ৮</small></h2>
   ${s.players.length < 8 ? `<form id="name-form" class="name-form"><input id="player-name" maxlength="20" autocomplete="off" placeholder="নাম লিখুন" aria-label="খেলোয়াড়ের নাম"><button class="btn primary" type="submit">${icon('plus')}যোগ</button></form>` : ''}
   ${accountChips()}
-  ${s.players.length ? `<div class="fib-list">${s.players.map((p, i) => `<div class="fib-row" style="--dot:${playerColour(p.name, i)}">${playerDot(p.name, i)}<b>${esc(p.name)}</b><button type="button" class="icon-btn" data-action="remove" data-id="${p.id}" aria-label="${esc(p.name)} বাদ দিন">${icon('close')}</button></div>`).join('')}</div><p class="fib-hint">সবাই একে একে পুরো একটা দফা খেলবেন, তারপর ফোন পরের জনকে দেবেন।</p>` : '<p class="fib-hint">একা খেললেও নাম দিন। নাম দিলেই অ্যাকাউন্ট খুলে যায়, পয়েন্ট র‍্যাঙ্কিংয়ে জমে।</p>'}</li></ol>
-  <div class="fib-go">${button(s.players.length ? 'শুরু করুন' : 'আগে একটা নাম দিন', 'start', 'primary wide', 'play', s.players.length ? '' : 'disabled')}<small>${MODES[s.mode].name}${s.mode === 'timer' ? ' · ' + bn(s.seconds) + ' সেকেন্ড' : ''} · স্তর ${bn(s.level)} ${lv().name}</small></div>`;
+  ${s.players.length ? `<div class="fib-list">${s.players.map((p, i) => `<div class="fib-row" style="--dot:${playerColour(p.name, i)}">${playerDot(p.name, i)}<b>${esc(p.name)}</b><button type="button" class="icon-btn" data-action="remove" data-id="${p.id}" aria-label="${esc(p.name)} বাদ দিন">${icon('close')}</button></div>`).join('')}</div>` : ''}</li></ol>
+  <div class="fib-go">${button(s.players.length ? 'শুরু করুন' : 'আগে একটা নাম দিন', 'start', 'primary wide', 'play', s.players.length ? '' : 'disabled')}</div>`;
 }
 
 function handover() {
   const p = me(), i = s.cur;
   return `<section class="fib-ready" style="--dot:${playerColour(p.name, i)}">${playerDot(p.name, i)}<span class="eyebrow">${s.players.length > 1 ? `খেলোয়াড় ${bn(i + 1)}/${bn(s.players.length)}` : MODES[s.mode].name}</span><h1>${esc(p.name)}-এর পালা</h1>
-  <p>${s.mode === 'timer' ? `${bn(s.seconds)} সেকেন্ডে যত পারেন ঠিক উত্তর দিন। ঠিক +১, ভুল −১।` : `তিনটা প্রাণ ${heartRow(HEARTS)}। ঠিক +১, ভুলে একটা প্রাণ যায়। ঘড়ি নেই, ভেবেচিন্তে উত্তর দিন।`}</p>
-  <small>স্তর ${bn(s.level)} · ${lv().name} · ${lv().age}</small>${button('প্রস্তুত, শুরু!', 'go', 'primary wide', 'play')}</section>
+  <p>${s.mode === 'timer' ? `${bn(s.seconds)} সেকেন্ড · ${MODES.timer.note}` : `${heartRow(HEARTS)} · ঠিক +১`}</p>${button('শুরু!', 'go', 'primary wide', 'play')}</section>
   ${s.cur ? `<section class="rank-section"><h2>এ পর্যন্ত</h2>${rankTable(rows().filter(r => r.done), labels)}</section>` : ''}`;
 }
 
@@ -64,9 +63,10 @@ function playing() {
     ? `<div class="fib-clock ${n <= 10 ? 'is-urgent' : ''}" role="timer" aria-label="বাকি সময়"><svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="19" class="track"/><circle cx="22" cy="22" r="19" class="ring" id="timer-ring" style="stroke-dashoffset:${119.4 * (1 - n / s.seconds)}"/></svg><span id="timer-clock">${clockText(n)}</span></div>`
     : heartRow(s.hearts);
   return `<div class="fib-bar" style="--dot:${playerColour(p.name, i)}">${playerDot(p.name, i)}<span><b>${esc(p.name)}</b><small>${MODES[s.mode].name} · স্তর ${bn(s.level)}</small></span><span class="fib-score" aria-label="পয়েন্ট"><b>${bn(p.score)}</b><small>পয়েন্ট</small></span>${status}</div>
-  <section class="fib-card ${done ? (right ? 'is-right' : 'is-wrong') : ''}">${SPIRAL}<small class="fib-qn">প্রশ্ন ${bn((p.right || 0) + (p.wrong || 0) + (done ? 0 : 1))}</small><p class="fib-q">${math(c.q)}</p></section>
+  <section class="fib-card ${done ? (right ? 'is-right' : 'is-wrong') : ''}">${SPIRAL}<small class="fib-qn">প্রশ্ন ${bn((p.right || 0) + (p.wrong || 0) + (done ? 0 : 1))}</small><p class="fib-q">${math(c.q)}</p>
+  ${done ? `<div class="fib-verdict ${right ? 'right' : 'wrong'}" role="status">${right ? '✓ ঠিক! +১' : `✗ ভুল${s.mode === 'timer' ? ' · −১' : ' · একটা প্রাণ গেল'}<span>ঠিক উত্তর: <b>${math(c.a)}</b></span><small>${math(c.why)}</small>`}</div>` : ''}</section>
   <div class="fib-options">${c.options.map((o, k) => `<button type="button" class="fib-opt ${done && o === c.a ? 'is-answer' : ''} ${done && k === s.picked && o !== c.a ? 'is-miss' : ''}" data-action="pick" data-id="${k}" ${done ? 'disabled' : ''}><i>${LETTERS[k]}</i><span>${math(o)}</span></button>`).join('')}</div>
-  ${done ? `<div class="fib-why ${right ? 'right' : 'wrong'}" role="status"><b>${right ? 'ঠিক! +১' : s.mode === 'timer' ? 'ভুল, −১।' : 'ভুল, একটা প্রাণ গেল।'}</b> উত্তর ${math(c.a)}। ${right ? '' : math(c.why)}</div>${s.mode === 'infinity' && !right ? button(s.hearts ? 'পরের প্রশ্ন' : 'দফা শেষ', 'next', 'primary wide', 'arrow') : ''}` : ''}
+  ${done && !right ? button(s.mode === 'infinity' && !s.hearts ? 'দফা শেষ' : 'পরের প্রশ্ন', 'next', 'primary wide fib-next', 'arrow') : ''}
   ${button('দফা শেষ করুন', 'stop', 'text wide fib-stop', 'close')}`;
 }
 
@@ -80,12 +80,10 @@ function summary() {
 }
 function rules() {
   return `${pageHead('নিয়ম', 'Fibonacci', '')}<ol class="plain-rules">
-  <li>নাম দিয়ে বা আগের অ্যাকাউন্ট থেকে খেলোয়াড় যোগ করুন। একা বা কয়েকজন মিলে খেলা যায়; সবাই একে একে নিজের দফা খেলেন।</li>
-  <li>স্তর: ১ অঙ্কুর (৯–১২ বছর), ২ পাতা (৭ম–১০ম শ্রেণি), ৩ শাখা (একাদশ–দ্বাদশ), ৪ মহীরুহ (বিজ্ঞানের স্নাতক)।</li>
-  <li><b>সময়ের খেলা:</b> ৬০, ৯০ বা ১২০ সেকেন্ডে যত বেশি প্রশ্নের উত্তর দিতে পারেন। প্রতিটা ঠিক উত্তরে +১, প্রতিটা ভুলে −১।</li>
-  <li><b>অসীম খেলা:</b> ঘড়ি নেই, তিনটা প্রাণ। প্রতিটা ঠিক উত্তরে +১। ভুলে পয়েন্ট কাটে না, কিন্তু একটা প্রাণ যায়। তিনটা প্রাণ গেলে দফা শেষ।</li>
-  <li>ভুল উত্তরের পর ঠিক উত্তর আর ছোট করে কীভাবে হলো দেখানো হয়।</li>
-  <li>সবার দফা শেষ হলে ফল র‍্যাঙ্কিংয়ে সেভ হয়।</li></ol>`;
+  <li><b>সময়ের খেলা:</b> সময় শেষের আগে যত পারেন। ঠিক +১, ভুল −১।</li>
+  <li><b>অসীম খেলা:</b> ৩টা প্রাণ। ঠিক +১, ভুলে একটা প্রাণ যায়।</li>
+  <li>কয়েকজন খেললে একে একে নিজের দফা খেলুন।</li>
+  <li>স্তর ১ (৯–১২ বছর) থেকে স্তর ৪ (স্নাতক)।</li></ol>`;
 }
 function ranking() {
   const list = readHistory(), all = overallRanking(list, 'fib').map(r => ({ name: r.name, score: r.points, note: bn(r.matches) + 'টি খেলা', history: r.recent.map(h => ({ won: h.won, img: h.img || ART, label: h.label || '' })) }));
@@ -132,11 +130,11 @@ function answer(k) {
   s.picked = k;
   if (ok) { p.score++; p.right++; } else { p.wrong++; if (s.mode === 'timer') p.score--; else s.hearts--; }
   p.history = [{ won: ok, img: ART, label: `স্তর ${bn(s.level)} · ${ok ? 'ঠিক' : 'ভুল'}` }, ...p.history].slice(0, 5);
-  save(); sound(ok ? 'win' : 'wrong'); render();
-  // Timer mode keeps moving; infinity waits on a wrong answer so the working can be read.
+  save(); render(); sound(ok ? 'win' : 'wrong');
+  // A right answer moves on by itself; a wrong one waits on "পরের প্রশ্ন" so the right answer can be read.
   clearTimeout(advanceTimer);
-  if (s.mode === 'timer') advanceTimer = setTimeout(nextOrEnd, ok ? 550 : 1300);
-  else if (ok) advanceTimer = setTimeout(nextOrEnd, 650);
+  if (ok) advanceTimer = setTimeout(nextOrEnd, 600);
+  else $('.fib-next')?.focus({ preventScroll: true });
 }
 function nextOrEnd() {
   clearTimeout(advanceTimer);
@@ -209,7 +207,7 @@ addEventListener('keydown', e => {
 setInterval(() => {
   if (s.phase !== 'play' || s.mode !== 'timer' || !s.endsAt) return;
   const n = left();
-  if (n <= 0) { if (view === 'play' && s.picked === null) { toast('সময় শেষ!'); endRun(); } else if (view !== 'play') endRun(); return; }
+  if (n <= 0) { toast('সময় শেষ!'); return endRun(); }
   const c = $('#timer-clock'), ring = $('#timer-ring');
   if (c) c.textContent = clockText(n); if (ring) ring.style.strokeDashoffset = String(119.4 * (1 - n / s.seconds));
   $('.fib-clock')?.classList.toggle('is-urgent', n <= 10);

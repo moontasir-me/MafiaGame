@@ -43,7 +43,7 @@ const gearOf = p => p.cpu ? CPU[s.cpuLevel].gear : fitted(findAccount(p.name));
 function placePens(starter) {
   const n = s.players.length, pens = s.players.map((p, i) => {
     const t = Math.PI / 2 + (i / n) * Math.PI * 2, gear = gearOf(p);
-    return { pid: p.id, x: W / 2 + Math.cos(t) * 140, y: H / 2 + Math.sin(t) * 230, a: t + Math.PI / 2 + (Math.random() - .5) * .7, vx: 0, vy: 0, w: 0, out: false, gear, ...penStats(p.pen, gear) };
+    return { pid: p.id, x: W / 2 + Math.cos(t) * 120, y: H / 2 + Math.sin(t) * 150, a: t + Math.PI / 2 + (Math.random() - .5) * .7, vx: 0, vy: 0, w: 0, out: false, gear, ...penStats(p.pen, gear) };
   });
   s.round = { pens, turn: starter, out: [], moving: false };
 }

@@ -86,3 +86,17 @@
 .fib-ready .fib-hearts{font-size:18px;vertical-align:-2px}
 .fib-qn{position:relative;display:block;margin-bottom:8px;font-size:12px;color:#f3c55a;letter-spacing:.5px}
 .fib-stop{margin-top:14px;color:#9b2a21!important}
+/* Headings on the dark teal panels stay light (beats the shared heading colour rule). */
+:root[data-theme][data-universe=fib] :is(.fib-head h1,.fib-hero h1){color:#fff}
+.fib-verdict{position:relative;display:grid;gap:4px;margin-top:16px;padding:12px 14px;border-radius:14px;font-size:17px;font-weight:700;animation:kit-pop .3s both}
+.fib-verdict.right{background:#23845a;color:#fff}
+.fib-verdict.wrong{background:#fff;color:#9b2a21}
+.fib-verdict span{font-size:15px;font-weight:600;color:#14302e}.fib-verdict span b{font-size:20px;color:#23845a}
+.fib-verdict small{font-size:12.5px;font-weight:500;line-height:1.6;color:#55706b}
+.fib-next{margin-top:2px}
+.fib-steps .fib-levels{grid-template-columns:repeat(2,1fr);gap:8px}
+@media(min-width:1000px){.fib-steps .fib-levels{grid-template-columns:repeat(4,1fr)}}
+.fib-steps .fib-level{grid-template-columns:auto 1fr;align-items:center;column-gap:10px;row-gap:0;padding:10px 12px;transform:none}
+.fib-steps .fib-level .fib-num{grid-row:span 2;margin:0}
+.fib-steps .fib-level b{font-size:16px}
+.fib-modes button{padding:12px}

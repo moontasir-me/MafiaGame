@@ -33,12 +33,12 @@ export const nextPrice = (key, owned) => GEAR[key].price[owned] ?? null;
 /* What a pen weighs and how it grips with the add-ons fitted. */
 export function penStats(penKey, gear = {}) {
   const spec = PENS[penKey] || PENS.pinpoint, g = cleanGear(gear);
-  let m = spec.m, grip = spec.grip, L = spec.L, spin = 1, bounce = .3;
+  let m = spec.m, grip = spec.grip, L = spec.L, spin = 1, bounce = .75;
   m *= 1 + .08 * g.gripper; grip *= 1 + .22 * g.gripper;
   if (g.head) m *= 1.35;
   if (g.back) { L += 24; m *= 1.12; }
   if (g.tape) { spin = 2; grip *= 1.06; }
-  if (g.rubber) bounce = .62;
+  if (g.rubber) bounce = .95;
   if (g.clip) { m *= 1.1; grip *= 1.08; }
   return { L, m, grip, spin, bounce, I: m * L * L / 12 };
 }

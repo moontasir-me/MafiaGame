@@ -1,11 +1,12 @@
 /* কলম যুদ্ধ physics: pens are capsules sliding on a rough wooden bench.
    Grip has three parts, so a pen stops like a real pen on wood instead of skating:
-   - sliding friction (a steady brake) plus a speed drag, both scaled by the pen's grip;
+   - sliding friction (a steady brake, much stronger once a pen is slow) plus a speed drag, all scaled by the pen's grip;
    - spin friction, so a clipped pen turns a little and then stops turning;
    - static grip: a resting pen soaks up a light knock and only moves when it is hit hard. */
 
-export const W = 480, H = 780, R = 7, POWER = 1700;
-const SLIDE = 1400, DRAG = 0.8, SPIN = 34, SPIN_DRAG = 2.2, HOLD = 60, HOLD_SPIN = 2.4, MAX_SPIN = 18;
+export const W = 480, H = 780, R = 7, POWER = 1500;
+const STICK = 5000, STICK_BELOW = 260;
+const SLIDE = 2600, DRAG = 0.8, SPIN = 34, SPIN_DRAG = 2.2, HOLD = 50, HOLD_SPIN = 2.4, MAX_SPIN = 18;
 
 export const ends = p => { const c = Math.cos(p.a) * p.L / 2, d = Math.sin(p.a) * p.L / 2; return [p.x - c, p.y - d, p.x + c, p.y + d]; };
 
@@ -50,7 +51,8 @@ export function step(r, dt, on) {
   const live = r.pens.filter(p => !p.out);
   for (const p of r.pens) {
     if (p.out) { p.fall = Math.min(1, (p.fall || 0) + dt * 2.6); p.x += p.vx * dt * .4; p.y += p.vy * dt * .4; p.a += p.w * dt * .5; continue; }
-    const v = Math.hypot(p.vx, p.vy), brake = (SLIDE * p.grip + DRAG * p.grip * v) * dt;
+    // Slow pens bite into the wood (STICK), so a slide ends crisply instead of gliding to a stop.
+    const v = Math.hypot(p.vx, p.vy), brake = ((SLIDE + STICK * Math.max(0, 1 - v / STICK_BELOW)) * p.grip + DRAG * p.grip * v) * dt;
     if (v <= brake) { p.vx = p.vy = 0; } else { p.vx *= (v - brake) / v; p.vy *= (v - brake) / v; }
     const spinBrake = (SPIN * p.grip * p.spin + SPIN_DRAG * p.spin * Math.abs(p.w)) * dt;
     p.w = Math.abs(p.w) <= spinBrake ? 0 : p.w - Math.sign(p.w) * spinBrake;
