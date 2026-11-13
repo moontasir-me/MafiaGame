@@ -26,6 +26,23 @@ function paintLight() { document.documentElement.dataset.light = light(); docume
 document.querySelectorAll('[data-light-set]').forEach(b => b.onclick = () => { try { localStorage.setItem('shitolpati.light', b.dataset.lightSet); } catch { } paintLight(); });
 paintLight();
 
+/* Offline: every game, on one phone. Online: only games that have an online room, opened in their online version. */
+const playOnline = () => { try { return localStorage.getItem('shitolpati.online') === '1'; } catch { return false; } };
+function paintPlay() {
+  const on = playOnline();
+  document.querySelectorAll('[data-play-set]').forEach(b => { const me = (b.dataset.playSet === 'online') === on; b.classList.toggle('is-on', me); b.setAttribute('aria-checked', me); });
+  document.querySelectorAll('.game-tile').forEach(a => {
+    const ok = !on || a.dataset.online;
+    a.classList.toggle('is-off', !ok); a.toggleAttribute('aria-disabled', !ok); a.tabIndex = ok ? 0 : -1;
+    if (a.dataset.offline) a.href = on ? a.dataset.online : a.dataset.offline;
+    a.querySelector('.tile-badge')?.remove();
+    if (on) a.querySelector('.tile-copy').insertAdjacentHTML('beforeend', `<span class="tile-badge">${ok ? 'অনলাইন' : 'শুধু অফলাইনে'}</span>`);
+  });
+}
+document.querySelectorAll('[data-play-set]').forEach(b => b.onclick = () => { try { localStorage.setItem('shitolpati.online', b.dataset.playSet === 'online' ? '1' : '0'); } catch { } paintPlay(); });
+document.querySelectorAll('.game-tile').forEach(a => a.addEventListener('click', e => { if (a.classList.contains('is-off')) e.preventDefault(); }));
+paintPlay();
+
 $('#profile-button').onclick = openProfile;
 paintProfile();
 if ('serviceWorker' in navigator && !window.Android) navigator.serviceWorker.register('./sw.js').catch(() => {});

@@ -4,6 +4,13 @@ import { numberPick, bindNumberPick, esc, icon, appShell, pageHead, rankTable, f
 import { W, H, R, POWER, ends, step, resting, push, simulate } from './pen-physics.mjs';
 import { PENS, PRO_PENS, GEAR, GEAR_KEYS, penStats, ratings, nextPrice } from './pen-gear.mjs';
 import { readAccounts, ensureAccount, findAccount, addCoins, buyGear, toggleGear, fitted } from './accounts.mjs';
+import { onlineEntry, bindOnlineEntry, onlineLobby, bindLobby, tableApi, isOnlineMode, onlineName, ONLINE_ERRORS } from './online-ui.mjs';
+// The home page's Online/Offline switch decides which version opens.
+const ONLINE = isOnlineMode() || new URLSearchParams(location.search).has('online');
+/* Online: the shooter's phone runs the physics and shares the result; the others replay the same flick, then take that result.
+   online = {code, token, me, host, members, started, seq} */
+let online = null, poll = 0, shooting = false, replay = null, myPen = 'pinpoint';
+try { myPen = localStorage.getItem('pen.online.pen') || 'pinpoint'; } catch { }
 
 /* কলম যুদ্ধ: the school-bench pen fight. Players take turns flicking their own pen;
    a pen whose middle goes past the edge of the bench has fallen. Last pen on the bench wins the round.
@@ -34,7 +41,7 @@ function load() {
   } catch { }
   return fresh();
 }
-function save() { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch { } }
+function save() { if (online) return; try { localStorage.setItem(KEY, JSON.stringify(s)); } catch { } }
 const byId = id => s.players.find(p => p.id === id);
 const gearOf = p => p.cpu ? CPU[s.cpuLevel].gear : fitted(findAccount(p.name));
 
@@ -59,6 +66,7 @@ const effects = {
 };
 
 function flick(p, cx, cy, jx, jy) {
+  if (online) { shooting = { pid: p.pid, cx, cy, jx, jy }; }
   push(p, cx, cy, jx, jy); s.round.moving = true;
   sound('notice'); loop();
 }
@@ -75,7 +83,7 @@ function settle() {
   r.turn = order[i]; save(); render(); cpuTurn();
   if (fresh.length) toast(fresh.map(id => byId(id).name).join(' ও ') + ' বেঞ্চ থেকে পড়ে গেছে।' + (gain && !shooter.cpu ? ` ${shooter.name} +${bn(gain)} কয়েন।` : ''));
 }
-function coins(p, n) { if (!p.cpu && addCoins(p.name, n)) setTimeout(() => sound('coin'), 250); }
+function coins(p, n) { if (online && p.id !== 'p' + online.me) return; if (!p.cpu && addCoins(p.name, n)) setTimeout(() => sound('coin'), 250); }
 
 /* Computer opponent: tries many flicks on a copy of the bench, keeps the best, then shoots with some human error. */
 function plan() {
@@ -218,7 +226,7 @@ function loop() {
     for (const e of fx) { e.life -= dt; e.x += e.vx * dt; e.y += e.vy * dt; e.vx *= .92; e.vy *= .92; }
     fx = fx.filter(e => e.life > 0); shake = shake > .3 ? shake * Math.pow(.02, dt) : 0;
     bannerUp();
-    if (s.round?.moving) { for (let i = 0; i < n && !resting(s.round); i++) step(s.round, dt / n, effects); if (resting(s.round)) { draw(); settle(); if (gen !== loopGen) return; } }
+    if (s.round?.moving) { for (let i = 0; i < n && !resting(s.round); i++) step(s.round, dt / n, effects); if (resting(s.round)) { draw(); if (replay) { const d = replay; replay = null; applyData(d); render(); return; } settle(); if (shooting) { const shot = shooting; shooting = false; sync(shot); } if (gen !== loopGen) return; } }
     if (!$('#bench')) return;
     draw(); if (s.round?.moving || aim || fx.length || shake || banner) raf = next(tick);
   };
@@ -235,7 +243,7 @@ function bindBench() {
   const c = $('#bench'); if (!c) return; sizeBench();
   const toWorld = e => { const b = c.getBoundingClientRect(); return [(e.clientX - b.left) / b.width * W, (e.clientY - b.top) / b.height * H]; };
   c.onpointerdown = e => {
-    if (s.round.moving || byId(s.round.turn)?.cpu) return; const p = s.round.pens.find(q => q.pid === s.round.turn && !q.out); if (!p) return;
+    if (s.round.moving || byId(s.round.turn)?.cpu || (online && s.round.turn !== 'p' + online.me)) return; const p = s.round.pens.find(q => q.pid === s.round.turn && !q.out); if (!p) return;
     const [x, y] = toWorld(e), [a0, a1, b0, b1] = ends(p), ux = b0 - a0, uy = b1 - a1, t = Math.max(0, Math.min(1, ((x - a0) * ux + (y - a1) * uy) / (ux * ux + uy * uy))), cx = a0 + ux * t, cy = a1 + uy * t;
     if (Math.hypot(x - cx, y - cy) > 34) return toast(`${byId(p.pid).name}-এর কলম ধরে টেনে ছাড়ুন।`);
     aim = { pen: p, cx, cy, x, y, sx: x, sy: y }; c.setPointerCapture(e.pointerId); loop();
@@ -278,7 +286,14 @@ function accountChips() {
   const here = new Set(s.players.map(p => p.name.toLocaleLowerCase())), list = readAccounts().filter(a => !here.has(a.name.toLocaleLowerCase()));
   return list.length ? `<div class="acc-chips"><span>আগের অ্যাকাউন্ট:</span>${list.map(a => `<button type="button" class="acc-chip" data-action="add-acc" data-id="${a.id}">${playerDot(a.name)}${esc(a.name)}<small>${bn(a.coins)}</small></button>`).join('')}</div>` : '';
 }
+function onlineSetup() {
+  const k = PEN_KEYS.indexOf(myPen);
+  return `<header class="pen-head"><img src="assets/pen/cover.svg" alt="" width="640" height="420"><div><h1>কলম যুদ্ধ</h1><p>অনলাইন: ২–৪ জন, যার যার ফোনে</p></div></header>
+  <section class="ol-card"><div class="pc-pen"><button type="button" class="pc-arrow" data-action="my-pen" data-id="-1" aria-label="আগের কলম">‹</button><img src="${penImg(myPen)}" alt="" width="64" height="64"><span><b>${esc(PENS[myPen].name)}</b><small>আপনার কলম · ${bn(k + 1)}/${bn(PEN_KEYS.length)}</small>${statLine(myPen, gearOf({ name: onlineName() }))}</span><button type="button" class="pc-arrow" data-action="my-pen" data-id="1" aria-label="পরের কলম">›</button></div></section>
+  ${onlineEntry({ len: 5 })}`;
+}
 function setup() {
+  if (ONLINE) return online ? onlineLobby({ code: online.code, members: online.members, me: online.me, host: online.host, min: 2, max: 4, title: 'কলম যুদ্ধ · অনলাইন ঘর' }) : onlineSetup();
   const need = vsCpu() ? 1 : 2, room = vsCpu() ? humans().length < 1 : humans().length < 4, ready = humans().length >= need;
   return `<header class="pen-head"><img src="assets/pen/cover.svg" alt="" width="640" height="420"><div><h1>কলম যুদ্ধ</h1><p>বেঞ্চে কলম টোকা দিয়ে অন্যের কলম ফেলে দিন। শেষ পর্যন্ত যার কলম টিকে থাকে, রাউন্ড তার।</p></div></header>
   <ol class="pen-steps">
@@ -330,10 +345,10 @@ const table = () => rankTable(s.players.map(p => ({ name: p.name, score: p.score
 const labels = { caption: 'ম্যাচের ফল', rank: '#', player: 'খেলোয়াড় · শেষ পাঁচ রাউন্ড', points: 'পয়েন্ট', win: 'সবুজ: রাউন্ড জয়', loss: 'লাল: কলম পড়ে গেছে', order: 'নতুনটি বাঁ দিকে', empty: 'এখনও কোনো রাউন্ড শেষ হয়নি।', noGames: 'এখনও খেলেননি', number: bn };
 function roundOver() {
   const w = s.lastWinner && byId(s.lastWinner), done = s.set.rounds >= s.set.total;
-  return `${pageHead(`রাউন্ড ${bn(s.set.rounds)} শেষ`, w ? `${esc(w.name)}-এর কলম টিকে গেছে` : 'সব কলম পড়ে গেছে', w ? `${esc(PENS[w.pen].name)} বেঞ্চে শেষ পর্যন্ত ছিল। +২ পয়েন্ট${w.cpu ? '' : ', +২ কয়েন'}।` : 'এই রাউন্ডে কেউ জেতেনি।')}
+  return `${pageHead(s.phase === 'over' ? 'ম্যাচ শেষ' : `রাউন্ড ${bn(s.set.rounds)} শেষ`, w ? `${esc(w.name)}-এর কলম টিকে গেছে` : 'সব কলম পড়ে গেছে', w ? `${esc(PENS[w.pen].name)} বেঞ্চে শেষ পর্যন্ত ছিল। +২ পয়েন্ট${w.cpu ? '' : ', +২ কয়েন'}।` : 'এই রাউন্ডে কেউ জেতেনি।')}
   ${w ? `<div class="result-portrait win pen-winner"><img src="${penImg(w.pen)}" alt="" width="112" height="112"></div>` : ''}
   <section class="rank-section"><h2>ম্যাচের পয়েন্ট</h2>${table()}</section>
-  <div class="pen-actions">${done ? button('আরও এক রাউন্ড', 'more', 'secondary', 'plus') : button('পরের রাউন্ড', 'next', 'primary', 'arrow')}${button('ম্যাচ শেষ', 'end', done ? 'primary' : 'text', 'trophy')}</div>`;
+  ${online && s.phase === 'over' ? `<div class="pen-actions">${button('ঘর ছেড়ে দিন', 'leave', 'primary', 'close')}</div>` : online && !online.host ? '<p class="ol-note">ঘর যিনি খুলেছেন তিনি পরের রাউন্ড শুরু করবেন।</p>' : `<div class="pen-actions">${done ? button('আরও এক রাউন্ড', 'more', 'secondary', 'plus') : button('পরের রাউন্ড', 'next', 'primary', 'arrow')}${button('ম্যাচ শেষ', 'end', done ? 'primary' : 'text', 'trophy')}</div>`}`;
 }
 function rules() {
   return `${pageHead('নিয়ম', 'কলম যুদ্ধ', '')}<ol class="plain-rules">
@@ -360,7 +375,7 @@ const button = (label, action, cls, ic, extra = '') => `<button type="button" cl
 function screenKey() { return view + s.phase + (s.set?.rounds || 0); }
 function render() {
   const key = screenKey(), changed = key !== lastScreen; lastScreen = key;
-  const body = view === 'rules' ? rules() : view === 'ranking' ? ranking() : view === 'shop' ? shop() : s.phase === 'play' ? play() : s.phase === 'roundover' ? roundOver() : setup();
+  const body = view === 'rules' ? rules() : view === 'ranking' ? ranking() : view === 'shop' ? shop() : s.phase === 'play' ? play() : s.phase === 'roundover' || s.phase === 'over' ? roundOver() : setup();
   $('#app').innerHTML = appShell({ brand: 'কলম যুদ্ধ', brandSub: 'বেঞ্চের খেলা', brandIcon: 'edit', brandAction: 'tab-play', crumb: ({ rules: 'নিয়ম', ranking: 'র‍্যাঙ্কিং', shop: 'দোকান' })[view] || (s.phase === 'setup' ? 'কলম বাছাই' : `রাউন্ড ${bn(s.set.rounds + (s.phase === 'play' ? 1 : 0))}`), active: view, contentClass: 'game-content pen-content', labels: { back: 'সব খেলা', menu: 'মেনু', sections: 'খেলার অংশ' },
     tabs: [{ id: 'play', label: 'খেলা', icon: 'play', action: 'tab-play' }, { id: 'shop', label: 'দোকান', icon: 'spark', action: 'tab-shop' }, { id: 'rules', label: 'নিয়ম', icon: 'book', action: 'tab-rules' }, { id: 'ranking', label: 'র‍্যাঙ্কিং', icon: 'trophy', action: 'tab-ranking' }], body });
   $$('[data-action]').forEach(el => el.onclick = e => { e.preventDefault(); act(el.dataset.action, el.dataset.id); });
@@ -369,6 +384,8 @@ function render() {
     if (!name) return; addPlayer(name); $('#player-name')?.focus();
   });
   bindNumberPick(document, 'rounds', 1, 50, n => { s.rounds = n; save(); render(); });
+  if (view === 'play' && ONLINE && !online) bindOnlineEntry($('#screen'), { onCreate: name => enter({ op: 'create', name, pen: myPen }), onJoin: (name, code) => enter({ op: 'join', name, code, pen: myPen }) });
+  if (view === 'play' && online && !online.started) bindLobby($('#screen'), { code: online.code, game: 'কলম যুদ্ধ', onStart: () => send({ op: 'start' }), onLeave: () => leaveRoom() });
   if (view === 'shop') drawPreview();
   if (view === 'play' && s.phase === 'play') { bindBench(); if (s.round.moving || bannerUp() || fx.length) loop(); cpuTurn(); }
   if (changed) enterScreen($('#screen'));
@@ -400,6 +417,7 @@ async function act(action, id) {
     case 'pro': return toast('এই দামি কলমগুলো Pro সংস্করণে খোলা হবে।');
     case 'mode': setMode(id); save(); return render();
     case 'prev-pen': { const p = byId(id); p.pen = PEN_KEYS[(PEN_KEYS.indexOf(p.pen) + PEN_KEYS.length - 1) % PEN_KEYS.length]; save(); return render(); }
+    case 'leave': return leaveRoom();
     case 'game-home': clearTimeout(cpuTimer); view = 'play'; return transition();
     case 'cpu-level': s.cpuLevel = CPU[id] ? id : 'medium'; save(); return render();
     case 'add-acc': { const a = readAccounts().find(x => x.id === id); if (a) addPlayer(a.name); return; }
@@ -409,9 +427,11 @@ async function act(action, id) {
     case 'buy': try { buyGear(shopFor, id); sound('coin'); toast(GEAR[id].name + ' লাগানো হয়েছে।'); } catch (e) { toast(e.message === 'COINS' ? 'কয়েন কম। আরও লড়াই জিতে আসুন।' : 'এটা আর কেনা যাবে না।'); } return render();
     case 'wear': toggleGear(shopFor, id); return render();
     case 'start': if (humans().length < (vsCpu() ? 1 : 2)) return; s.players.forEach(p => { p.score = 0; p.history = []; }); s.set = { id: crypto.randomUUID(), total: s.rounds || ROUNDS, rounds: 0 }; return startRound();
-    case 'next': return startRound();
-    case 'more': s.set.total++; return startRound();
+    case 'my-pen': myPen = PEN_KEYS[(PEN_KEYS.indexOf(myPen) + Number(id) + PEN_KEYS.length) % PEN_KEYS.length]; try { localStorage.setItem('pen.online.pen', myPen); } catch { } return render();
+    case 'next': if (online && !online.host) return; startRound(); if (online) sync(null); return;
+    case 'more': if (online && !online.host) return; s.set.total++; startRound(); if (online) sync(null); return;
     case 'end': case 'new':
+      if (online) { if (!online.host) return leaveRoom(); if (!await confirm('ম্যাচ শেষ করবেন?', 'সবার ফোনে ফল দেখাবে।')) return; s.phase = 'over'; sync(null); return; }
       if (s.phase === 'setup') return;
       if (!await confirm('ম্যাচ শেষ করবেন?', 'ম্যাচের ফল র‍্যাঙ্কিংয়ে সেভ হবে, তারপর নতুন খেলা শুরু করা যাবে।')) return;
       if (s.set?.rounds) saveMatch({ id: s.set.id, game: 'pen', games: s.set.rounds, players: s.players.map(p => ({ name: p.name, points: p.score, recent: p.history || [] })) });
@@ -439,6 +459,60 @@ function openMenu() {
   $$('[data-menu]').forEach(el => el.onclick = () => { const a = el.dataset.menu; closeOverlay(); if (a === 'sound') { toggleSound(); openMenu(); } else act(a); });
 }
 addEventListener('keydown', e => { if (e.key === 'Escape' && $('#overlay').innerHTML) closeOverlay(); });
+
+/* ---------- Online ---------- */
+const pack = () => ({ players: s.players, round: s.round, set: s.set, phase: s.phase, lastWinner: s.lastWinner || null });
+function applyData(d) {
+  const was = s.phase; Object.assign(s, { players: d.players, round: d.round, set: d.set, phase: d.phase, lastWinner: d.lastWinner });
+  if (s.round) s.round.moving = false;
+  if (d.phase === 'over' && was !== 'over' && !online.saved) { online.saved = true; saveMatch({ id: s.set.id, game: 'pen', games: s.set.rounds, players: s.players.map(p => ({ name: p.name, points: p.score, recent: p.history || [] })) }); sound('win'); }
+  if (was !== d.phase) { if (d.phase === 'play') banner = { text: `রাউন্ড ${bn(s.set.rounds + 1)}`, sub: `প্রথম চাল: ${byId(s.round.turn).name}`, until: performance.now() + 1600 }; transition(); }
+}
+async function sync(shot) {
+  try { const v = await tableApi({ game: 'pen', op: 'sync', code: online.code, token: online.token, seq: online.seq, data: pack(), shot }); online.seq = v.match.seq; }
+  catch (e) { toast(ONLINE_ERRORS[e.message] || 'সংযোগে সমস্যা।'); }
+}
+function adopt(v) {
+  const first = !online?.started && v.started;
+  online = { ...online, code: v.code, token: v.token || online?.token, me: v.me, host: v.host, members: v.members, started: v.started };
+  try { sessionStorage.setItem('pen.online', JSON.stringify({ code: online.code, token: online.token })); } catch { }
+  const m = v.match; if (!m) return;
+  if (first) { online.seq = m.seq; online.saved = false; }
+  // The host deals the first round once everyone is in.
+  if (m.seq === 0 && !m.data) {
+    online.seq = 0;
+    if (online.host && !online.dealing) {
+      online.dealing = true;
+      s = { ...fresh(), mode: 'friends', players: v.members.map((name, i) => ({ id: 'p' + i, name, pen: m.pens[i] || 'pinpoint', score: 0, history: [] })), set: { id: crypto.randomUUID(), total: s.rounds || ROUNDS, rounds: 0 } };
+      placePens('p0'); s.phase = 'play'; banner = { text: 'রাউন্ড ১', sub: `প্রথম চাল: ${s.players[0].name}`, until: performance.now() + 1600 }; sync(null); transition();
+    }
+    return;
+  }
+  if (m.seq <= (online.seq ?? -1) && s.phase !== 'setup') return;
+  online.seq = m.seq;
+  const shot = m.shot;
+  if (shot && shot.by !== online.me && s.phase === 'play' && s.round && !s.round.moving && m.data.phase !== 'over') {
+    // Replay the flick from where this phone's pens are, then take the shooter's result.
+    const pen = s.round.pens.find(p => p.pid === shot.pid);
+    if (pen) { replay = m.data; push(pen, shot.cx, shot.cy, shot.jx, shot.jy); s.round.moving = true; sound('notice'); return loop(); }
+  }
+  if (shot && shot.by === online.me) return;
+  applyData(m.data); if (s.phase === 'play') render();
+}
+async function enter(body) {
+  try { online = null; adopt(await tableApi({ game: 'pen', ...body })); startPolling(); transition(); } catch (e) { online = null; toast(ONLINE_ERRORS[e.message] || 'সংযোগে সমস্যা, আবার চেষ্টা করুন।'); }
+}
+async function send(body) { try { adopt(await tableApi({ game: 'pen', code: online.code, token: online.token, ...body })); render(); } catch (e) { toast(ONLINE_ERRORS[e.message] || 'সংযোগে সমস্যা।'); } }
+function startPolling() {
+  clearInterval(poll);
+  poll = setInterval(async () => {
+    if (!online || document.hidden || shooting || replay || s.round?.moving) return;
+    try { const n = online.members.length, st = online.started; adopt(await tableApi({ game: 'pen', op: 'state', code: online.code, token: online.token })); if (online.members.length !== n || online.started !== st) render(); }
+    catch (e) { if (['ROOM_GONE', 'AUTH'].includes(e.message)) { clearInterval(poll); online = null; s = load(); toast('ঘরটা আর নেই।'); render(); } }
+  }, 1300);
+}
+async function leaveRoom() { if (!await confirm('ঘর ছেড়ে দেবেন?', '')) return; clearInterval(poll); online = null; try { sessionStorage.removeItem('pen.online'); } catch { } stop(); s = load(); view = 'play'; transition(); }
+if (ONLINE) { s = { ...fresh(), phase: 'setup' }; try { const saved = JSON.parse(sessionStorage.getItem('pen.online')); if (saved) tableApi({ game: 'pen', op: 'state', ...saved }).then(v => { online = { ...saved }; adopt(v); if (v.match?.data) applyData(v.match.data); startPolling(); render(); }).catch(() => { }); } catch { } }
 
 // A roll interrupted by a reload resumes from where the pens were last saved.
 if (s.round?.moving) { s.round.moving = false; s.round.pens.forEach(p => { p.vx = p.vy = p.w = 0; if (p.out) p.fall = 1; }); }

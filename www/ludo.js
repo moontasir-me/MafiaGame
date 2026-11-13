@@ -4,12 +4,15 @@ import { saveMatch, readHistory, overallRanking, hallOfFame } from './history.mj
 import { readAccounts, ensureAccount } from './accounts.mjs';
 import { esc, icon, appShell, pageHead, rankTable, fameTable, enterScreen, leaveScreen } from './ui-kit.mjs';
 import { $, $$, bn, toast, confirmBox, openMenu, SHELL_LABELS, TABS, BACK } from './lamp.mjs';
+import { onlineEntry, bindOnlineEntry, onlineLobby, bindLobby, tableApi, isOnlineMode, ONLINE_ERRORS } from './online-ui.mjs';
+// The home page's Online/Offline switch decides which version opens.
+const ONLINE = isOnlineMode() || new URLSearchParams(location.search).has('online');
 
 /* লুডু: the four-colour board or সাপ লুডু, on one phone, against the computer, or online with a join code. */
 const KEY = 'ludo.v1', ART = 'assets/ludo/cover.svg', CPU_NAMES = ['টুনটুনি', 'ময়না', 'শালিক'];
 const KINDS = { ludo: 'লুডু', snake: 'সাপ লুডু' };
-const MODES = { local: 'এক ফোনে', cpu: 'কম্পিউটার', online: 'অনলাইন' };
-const ERR = { ROOM_GONE: 'এই কোডের কোনো ঘর নেই।', FULL: 'ঘরে চারজন হয়ে গেছে।', STARTED: 'খেলা শুরু হয়ে গেছে।', NAME_TAKEN: 'এই নাম ঘরে আছে, অন্য নাম দিন।', NAME: 'নাম লিখুন।', TURN: 'এখন আপনার চাল নয়।', COUNTS: 'অন্তত দুজন লাগবে।', RATE_LIMIT: 'একটু পরে আবার চেষ্টা করুন।' };
+const MODES = { local: 'এক ফোনে', cpu: 'কম্পিউটার' };
+const ERR = { ...ONLINE_ERRORS, ROOM_GONE: 'এই কোডের কোনো ঘর নেই।', FULL: 'ঘরে চারজন হয়ে গেছে।', STARTED: 'খেলা শুরু হয়ে গেছে।', NAME_TAKEN: 'এই নাম ঘরে আছে, অন্য নাম দিন।', NAME: 'নাম লিখুন।', TURN: 'এখন আপনার চাল নয়।', COUNTS: 'অন্তত দুজন লাগবে।', RATE_LIMIT: 'একটু পরে আবার চেষ্টা করুন।' };
 
 function fresh() { return { v: 1, kind: 'ludo', mode: 'local', count: 2, names: ['', '', '', ''], cpus: 1, level: 'medium', phase: 'setup', match: null, online: null, saved: false }; }
 let s = fresh(), view = 'play', lastScreen = '', busy = false, poll = 0, rolling = false;
@@ -17,7 +20,7 @@ try { const d = JSON.parse(localStorage.getItem(KEY)); if (d?.v === 1) s = { ...
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch { } };
 const button = (label, action, cls, ic, extra = '') => `<button type="button" class="btn ${cls}" data-action="${action}" ${extra}>${icon(ic)}${label}</button>`;
 const m = () => s.match;
-const online = () => s.mode === 'online' && s.online;
+const online = () => !!s.online;
 const myTurn = () => { const x = m(); if (!x || x.winner !== null) return false; if (online()) return x.turn === s.online.me; return !x.players[x.turn].cpu; };
 
 /* ---------- Setup ---------- */
@@ -29,6 +32,9 @@ function chips(n) {
 }
 const nameField = (i, ph) => `<label class="ludo-field"><span class="pawn ${['red', 'green', 'yellow', 'blue'][i]}"></span><input data-name="${i}" maxlength="20" autocomplete="off" placeholder="${ph}" value="${esc(s.names[i])}"></label>`;
 function setup() {
+  if (ONLINE) return `<header class="ludo-head"><div class="ludo-dice-art">${diceFace(5)}${diceFace(3)}</div><div><h1>লুডু</h1><p>অনলাইন: বন্ধুরা নিজের ফোন থেকে</p></div></header>
+  <section class="ludo-panel"><h2>কোন লুডু</h2>${seg('kind', KINDS, s.kind)}</section>${onlineEntry({ len: 5 })}`;
+  if (s.mode === 'online') s.mode = 'local';
   const n = s.mode === 'local' ? s.count : 1;
   return `<header class="ludo-head"><div class="ludo-dice-art">${diceFace(5)}${diceFace(3)}</div><div><h1>লুডু</h1><p>ছক্কা উঠলে ঘুঁটি বের হবে।</p></div></header>
   <section class="ludo-panel"><h2>কোন লুডু</h2>${seg('kind', KINDS, s.kind)}</section>
@@ -36,17 +42,9 @@ function setup() {
   ${s.mode === 'local' ? `<div class="ludo-count"><span>কয়জন</span>${seg('count', { 2: '২', 3: '৩', 4: '৪' }, String(s.count))}</div>` : ''}
   ${s.mode === 'cpu' ? `<div class="ludo-count"><span>কম্পিউটার কয়টা</span>${seg('cpus', { 1: '১', 2: '২', 3: '৩' }, String(s.cpus))}</div><div class="ludo-count"><span>কেমন খেলবে</span>${seg('level', CPU_LEVELS, s.level)}</div>` : ''}</section>
   <section class="ludo-panel"><h2>${n > 1 ? 'নাম' : 'আপনার নাম'}</h2>${Array.from({ length: n }, (_, i) => nameField(i, n > 1 ? `খেলোয়াড় ${bn(i + 1)}` : 'নাম')).join('')}${chips(n)}</section>
-  ${s.mode === 'online' ? `<section class="ludo-panel"><div class="ludo-online">${button('নতুন ঘর খুলুন', 'create', 'primary', 'plus')}<div class="join-row"><input id="join-code" maxlength="5" autocomplete="off" autocapitalize="characters" placeholder="কোড" aria-label="ঘরের কোড">${button('যোগ দিন', 'join', 'secondary', 'arrow')}</div></div></section>`
-    : button('খেলা শুরু', 'start', 'primary wide', 'play')}`;
+  ${button('খেলা শুরু', 'start', 'primary wide', 'play')}`;
 }
-function lobby() {
-  const o = s.online;
-  return `<section class="ludo-lobby"><span class="eyebrow">${KINDS[o.kind]} · অনলাইন ঘর</span><p>বন্ধুদের এই কোড দিন</p><div class="room-code" aria-label="ঘরের কোড">${o.code.split('').map(c => `<b>${c}</b>`).join('')}</div>
-  <button type="button" class="btn text" data-action="share">${icon('arrow')}কোড শেয়ার করুন</button>
-  <ul class="lobby-list">${o.members.map((n, i) => `<li><span class="pawn ${['red', 'green', 'yellow', 'blue'][i]}"></span>${esc(n)}${i === 0 ? '<small>ঘর খুলেছেন</small>' : ''}${i === o.me ? '<small>আপনি</small>' : ''}</li>`).join('')}</ul>
-  ${o.host ? button(o.members.length < 2 ? 'আরেকজনের অপেক্ষা…' : 'খেলা শুরু', 'online-start', 'primary wide', 'play', o.members.length < 2 ? 'disabled' : '') : '<p class="ludo-wait">ঘর যিনি খুলেছেন তিনি শুরু করবেন…</p>'}
-  ${button('ঘর ছেড়ে দিন', 'leave', 'text wide', 'close')}</section>`;
-}
+function lobby() { const o = s.online; return onlineLobby({ code: o.code, members: o.members, me: o.me, host: o.host, min: 2, max: 4, title: KINDS[o.kind] + ' · অনলাইন ঘর' }); }
 
 /* ---------- Board ---------- */
 
@@ -136,18 +134,20 @@ function render() {
   $$('[data-action]').forEach(el => el.onclick = e => { e.preventDefault(); act(el.dataset.action, el.dataset.id); });
   $$('[data-piece]').forEach(el => el.onclick = () => play(Number(el.dataset.piece)));
   $$('[data-name]').forEach(el => el.oninput = () => { s.names[Number(el.dataset.name)] = el.value; save(); });
-  $('#join-code')?.addEventListener('input', e => { e.target.value = e.target.value.toUpperCase(); });
+  if (view === 'play' && s.phase === 'setup' && ONLINE) bindOnlineEntry($('#screen'), { onCreate: name => enter({ op: 'create', name, kind: s.kind }), onJoin: (name, code) => enter({ op: 'join', name, code }) });
+  if (view === 'play' && s.phase === 'lobby') bindLobby($('#screen'), { code: s.online.code, game: 'লুডু', onStart: () => act('online-start'), onLeave: () => act('leave') });
   if (changed) enterScreen($('#screen'));
 }
 const transition = () => leaveScreen($('#screen'), () => { render(); scrollTo({ top: 0, behavior: 'instant' }); });
 
 /* ---------- Play ---------- */
 const wait = ms => new Promise(r => setTimeout(r, ms));
-async function api(body) {
-  const res = await fetch('/api/ludo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-  const data = await res.json().catch(() => ({ error: 'NETWORK' }));
-  if (!res.ok || data.error) throw Error(data.error || 'NETWORK');
-  return data;
+const api = body => tableApi({ game: 'ludo', ...body });
+async function enter(body) {
+  if (busy) return; busy = true;
+  try { const v = await api(body); s.online = { token: v.token }; s.saved = false; adopt(v); startPolling(); transition(); }
+  catch (e) { toast(ERR[e.message] || 'সংযোগে সমস্যা, আবার চেষ্টা করুন।'); }
+  busy = false;
 }
 function adopt(v) {
   const before = s.match?.edition;
@@ -232,15 +232,6 @@ async function act(action, id) {
     }
     case 'again': s.match = newMatch(m().kind, m().players.map(p => ({ name: p.name, cpu: p.cpu }))); s.saved = false; save(); render(); return next();
     case 'roll': return doRoll();
-    case 'create': case 'join': {
-      const list = names(1); if (!list) return;
-      const code = $('#join-code')?.value.trim().toUpperCase();
-      if (action === 'join' && !/^[A-Z0-9]{5}$/.test(code || '')) return toast('৫ অক্ষরের কোড লিখুন।');
-      try {
-        busy = true; const v = await api(action === 'create' ? { op: 'create', name: list[0], kind: s.kind } : { op: 'join', name: list[0], code });
-        s.online = { token: v.token }; s.saved = false; adopt(v); busy = false; startPolling(); return transition();
-      } catch (e) { busy = false; return toast(ERR[e.message] || (e.message === 'ONLINE_NOT_CONFIGURED' ? 'অনলাইন খেলা এখন চালু নেই।' : 'সংযোগে সমস্যা, আবার চেষ্টা করুন।')); }
-    }
     case 'online-start': try { adopt(await api({ op: 'start', code: s.online.code, token: s.online.token })); render(); } catch (e) { toast(ERR[e.message] || 'সংযোগে সমস্যা।'); } return;
     case 'share': { const text = `শীতলপাটিতে লুডু খেলি! কোড: ${s.online.code}`; try { if (navigator.share) await navigator.share({ text, url: location.href.split('?')[0] }); else { await navigator.clipboard.writeText(text); toast('কোড কপি হয়েছে।'); } } catch { } return; }
     case 'leave': case 'quit':

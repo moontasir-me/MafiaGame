@@ -63,3 +63,28 @@ test('rooms: a finished ludo game keeps its room 10 minutes, a game in play 2 ho
   await rooms.handle({ op: 'roll', code: a.code, token: a.token }); await rooms.handle({ op: 'move', code: a.code, token: a.token, piece: 0 });
   assert.equal(saves.at(-1), 600);
 });
+
+test('online শতরঞ্জি: host is white, moves are checked, resign ends it', async () => {
+  const rooms = new LudoRooms(new MemoryLudoStore());
+  const a = await rooms.handle({ op: 'create', name: 'A', game: 'chess' }), b = await rooms.handle({ op: 'join', name: 'B', code: a.code, game: 'chess' });
+  await assert.rejects(rooms.handle({ op: 'join', name: 'C', code: a.code, game: 'chess' }), /FULL/);
+  await assert.rejects(rooms.handle({ op: 'join', name: 'D', code: a.code, game: 'ludo' }), /WRONG_GAME/);
+  await rooms.handle({ op: 'start', code: a.code, token: a.token });
+  await assert.rejects(rooms.handle({ op: 'move', code: a.code, token: b.token, move: { from: 12, to: 28 } }), /TURN/);
+  await assert.rejects(rooms.handle({ op: 'move', code: a.code, token: a.token, move: { from: 52, to: 28 } }), /ACTION/);
+  let v = await rooms.handle({ op: 'move', code: a.code, token: a.token, move: { from: 52, to: 36 } });
+  assert.equal(v.match.g.turn, 'b');
+  v = await rooms.handle({ op: 'resign', code: a.code, token: b.token });
+  assert.equal(v.match.winner, 'w');
+});
+test('online কলম যুদ্ধ: only the shooter (or host) may report, and stale reports are refused', async () => {
+  const rooms = new LudoRooms(new MemoryLudoStore());
+  const a = await rooms.handle({ op: 'create', name: 'A', game: 'pen', pen: 'iteen' }), b = await rooms.handle({ op: 'join', name: 'B', code: a.code, pen: 'econo' });
+  let v = await rooms.handle({ op: 'start', code: a.code, token: a.token });
+  assert.deepEqual(v.match.pens, ['iteen', 'econo']);
+  await assert.rejects(rooms.handle({ op: 'sync', code: a.code, token: b.token, seq: 0, data: { round: { turn: 'p0' } } }), /TURN/);
+  v = await rooms.handle({ op: 'sync', code: a.code, token: a.token, seq: 0, data: { phase: 'play', round: { turn: 'p1' } } });
+  await assert.rejects(rooms.handle({ op: 'sync', code: a.code, token: b.token, seq: 0, data: {} }), /STALE/);
+  v = await rooms.handle({ op: 'sync', code: a.code, token: b.token, seq: 1, data: { phase: 'play', round: { turn: 'p0' } }, shot: { pid: 'p1', cx: 1, cy: 2, jx: 3, jy: 4 } });
+  assert.equal(v.match.shot.by, 1); assert.equal(v.match.seq, 2);
+});

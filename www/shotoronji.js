@@ -3,6 +3,7 @@ import { sound } from './sound.mjs';
 import { saveMatch, readHistory, overallRanking, hallOfFame } from './history.mjs';
 import { readAccounts, ensureAccount } from './accounts.mjs';
 import { esc, icon, appShell, pageHead, rankTable, fameTable, enterScreen, leaveScreen } from './ui-kit.mjs';
+import { onlineEntry, bindOnlineEntry, onlineLobby, bindLobby, tableApi, isOnlineMode, ONLINE_ERRORS } from './online-ui.mjs';
 import { $, $$, bn, LANTERN, toast, confirmBox, chooseBox, openMenu, SHELL_LABELS, TABS, BACK } from './lamp.mjs';
 
 /* শতরঞ্জি: chess on one phone, against a friend or the computer. Win 3 points, draw 1. */
@@ -15,8 +16,12 @@ function fresh() { return { v: 1, phase: 'setup', mode: 'cpu', level: 'medium', 
 let s = fresh(), view = 'play', lastScreen = '', thinking = false;
 try { const d = JSON.parse(localStorage.getItem(KEY)); if (d?.v === 1) s = { ...fresh(), ...d, sel: -1 }; } catch { }
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify({ ...s, past: s.past.slice(-6) })); } catch { } };
-const nameOf = side => side === 'w' ? s.names[0] : (s.mode === 'cpu' ? `${CPU} (${LEVELS[s.level].name})` : s.names[1]);
-const cpuTurn = () => s.mode === 'cpu' && s.phase === 'play' && s.g.turn === 'b' && !s.end;
+const nameOf = side => online ? (online.members[side === 'w' ? 0 : 1] || '') : side === 'w' ? s.names[0] : (s.mode === 'cpu' ? `${CPU} (${LEVELS[s.level].name})` : s.names[1]);
+// The home page's Online/Offline switch decides which version opens.
+const ONLINE = isOnlineMode() || new URLSearchParams(location.search).has('online');
+let online = null, poll = 0; // {code, token, me, host, members, started}
+const mySide = () => online ? (online.me === 0 ? 'w' : 'b') : null;
+const cpuTurn = () => !online && s.mode === 'cpu' && s.phase === 'play' && s.g.turn === 'b' && !s.end;
 const button = (label, action, cls, ic, extra = '') => `<button type="button" class="btn ${cls}" data-action="${action}" ${extra}>${icon(ic)}${label}</button>`;
 const piece = p => `<span class="sq-piece ${colour(p)}" aria-hidden="true">${GLYPH[p.toLowerCase()]}︎</span>`;
 const sqName = sq => FILES[sq & 7] + bn(8 - (sq >> 3));
@@ -28,6 +33,7 @@ function chips() {
   return list.length ? `<div class="acc-mini"><span>অ্যাকাউন্ট থেকে</span>${list.map(a => `<button type="button" data-action="fill" data-id="${esc(a.name)}">+ ${esc(a.name)}</button>`).join('')}</div>` : '';
 }
 function setup() {
+  if (ONLINE) return `<header class="lamp-head"><div><h1>শতরঞ্জি</h1><p>অনলাইন: বন্ধু নিজের ফোন থেকে খেলবে। যিনি ঘর খোলেন তিনি সাদা।</p></div></header>${onlineEntry({ len: 5 })}`;
   return `<header class="lamp-head"><div><h1>শতরঞ্জি</h1><p>দাদুর আলমারি থেকে নামানো কাঠের ছক। এক দান হয়ে যাক।</p></div></header>
   <p class="grandpa-note"><svg viewBox="0 0 60 24" aria-hidden="true"><g fill="none" stroke="#b8893b" stroke-width="2"><circle cx="15" cy="13" r="9"/><circle cx="45" cy="13" r="9"/><path d="M24 12q6-5 12 0M6 10 1 6M54 10l5-4"/></g></svg>ছকের কোণে পিতলের পাত, ঘুঁটিগুলো হাতে হাতে ঘষে মসৃণ।</p>
   <section class="lamp-panel"><h2>কার সাথে</h2><div class="lamp-seg" role="radiogroup">${[['cpu', 'কম্পিউটার'], ['friends', 'বন্ধুর সাথে']].map(([k, l]) => `<button type="button" role="radio" aria-checked="${s.mode === k}" class="${s.mode === k ? 'is-on' : ''}" data-action="mode" data-id="${k}">${l}</button>`).join('')}</div>
@@ -53,9 +59,9 @@ function seat(side) {
 function board() {
   const g = s.g, targets = s.sel >= 0 ? legal(g).filter(m => m.from === s.sel).map(m => m.to) : [], king = inCheck(g) ? g.b.indexOf(g.turn === 'w' ? 'K' : 'k') : -1;
   let cells = '';
-  for (let sq = 0; sq < 64; sq++) {
-    const p = g.b[sq], dark = ((sq >> 3) + (sq & 7)) % 2 === 1, cls = [dark ? 'dk' : 'lt', sq === s.sel && 'sel', targets.includes(sq) && (p ? 'hit' : 'to'), g.last && (sq === g.last.from || sq === g.last.to) && 'last', sq === king && 'check'].filter(Boolean).join(' ');
-    cells += `<button type="button" class="sq ${cls}" data-sq="${sq}" aria-label="${sqName(sq)}${p ? ' ' + NAMES[p.toLowerCase()] : ''}">${p ? piece(p) : ''}${(sq & 7) === 0 ? `<small class="rk">${bn(8 - (sq >> 3))}</small>` : ''}${sq >> 3 === 7 ? `<small class="fl">${FILES[sq & 7]}</small>` : ''}</button>`;
+  for (let k = 0; k < 64; k++) {
+    const sq = mySide() === 'b' ? 63 - k : k, p = g.b[sq], dark = ((sq >> 3) + (sq & 7)) % 2 === 1, cls = [dark ? 'dk' : 'lt', sq === s.sel && 'sel', targets.includes(sq) && (p ? 'hit' : 'to'), g.last && (sq === g.last.from || sq === g.last.to) && 'last', sq === king && 'check'].filter(Boolean).join(' ');
+    cells += `<button type="button" class="sq ${cls}" data-sq="${sq}" aria-label="${sqName(sq)}${p ? ' ' + NAMES[p.toLowerCase()] : ''}">${p ? piece(p) : ''}${(sq & 7) === (mySide() === 'b' ? 7 : 0) ? `<small class="rk">${bn(8 - (sq >> 3))}</small>` : ''}${sq >> 3 === (mySide() === 'b' ? 0 : 7) ? `<small class="fl">${FILES[sq & 7]}</small>` : ''}</button>`;
   }
   return `<div class="board-wrap"><div class="board" role="grid" aria-label="শতরঞ্জির ছক">${cells}</div></div>`;
 }
@@ -63,8 +69,9 @@ function playing() {
   const check = !s.end && inCheck(s.g);
   const status = s.end ? `<p class="lamp-status end">${ENDS[s.end]}${s.winner ? ` ${esc(nameOf(s.winner))} জিতলেন।` : ''}</p>` : `<p class="lamp-status ${check ? 'check' : ''}">${check ? 'কিস্তি! ' : ''}${esc(nameOf(s.g.turn))}-এর চাল</p>`;
   const log = s.moves.length ? `<ol class="move-log">${s.moves.map((m, i) => `<li class="${i % 2 ? 'b' : 'w'}">${m}</li>`).join('')}</ol>` : '';
-  return `<div class="chess">${seat('b')}${board()}${seat('w')}</div>${status}
-  <div class="lamp-actions">${s.end ? button('আবার খেলি', 'again', 'primary wide', 'play') + button('শতরঞ্জির শুরুর পাতা', 'game-home', 'secondary wide', 'home')
+  const top = mySide() === 'b' ? 'w' : 'b';
+  return `<div class="chess">${seat(top)}${board()}${seat(top === 'w' ? 'b' : 'w')}</div>${status}
+  <div class="lamp-actions">${online ? (s.end ? (online.host ? button('আবার খেলি', 'again', 'primary wide', 'play') : '<p class="ol-note">ঘর যিনি খুলেছেন তিনি আবার শুরু করতে পারবেন।</p>') + button('ঘর ছেড়ে দিন', 'leave', 'secondary wide', 'close') : button('হার মানি', 'resign', 'text wide', 'close')) : s.end ? button('আবার খেলি', 'again', 'primary wide', 'play') + button('শতরঞ্জির শুরুর পাতা', 'game-home', 'secondary wide', 'home')
     : button('চাল ফেরত', 'undo', 'secondary', 'back', s.past.length ? '' : 'disabled') + (s.mode === 'friends' ? button('ড্র', 'draw', 'secondary', 'shield') : '') + button('হার মানি', 'resign', 'text', 'close')}</div>${log}`;
 }
 
@@ -88,12 +95,14 @@ function ranking() {
 
 function render() {
   const key = view + s.phase, changed = key !== lastScreen; lastScreen = key;
-  const body = view === 'rules' ? rules() : view === 'ranking' ? ranking() : s.phase === 'setup' ? setup() : playing();
+  const body = view === 'rules' ? rules() : view === 'ranking' ? ranking() : online && !online.started ? onlineLobby({ code: online.code, members: online.members, me: online.me, host: online.host, min: 2, max: 2, title: 'শতরঞ্জি · অনলাইন ঘর' }) : online ? playing() : s.phase === 'setup' || ONLINE ? setup() : playing();
   $('#app').innerHTML = appShell({ brand: 'শতরঞ্জি', brandSub: 'দাদুর ছক', brandIcon: 'grid', brandAction: 'tab-play', crumb: view === 'rules' ? 'নিয়ম' : view === 'ranking' ? 'র‍্যাঙ্কিং' : s.phase === 'setup' ? 'দান সাজান' : s.end ? 'দান শেষ' : 'দান চলছে', active: view, contentClass: 'game-content lamp-content', labels: SHELL_LABELS, backHref: BACK, tabs: TABS, body });
   $$('[data-action]').forEach(el => el.onclick = e => { e.preventDefault(); act(el.dataset.action, el.dataset.id); });
   $$('[data-sq]').forEach(el => el.onclick = () => tap(Number(el.dataset.sq)));
   $$('#name-w,#name-b').forEach((el, i) => el.oninput = () => { s.names[el.id === 'name-w' ? 0 : 1] = el.value; save(); });
   const log = $('.move-log'); if (log) log.scrollLeft = log.scrollWidth;
+  if (view === 'play' && ONLINE && !online) bindOnlineEntry($('#screen'), { onCreate: name => enter({ op: 'create', name }), onJoin: (name, code) => enter({ op: 'join', name, code }) });
+  if (view === 'play' && online && !online.started) bindLobby($('#screen'), { code: online.code, game: 'শতরঞ্জি', onStart: () => send({ op: 'start' }), onLeave: () => act('leave') });
   if (changed) enterScreen($('#screen'));
 }
 const transition = () => leaveScreen($('#screen'), () => { render(); scrollTo({ top: 0, behavior: 'instant' }); });
@@ -119,7 +128,7 @@ function cpuMove() {
   setTimeout(() => { const m = bestMove(s.g, s.level); thinking = false; if (m && cpuTurn()) move(m); else render(); }, 380);
 }
 async function tap(sq) {
-  if (s.end || thinking || cpuTurn()) return;
+  if (s.end || thinking || cpuTurn() || (online && s.g.turn !== mySide())) return;
   const g = s.g, p = g.b[sq];
   if (s.sel >= 0) {
     const options = legal(g).filter(m => m.from === s.sel && m.to === sq);
@@ -129,6 +138,7 @@ async function tap(sq) {
         const pick = await chooseBox('বোড়ে কী হবে?', 'qrbn'.split('').map(t => ({ id: t, label: `<span class="promo-glyph">${GLYPH[t]}︎</span>${NAMES[t]}` })));
         if (!pick) return; m = options.find(o => o.promo === pick);
       }
+      if (online) { s.sel = -1; return send({ op: 'move', move: { from: m.from, to: m.to, promo: m.promo || null }, note: note(s.g, m) }); }
       return move(m);
     }
   }
@@ -136,7 +146,7 @@ async function tap(sq) {
 }
 function finish(end, winner) {
   s.end = end; s.winner = winner; sound(winner ? 'win' : 'notice');
-  const sides = s.mode === 'cpu' ? ['w'] : ['w', 'b'];
+  const sides = online ? [mySide()] : s.mode === 'cpu' ? ['w'] : ['w', 'b'];
   const label = winner ? 'জয়' : 'ড্র';
   saveMatch({ id: crypto.randomUUID(), game: 'shotoronji', players: sides.map(side => ({ name: nameOf(side), points: winner === side ? 3 : winner ? 0 : 1, recent: [{ won: winner === side, img: ART, label: `শতরঞ্জি · ${winner === side ? 'জয়' : winner ? 'হার' : label}` }] })) });
 }
@@ -155,19 +165,50 @@ async function act(action, id) {
       need.forEach(i => { try { s.names[i] = ensureAccount(s.names[i]).name; } catch { s.names[i] = s.names[i].trim(); } });
       Object.assign(s, { phase: 'play', g: newGame(), past: [], moves: [], sel: -1, end: null, winner: null }); view = 'play'; save(); sound('notice'); return transition();
     }
-    case 'again': Object.assign(s, { g: newGame(), past: [], moves: [], sel: -1, end: null, winner: null }); save(); return render();
+    case 'again': if (online) return send({ op: 'again' });
+      Object.assign(s, { g: newGame(), past: [], moves: [], sel: -1, end: null, winner: null }); save(); return render();
     case 'undo': {
       if (!s.past.length || thinking) return;
       const back = s.mode === 'cpu' && s.past.length >= 2 && s.g.turn === 'w' ? 2 : 1;
       for (let i = 0; i < back; i++) { s.g = s.past.pop(); s.moves.pop(); }
       s.sel = -1; save(); return render();
     }
-    case 'resign': if (await confirmBox('হার মেনে নেবেন?', '', 'হ্যাঁ, হার মানি')) { finish('resign', s.g.turn === 'w' ? 'b' : 'w'); save(); render(); } return;
+    case 'resign': if (online) { if (await confirmBox('হার মেনে নেবেন?', '', 'হ্যাঁ, হার মানি')) send({ op: 'resign' }); return; }
+      if (await confirmBox('হার মেনে নেবেন?', '', 'হ্যাঁ, হার মানি')) { finish('resign', s.g.turn === 'w' ? 'b' : 'w'); save(); render(); } return;
     case 'draw': if (await confirmBox('দুজনেই ড্র চান?', '', 'হ্যাঁ, ড্র')) { finish('draw', null); save(); render(); } return;
     case 'quit': if (await confirmBox('এই দান বাতিল করবেন?', 'র‍্যাঙ্কিংয়ে কিছু যোগ হবে না।', 'হ্যাঁ, বাতিল')) { s.phase = 'setup'; save(); transition(); } return;
+    case 'leave': if (!await confirmBox('ঘর ছেড়ে দেবেন?', '', 'হ্যাঁ')) return; clearInterval(poll); online = null; s.phase = 'setup'; s.end = null; save(); return transition();
     case 'game-home': view = 'play'; if (s.end) s.phase = 'setup'; save(); return transition();
   }
 }
+
+/* ---------- Online ---------- */
+const ERR = ONLINE_ERRORS;
+function adopt(v) {
+  const was = online?.started, ended = s.end, edition = s.moves.length;
+  online = { code: v.code, token: v.token || online?.token, me: v.me, host: v.host, members: v.members, started: v.started };
+  if (v.match) {
+    s.g = { ...v.match.g, seen: {} }; s.moves = v.match.moves; s.sel = s.moves.length !== edition ? -1 : s.sel; s.phase = 'play';
+    if (v.match.end && !ended) finish(v.match.end, v.match.winner); else if (!v.match.end) { s.end = null; s.winner = null; if (s.moves.length > edition) sound(inCheck(s.g) ? 'timer' : 'vote'); }
+  }
+  try { sessionStorage.setItem('shotoronji.online', JSON.stringify({ code: online.code, token: online.token })); } catch { }
+  return !was && v.started;
+}
+async function enter(body) {
+  try { adopt(await tableApi({ game: 'chess', ...body })); startPolling(); transition(); } catch (e) { toast(ERR[e.message] || 'সংযোগে সমস্যা, আবার চেষ্টা করুন।'); }
+}
+async function send(body) {
+  try { adopt(await tableApi({ game: 'chess', code: online.code, token: online.token, ...body })); render(); } catch (e) { toast(ERR[e.message] || 'সংযোগে সমস্যা।'); }
+}
+function startPolling() {
+  clearInterval(poll);
+  poll = setInterval(async () => {
+    if (!online || document.hidden) return;
+    try { const before = JSON.stringify([online.members, s.moves.length, s.end, online.started]); adopt(await tableApi({ game: 'chess', op: 'state', code: online.code, token: online.token })); if (JSON.stringify([online.members, s.moves.length, s.end, online.started]) !== before) render(); }
+    catch (e) { if (['ROOM_GONE', 'AUTH'].includes(e.message)) { clearInterval(poll); online = null; s.phase = 'setup'; toast('ঘরটা আর নেই।'); render(); } }
+  }, 1200);
+}
+if (ONLINE) try { const saved = JSON.parse(sessionStorage.getItem('shotoronji.online')); if (saved) { online = { ...saved, me: 0, members: [], started: false }; tableApi({ game: 'chess', op: 'state', ...saved }).then(v => { adopt(v); startPolling(); render(); }).catch(() => { online = null; render(); }); } } catch { }
 
 render();
 if (cpuTurn()) cpuMove();

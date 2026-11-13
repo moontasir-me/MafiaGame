@@ -101,3 +101,13 @@ body.village-home{background:#0b1020;color:#eef0f7}
 .village-home .game-tile:not(.chess-tile){color:#302d38}.village-home .game-tile:not(.chess-tile) :is(h2,.tile-top){color:#302d38}
 .village-home .moon{top:auto;bottom:calc(22vh + 30px);right:7%;opacity:.95}
 .ludo-tile{background:linear-gradient(160deg,#fff4e0,#f3dfbd)!important}.ludo-tile h2{color:#c0392b!important}
+
+.play-switch{display:grid;grid-template-columns:1fr 1fr;gap:6px;max-width:440px;margin:18px 0 0;padding:5px;border-radius:18px;background:#0008;border:1px solid #ffffff22}
+.play-switch button{display:grid;gap:2px;padding:10px 8px;border:0;border-radius:14px;background:none;color:#cfd3e2;font:inherit;cursor:pointer;text-align:center}
+.play-switch b{font-size:16px}.play-switch small{font-size:11.5px;opacity:.8}
+.play-switch button.is-on{background:#fff8e6;color:#1d1a16}
+:root[data-light=lamp] .play-switch button.is-on{background:#f0a83a;color:#2a1704}
+.game-tile.is-off{opacity:.38;filter:grayscale(.9);pointer-events:auto;cursor:not-allowed}
+.game-tile.is-off:hover{transform:none}
+.tile-badge{display:inline-block;margin-top:6px;padding:2px 9px;border-radius:99px;background:#2e9b57;color:#fff;font-size:11px;font-weight:600}
+.game-tile.is-off .tile-badge{background:#555}

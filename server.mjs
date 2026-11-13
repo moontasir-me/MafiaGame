@@ -22,7 +22,7 @@ export function createMafiaServer({rooms=new RoomService(),onlineApi=null,ludo=n
     if(req.method!=='POST'||!req.headers['content-type']?.startsWith('application/json')){json(405,{error:'METHOD'});return;}
     let body='',size=0;for await(const chunk of req){size+=chunk.length;if(size>256000){json(413,{error:'SIZE'});return;}body+=chunk;}
     const data=JSON.parse(body);if(!data||typeof data!=='object'||Array.isArray(data))throw Error('REQUEST');
-    if(pathname==='/api/ludo'){json(200,await ludo.handle(data));return;}
+    if(pathname==='/api/ludo'||pathname==='/api/table'){json(200,await ludo.handle(data));return;}
     json(200,await rooms.handle(pathname,data));return;
    }
    if(req.method!=='GET'&&req.method!=='HEAD'){res.writeHead(405);res.end();return;}
