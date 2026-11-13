@@ -1,0 +1,173 @@
+import { newGame, legal, play, result, inCheck, bestMove, colour, NAMES, VALUE, LEVELS } from './shotoronji-engine.mjs';
+import { sound } from './sound.mjs';
+import { saveMatch, readHistory, overallRanking, hallOfFame } from './history.mjs';
+import { readAccounts, ensureAccount } from './accounts.mjs';
+import { esc, icon, appShell, pageHead, rankTable, fameTable, enterScreen, leaveScreen } from './ui-kit.mjs';
+import { $, $$, bn, LANTERN, toast, confirmBox, chooseBox, openMenu, SHELL_LABELS, TABS } from './lamp.mjs';
+
+/* শতরঞ্জি: chess on one phone, against a friend or the computer. Win 3 points, draw 1. */
+const KEY = 'shotoronji.v1', ART = 'assets/shotoronji/cover.svg', CPU = 'কম্পিউটার';
+const GLYPH = { k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟' };
+const FILES = 'কখগঘঙচছজ';
+const ENDS = { mate: 'কিস্তিমাত!', stale: 'অচল: ড্র', fifty: '৫০ চালে কেউ কিছু খায়নি: ড্র', repeat: 'একই অবস্থা তিনবার: ড্র', material: 'মাত করার মতো ঘুঁটি নেই: ড্র', resign: 'হার মেনে নিলেন', draw: 'দুজনে মিলে ড্র' };
+
+function fresh() { return { v: 1, phase: 'setup', mode: 'cpu', level: 'medium', names: ['', ''], g: newGame(), past: [], moves: [], sel: -1, end: null, winner: null }; }
+let s = fresh(), view = 'play', lastScreen = '', thinking = false;
+try { const d = JSON.parse(localStorage.getItem(KEY)); if (d?.v === 1) s = { ...fresh(), ...d, sel: -1 }; } catch { }
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify({ ...s, past: s.past.slice(-6) })); } catch { } };
+const nameOf = side => side === 'w' ? s.names[0] : (s.mode === 'cpu' ? `${CPU} (${LEVELS[s.level].name})` : s.names[1]);
+const cpuTurn = () => s.mode === 'cpu' && s.phase === 'play' && s.g.turn === 'b' && !s.end;
+const button = (label, action, cls, ic, extra = '') => `<button type="button" class="btn ${cls}" data-action="${action}" ${extra}>${icon(ic)}${label}</button>`;
+const piece = p => `<span class="sq-piece ${colour(p)}" aria-hidden="true">${GLYPH[p.toLowerCase()]}︎</span>`;
+const sqName = sq => FILES[sq & 7] + bn(8 - (sq >> 3));
+
+/* ---------- Screens ---------- */
+
+function chips() {
+  const taken = s.names.map(n => n.trim().toLocaleLowerCase()), list = readAccounts().filter(a => !taken.includes(a.name.toLocaleLowerCase()));
+  return list.length ? `<div class="acc-mini"><span>অ্যাকাউন্ট থেকে</span>${list.map(a => `<button type="button" data-action="fill" data-id="${esc(a.name)}">+ ${esc(a.name)}</button>`).join('')}</div>` : '';
+}
+function setup() {
+  return `<header class="lamp-head">${LANTERN}<div><h1>শতরঞ্জি</h1><p>কারেন্ট গেছে। হারিকেনের আলোয় এক দান হয়ে যাক।</p></div></header>
+  <section class="lamp-panel"><h2>কার সাথে</h2><div class="lamp-seg" role="radiogroup">${[['cpu', 'কম্পিউটার'], ['friends', 'বন্ধুর সাথে']].map(([k, l]) => `<button type="button" role="radio" aria-checked="${s.mode === k}" class="${s.mode === k ? 'is-on' : ''}" data-action="mode" data-id="${k}">${l}</button>`).join('')}</div>
+  ${s.mode === 'cpu' ? `<div class="lamp-seg small" role="radiogroup" aria-label="কম্পিউটার কেমন খেলবে">${Object.entries(LEVELS).map(([k, l]) => `<button type="button" role="radio" aria-checked="${s.level === k}" class="${s.level === k ? 'is-on' : ''}" data-action="level" data-id="${k}">${l.name}</button>`).join('')}</div>` : ''}</section>
+  <section class="lamp-panel"><h2>নাম</h2>
+  <label class="lamp-field"><span class="side-dot w"></span><input id="name-w" maxlength="20" autocomplete="off" placeholder="সাদা ঘুঁটি" value="${esc(s.names[0])}"></label>
+  ${s.mode === 'friends' ? `<label class="lamp-field"><span class="side-dot b"></span><input id="name-b" maxlength="20" autocomplete="off" placeholder="কালো ঘুঁটি" value="${esc(s.names[1])}"></label>` : ''}
+  ${chips()}</section>
+  ${button('দান শুরু', 'start', 'primary wide', 'play')}`;
+}
+
+function captured(side) {
+  // Pieces of `side` that were taken, from the board count.
+  const full = { p: 8, n: 2, b: 2, r: 2, q: 1 }, now = {};
+  for (const p of s.g.b) if (p && colour(p) === side) now[p.toLowerCase()] = (now[p.toLowerCase()] || 0) + 1;
+  return Object.entries(full).flatMap(([t, n]) => Array(Math.max(0, n - (now[t] || 0))).fill(t));
+}
+function seat(side) {
+  const lost = captured(side === 'w' ? 'b' : 'w'), gain = lost.reduce((a, t) => a + VALUE[t], 0) - captured(side).reduce((a, t) => a + VALUE[t], 0);
+  const on = !s.end && s.g.turn === side;
+  return `<div class="seat ${side} ${on ? 'is-on' : ''}"><span class="side-dot ${side}"></span><b>${esc(nameOf(side))}</b><span class="took">${lost.map(t => `<i class="${side === 'w' ? 'b' : 'w'}">${GLYPH[t]}︎</i>`).join('')}${gain > 0 ? `<small>+${bn(gain)}</small>` : ''}</span>${on && thinking ? '<em>ভাবছে…</em>' : ''}</div>`;
+}
+function board() {
+  const g = s.g, targets = s.sel >= 0 ? legal(g).filter(m => m.from === s.sel).map(m => m.to) : [], king = inCheck(g) ? g.b.indexOf(g.turn === 'w' ? 'K' : 'k') : -1;
+  let cells = '';
+  for (let sq = 0; sq < 64; sq++) {
+    const p = g.b[sq], dark = ((sq >> 3) + (sq & 7)) % 2 === 1, cls = [dark ? 'dk' : 'lt', sq === s.sel && 'sel', targets.includes(sq) && (p ? 'hit' : 'to'), g.last && (sq === g.last.from || sq === g.last.to) && 'last', sq === king && 'check'].filter(Boolean).join(' ');
+    cells += `<button type="button" class="sq ${cls}" data-sq="${sq}" aria-label="${sqName(sq)}${p ? ' ' + NAMES[p.toLowerCase()] : ''}">${p ? piece(p) : ''}${(sq & 7) === 0 ? `<small class="rk">${bn(8 - (sq >> 3))}</small>` : ''}${sq >> 3 === 7 ? `<small class="fl">${FILES[sq & 7]}</small>` : ''}</button>`;
+  }
+  return `<div class="board-wrap"><div class="board" role="grid" aria-label="শতরঞ্জির ছক">${cells}</div></div>`;
+}
+function playing() {
+  const check = !s.end && inCheck(s.g);
+  const status = s.end ? `<p class="lamp-status end">${ENDS[s.end]}${s.winner ? ` ${esc(nameOf(s.winner))} জিতলেন।` : ''}</p>` : `<p class="lamp-status ${check ? 'check' : ''}">${check ? 'কিস্তি! ' : ''}${esc(nameOf(s.g.turn))}-এর চাল</p>`;
+  const log = s.moves.length ? `<ol class="move-log">${s.moves.map((m, i) => `<li class="${i % 2 ? 'b' : 'w'}">${m}</li>`).join('')}</ol>` : '';
+  return `<div class="chess">${seat('b')}${board()}${seat('w')}</div>${status}
+  <div class="lamp-actions">${s.end ? button('আবার খেলি', 'again', 'primary wide', 'play') + button('শতরঞ্জির শুরুর পাতা', 'game-home', 'secondary wide', 'home')
+    : button('চাল ফেরত', 'undo', 'secondary', 'back', s.past.length ? '' : 'disabled') + (s.mode === 'friends' ? button('ড্র', 'draw', 'secondary', 'shield') : '') + button('হার মানি', 'resign', 'text', 'close')}</div>${log}`;
+}
+
+function rules() {
+  return `${pageHead('নিয়ম', 'শতরঞ্জি', '')}<ol class="plain-rules">
+  <li><b>রাজা</b> এক ঘর যেকোনো দিকে। <b>মন্ত্রী</b> সোজা বা কোনাকুনি যত ঘর খুশি। <b>নৌকা</b> সোজা। <b>হাতি</b> কোনাকুনি। <b>ঘোড়া</b> আড়াই ঘর, ডিঙিয়ে যায়। <b>বোড়ে</b> সামনে এক ঘর (প্রথমবার দুই), খায় কোনাকুনি।</li>
+  <li>রাজার ওপর আক্রমণ হলে <b>কিস্তি</b>; বাঁচার পথ না থাকলে <b>কিস্তিমাত</b>, খেলা শেষ।</li>
+  <li>বোড়ে শেষ সারিতে পৌঁছালে মন্ত্রী, নৌকা, হাতি বা ঘোড়া হয়ে যায়।</li>
+  <li>রাজা আর নৌকা না নড়লে এক চালে দুজনে জায়গা বদলাতে পারে (দুর্গ)। পাশ কাটানো বোড়েকে ঠিক পরের চালে খাওয়া যায়।</li>
+  <li>চাল না থাকলে কিন্তু কিস্তি নেই, তবে ড্র। জয়ে ৩, ড্রয়ে ১ পয়েন্ট।</li></ol>`;
+}
+const labels = { caption: 'ফলাফল', rank: '#', player: 'খেলোয়াড় · শেষ পাঁচ দান', points: 'পয়েন্ট', win: 'সবুজ: জয়', loss: 'লাল: হার বা ড্র', order: 'নতুনটি বাঁ দিকে', empty: 'এখনও কোনো দান শেষ হয়নি।', noGames: 'এখনও খেলেননি', number: bn };
+function ranking() {
+  const list = readHistory(), all = overallRanking(list, 'shotoronji').map(r => ({ name: r.name, score: r.points, note: bn(r.matches) + 'টি দান · ' + bn(r.wins) + 'টিতে জয়', history: r.recent.map(h => ({ won: h.won, img: h.img || ART, label: h.label || '' })) }));
+  return `${pageHead('র‍্যাঙ্কিং', 'শতরঞ্জি', 'জয়ে ৩, ড্রয়ে ১।')}<section class="rank-section">${rankTable(all, labels)}</section>
+  <section class="fame-section"><h2>${icon('trophy')}হল অব ফেম</h2>${fameTable(hallOfFame(list, 'shotoronji'), { caption: 'হল অব ফেম', player: 'খেলোয়াড়', points: 'পয়েন্ট', empty: 'এখনও কেউ নেই।', number: bn, meta: e => new Date(e.date).toLocaleDateString('bn-BD') })}</section>
+  <a class="btn secondary wide" href="ranking.html?game=shotoronji">${icon('trophy')}সব খেলার র‍্যাঙ্কিং ও অ্যাকাউন্ট</a>`;
+}
+
+/* ---------- Shell ---------- */
+
+function render() {
+  const key = view + s.phase, changed = key !== lastScreen; lastScreen = key;
+  const body = view === 'rules' ? rules() : view === 'ranking' ? ranking() : s.phase === 'setup' ? setup() : playing();
+  $('#app').innerHTML = appShell({ brand: 'শতরঞ্জি', brandSub: 'হারিকেনের আলোয়', brandIcon: 'grid', brandAction: 'tab-play', crumb: view === 'rules' ? 'নিয়ম' : view === 'ranking' ? 'র‍্যাঙ্কিং' : s.phase === 'setup' ? 'দান সাজান' : s.end ? 'দান শেষ' : 'দান চলছে', active: view, contentClass: 'game-content lamp-content', labels: SHELL_LABELS, tabs: TABS, body });
+  $$('[data-action]').forEach(el => el.onclick = e => { e.preventDefault(); act(el.dataset.action, el.dataset.id); });
+  $$('[data-sq]').forEach(el => el.onclick = () => tap(Number(el.dataset.sq)));
+  $$('#name-w,#name-b').forEach((el, i) => el.oninput = () => { s.names[el.id === 'name-w' ? 0 : 1] = el.value; save(); });
+  const log = $('.move-log'); if (log) log.scrollLeft = log.scrollWidth;
+  if (changed) enterScreen($('#screen'));
+}
+const transition = () => leaveScreen($('#screen'), () => { render(); scrollTo({ top: 0, behavior: 'instant' }); });
+
+/* ---------- Moves ---------- */
+
+function note(g, m) {
+  const p = g.b[m.from].toLowerCase();
+  if (m.castle) return m.castle === 'k' ? 'ছোট দুর্গ' : 'বড় দুর্গ';
+  return `${NAMES[p]} ${sqName(m.to)}${g.b[m.to] || m.ep ? ' ✕' : ''}${m.promo ? ' → ' + NAMES[m.promo] : ''}`;
+}
+function move(m) {
+  s.past.push(s.g); s.moves.push(note(s.g, m));
+  s.g = play(s.g, m); s.sel = -1;
+  const end = result(s.g);
+  if (end) finish(end, end === 'mate' ? (s.g.turn === 'w' ? 'b' : 'w') : null);
+  else sound(inCheck(s.g) ? 'timer' : s.g.took ? 'hit' : 'vote');
+  save(); render();
+  if (cpuTurn()) cpuMove();
+}
+function cpuMove() {
+  thinking = true; render();
+  setTimeout(() => { const m = bestMove(s.g, s.level); thinking = false; if (m && cpuTurn()) move(m); else render(); }, 380);
+}
+async function tap(sq) {
+  if (s.end || thinking || cpuTurn()) return;
+  const g = s.g, p = g.b[sq];
+  if (s.sel >= 0) {
+    const options = legal(g).filter(m => m.from === s.sel && m.to === sq);
+    if (options.length) {
+      let m = options[0];
+      if (options.length > 1) {
+        const pick = await chooseBox('বোড়ে কী হবে?', 'qrbn'.split('').map(t => ({ id: t, label: `<span class="promo-glyph">${GLYPH[t]}︎</span>${NAMES[t]}` })));
+        if (!pick) return; m = options.find(o => o.promo === pick);
+      }
+      return move(m);
+    }
+  }
+  s.sel = p && colour(p) === g.turn && s.sel !== sq ? sq : -1; render();
+}
+function finish(end, winner) {
+  s.end = end; s.winner = winner; sound(winner ? 'win' : 'notice');
+  const sides = s.mode === 'cpu' ? ['w'] : ['w', 'b'];
+  const label = winner ? 'জয়' : 'ড্র';
+  saveMatch({ id: crypto.randomUUID(), game: 'shotoronji', players: sides.map(side => ({ name: nameOf(side), points: winner === side ? 3 : winner ? 0 : 1, recent: [{ won: winner === side, img: ART, label: `শতরঞ্জি · ${winner === side ? 'জয়' : winner ? 'হার' : label}` }] })) });
+}
+
+async function act(action, id) {
+  switch (action) {
+    case 'tab-play': case 'tab-rules': case 'tab-ranking': { const next = action.slice(4); if (view === next) return; view = next; return transition(); }
+    case 'app-menu': return openMenu(s.phase === 'play' && !s.end ? [['দান বাতিল করে নতুন করে সাজান', 'edit', 'quit', 'tone-danger']] : [], act);
+    case 'mode': s.mode = id === 'friends' ? 'friends' : 'cpu'; save(); return render();
+    case 'level': if (LEVELS[id]) s.level = id; save(); return render();
+    case 'fill': { const i = s.names[0].trim() && s.mode === 'friends' ? 1 : 0; s.names[i] = id; save(); return render(); }
+    case 'start': {
+      const need = s.mode === 'cpu' ? [0] : [0, 1];
+      if (need.some(i => !s.names[i].trim())) return toast('আগে নাম লিখুন।');
+      if (s.mode === 'friends' && s.names[0].trim().toLocaleLowerCase() === s.names[1].trim().toLocaleLowerCase()) return toast('দুজনের নাম আলাদা হতে হবে।');
+      need.forEach(i => { try { s.names[i] = ensureAccount(s.names[i]).name; } catch { s.names[i] = s.names[i].trim(); } });
+      Object.assign(s, { phase: 'play', g: newGame(), past: [], moves: [], sel: -1, end: null, winner: null }); view = 'play'; save(); sound('notice'); return transition();
+    }
+    case 'again': Object.assign(s, { g: newGame(), past: [], moves: [], sel: -1, end: null, winner: null }); save(); return render();
+    case 'undo': {
+      if (!s.past.length || thinking) return;
+      const back = s.mode === 'cpu' && s.past.length >= 2 && s.g.turn === 'w' ? 2 : 1;
+      for (let i = 0; i < back; i++) { s.g = s.past.pop(); s.moves.pop(); }
+      s.sel = -1; save(); return render();
+    }
+    case 'resign': if (await confirmBox('হার মেনে নেবেন?', '', 'হ্যাঁ, হার মানি')) { finish('resign', s.g.turn === 'w' ? 'b' : 'w'); save(); render(); } return;
+    case 'draw': if (await confirmBox('দুজনেই ড্র চান?', '', 'হ্যাঁ, ড্র')) { finish('draw', null); save(); render(); } return;
+    case 'quit': if (await confirmBox('এই দান বাতিল করবেন?', 'র‍্যাঙ্কিংয়ে কিছু যোগ হবে না।', 'হ্যাঁ, বাতিল')) { s.phase = 'setup'; save(); transition(); } return;
+    case 'game-home': view = 'play'; if (s.end) s.phase = 'setup'; save(); return transition();
+  }
+}
+
+render();
+if (cpuTurn()) cpuMove();
+if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw.js').catch(() => { });

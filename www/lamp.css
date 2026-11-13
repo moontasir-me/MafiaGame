@@ -1,0 +1,111 @@
+/* Hurricane-lamp room for শতরঞ্জি and চোর ডাকাত পুলিশ বাবু: a dark room, one warm flickering light,
+   a worn wooden board, chits torn from a ruled khata. */
+:root[data-theme][data-universe=lamp]{--bg:#140e09;--surface:#22180f;--border:#4a3622;--text:#f4e4c4;--muted:#bba383;--accent:#f0a83a;--green:#9fc27a;--blue:#9cb8e0;--world-dark:#0e0906;--world-accent:#f0a83a;--world-mid:#2c2014;--world-light:#f4e4c4;color-scheme:dark}
+:root[data-universe=lamp] body{background:#140e09}
+/* The lamp's pool of light, breathing a little. */
+.lamp-page:before{content:'';position:fixed;inset:-10vh -10vw;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 60% 48% at 50% 8%,#f0a83a2e,#f0a83a0d 45%,transparent 70%),radial-gradient(ellipse at 50% 120%,#000a,transparent 60%);animation:lamp-breathe 5s ease-in-out infinite}
+@keyframes lamp-breathe{0%,100%{opacity:1}22%{opacity:.86}27%{opacity:.97}61%{opacity:.9}64%{opacity:1}}
+@media(prefers-reduced-motion:reduce){.lamp-page:before,.lantern-flame,.lantern-glow{animation:none!important}}
+:root[data-universe=lamp] .kit-top{background:#140e09e6;border-bottom:1px solid #3a2a1a}
+:root[data-universe=lamp] .kit-tabs{background:#1b130ce6;border-top:1px solid #3a2a1a}
+:root[data-theme][data-universe=lamp] :is(h1,h2,h3,.kit-title strong){color:var(--text)}
+.lamp-page .btn.primary{background:linear-gradient(#f3b14b,#d98b22)!important;border-color:#d98b22!important;color:#2a1704!important;box-shadow:0 6px 22px #f0a83a33}
+.lamp-page .btn.primary .icon{color:#2a1704}
+.lamp-page .btn.secondary{background:#2a1e13;border-color:#4a3622;color:var(--text)}
+.lamp-page :is(.dialog,.rank-table-wrap,.fame-section,.rank-empty){background:#22180f;border-color:#4a3622;color:var(--text)}
+.lamp-page .rank-table :is(th,td){border-color:#3a2a1a}
+.lamp-page .acc-mini button{background:#2a1e13}
+
+.lantern{width:58px;height:auto;flex-shrink:0;filter:drop-shadow(0 0 18px #f0a83a66)}
+.lantern-flame{transform-origin:30px 46px;animation:flame 1.6s ease-in-out infinite}
+.lantern-glow{animation:glow 1.6s ease-in-out infinite}
+@keyframes flame{0%,100%{transform:scale(1,1)}30%{transform:scale(.92,1.08) skewX(2deg)}55%{transform:scale(1.04,.95) skewX(-2deg)}80%{transform:scale(.97,1.05)}}
+@keyframes glow{0%,100%{fill-opacity:.35}40%{fill-opacity:.22}70%{fill-opacity:.4}}
+
+.lamp-head{display:flex;align-items:center;gap:16px;margin:4px 0 20px}
+.lamp-head h1{margin:0;font-size:clamp(28px,6vw,40px);line-height:1.3;color:#ffe2a8!important;text-shadow:0 0 24px #f0a83a55}
+.lamp-head p{margin:4px 0 0;font-size:14px;color:var(--muted)}
+.lamp-panel{margin:0 0 14px;padding:16px;border:1px solid #4a3622;border-radius:16px;background:linear-gradient(#22180fe6,#1a120be6)}
+.lamp-panel h2{margin:0 0 10px;font-size:16px}
+.lamp-seg{display:flex;gap:6px;padding:4px;border-radius:12px;background:#120c07;border:1px solid #3a2a1a}
+.lamp-seg+.lamp-seg{margin-top:8px}
+.lamp-seg button{flex:1;min-height:44px;border:0;border-radius:9px;background:none;color:var(--muted);font:inherit;font-size:14px;cursor:pointer}
+.lamp-seg.small button{min-height:38px;font-size:13px}
+.lamp-seg button.is-on{background:#f0a83a;color:#2a1704;font-weight:600}
+.lamp-field{display:flex;align-items:center;gap:10px;margin:0 0 8px}
+.lamp-field input{flex:1;min-width:0;min-height:46px;padding:10px 14px;border:1px solid #4a3622;border-radius:12px;background:#120c07;color:var(--text);font:inherit;font-size:15px}
+.lamp-field input:focus{outline:2px solid #f0a83a88;border-color:#f0a83a}
+.side-dot{width:18px;height:18px;flex-shrink:0;border-radius:50%;border:2px solid #0006}
+.side-dot.w{background:#f3e6c8}.side-dot.b{background:#2a1a10;border-color:#bba383}
+.lamp-actions{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.lamp-actions .btn{flex:1;width:auto}
+.lamp-actions .btn.wide{flex-basis:100%}
+.lamp-choices{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.promo-glyph{font-size:26px;line-height:1;margin-right:6px}
+
+/* ---------- শতরঞ্জি ---------- */
+.chess{max-width:560px;margin:0 auto}
+.seat{display:flex;align-items:center;gap:8px;min-height:40px;padding:6px 10px;border-radius:12px;font-size:14px;transition:background .2s}
+.seat.is-on{background:#f0a83a1f;box-shadow:inset 0 0 0 1px #f0a83a55}
+.seat b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:45%}
+.seat .took{display:flex;flex-wrap:wrap;align-items:center;margin-left:auto;font-size:16px;line-height:1}
+.seat .took i{font-style:normal;margin-left:-3px}.seat .took i.w{color:#f3e6c8}.seat .took i.b{color:#7a5a3c}
+.seat .took small{margin-left:6px;font-size:12px;color:var(--muted)}
+.seat em{font-style:normal;font-size:12px;color:var(--accent);animation:glow 1s infinite}
+.board-wrap{margin:6px 0;padding:10px;border-radius:14px;background:linear-gradient(135deg,#5b3a1f,#3a2412);box-shadow:0 18px 40px #000b,inset 0 0 0 2px #7a512b,inset 0 0 22px #0008}
+.board{display:grid;grid-template-columns:repeat(8,1fr);aspect-ratio:1;border-radius:4px;overflow:hidden;box-shadow:0 0 0 1px #000a}
+.sq{position:relative;display:grid;place-items:center;min-width:0;padding:0;border:0;font:inherit;cursor:pointer;aspect-ratio:1}
+.sq.lt{background:#e2c894}.sq.dk{background:#9a6a3e}
+.sq.last.lt{background:#ecd77f}.sq.last.dk{background:#b58a3b}
+.sq.sel{box-shadow:inset 0 0 0 3px #f0a83a;background:#f2c35f}
+.sq.to:after{content:'';width:28%;height:28%;border-radius:50%;background:#2a17046b}
+.sq.hit{box-shadow:inset 0 0 0 4px #8b1e1ecc}
+.sq.check{background:radial-gradient(circle,#ff5a3c,#b8231a 75%)!important}
+.sq small{position:absolute;font-size:9px;line-height:1;color:#3a2412b0;pointer-events:none}
+.sq.dk small{color:#f3e2bcb0}
+.sq .rk{top:3px;left:3px}.sq .fl{right:3px;bottom:2px}
+.sq-piece{font-size:min(9.4vw,50px);line-height:1;font-family:'Segoe UI Symbol','Noto Sans Symbols 2','DejaVu Sans',serif;font-variant-emoji:text;pointer-events:none;transition:transform .15s}
+.sq-piece.w{color:#fbf1dc;-webkit-text-stroke:1.2px #3a2412;text-shadow:0 2px 0 #0006}
+.sq-piece.b{color:#24150b;-webkit-text-stroke:.6px #c7a679;text-shadow:0 2px 0 #0005}
+.sq.sel .sq-piece{transform:translateY(-3px) scale(1.06)}
+.lamp-status{margin:10px 0 0;text-align:center;font-size:16px;font-weight:600}
+.lamp-status.check{color:#ff8a6a}.lamp-status.end{font-size:19px;color:#ffe2a8;text-shadow:0 0 18px #f0a83a66}
+.move-log{display:flex;gap:6px;overflow-x:auto;margin:6px 0 0;padding:6px 0 10px;list-style:none;counter-reset:mv;scrollbar-width:thin}
+.move-log li{flex-shrink:0;padding:4px 9px;border-radius:8px;font-size:12px;background:#22180f;border:1px solid #3a2a1a;color:var(--muted)}
+.move-log li.w{color:#f4e4c4}
+
+/* ---------- চোর ডাকাত পুলিশ বাবু ---------- */
+.lamp-stage{text-align:center;padding:4px 0 6px}
+.lamp-stage h1{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px;margin:8px 0;font-size:clamp(22px,5vw,30px);line-height:1.4}
+.lamp-stage .lede{margin:0 auto 14px;color:var(--muted)}
+.chit-table{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:520px;margin:18px auto}
+@media(max-width:420px){.chit-table{grid-template-columns:repeat(2,1fr);max-width:300px}}
+/* Ruled khata paper. */
+.chit{position:relative;display:grid;place-items:center;aspect-ratio:3/4;padding:8px;border:0;border-radius:3px;font:inherit;color:#2b2016;cursor:pointer;
+  background:repeating-linear-gradient(#f2e6c9 0 17px,#8fb0d466 17px 18px),#f2e6c9;box-shadow:0 8px 18px #0009;transition:transform .18s}
+.chit:before{content:'';position:absolute;top:0;bottom:0;left:18%;width:1px;background:#d0707088}
+.chit.folded{transform:rotate(var(--tilt,-3deg));clip-path:polygon(0 4%,8% 0,100% 2%,96% 100%,4% 97%)}
+.chit.folded:nth-child(2){--tilt:4deg}.chit.folded:nth-child(3){--tilt:-1deg}.chit.folded:nth-child(4){--tilt:6deg}
+.chit.folded:hover{transform:rotate(0) translateY(-6px)}
+.chit .fold{width:60%;height:2px;background:#8a6a4a66;box-shadow:0 -14px 0 #8a6a4a33,0 14px 0 #8a6a4a33}
+.chit.taken{opacity:.35;cursor:default;background:#2a1e13;box-shadow:none}
+.chit.open{cursor:default;gap:2px;align-content:center;min-width:86px}
+.chit.open b{font-size:clamp(18px,4.6vw,26px);color:var(--ink);font-family:'Kalpurush','Noto Serif Bengali',Georgia,serif}
+.chit.open small{font-size:13px;color:#5a4632}
+.chit.open em{font-style:normal;font-size:13px;font-weight:700;color:#2b5e1e}
+.chit-reveal{display:flex;justify-content:center;margin:18px 0}
+.chit-reveal .chit{width:min(54vw,220px);animation:chit-open .5s cubic-bezier(.2,.8,.2,1)}
+.chit-reveal .chit b{font-size:44px}
+@keyframes chit-open{from{transform:scaleY(.1) rotate(-6deg);opacity:0}}
+.chit-legend{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 0 16px}
+.chit-legend .chit{aspect-ratio:auto;min-width:0;padding:10px 4px}
+.chit-owner{display:grid;gap:6px;justify-items:center;font-size:13px}
+.chit-owner .chit{width:100%}
+.call-row{display:flex;align-items:center;justify-content:space-between;gap:10px;max-width:420px;margin:0 auto 10px;padding:8px 10px;border-radius:12px;background:#22180f;border:1px solid #3a2a1a;text-align:left}
+.call-row span{display:flex;align-items:center;gap:8px;font-size:14px}
+.call-row .chit{aspect-ratio:auto;min-width:72px;padding:6px}.call-row .chit b{font-size:16px}
+.suspects{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:420px;margin:14px auto}
+.suspect{display:grid;justify-items:center;gap:8px;padding:18px 10px;border:2px solid #4a3622;border-radius:16px;background:#22180f;color:var(--text);font:inherit;font-size:16px;cursor:pointer;transition:transform .15s,border-color .2s}
+.suspect .player-dot{width:44px;height:44px;font-size:20px}
+.suspect:hover{border-color:var(--dot);transform:translateY(-3px)}
+.open-all .chit{aspect-ratio:4/3}

@@ -71,3 +71,20 @@ test('Fibonacci questions at all four levels have four different options and one
     assert.equal(x.options.filter(o => o === x.a).length, 1);
   }
 });
+
+import { newGame, legal, play, result, bestMove } from '../www/shotoronji-engine.mjs';
+import { score as chorScore, deal } from '../www/chor-engine.mjs';
+const perft = (g, d) => d === 0 ? 1 : legal(g).reduce((n, m) => n + perft(play(g, m), d - 1), 0);
+test('শতরঞ্জি follows the full chess rules and the computer finds a mate in one', () => {
+  assert.deepEqual([1, 2, 3].map(d => perft(newGame(), d)), [20, 400, 8902]);
+  let g = newGame(); const sq = s => (8 - Number(s[1])) * 8 + 'abcdefgh'.indexOf(s[0]);
+  for (const [f, t] of [['f2', 'f3'], ['e7', 'e5'], ['g2', 'g4']]) g = play(g, legal(g).find(m => m.from === sq(f) && m.to === sq(t)));
+  const m = bestMove(g, 'easy', () => 0);
+  assert.equal(result(play(g, m)), 'mate');
+});
+test('চোর ডাকাত পুলিশ বাবু: police keeps 800 on a catch, the thief takes it on a miss', () => {
+  const roles = ['babu', 'police', 'dakat', 'chor'];
+  assert.deepEqual(chorScore(roles, 3), [1000, 800, 500, 0]);
+  assert.deepEqual(chorScore(roles, 2), [1000, 0, 500, 800]);
+  assert.deepEqual([...deal()].sort(), ['babu', 'chor', 'dakat', 'police']);
+});
