@@ -73,7 +73,7 @@ test('Fibonacci questions at all four levels have four different options and one
 });
 
 import { newGame, legal, play, result, bestMove } from '../www/shotoronji-engine.mjs';
-import { score as chorScore, deal } from '../www/chor-engine.mjs';
+import { score as chorScore, deal, targetOf } from '../www/chor-engine.mjs';
 const perft = (g, d) => d === 0 ? 1 : legal(g).reduce((n, m) => n + perft(play(g, m), d - 1), 0);
 test('শতরঞ্জি follows the full chess rules and the computer finds a mate in one', () => {
   assert.deepEqual([1, 2, 3].map(d => perft(newGame(), d)), [20, 400, 8902]);
@@ -86,5 +86,8 @@ test('চোর ডাকাত পুলিশ বাবু: police keeps 800 o
   const roles = ['babu', 'police', 'dakat', 'chor'];
   assert.deepEqual(chorScore(roles, 3), [1000, 800, 500, 0]);
   assert.deepEqual(chorScore(roles, 2), [1000, 0, 500, 400]);
+  assert.deepEqual(chorScore(roles, 2, 'dakat'), [1000, 800, 0, 400]);
+  assert.deepEqual(chorScore(roles, 3, 'dakat'), [1000, 0, 500, 400]);
+  assert.deepEqual([0, 1, 2, 3].map(targetOf), ['chor', 'dakat', 'chor', 'dakat']);
   assert.deepEqual([...deal()].sort(), ['babu', 'chor', 'dakat', 'police']);
 });

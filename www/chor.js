@@ -1,4 +1,4 @@
-import { ROLES, deal, score } from './chor-engine.mjs';
+import { ROLES, deal, score, targetOf } from './chor-engine.mjs';
 import { sound } from './sound.mjs';
 import { saveMatch, readHistory, overallRanking, hallOfFame } from './history.mjs';
 import { readAccounts, ensureAccount } from './accounts.mjs';
@@ -28,7 +28,7 @@ function chips() {
   return list.length && s.names.some(n => !n.trim()) ? `<div class="acc-mini"><span>অ্যাকাউন্ট থেকে</span>${list.map(a => `<button type="button" data-action="fill" data-id="${esc(a.name)}">+ ${esc(a.name)}</button>`).join('')}</div>` : '';
 }
 function setup() {
-  return `<header class="lamp-head">${LANTERN}<div><h1>চোর ডাকাত পুলিশ বাবু</h1><p>চারটা কাগজ ভাঁজ করা। পুলিশকে চোর ধরতে হবে।</p></div></header>
+  return `<header class="lamp-head">${LANTERN}<div><h1>চোর ডাকাত পুলিশ বাবু</h1><p>চারটা কাগজ ভাঁজ করা। পুলিশ এক দানে চোর, পরের দানে ডাকাত খোঁজেন।</p></div></header>
   <section class="lamp-panel"><h2>চারজন</h2>${s.names.map((n, i) => `<label class="lamp-field"><span class="side-dot" style="background:${playerColour('', i)}"></span><input data-name="${i}" maxlength="20" autocomplete="off" placeholder="খেলোয়াড় ${bn(i + 1)}" value="${esc(n)}"></label>`).join('')}${chips()}</section>
   <section class="lamp-panel">${numberPick({ name: 'rounds', label: 'কত দান', value: s.rounds, presets: ROUND_CHOICES, min: 1, max: 100, unit: 'দান' })}</section>
   <div class="chit-legend">${Object.keys(ROLES).map(r => roleChit(r)).join('')}</div>
@@ -51,16 +51,16 @@ function guess() {
   return `<section class="lamp-stage">${roundTag()}
   <div class="call-row"><span>${playerDot(s.names[babu], babu)}<b>${pname(babu)}</b>: “আমি বাবু!”</span>${roleChit('babu')}</div>
   <div class="call-row"><span>${playerDot(s.names[police], police)}<b>${pname(police)}</b>: “আমি পুলিশ!”</span>${roleChit('police')}</div>
-  <h1>${pname(police)}, চোর কে?</h1>
+  <h1>${pname(police)}, ${ROLES[targetOf(s.round)].name} কে?</h1>
   <div class="suspects">${rest.map(i => `<button type="button" class="suspect" data-action="accuse" data-id="${i}" style="--dot:${playerColour(s.names[i], i)}">${playerDot(s.names[i], i)}<b>${pname(i)}</b></button>`).join('')}</div></section>`;
 }
 function totalsTable() {
   return rankTable(s.names.map((n, i) => ({ name: n, score: s.totals[i], note: s.gained.length ? `এই দানে ${bn(s.gained[i])}` : '', history: s.history[i] })), labels);
 }
 function reveal() {
-  const police = who('police'), caught = s.chits[s.owner.indexOf(s.guess)] === 'chor', last = s.round + 1 >= s.rounds;
-  return `<section class="lamp-stage">${roundTag()}<h1>${caught ? 'চোর ধরা পড়েছে!' : 'ভুল ধরেছে! চোর পালিয়েছে।'}</h1>
-  <p class="lede">${caught ? `${pname(police)} ঠিক ধরেছেন।` : `${pname(police)} পেলেন ০, ${pname(who('chor'))} রাখলেন ${bn(400)}।`}</p>
+  const police = who('police'), t = targetOf(s.round), tn = ROLES[t].name, caught = s.chits[s.owner.indexOf(s.guess)] === t, last = s.round + 1 >= s.rounds;
+  return `<section class="lamp-stage">${roundTag()}<h1>${caught ? `${tn} ধরা পড়েছে!` : `ভুল ধরেছে! ${tn} পালিয়েছে।`}</h1>
+  <p class="lede">${caught ? `${pname(police)} ঠিক ধরেছেন। ${pname(who(t))} পেলেন ০।` : `${pname(police)} পেলেন ০, ${pname(who(t))} রাখলেন ${bn(ROLES[t].points)}।`}</p>
   <div class="chit-table open-all">${[0, 1, 2, 3].map(i => `<div class="chit-owner">${roleChit(roleOf(i), `<em>+${bn(s.gained[i])}</em>`)}<span>${pname(i)}</span></div>`).join('')}</div></section>
   <section class="rank-section"><h2>${last ? 'শেষ ফল' : 'মোট'}</h2>${totalsTable()}</section>
   <div class="lamp-actions">${last ? button('আবার খেলি', 'again', 'primary wide', 'play') + button('চোর ডাকাতের শুরুর পাতা', 'game-home', 'secondary wide', 'home') : button('পরের দান', 'next', 'primary wide', 'arrow')}</div>`;
@@ -69,8 +69,8 @@ function rules() {
   return `${pageHead('নিয়ম', 'চোর ডাকাত পুলিশ বাবু', '')}<ol class="plain-rules">
   <li>চারজন খেলবেন। প্রতি দানে চারটা ভাঁজ করা কাগজ: বাবু, পুলিশ, ডাকাত, চোর।</li>
   <li>একে একে ফোন হাতে নিয়ে একটা কাগজ তুলুন, একা দেখুন, ভাঁজ করে পরের জনকে দিন।</li>
-  <li>বাবু আর পুলিশ নিজেদের পরিচয় দেন। পুলিশ বাকি দুজনের মধ্যে চোরকে দেখিয়ে দেন।</li>
-  <li>বাবু ১০০০, পুলিশ ৮০০, ডাকাত ৫০০, চোর ৪০০। পুলিশ চোর ধরে ফেললে চোর পায় ০। ভুল ধরলে পুলিশ পায় ০, চোর রাখে ৪০০।</li>
+  <li>বাবু আর পুলিশ নিজেদের পরিচয় দেন। পুলিশ পালা করে খোঁজেন: এক দানে চোর, পরের দানে ডাকাত।</li>
+  <li>বাবু ১০০০, পুলিশ ৮০০, ডাকাত ৫০০, চোর ৪০০। যাকে খোঁজা হচ্ছে সে ধরা পড়লে শুধু সে পায় ০, পুলিশ রাখেন ৮০০। ভুল ধরলে পুলিশ পায় ০, বাকিরা নিজের পয়েন্ট রাখে।</li>
   <li>সব দান শেষে যার মোট বেশি সে জিতল। র‍্যাঙ্কিংয়ে মোটের একশো ভাগের এক ভাগ যোগ হয়।</li></ol>`;
 }
 const labels = { caption: 'ফলাফল', rank: '#', player: 'খেলোয়াড় · শেষ পাঁচ দান', points: 'পয়েন্ট', win: 'সবুজ: ভালো দান', loss: 'লাল: খারাপ দান', order: 'নতুনটি বাঁ দিকে', empty: 'এখনও কেউ খেলেননি।', noGames: 'এখনও খেলেননি', number: bn };
@@ -116,10 +116,10 @@ async function act(action, id) {
     case 'fold': if (s.phase !== 'peek') return; if (s.drawer < 3) { s.drawer++; s.phase = 'draw'; } else s.phase = 'guess'; save(); return transition();
     case 'accuse': {
       const g = Number(id); if (s.phase !== 'guess') return;
-      const roles = [0, 1, 2, 3].map(roleOf); s.guess = g; s.gained = score(roles, g);
+      const roles = [0, 1, 2, 3].map(roleOf); s.guess = g; s.gained = score(roles, g, targetOf(s.round));
       s.totals = s.totals.map((t, i) => t + s.gained[i]);
       s.history = s.history.map((h, i) => [{ won: s.gained[i] >= 800, img: ART, label: `${ROLES[roles[i]].name} · ${bn(s.gained[i])}` }, ...h].slice(0, 5));
-      s.phase = 'reveal'; if (s.round + 1 >= s.rounds) endGame(); save(); sound(roles[g] === 'chor' ? 'win' : 'wrong'); return transition();
+      s.phase = 'reveal'; if (s.round + 1 >= s.rounds) endGame(); save(); sound(roles[g] === targetOf(s.round) ? 'win' : 'wrong'); return transition();
     }
     case 'next': s.round++; newRound(); save(); return transition();
     case 'again': Object.assign(s, { round: 0, totals: [0, 0, 0, 0], history: [[], [], [], []] }); newRound(); save(); return transition();

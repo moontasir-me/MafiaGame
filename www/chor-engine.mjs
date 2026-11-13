@@ -16,8 +16,12 @@ export function deal(rnd = Math.random) {
   return a;
 }
 
-/* roles: role per player index; guess: the player index the police named as চোর. Returns points per player. */
-export function score(roles, guess) {
-  const caught = roles[guess] === 'chor';
-  return roles.map(r => r === 'police' ? (caught ? 800 : 0) : r === 'chor' ? (caught ? 0 : 400) : ROLES[r].points);
+/* Rounds take turns: পুলিশ looks for the চোর in round 1, the ডাকাত in round 2, the চোর in round 3, and so on. */
+export const targetOf = round => round % 2 ? 'dakat' : 'chor';
+
+/* roles: role per player index; guess: the player index the police named; target: 'chor' or 'dakat'.
+   Caught: only the one caught drops to 0, পুলিশ keeps 800. Wrong guess: পুলিশ gets 0, everyone else keeps theirs. */
+export function score(roles, guess, target = 'chor') {
+  const caught = roles[guess] === target;
+  return roles.map(r => r === 'police' ? (caught ? 800 : 0) : r === target && caught ? 0 : ROLES[r].points);
 }
