@@ -23,7 +23,7 @@ function matches(list) {
 /* Accounts on this phone: name only. Ranking rows with the same name belong to the account. */
 function accounts(list) {
   const accs = readAccounts(), totals = new Map(overallRanking(list).map(r => [r.name.toLocaleLowerCase(), r]));
-  return `<section class="fame-section acc-section" id="accounts"><h2>${icon('people')}অ্যাকাউন্ট</h2><p>শুধু নাম দিলেই অ্যাকাউন্ট। এক ফোনে অনেকগুলো রাখা যায়; প্রতিটা খেলায় এই নাম বেছে নিলে পয়েন্ট এখানেই জমে। কয়েন জেতা যায় কলম যুদ্ধের লড়াইয়ে।</p>
+  return `<section class="fame-section acc-section" id="accounts"><h2>${icon('people')}অ্যাকাউন্ট</h2><p>শুধু নাম দিলেই অ্যাকাউন্ট। এক ফোনে অনেকগুলো রাখা যায়; প্রতিটা খেলায় এই নাম বেছে নিলে পয়েন্ট এখানেই জমে। কয়েন জেতা যায় পেন ফাইটের লড়াইয়ে।</p>
   <form id="acc-form" class="acc-form"><input id="acc-name" maxlength="20" autocomplete="off" placeholder="নতুন অ্যাকাউন্টের নাম" aria-label="নতুন অ্যাকাউন্টের নাম"><button class="btn primary" type="submit">${icon('plus')}খুলুন</button></form>
   ${accs.length ? `<ul class="acc-list">${accs.map(a => { const t = totals.get(a.name.toLocaleLowerCase()); return `<li>${playerDot(a.name)}<span><b>${esc(a.name)}</b><small>${bn(t?.points || 0)} পয়েন্ট · ${bn(t?.matches || 0)}টি ম্যাচ · ${bn(a.coins)} কয়েন</small></span><a class="icon-btn" href="pen.html?view=shop" aria-label="${esc(a.name)}-এর কলমের দোকান">${icon('spark')}</a><button type="button" class="icon-btn" data-delete="${a.id}" aria-label="${esc(a.name)} অ্যাকাউন্ট মুছুন">${icon('trash')}</button></li>`; }).join('')}</ul>` : '<p class="acc-empty">এখনও কোনো অ্যাকাউন্ট নেই।</p>'}</section>`;
 }
@@ -39,7 +39,7 @@ function body() {
 }
 
 function render(animate = true) {
-  const tabs = [['all', 'সব', 'grid'], ['mafia', 'Mafia', 'mask'], ['spy', 'Spy', 'lens'], ['kalidas', 'ধাঁধা', 'spark'], ['pen', 'কলম', 'edit'], ['fib', 'অঙ্ক', 'grid'], ['shotoronji', 'শতরঞ্জি', 'grid'], ['chor', 'চোর', 'people'], ['ludo', 'লুডু', 'grid'], ['carrom', 'ক্যারম', 'grid']].map(([id, label, ic]) => ({ id, label, icon: ic, action: id }));
+  const tabs = [['all', 'সব', 'grid'], ['mafia', 'Mafia', 'mask'], ['spy', 'Spy', 'lens'], ['kalidas', 'ধাঁধা', 'spark'], ['pen', 'পেন ফাইট', 'edit'], ['fib', 'অঙ্ক', 'grid'], ['shotoronji', 'চতুরঙ্গ', 'grid'], ['chor', 'চোর', 'people'], ['ludo', 'লুডু', 'grid'], ['carrom', 'ক্যারম', 'grid']].map(([id, label, ic]) => ({ id, label, icon: ic, action: id }));
   $('#app').innerHTML = appShell({ brand: 'শীতলপাটি', brandSub: 'র‍্যাঙ্কিং', brandIcon: 'trophy', brandAction: 'all', homeAction: 'all', crumb: 'র‍্যাঙ্কিং · ' + (filter ? GAMES[filter] : 'সব খেলা'), active: filter || 'all', tabs, body: body(), contentClass: 'game-content', labels: { back: 'সব খেলা', menu: 'মেনু', sections: 'খেলা বেছে নিন' } });
   document.querySelectorAll('[data-action]').forEach(el => el.onclick = e => {
     e.preventDefault(); const a = el.dataset.action;

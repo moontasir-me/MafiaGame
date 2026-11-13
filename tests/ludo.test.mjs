@@ -64,7 +64,7 @@ test('rooms: a finished ludo game keeps its room 10 minutes, a game in play 2 ho
   assert.equal(saves.at(-1), 600);
 });
 
-test('online শতরঞ্জি: host is white, moves are checked, resign ends it', async () => {
+test('online চতুরঙ্গ: host is white, moves are checked, resign ends it', async () => {
   const rooms = new LudoRooms(new MemoryLudoStore());
   const a = await rooms.handle({ op: 'create', name: 'A', game: 'chess' }), b = await rooms.handle({ op: 'join', name: 'B', code: a.code, game: 'chess' });
   await assert.rejects(rooms.handle({ op: 'join', name: 'C', code: a.code, game: 'chess' }), /FULL/);
@@ -77,7 +77,7 @@ test('online শতরঞ্জি: host is white, moves are checked, resign end
   v = await rooms.handle({ op: 'resign', code: a.code, token: b.token });
   assert.equal(v.match.winner, 'w');
 });
-test('online কলম যুদ্ধ: only the shooter (or host) may report, and stale reports are refused', async () => {
+test('online পেন ফাইট: only the shooter (or host) may report, and stale reports are refused', async () => {
   const rooms = new LudoRooms(new MemoryLudoStore());
   const a = await rooms.handle({ op: 'create', name: 'A', game: 'pen', pen: 'iteen' }), b = await rooms.handle({ op: 'join', name: 'B', code: a.code, pen: 'econo' });
   let v = await rooms.handle({ op: 'start', code: a.code, token: a.token });

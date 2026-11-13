@@ -1,4 +1,4 @@
-/* শতরঞ্জি: full chess rules (castling, en passant, promotion, check, mate, stalemate, draws) and a small computer player.
+/* চতুরঙ্গ: full chess rules (castling, en passant, promotion, check, mate, stalemate, draws) and a small computer player.
    Board: 64 squares, index = row * 8 + col, row 0 is black's back rank. White pieces are capitals: K Q R B N P. */
 
 export const NAMES = { k: 'রাজা', q: 'মন্ত্রী', r: 'নৌকা', b: 'হাতি', n: 'ঘোড়া', p: 'বোড়ে' };

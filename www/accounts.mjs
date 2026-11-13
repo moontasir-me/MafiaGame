@@ -1,6 +1,6 @@
 /* Player accounts on this device: just a name. Several accounts can live on one phone.
    Every game adds players from here, and the ranking groups results by the account name.
-   Coins are won only in কলম যুদ্ধ fights (against people or the computer) and spent in its shop. */
+   Coins are won only in পেন ফাইট fights (against people or the computer) and spent in its shop. */
 import { cleanGear, GEAR, nextPrice } from './pen-gear.mjs';
 import { removePlayer } from './history.mjs';
 

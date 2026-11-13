@@ -1,4 +1,4 @@
-/* Shared bits for the two hurricane-lamp games (শতরঞ্জি, চোর ডাকাত পুলিশ বাবু): the lamp drawing, dialogs, toast. */
+/* Shared bits for the two hurricane-lamp games (চতুরঙ্গ, চোর ডাকাত পুলিশ বাবু): the lamp drawing, dialogs, toast. */
 import { esc, icon } from './ui-kit.mjs';
 import { soundEnabled, toggleSound } from './sound.mjs';
 

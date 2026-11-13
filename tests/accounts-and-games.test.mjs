@@ -75,7 +75,7 @@ test('Fibonacci questions at all four levels have four different options and one
 import { newGame, legal, play, result, bestMove } from '../www/shotoronji-engine.mjs';
 import { score as chorScore, deal, targetOf } from '../www/chor-engine.mjs';
 const perft = (g, d) => d === 0 ? 1 : legal(g).reduce((n, m) => n + perft(play(g, m), d - 1), 0);
-test('শতরঞ্জি follows the full chess rules and the computer finds a mate in one', () => {
+test('চতুরঙ্গ follows the full chess rules and the computer finds a mate in one', () => {
   assert.deepEqual([1, 2, 3].map(d => perft(newGame(), d)), [20, 400, 8902]);
   let g = newGame(); const sq = s => (8 - Number(s[1])) * 8 + 'abcdefgh'.indexOf(s[0]);
   for (const [f, t] of [['f2', 'f3'], ['e7', 'e5'], ['g2', 'g4']]) g = play(g, legal(g).find(m => m.from === sq(f) && m.to === sq(t)));

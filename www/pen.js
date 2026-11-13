@@ -12,7 +12,7 @@ const ONLINE = isOnlineMode() || new URLSearchParams(location.search).has('onlin
 let online = null, poll = 0, shooting = false, replay = null, myPen = 'pinpoint';
 try { myPen = localStorage.getItem('pen.online.pen') || 'pinpoint'; } catch { }
 
-/* কলম যুদ্ধ: the school-bench pen fight. Players take turns flicking their own pen;
+/* পেন ফাইট: the school-bench pen fight. Players take turns flicking their own pen;
    a pen whose middle goes past the edge of the bench has fallen. Last pen on the bench wins the round.
    Every point won is also a coin for the player's account, spent in the shop on add-ons. */
 
@@ -288,14 +288,14 @@ function accountChips() {
 }
 function onlineSetup() {
   const k = PEN_KEYS.indexOf(myPen);
-  return `<header class="pen-head"><img src="assets/pen/cover.svg" alt="" width="640" height="420"><div><h1>কলম যুদ্ধ</h1><p>অনলাইন: ২–৪ জন, যার যার ফোনে</p></div></header>
+  return `<header class="pen-head"><img src="assets/pen/cover.svg" alt="" width="640" height="420"><div><h1>পেন ফাইট</h1><p>অনলাইন: ২–৪ জন, যার যার ফোনে</p></div></header>
   <section class="ol-card"><div class="pc-pen"><button type="button" class="pc-arrow" data-action="my-pen" data-id="-1" aria-label="আগের কলম">‹</button><img src="${penImg(myPen)}" alt="" width="64" height="64"><span><b>${esc(PENS[myPen].name)}</b><small>আপনার কলম · ${bn(k + 1)}/${bn(PEN_KEYS.length)}</small>${statLine(myPen, gearOf({ name: onlineName() }))}</span><button type="button" class="pc-arrow" data-action="my-pen" data-id="1" aria-label="পরের কলম">›</button></div></section>
   ${onlineEntry({ len: 5 })}`;
 }
 function setup() {
-  if (ONLINE) return online ? onlineLobby({ code: online.code, members: online.members, me: online.me, host: online.host, min: 2, max: 4, title: 'কলম যুদ্ধ · অনলাইন ঘর' }) : onlineSetup();
+  if (ONLINE) return online ? onlineLobby({ code: online.code, members: online.members, me: online.me, host: online.host, min: 2, max: 4, title: 'পেন ফাইট · অনলাইন ঘর' }) : onlineSetup();
   const need = vsCpu() ? 1 : 2, room = vsCpu() ? humans().length < 1 : humans().length < 4, ready = humans().length >= need;
-  return `<header class="pen-head"><img src="assets/pen/cover.svg" alt="" width="640" height="420"><div><h1>কলম যুদ্ধ</h1><p>বেঞ্চে কলম টোকা দিয়ে অন্যের কলম ফেলে দিন। শেষ পর্যন্ত যার কলম টিকে থাকে, রাউন্ড তার।</p></div></header>
+  return `<header class="pen-head"><img src="assets/pen/cover.svg" alt="" width="640" height="420"><div><h1>পেন ফাইট</h1><p>বেঞ্চে কলম টোকা দিয়ে অন্যের কলম ফেলে দিন। শেষ পর্যন্ত যার কলম টিকে থাকে, রাউন্ড তার।</p></div></header>
   <ol class="pen-steps">
   <li><h2><i>১</i>কার সাথে খেলবেন?</h2><div class="pen-modes" role="radiogroup" aria-label="কার সাথে খেলবেন">
    <button type="button" role="radio" aria-checked="${vsCpu()}" class="${vsCpu() ? 'is-on' : ''}" data-action="mode" data-id="cpu">${icon('person')}<b>কম্পিউটারের সাথে</b><small>একা খেলুন</small></button>
@@ -351,7 +351,7 @@ function roundOver() {
   ${online && s.phase === 'over' ? `<div class="pen-actions">${button('ঘর ছেড়ে দিন', 'leave', 'primary', 'close')}</div>` : online && !online.host ? '<p class="ol-note">ঘর যিনি খুলেছেন তিনি পরের রাউন্ড শুরু করবেন।</p>' : `<div class="pen-actions">${done ? button('আরও এক রাউন্ড', 'more', 'secondary', 'plus') : button('পরের রাউন্ড', 'next', 'primary', 'arrow')}${button('ম্যাচ শেষ', 'end', done ? 'primary' : 'text', 'trophy')}</div>`}`;
 }
 function rules() {
-  return `${pageHead('নিয়ম', 'কলম যুদ্ধ', '')}<ol class="plain-rules">
+  return `${pageHead('নিয়ম', 'পেন ফাইট', '')}<ol class="plain-rules">
   <li>প্রত্যেকে নাম দিয়ে খেলায় ঢোকেন; নামটাই অ্যাকাউন্ট। একটা ফোনে অনেক অ্যাকাউন্ট রাখা যায়, র‍্যাঙ্কিং পাতা থেকে মোছা যায়।</li>
   <li>প্রত্যেকে একটা কলম বেছে নিন। কলমের ওজন, গ্রিপ আর দৈর্ঘ্য আলাদা।</li>
   <li>যার চাল, সে নিজের কলমে আঙুল রেখে পেছনে টেনে ছেড়ে দেবে। যত বেশি টানবেন, তত জোরে যাবে।</li>
@@ -363,11 +363,11 @@ function rules() {
 }
 function ranking() {
   const list = readHistory(), rows = overallRanking(list, 'pen').map(r => ({ name: r.name, score: r.points, note: bn(r.matches) + 'টি ম্যাচ', history: r.recent.map(h => ({ won: h.won, img: h.img || penImg('pinpoint'), label: h.label || '' })) }));
-  return `${pageHead('র‍্যাঙ্কিং', 'কলম যুদ্ধ', 'শেষ হওয়া প্রতিটি ম্যাচের মোট পয়েন্ট।')}
+  return `${pageHead('র‍্যাঙ্কিং', 'পেন ফাইট', 'শেষ হওয়া প্রতিটি ম্যাচের মোট পয়েন্ট।')}
   ${s.set?.rounds ? `<section class="rank-section"><h2>চলমান ম্যাচ</h2>${table()}</section>` : ''}
   <section class="rank-section"><h2>সব ম্যাচ মিলিয়ে</h2>${rankTable(rows, labels)}</section>
   <section class="fame-section"><h2>${icon('trophy')}হল অব ফেম</h2><p>শেষ ১০০টি ম্যাচে এক ম্যাচে সবচেয়ে বেশি পয়েন্ট।</p>${fameTable(hallOfFame(list, 'pen'), { caption: 'হল অব ফেম', player: 'খেলোয়াড়', points: 'পয়েন্ট', empty: 'এখনও কেউ হল অব ফেমে ওঠেননি।', number: bn, meta: e => new Date(e.date).toLocaleDateString('bn-BD') + ' · ' + bn(e.games) + 'টি রাউন্ড' })}</section>
-  ${s.phase === 'setup' ? button('কলম যুদ্ধের শুরুর পাতা', 'game-home', 'primary wide', 'home') : ''}
+  ${s.phase === 'setup' ? button('পেন ফাইটের শুরুর পাতা', 'game-home', 'primary wide', 'home') : ''}
   <a class="btn secondary wide" href="ranking.html?game=pen">${icon('trophy')}সব খেলার র‍্যাঙ্কিং ও অ্যাকাউন্ট</a>`;
 }
 const button = (label, action, cls, ic, extra = '') => `<button type="button" class="btn ${cls}" data-action="${action}" ${extra}>${icon(ic)}${label}</button>`;
@@ -376,7 +376,7 @@ function screenKey() { return view + s.phase + (s.set?.rounds || 0); }
 function render() {
   const key = screenKey(), changed = key !== lastScreen; lastScreen = key;
   const body = view === 'rules' ? rules() : view === 'ranking' ? ranking() : view === 'shop' ? shop() : s.phase === 'play' ? play() : s.phase === 'roundover' || s.phase === 'over' ? roundOver() : setup();
-  $('#app').innerHTML = appShell({ brand: 'কলম যুদ্ধ', brandSub: 'বেঞ্চের খেলা', brandIcon: 'edit', brandAction: 'tab-play', crumb: ({ rules: 'নিয়ম', ranking: 'র‍্যাঙ্কিং', shop: 'দোকান' })[view] || (s.phase === 'setup' ? 'কলম বাছাই' : `রাউন্ড ${bn(s.set.rounds + (s.phase === 'play' ? 1 : 0))}`), active: view, contentClass: 'game-content pen-content', labels: { back: 'সব খেলা', menu: 'মেনু', sections: 'খেলার অংশ' },
+  $('#app').innerHTML = appShell({ brand: 'পেন ফাইট', brandSub: 'বেঞ্চের খেলা', brandIcon: 'edit', brandAction: 'tab-play', crumb: ({ rules: 'নিয়ম', ranking: 'র‍্যাঙ্কিং', shop: 'দোকান' })[view] || (s.phase === 'setup' ? 'কলম বাছাই' : `রাউন্ড ${bn(s.set.rounds + (s.phase === 'play' ? 1 : 0))}`), active: view, contentClass: 'game-content pen-content', labels: { back: 'সব খেলা', menu: 'মেনু', sections: 'খেলার অংশ' },
     tabs: [{ id: 'play', label: 'খেলা', icon: 'play', action: 'tab-play' }, { id: 'shop', label: 'দোকান', icon: 'spark', action: 'tab-shop' }, { id: 'rules', label: 'নিয়ম', icon: 'book', action: 'tab-rules' }, { id: 'ranking', label: 'র‍্যাঙ্কিং', icon: 'trophy', action: 'tab-ranking' }], body });
   $$('[data-action]').forEach(el => el.onclick = e => { e.preventDefault(); act(el.dataset.action, el.dataset.id); });
   $('#name-form')?.addEventListener('submit', e => {
@@ -385,7 +385,7 @@ function render() {
   });
   bindNumberPick(document, 'rounds', 1, 50, n => { s.rounds = n; save(); render(); });
   if (view === 'play' && ONLINE && !online) bindOnlineEntry($('#screen'), { onCreate: name => enter({ op: 'create', name, pen: myPen }), onJoin: (name, code) => enter({ op: 'join', name, code, pen: myPen }) });
-  if (view === 'play' && online && !online.started) bindLobby($('#screen'), { code: online.code, game: 'কলম যুদ্ধ', onStart: () => send({ op: 'start' }), onLeave: () => leaveRoom() });
+  if (view === 'play' && online && !online.started) bindLobby($('#screen'), { code: online.code, game: 'পেন ফাইট', onStart: () => send({ op: 'start' }), onLeave: () => leaveRoom() });
   if (view === 'shop') drawPreview();
   if (view === 'play' && s.phase === 'play') { bindBench(); if (s.round.moving || bannerUp() || fx.length) loop(); cpuTurn(); }
   if (changed) enterScreen($('#screen'));

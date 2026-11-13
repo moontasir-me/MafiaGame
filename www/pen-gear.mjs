@@ -1,4 +1,4 @@
-/* Pens and the bench-shop add-ons for কলম যুদ্ধ. Kept apart from the page so the numbers can be tested. */
+/* Pens and the bench-shop add-ons for পেন ফাইট. Kept apart from the page so the numbers can be tested. */
 
 export const PENS = {
   pinpoint: { name: 'Matador Pinpoint', short: 'পিনপয়েন্ট', L: 150, m: 1, grip: 1, body: '#f4f6f8', cap: '#1d4fa3', note: 'মাঝারি ওজন, সোজা চলে' },

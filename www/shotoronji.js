@@ -6,7 +6,7 @@ import { esc, icon, appShell, pageHead, rankTable, fameTable, enterScreen, leave
 import { onlineEntry, bindOnlineEntry, onlineLobby, bindLobby, tableApi, isOnlineMode, ONLINE_ERRORS } from './online-ui.mjs';
 import { $, $$, bn, LANTERN, toast, confirmBox, chooseBox, openMenu, SHELL_LABELS, TABS, BACK } from './lamp.mjs';
 
-/* শতরঞ্জি: chess on one phone, against a friend or the computer. Win 3 points, draw 1. */
+/* চতুরঙ্গ: chess on one phone, against a friend or the computer. Win 3 points, draw 1. */
 const KEY = 'shotoronji.v1', ART = 'assets/shotoronji/cover.svg', CPU = 'কম্পিউটার';
 const GLYPH = { k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟' };
 const FILES = 'কখগঘঙচছজ';
@@ -33,8 +33,8 @@ function chips() {
   return list.length ? `<div class="acc-mini"><span>অ্যাকাউন্ট থেকে</span>${list.map(a => `<button type="button" data-action="fill" data-id="${esc(a.name)}">+ ${esc(a.name)}</button>`).join('')}</div>` : '';
 }
 function setup() {
-  if (ONLINE) return `<header class="lamp-head"><div><h1>শতরঞ্জি</h1><p>অনলাইন: বন্ধু নিজের ফোন থেকে খেলবে। যিনি ঘর খোলেন তিনি সাদা।</p></div></header>${onlineEntry({ len: 5 })}`;
-  return `<header class="lamp-head"><div><h1>শতরঞ্জি</h1><p>দাদুর আলমারি থেকে নামানো কাঠের ছক। এক দান হয়ে যাক।</p></div></header>
+  if (ONLINE) return `<header class="lamp-head"><div><h1>চতুরঙ্গ</h1><p>অনলাইন: বন্ধু নিজের ফোন থেকে খেলবে। যিনি ঘর খোলেন তিনি সাদা।</p></div></header>${onlineEntry({ len: 5 })}`;
+  return `<header class="lamp-head"><div><h1>চতুরঙ্গ</h1><p class="chess-verse">তোমার নৌকোর মুখোমুখি আমার সৈন্যদল<br>বাঁচার লড়াই...<br>আমার মন্ত্রী খোয়া গেছে একটা চালের ভুল<br>কোথায় দাঁড়াই...</p></div></header>
   <p class="grandpa-note"><svg viewBox="0 0 60 24" aria-hidden="true"><g fill="none" stroke="#b8893b" stroke-width="2"><circle cx="15" cy="13" r="9"/><circle cx="45" cy="13" r="9"/><path d="M24 12q6-5 12 0M6 10 1 6M54 10l5-4"/></g></svg>ছকের কোণে পিতলের পাত, ঘুঁটিগুলো হাতে হাতে ঘষে মসৃণ।</p>
   <section class="lamp-panel"><h2>কার সাথে</h2><div class="lamp-seg" role="radiogroup">${[['cpu', 'কম্পিউটার'], ['friends', 'বন্ধুর সাথে']].map(([k, l]) => `<button type="button" role="radio" aria-checked="${s.mode === k}" class="${s.mode === k ? 'is-on' : ''}" data-action="mode" data-id="${k}">${l}</button>`).join('')}</div>
   ${s.mode === 'cpu' ? `<div class="lamp-seg small" role="radiogroup" aria-label="কম্পিউটার কেমন খেলবে">${Object.entries(LEVELS).map(([k, l]) => `<button type="button" role="radio" aria-checked="${s.level === k}" class="${s.level === k ? 'is-on' : ''}" data-action="level" data-id="${k}">${l.name}</button>`).join('')}</div>` : ''}</section>
@@ -64,7 +64,7 @@ function board() {
     const sq = mySide() === 'b' ? 63 - k : k, p = g.b[sq], dark = ((sq >> 3) + (sq & 7)) % 2 === 1, cls = [dark ? 'dk' : 'lt', sq === s.sel && 'sel', targets.includes(sq) && (p ? 'hit' : 'to'), g.last && (sq === g.last.from || sq === g.last.to) && 'last', sq === king && 'check'].filter(Boolean).join(' ');
     cells += `<button type="button" class="sq ${cls}" data-sq="${sq}" aria-label="${sqName(sq)}${p ? ' ' + NAMES[p.toLowerCase()] : ''}">${p ? piece(p) : ''}${(sq & 7) === (mySide() === 'b' ? 7 : 0) ? `<small class="rk">${bn(8 - (sq >> 3))}</small>` : ''}${sq >> 3 === (mySide() === 'b' ? 0 : 7) ? `<small class="fl">${FILES[sq & 7]}</small>` : ''}</button>`;
   }
-  return `<div class="board-wrap"><div class="board" role="grid" aria-label="শতরঞ্জির ছক">${cells}</div></div>`;
+  return `<div class="board-wrap"><div class="board" role="grid" aria-label="চতুরঙ্গের ছক">${cells}</div></div>`;
 }
 function playing() {
   const check = !s.end && inCheck(s.g);
@@ -72,12 +72,12 @@ function playing() {
   const log = s.moves.length ? `<ol class="move-log">${s.moves.map((m, i) => `<li class="${i % 2 ? 'b' : 'w'}">${m}</li>`).join('')}</ol>` : '';
   const top = mySide() === 'b' ? 'w' : 'b';
   return `<div class="chess">${seat(top)}${board()}${seat(top === 'w' ? 'b' : 'w')}</div>${status}
-  <div class="lamp-actions">${online ? (s.end ? (online.host ? button('আবার খেলি', 'again', 'primary wide', 'play') : '<p class="ol-note">ঘর যিনি খুলেছেন তিনি আবার শুরু করতে পারবেন।</p>') + button('ঘর ছেড়ে দিন', 'leave', 'secondary wide', 'close') : button('হার মানি', 'resign', 'text wide', 'close')) : s.end ? button('আবার খেলি', 'again', 'primary wide', 'play') + button('শতরঞ্জির শুরুর পাতা', 'game-home', 'secondary wide', 'home')
+  <div class="lamp-actions">${online ? (s.end ? (online.host ? button('আবার খেলি', 'again', 'primary wide', 'play') : '<p class="ol-note">ঘর যিনি খুলেছেন তিনি আবার শুরু করতে পারবেন।</p>') + button('ঘর ছেড়ে দিন', 'leave', 'secondary wide', 'close') : button('হার মানি', 'resign', 'text wide', 'close')) : s.end ? button('আবার খেলি', 'again', 'primary wide', 'play') + button('চতুরঙ্গের শুরুর পাতা', 'game-home', 'secondary wide', 'home')
     : button('চাল ফেরত', 'undo', 'secondary', 'back', s.past.length ? '' : 'disabled') + (s.mode === 'friends' ? button('ড্র', 'draw', 'secondary', 'shield') : '') + button('হার মানি', 'resign', 'text', 'close')}</div>${log}`;
 }
 
 function rules() {
-  return `${pageHead('নিয়ম', 'শতরঞ্জি', '')}<ol class="plain-rules">
+  return `${pageHead('নিয়ম', 'চতুরঙ্গ', '')}<ol class="plain-rules">
   <li><b>রাজা</b> এক ঘর যেকোনো দিকে। <b>মন্ত্রী</b> সোজা বা কোনাকুনি যত ঘর খুশি। <b>নৌকা</b> সোজা। <b>হাতি</b> কোনাকুনি। <b>ঘোড়া</b> আড়াই ঘর, ডিঙিয়ে যায়। <b>বোড়ে</b> সামনে এক ঘর (প্রথমবার দুই), খায় কোনাকুনি।</li>
   <li>রাজার ওপর আক্রমণ হলে <b>কিস্তি</b>; বাঁচার পথ না থাকলে <b>কিস্তিমাত</b>, খেলা শেষ।</li>
   <li>বোড়ে শেষ সারিতে পৌঁছালে মন্ত্রী, নৌকা, হাতি বা ঘোড়া হয়ে যায়।</li>
@@ -87,7 +87,7 @@ function rules() {
 const labels = { caption: 'ফলাফল', rank: '#', player: 'খেলোয়াড় · শেষ পাঁচ দান', points: 'পয়েন্ট', win: 'সবুজ: জয়', loss: 'লাল: হার বা ড্র', order: 'নতুনটি বাঁ দিকে', empty: 'এখনও কোনো দান শেষ হয়নি।', noGames: 'এখনও খেলেননি', number: bn };
 function ranking() {
   const list = readHistory(), all = overallRanking(list, 'shotoronji').map(r => ({ name: r.name, score: r.points, note: bn(r.matches) + 'টি দান · ' + bn(r.wins) + 'টিতে জয়', history: r.recent.map(h => ({ won: h.won, img: h.img || ART, label: h.label || '' })) }));
-  return `${pageHead('র‍্যাঙ্কিং', 'শতরঞ্জি', 'জয়ে ৩, ড্রয়ে ১।')}<section class="rank-section">${rankTable(all, labels)}</section>
+  return `${pageHead('র‍্যাঙ্কিং', 'চতুরঙ্গ', 'জয়ে ৩, ড্রয়ে ১।')}<section class="rank-section">${rankTable(all, labels)}</section>
   <section class="fame-section"><h2>${icon('trophy')}হল অব ফেম</h2>${fameTable(hallOfFame(list, 'shotoronji'), { caption: 'হল অব ফেম', player: 'খেলোয়াড়', points: 'পয়েন্ট', empty: 'এখনও কেউ নেই।', number: bn, meta: e => new Date(e.date).toLocaleDateString('bn-BD') })}</section>
   <a class="btn secondary wide" href="ranking.html?game=shotoronji">${icon('trophy')}সব খেলার র‍্যাঙ্কিং ও অ্যাকাউন্ট</a>`;
 }
@@ -96,14 +96,14 @@ function ranking() {
 
 function render() {
   const key = view + s.phase, changed = key !== lastScreen; lastScreen = key;
-  const body = view === 'rules' ? rules() : view === 'ranking' ? ranking() : online && !online.started ? onlineLobby({ code: online.code, members: online.members, me: online.me, host: online.host, min: 2, max: 2, title: 'শতরঞ্জি · অনলাইন ঘর' }) : online ? playing() : s.phase === 'setup' || ONLINE ? setup() : playing();
-  $('#app').innerHTML = appShell({ brand: 'শতরঞ্জি', brandSub: 'দাদুর ছক', brandIcon: 'grid', brandAction: 'tab-play', crumb: view === 'rules' ? 'নিয়ম' : view === 'ranking' ? 'র‍্যাঙ্কিং' : s.phase === 'setup' ? 'দান সাজান' : s.end ? 'দান শেষ' : 'দান চলছে', active: view, contentClass: 'game-content lamp-content', labels: SHELL_LABELS, backHref: BACK, tabs: TABS, body });
+  const body = view === 'rules' ? rules() : view === 'ranking' ? ranking() : online && !online.started ? onlineLobby({ code: online.code, members: online.members, me: online.me, host: online.host, min: 2, max: 2, title: 'চতুরঙ্গ · অনলাইন ঘর' }) : online ? playing() : s.phase === 'setup' || ONLINE ? setup() : playing();
+  $('#app').innerHTML = appShell({ brand: 'চতুরঙ্গ', brandSub: 'দাদুর ছক', brandIcon: 'grid', brandAction: 'tab-play', crumb: view === 'rules' ? 'নিয়ম' : view === 'ranking' ? 'র‍্যাঙ্কিং' : s.phase === 'setup' ? 'দান সাজান' : s.end ? 'দান শেষ' : 'দান চলছে', active: view, contentClass: 'game-content lamp-content', labels: SHELL_LABELS, backHref: BACK, tabs: TABS, body });
   $$('[data-action]').forEach(el => el.onclick = e => { e.preventDefault(); act(el.dataset.action, el.dataset.id); });
   $$('[data-sq]').forEach(el => el.onclick = () => tap(Number(el.dataset.sq)));
   $$('#name-w,#name-b').forEach((el, i) => el.oninput = () => { s.names[el.id === 'name-w' ? 0 : 1] = el.value; save(); });
   const log = $('.move-log'); if (log) log.scrollLeft = log.scrollWidth;
   if (view === 'play' && ONLINE && !online) bindOnlineEntry($('#screen'), { onCreate: name => enter({ op: 'create', name }), onJoin: (name, code) => enter({ op: 'join', name, code }) });
-  if (view === 'play' && online && !online.started) bindLobby($('#screen'), { code: online.code, game: 'শতরঞ্জি', onStart: () => send({ op: 'start' }), onLeave: () => act('leave') });
+  if (view === 'play' && online && !online.started) bindLobby($('#screen'), { code: online.code, game: 'চতুরঙ্গ', onStart: () => send({ op: 'start' }), onLeave: () => act('leave') });
   if (changed) enterScreen($('#screen'));
 }
 const transition = () => leaveScreen($('#screen'), () => { render(); scrollTo({ top: 0, behavior: 'instant' }); });
@@ -149,7 +149,7 @@ function finish(end, winner) {
   s.end = end; s.winner = winner; sound(winner ? 'win' : 'notice');
   const sides = online ? [mySide()] : s.mode === 'cpu' ? ['w'] : ['w', 'b'];
   const label = winner ? 'জয়' : 'ড্র';
-  saveMatch({ id: crypto.randomUUID(), game: 'shotoronji', players: sides.map(side => ({ name: nameOf(side), points: winner === side ? 3 : winner ? 0 : 1, recent: [{ won: winner === side, img: ART, label: `শতরঞ্জি · ${winner === side ? 'জয়' : winner ? 'হার' : label}` }] })) });
+  saveMatch({ id: crypto.randomUUID(), game: 'shotoronji', players: sides.map(side => ({ name: nameOf(side), points: winner === side ? 3 : winner ? 0 : 1, recent: [{ won: winner === side, img: ART, label: `চতুরঙ্গ · ${winner === side ? 'জয়' : winner ? 'হার' : label}` }] })) });
 }
 
 async function act(action, id) {

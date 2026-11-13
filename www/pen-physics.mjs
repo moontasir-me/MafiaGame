@@ -1,4 +1,4 @@
-/* কলম যুদ্ধ physics: pens are capsules sliding on a rough wooden bench.
+/* পেন ফাইট physics: pens are capsules sliding on a rough wooden bench.
    Grip has three parts, so a pen stops like a real pen on wood instead of skating:
    - sliding friction (a steady brake, much stronger once a pen is slow) plus a speed drag, all scaled by the pen's grip;
    - spin friction, so a clipped pen turns a little and then stops turning;
