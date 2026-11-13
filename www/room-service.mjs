@@ -33,7 +33,7 @@ export class RoomService{
   }
   const r=this.rooms.get(String(b.room||'').toUpperCase());if(!r||r.closed)fail('ROOM_GONE');
   if(path==='/api/join'){
-   if(b.invite!==r.invite)fail('INVITE');if(r.phase!=='lobby')fail('STARTED');if(r.members.length>=21)fail('FULL');
+   if(b.invite!==undefined&&b.invite!==r.invite)fail('INVITE');if(r.phase!=='lobby')fail('STARTED');if(r.members.length>=21)fail('FULL');
    if(b.profile?.id&&r.members.some(p=>p.profileId===b.profile.id))fail('ALREADY_JOINED');
    const me=this.member(b.name||b.profile?.name,r.members.map(p=>p.name),b.profile);r.members.push(me);r.config=defaultRoleCounts(Math.max(5,r.members.length-1));this.touch(r,{type:'JOINED',name:me.name});return {room:r.id,token:me.token,view:this.view(r,me)};
   }
