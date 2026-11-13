@@ -52,7 +52,7 @@ footer{font-size:11px}
 /* Smaller, even tiles: one flat illustration per game, same frame for all. */
 .game-tiles{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:14px!important;margin-top:22px}
 @media(min-width:620px){.game-tiles{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:18px!important}}
-@media(min-width:1100px){.game-tiles{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(min-width:1100px){.game-tiles{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
 .game-tile{border-radius:18px}
 .game-tile .tile-art{height:auto!important;aspect-ratio:640/420;margin:10px 12px 0;border-radius:12px;overflow:hidden}
 .game-tile .tile-art img{position:static!important;inset:auto!important;width:100%!important;height:100%!important;object-fit:cover!important;border-radius:12px}
@@ -100,3 +100,4 @@ body.village-home{background:#0b1020;color:#eef0f7}
 @media(max-width:650px){.home-hero{align-items:flex-start}.home-hero p{font-size:13px}}
 .village-home .game-tile:not(.chess-tile){color:#302d38}.village-home .game-tile:not(.chess-tile) :is(h2,.tile-top){color:#302d38}
 .village-home .moon{top:auto;bottom:calc(22vh + 30px);right:7%;opacity:.95}
+.ludo-tile{background:linear-gradient(160deg,#fff4e0,#f3dfbd)!important}.ludo-tile h2{color:#c0392b!important}
