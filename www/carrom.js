@@ -59,6 +59,12 @@ function message(g) {
   return `${who}-এর শটে কিছু পড়েনি`;
 }
 /* Friction meter: how much the board grips. Green is slippery (fresh powder), red is sticky. */
+function slider(g) {
+  const me = online ? online.me : g.turn, show = g.winner === null && g.turn === me && !cpuTurn();
+  return show ? `<label class="cr-slide"><span>স্ট্রাইকার সরান</span><input id="striker-x" type="range" min="${BASE.x0}" max="${BASE.x1}" step="1" value="${Math.round(turned() ? S - sx : sx)}" aria-label="স্ট্রাইকারের জায়গা"></label>` : '';
+}
+const turned = () => !!(online && online.me === 1);
+function paintSlider() { const el = $('#striker-x'); if (el) el.value = Math.round(turned() ? S - sx : sx); }
 function meter(g) {
   const f = g.friction ?? 1, pct = Math.round((f - FRICTION.min) / (FRICTION.max - FRICTION.min) * 100), me = online ? online.me : g.turn;
   const mine = g.winner === null && g.turn === me && !moving && !busy && !cpuTurn(), left = (g.powder ?? [1, 1])[me];
@@ -84,7 +90,7 @@ function playing() {
   const g = s.g;
   const near = online ? online.me : 0;
   return `<div class="cr-table">${seat(1 - near)}<div class="cr-board-wrap"><canvas id="board" class="${near ? 'turned' : ''}" aria-label="ক্যারম বোর্ড"></canvas></div>${seat(near)}</div>
-  ${meter(g)}<p class="cr-msg" role="status">${message(g)}</p>
+  ${slider(g)}${meter(g)}<p class="cr-msg" role="status">${message(g)}</p>
   ${g.winner !== null ? `<section class="cr-over"><h2>${esc(nameOf(g.winner))} জিতলেন!</h2><p>${bn(score(g, 0))} — ${bn(score(g, 1))}</p>${online ? (online.host ? button('আবার খেলি', 'again', 'primary wide', 'play') : '<p class="ol-note">ঘর যিনি খুলেছেন তিনি আবার শুরু করতে পারবেন।</p>') + button('ঘর ছেড়ে দিন', 'leave', 'secondary wide', 'close') : button('আবার খেলি', 'again', 'primary wide', 'play') + button('ক্যারমের শুরুর পাতা', 'game-home', 'secondary wide', 'home')}</section>`
     : button('খেলা ছেড়ে দিন', 'quit', 'text wide', 'close')}`;
 }
@@ -188,17 +194,22 @@ async function cpuMove() {
 function bindBoard() {
   const c = $('#board'); if (!c) return; sizeBoard();
   const world = e => { const b = c.getBoundingClientRect(), x = (e.clientX - b.left) / b.width * S, y = (e.clientY - b.top) / b.height * S; return c.classList.contains('turned') ? [S - x, S - y] : [x, y]; };
-  let mode = null;
+  let mode = null, pick = null;
   c.onpointerdown = e => {
     if (!human()) return; const [x, y] = world(e), side = s.g.turn, by = BASE.y[side];
     try { c.setPointerCapture(e.pointerId); } catch { }
-    if (Math.hypot(x - sx, y - by) < STRIKER * 2.2) { mode = 'aim'; aim = { x: sx, y: by, px: x, py: y }; }
+    // On the striker: the first movement decides. Sideways slides it along the line, a pull back aims.
+    if (Math.hypot(x - sx, y - by) < STRIKER * 2.4) { mode = 'pick'; pick = { x, y, sx }; }
     else if (Math.abs(y - by) < 90) { mode = 'slide'; sx = Math.max(BASE.x0, Math.min(BASE.x1, x)); }
     else return toast('নিজের লাইনে স্ট্রাইকার ধরে পেছনে টানুন।');
     draw();
   };
   // Move and release are heard on the whole window, so a pull that leaves the board still shoots.
-  window.onpointermove = e => { if (!mode) return; const [x, y] = world(e); if (mode === 'slide') sx = Math.max(BASE.x0, Math.min(BASE.x1, x)); else { aim.px = x; aim.py = y; } draw(); };
+  window.onpointermove = e => {
+    if (!mode) return; const [x, y] = world(e);
+    if (mode === 'pick') { const dx = x - pick.x, dy = y - pick.y; if (Math.hypot(dx, dy) < 14) return; if (Math.abs(dx) > Math.abs(dy) * 1.2) { mode = 'slide'; pick.off = pick.sx - pick.x; } else { mode = 'aim'; aim = { x: sx, y: BASE.y[s.g.turn], px: x, py: y }; } }
+    if (mode === 'slide' && pick?.off !== undefined) { sx = Math.max(BASE.x0, Math.min(BASE.x1, x + pick.off)); paintSlider(); return draw(); }
+    if (mode === 'slide') sx = Math.max(BASE.x0, Math.min(BASE.x1, x)); else { aim.px = x; aim.py = y; } draw(); };
   window.onpointerup = () => {
     if (mode === 'aim') {
       const dx = aim.x - aim.px, dy = aim.y - aim.py, len = Math.hypot(dx, dy); aim = null;
@@ -207,7 +218,7 @@ function bindBoard() {
         else { const power = Math.min(len, 260) / 260 * POWER; shoot(sx, dx / len * power, dy / len * power); }
       } else draw();
     }
-    mode = null;
+    mode = null; pick = null;
   };
   window.onpointercancel = () => { mode = null; aim = null; draw(); };
 }
@@ -227,6 +238,7 @@ function render() {
   $$('[data-action]').forEach(el => el.onclick = e => { e.preventDefault(); act(el.dataset.action, el.dataset.id); });
   $$('[data-name]').forEach(el => el.oninput = () => { s.names[Number(el.dataset.name)] = el.value; save(); });
   if (view === 'play' && (online ? online.started && s.g : s.phase === 'play')) bindBoard();
+  $('#striker-x')?.addEventListener('input', e => { if (!human()) return; const v = Number(e.target.value); sx = turned() ? S - v : v; draw(); });
   if (view === 'play' && ONLINE && !online) bindOnlineEntry($('#screen'), { onCreate: name => enter({ op: 'create', name }), onJoin: (name, code) => enter({ op: 'join', name, code }) });
   if (view === 'play' && online && !online.started) bindLobby($('#screen'), { code: online.code, game: 'ক্যারম', onStart: () => send({ op: 'start' }), onLeave: () => leaveRoom() });
   if (changed) enterScreen($('#screen'));
