@@ -118,3 +118,14 @@ test('online ক্যারম: two players, host racks, only the shooter repor
   await rooms.handle({ op: 'sync', code: a.code, token: b.token, seq: 1, data: { g: { turn: 1, winner: 1 } }, shot: { x: 500, vx: 0, vy: 900 } });
   assert.equal(saves.at(-1), 600);
 });
+
+test('ক্যারম: shots wear the powder off, each player may powder once, a powdered board slides further', () => {
+  const g = C.newGame(); assert.equal(C.canPowder(g, 0), false, 'a freshly powdered board needs nothing yet');
+  for (let i = 0; i < 3; i++) C.settle(g, []);
+  assert.equal(C.spreadPowder(g, 0), true, 'after a few shots it may be powdered');
+  assert.equal(C.spreadPowder(g, 0), false, 'only once each');
+  for (let i = 0; i < 8; i++) C.settle(g, []);
+  assert.ok(g.friction > C.FRICTION.needs);
+  const run = f => { const p = [C.striker(0)]; p[0].vy = -400; C.simulate(p, 1 / 240, f); return p[0].y; };
+  assert.ok(run(0.6) < run(1.6), 'less friction carries the striker further up the board');
+});

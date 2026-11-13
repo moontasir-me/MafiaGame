@@ -1,4 +1,4 @@
-import { S, COIN, STRIKER, BASE, POCKETS, POWER, newGame, striker, step, resting, settle, score, plan, COLOURS, CPU_LEVELS, QUEEN_POINTS } from './carrom-physics.mjs';
+import { FRICTION, canPowder, spreadPowder, S, COIN, STRIKER, BASE, POCKETS, POWER, newGame, striker, step, resting, settle, score, plan, COLOURS, CPU_LEVELS, QUEEN_POINTS } from './carrom-physics.mjs';
 import { sound } from './sound.mjs';
 import { saveMatch, readHistory, overallRanking, hallOfFame } from './history.mjs';
 import { readAccounts, ensureAccount } from './accounts.mjs';
@@ -49,6 +49,7 @@ function seat(side) {
 function message(g) {
   const l = g.last; if (!l) return 'প্রথম শট';
   const who = esc(nameOf(l.side));
+  if (l.powder) return `${who} বোর্ডে বোরিক পাউডার ছিটালেন, এখন গুটি বেশি পিছলাবে`;
   if (l.foul) return `${who}-এর স্ট্রাইকার পকেটে! একটা গুটি মাঝে ফেরত`;
   if (l.note === 'covered') return `${who} রানি তুলে নিলেন! +${bn(QUEEN_POINTS)}`;
   if (l.note === 'queen') return `রানি পকেটে! এবার নিজের একটা গুটি ফেলে ঢেকে দিতে হবে`;
@@ -57,11 +58,33 @@ function message(g) {
   if (l.other) return `${who} প্রতিপক্ষের গুটি ফেলে দিলেন`;
   return `${who}-এর শটে কিছু পড়েনি`;
 }
+/* Friction meter: how much the board grips. Green is slippery (fresh powder), red is sticky. */
+function meter(g) {
+  const f = g.friction ?? 1, pct = Math.round((f - FRICTION.min) / (FRICTION.max - FRICTION.min) * 100), me = online ? online.me : g.turn;
+  const mine = g.winner === null && g.turn === me && !moving && !busy && !cpuTurn(), left = (g.powder ?? [1, 1])[me];
+  const word = f < .85 ? 'মসৃণ' : f < 1.2 ? 'ঠিকঠাক' : f < 1.45 ? 'খসখসে' : 'আটকে যাচ্ছে';
+  return `<div class="cr-meter"><div class="cr-meter-top"><span>বোর্ডের ঘর্ষণ</span><b>${word}</b></div><div class="cr-meter-bar" role="meter" aria-label="বোর্ডের ঘর্ষণ" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"><i style="width:${Math.max(4, pct)}%"></i></div>
+  ${g.winner === null ? `<button type="button" class="cr-powder" data-action="powder" ${mine && canPowder(g, me) ? '' : 'disabled'}><span class="cr-powder-ic" aria-hidden="true"></span>${left ? (f >= FRICTION.needs ? 'বোরিক পাউডার ছিটান' : 'বোর্ড এখনও মসৃণ') : 'পাউডার শেষ'}<small>${bn(left)}/১ বার</small></button>` : ''}</div>`;
+}
+let dust = [];
+function powderNow() {
+  const g = s.g, side = online ? online.me : g.turn;
+  if (!spreadPowder(g, side)) return;
+  // A shower of white specks that settles over the board.
+  dust = Array.from({ length: 260 }, () => ({ x: Math.random() * S, y: Math.random() * S, r: 1 + Math.random() * 3, a: .9 }));
+  sound('coin'); save(); render(); fadeDust();
+  if (online) sync(null);
+}
+function fadeDust() {
+  if (!dust.length) return;
+  dust.forEach(d => d.a -= .02); dust = dust.filter(d => d.a > .05); draw();
+  if (dust.length) requestAnimationFrame(fadeDust);
+}
 function playing() {
   const g = s.g;
   const near = online ? online.me : 0;
   return `<div class="cr-table">${seat(1 - near)}<div class="cr-board-wrap"><canvas id="board" class="${near ? 'turned' : ''}" aria-label="ক্যারম বোর্ড"></canvas></div>${seat(near)}</div>
-  <p class="cr-msg" role="status">${message(g)}</p>
+  ${meter(g)}<p class="cr-msg" role="status">${message(g)}</p>
   ${g.winner !== null ? `<section class="cr-over"><h2>${esc(nameOf(g.winner))} জিতলেন!</h2><p>${bn(score(g, 0))} — ${bn(score(g, 1))}</p>${online ? (online.host ? button('আবার খেলি', 'again', 'primary wide', 'play') : '<p class="ol-note">ঘর যিনি খুলেছেন তিনি আবার শুরু করতে পারবেন।</p>') + button('ঘর ছেড়ে দিন', 'leave', 'secondary wide', 'close') : button('আবার খেলি', 'again', 'primary wide', 'play') + button('ক্যারমের শুরুর পাতা', 'game-home', 'secondary wide', 'home')}</section>`
     : button('খেলা ছেড়ে দিন', 'quit', 'text wide', 'close')}`;
 }
@@ -72,6 +95,7 @@ function rules() {
   <li>নিজের গুটি পকেটে পড়লে আবার শট। প্রতিপক্ষের গুটি ফেললে সেটা তার হিসাবে যায়।</li>
   <li>রানি ফেললে পরের শটে (বা একই শটে) নিজের একটা গুটি ফেলে ঢাকতে হয়, তবেই রানির ${bn(QUEEN_POINTS)} পয়েন্ট। না পারলে রানি মাঝে ফেরে।</li>
   <li>স্ট্রাইকার পকেটে পড়লে ফাউল: চাল যায়, আর নিজের একটা পকেটের গুটি মাঝে ফেরত।</li>
+  <li>প্রতি শটে বোর্ডের পাউডার একটু উঠে যায়, বোর্ড খসখসে হয়। মিটারে দেখা যায়। খেলার মাঝে প্রত্যেকে একবার বোরিক পাউডার ছিটাতে পারেন (বোর্ড যখন আর মসৃণ নেই)।</li>
   <li>যে আগে নয়টা গুটি ফেলে, খেলা শেষ। বেশি পয়েন্ট যার (রানিসহ) সে জেতে। র‍্যাঙ্কিংয়ে জয়ে ৩ পয়েন্ট।</li></ol>`;
 }
 const labels = { caption: 'ফলাফল', rank: '#', player: 'খেলোয়াড় · শেষ পাঁচ খেলা', points: 'পয়েন্ট', win: 'সবুজ: জয়', loss: 'লাল: হার', order: 'নতুনটি বাঁ দিকে', empty: 'এখনও কোনো খেলা শেষ হয়নি।', noGames: 'এখনও খেলেননি', number: bn };
@@ -119,6 +143,7 @@ function draw() {
   for (const p of s.g.pieces) if (!p.in && p.id !== 's') drawPiece(p);
   const st = s.g.pieces.find(p => p.id === 's') || (s.g.winner === null && !moving ? striker(s.g.turn, sx) : null);
   if (st && !st.in) drawPiece(st);
+  if (dust.length) { g.fillStyle = '#fff'; for (const d of dust) { g.globalAlpha = d.a; g.beginPath(); g.arc(d.x * k, d.y * k, d.r * k, 0, 7); g.fill(); } g.globalAlpha = 1; }
   if (aim) {
     const dx = aim.x - aim.px, dy = aim.y - aim.py, len = Math.min(Math.hypot(dx, dy), 260);
     if (len > 8) {
@@ -137,7 +162,7 @@ function shoot(x, vx, vy) {
   let last = performance.now();
   const tick = now => {
     const dt = Math.min(.05, (now - last) / 1000), n = Math.ceil(dt / (1 / 240)); last = now;
-    for (let i = 0; i < n && !resting(s.g.pieces); i++) { const f = step(s.g.pieces, dt / n); if (f.length) { fell.push(...f); sound(f.includes('s') ? 'wrong' : 'coin'); } }
+    for (let i = 0; i < n && !resting(s.g.pieces); i++) { const f = step(s.g.pieces, dt / n, s.g.friction ?? 1); if (f.length) { fell.push(...f); sound(f.includes('s') ? 'wrong' : 'coin'); } }
     draw();
     if (!resting(s.g.pieces)) raf = requestAnimationFrame(tick); else done();
   };
@@ -154,6 +179,8 @@ async function done() {
 }
 async function cpuMove() {
   busy = true; render(); await wait(2000); if (!cpuTurn()) { busy = false; return; }
+  // A sticky board slows every shot: the computer powders it once when it gets bad.
+  if ((s.g.friction ?? 1) > 1.3 && canPowder(s.g, 1)) { spreadPowder(s.g, 1); dust = Array.from({ length: 260 }, () => ({ x: Math.random() * S, y: Math.random() * S, r: 1 + Math.random() * 3, a: .9 })); sound('coin'); render(); fadeDust(); await wait(1500); }
   const p = plan(s.g, s.level); sx = p.x; draw();
   const len = Math.hypot(p.vx, p.vy), pull = len / POWER * 260; aim = { x: p.x, y: BASE.y[1], px: p.x - p.vx / len * pull, py: BASE.y[1] - p.vy / len * pull }; draw();
   await wait(900); aim = null; busy = false; shoot(p.x, p.vx, p.vy);
@@ -220,6 +247,7 @@ async function act(action, id) {
       need.forEach(i => { try { s.names[i] = ensureAccount(s.names[i]).name; } catch { s.names[i] = s.names[i].trim(); } });
       s.g = newGame(); s.saved = false; s.phase = 'play'; sx = S / 2; view = 'play'; save(); sound('notice'); return transition();
     }
+    case 'powder': return powderNow();
     case 'again': if (online) return send({ op: 'again' });
       s.g = newGame(); s.saved = false; sx = S / 2; save(); return render();
     case 'quit': if (online) return leaveRoom();

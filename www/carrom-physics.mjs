@@ -7,6 +7,15 @@ export const POCKETS = [[POCKET_AT, POCKET_AT], [S - POCKET_AT, POCKET_AT], [POC
 export const POWER = 2600;
 const DECEL = 330, DAMP = 0.6, WALL = 0.72, HIT = 0.92, DT = 1 / 240;
 export const QUEEN_POINTS = 3;
+/* Board friction: 1 is a freshly powdered board. Every shot rubs some boric powder off (friction rises);
+   each player may spread powder once a game, which brings it back down. */
+export const FRICTION = { start: 0.75, worn: 0.06, max: 1.7, powder: 0.55, min: 0.6, needs: 0.9 };
+export const canPowder = (g, side = g.turn) => g.winner === null && (g.powder?.[side] ?? 1) > 0 && (g.friction ?? 1) >= FRICTION.needs;
+export function spreadPowder(g, side = g.turn) {
+  if (!canPowder(g, side)) return false;
+  g.powder = g.powder || [1, 1]; g.powder[side]--; g.friction = Math.max(FRICTION.min, (g.friction ?? 1) - FRICTION.powder); g.last = { side, powder: true };
+  return true;
+}
 
 /* 9 white, 9 black around the red queen, in the usual two rings. */
 export function rack() {
@@ -21,11 +30,11 @@ export function rack() {
 export const striker = (side, x = S / 2) => ({ id: 's', kind: 'striker', x, y: BASE.y[side], r: STRIKER, m: 1.6, vx: 0, vy: 0, in: false });
 
 /* One small step of motion: sliding friction, walls, collisions, pockets. Returns ids pocketed in this step. */
-export function step(pieces, dt = DT) {
+export function step(pieces, dt = DT, friction = 1) {
   const live = pieces.filter(p => !p.in), fell = [];
   for (const p of live) {
     const sp = Math.hypot(p.vx, p.vy); if (!sp) continue;
-    const slow = Math.max(0, sp - DECEL * dt) * (1 - DAMP * dt) / sp; p.vx *= slow; p.vy *= slow;
+    const slow = Math.max(0, sp - DECEL * friction * dt) * (1 - DAMP * dt) / sp; p.vx *= slow; p.vy *= slow;
     if (Math.hypot(p.vx, p.vy) < 4) { p.vx = p.vy = 0; }
     p.x += p.vx * dt; p.y += p.vy * dt;
     if (p.x < p.r) { p.x = p.r; p.vx = -p.vx * WALL; } if (p.x > S - p.r) { p.x = S - p.r; p.vx = -p.vx * WALL; }
@@ -45,16 +54,16 @@ export function step(pieces, dt = DT) {
 export const resting = pieces => pieces.every(p => p.in || (!p.vx && !p.vy));
 
 /* Runs a shot to the end (for the computer's planning and for tests). */
-export function simulate(pieces, dt = 1 / 120) {
+export function simulate(pieces, dt = 1 / 120, friction = 1) {
   const fell = []; let n = 0;
-  while (!resting(pieces) && n++ < 2400) fell.push(...step(pieces, dt));
+  while (!resting(pieces) && n++ < 2400) fell.push(...step(pieces, dt, friction));
   return fell;
 }
 
 /* ---------- Rules ----------
    game = {pieces, turn, side colours ['white','black'], pocketed: {0: [ids], 1: [ids]}, queen: null|{by, covered}, pendingQueen, winner} */
 export const COLOURS = ['white', 'black'];
-export function newGame() { return { pieces: rack(), turn: 0, pocketed: [[], []], queenBy: null, queenPending: null, winner: null, shots: 0, last: null }; }
+export function newGame() { return { pieces: rack(), turn: 0, pocketed: [[], []], queenBy: null, queenPending: null, winner: null, friction: FRICTION.start, powder: [1, 1], shots: 0, last: null }; }
 export const score = (g, side) => g.pocketed[side].length + (g.queenBy === side ? QUEEN_POINTS : 0);
 const byId = (g, id) => g.pieces.find(p => p.id === id);
 function returnToCentre(g, piece) {
@@ -82,7 +91,7 @@ export function settle(g, fell) {
     // Striker in a pocket: lose the turn and give one pocketed coin back to the middle.
     again = false; const back = g.pocketed[side].pop(); if (back) returnToCentre(g, byId(g, back));
   }
-  g.shots++; g.last = last;
+  g.shots++; g.last = last; g.friction = Math.min(FRICTION.max, (g.friction ?? 1) + FRICTION.worn);
   // A side that has all nine of its coins in ends the game; the higher score (queen included) wins.
   if (g.pocketed[0].length >= 9 || g.pocketed[1].length >= 9) { const s0 = score(g, 0), s1 = score(g, 1); g.winner = g.pocketed[0].length >= 9 ? (s0 >= s1 ? 0 : 1) : (s1 >= s0 ? 1 : 0); }
   g.pieces = g.pieces.filter(p => p.id !== 's');
@@ -107,7 +116,7 @@ export function plan(g, level = 'medium', rnd = Math.random) {
     const ax = gx - x, ay = gy - y, len = Math.hypot(ax, ay) || 1, power = Math.min(1, .45 + (len + d) / 2400) * POWER;
     const shot = { x, vx: ax / len * power, vy: ay / len * power };
     const sim = clone(g.pieces); const st = striker(side, x); st.vx = shot.vx; st.vy = shot.vy; sim.push(st);
-    const fell = simulate(sim), kinds = fell.map(id => id === 's' ? 'striker' : sim.find(p => p.id === id).kind);
+    const fell = simulate(sim, 1 / 120, g.friction ?? 1), kinds = fell.map(id => id === 's' ? 'striker' : sim.find(p => p.id === id).kind);
     const value = kinds.filter(k => k === mine).length * 10 + (kinds.includes('queen') ? (kinds.includes(mine) ? 14 : 5) : 0) - kinds.filter(k => k === COLOURS[1 - side]).length * 7 - (kinds.includes('striker') ? 16 : 0) + rnd();
     if (!best || value > best.value) best = { ...shot, value };
   }
