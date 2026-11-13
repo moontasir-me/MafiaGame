@@ -5,7 +5,6 @@ import { soundEnabled, toggleSound } from './sound.mjs';
 /* The night's light: moonlight or the hurricane lamp. Chosen on the শীতলপাটি page, remembered on this phone. */
 export const readLight = () => { try { return localStorage.getItem('shitolpati.light') === 'lamp' ? 'lamp' : 'moon'; } catch { return 'moon'; } };
 export function setLight(v) { try { localStorage.setItem('shitolpati.light', v); } catch { } document.documentElement.dataset.light = v; }
-document.documentElement.dataset.light = readLight();
 
 export const $ = q => document.querySelector(q), $$ = q => [...document.querySelectorAll(q)];
 export const bn = n => (n < 0 ? '−' : '') + Math.abs(Number(n)).toLocaleString('bn-BD');
@@ -35,13 +34,13 @@ export function chooseBox(title, choices) {
 }
 export function openMenu(items, act) {
   closeOverlay();
-  const all = [...items, [readLight() === 'moon' ? 'আলো: চাঁদ (হারিকেন জ্বালান)' : 'আলো: হারিকেন (চাঁদের আলোয় যান)', 'moon', 'light', ''], ['শব্দ: ' + (soundEnabled() ? 'চালু' : 'বন্ধ'), 'sound', 'sound', ''], ['সব খেলায় ফিরে যান', 'back', 'games', 'tone-quiet']];
+  const all = [...items, ['শব্দ: ' + (soundEnabled() ? 'চালু' : 'বন্ধ'), 'sound', 'sound', ''], ['সব খেলায় ফিরে যান', 'back', 'games', 'tone-quiet']];
   $('#overlay').innerHTML = `<div class="scrim"><section class="dialog app-menu-dialog" role="dialog" aria-modal="true" aria-labelledby="menu-title"><div class="picker-title"><h2 id="menu-title">মেনু</h2><button type="button" id="close-menu" class="icon-btn" aria-label="বন্ধ করুন">${icon('close')}</button></div><div class="app-menu-items">${all.map(([label, ic, a, tone]) => `<button class="btn secondary wide ${tone}" type="button" data-menu="${a}">${icon(ic)}${label}</button>`).join('')}</div></section></div>`;
   $('#close-menu').onclick = closeOverlay;
   $$('[data-menu]').forEach(el => el.onclick = () => { const a = el.dataset.menu; closeOverlay(); if (a === 'sound') { toggleSound(); openMenu(items, act); } else if (a === 'light') { setLight(readLight() === 'moon' ? 'lamp' : 'moon'); openMenu(items, act); } else if (a === 'games') location.href = 'index.html'; else act(a); });
 }
 addEventListener('keydown', e => { if (e.key === 'Escape' && $('#overlay')?.innerHTML) closeOverlay(); });
 
-export const BACK = 'shitolpati.html';
-export const SHELL_LABELS = { back: 'শীতলপাটি', menu: 'মেনু', sections: 'অংশ' };
+export const BACK = 'index.html';
+export const SHELL_LABELS = { back: 'সব খেলা', menu: 'মেনু', sections: 'অংশ' };
 export const TABS = [{ id: 'play', label: 'খেলা', icon: 'play', action: 'tab-play' }, { id: 'rules', label: 'নিয়ম', icon: 'book', action: 'tab-rules' }, { id: 'ranking', label: 'র‍্যাঙ্কিং', icon: 'trophy', action: 'tab-ranking' }];

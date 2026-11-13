@@ -12,7 +12,7 @@
 .kalidas-tile{background:linear-gradient(150deg,#fbf3dc,#efe2c2)}.kalidas-tile-art img{inset:12px 18px 0;width:calc(100% - 36px);height:calc(100% - 12px);border-radius:15px}
 .kalidas-tile h2{font-family:inherit}
 @media(max-width:650px){.kalidas-tile-art img{inset:6px 18px 0;width:calc(100% - 36px);height:calc(100% - 6px)}}
-/* জম্ফা home: brand, profile and ranking buttons; tiles carry only a name. */
+/* শীতলপাটি home: brand, profile and ranking buttons; tiles carry only a name. */
 .games-brand{font-family:'Li Ador Noirrit','Noto Sans Bengali',Poppins,sans-serif;font-size:30px}
 .game-tiles{margin-top:30px}
 .tile-copy h2{font-family:Poppins,'Li Ador Noirrit','Noto Sans Bengali',sans-serif}
@@ -62,3 +62,41 @@ footer{font-size:11px}
 .tile-copy h2{font-size:clamp(17px,2vw,21px)!important;letter-spacing:-.3px!important;line-height:1.3}
 .mafia-tile{background:linear-gradient(150deg,#f4e7e3,#e6d3cf)}
 .lamp-tile{background:linear-gradient(160deg,#2a1d12,#140e09)!important;color:#f4e4c4!important}.lamp-tile :is(h2,.tile-top){color:#f4e4c4!important}.lamp-tile .tile-arrow{background:#f0a83a!important;color:#2a1704!important}.lamp-tile-art{padding:0!important}
+
+/* ---------- শীতলপাটি home: a village courtyard during loadshedding, under the moon or a hurricane lamp ---------- */
+html:has(.village-home){color-scheme:dark}
+body.village-home{background:#0b1020;color:#eef0f7}
+.night{position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(#060a18,#0d1530 55%,#1b1d2a);transition:background .6s}
+:root[data-light=lamp] .night{background:radial-gradient(ellipse 70% 50% at 50% 18%,#f0a83a30,transparent 70%),linear-gradient(#07050a,#140e09 60%,#22180f)}
+.moon{position:absolute;top:6%;right:9%;width:clamp(56px,10vw,100px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 36% 36%,#fffdf2,#ebe5cc 58%,#c9c1a3);box-shadow:0 0 70px 24px #dfe8ff30;transition:opacity .6s}
+:root[data-light=lamp] .moon{opacity:.1}
+.stars{position:absolute;inset:0 0 40%;background-image:radial-gradient(1.5px 1.5px at 10% 20%,#fff,transparent),radial-gradient(1px 1px at 25% 8%,#fff,transparent),radial-gradient(1.4px 1.4px at 40% 30%,#fffc,transparent),radial-gradient(1px 1px at 55% 12%,#fff,transparent),radial-gradient(1.6px 1.6px at 68% 34%,#fffb,transparent),radial-gradient(1px 1px at 78% 22%,#fff,transparent),radial-gradient(1.2px 1.2px at 92% 40%,#fff,transparent),radial-gradient(1px 1px at 5% 45%,#fff9,transparent),radial-gradient(1.3px 1.3px at 33% 52%,#fff8,transparent);animation:twinkle 6s ease-in-out infinite}
+@keyframes twinkle{50%{opacity:.6}}
+:root[data-light=lamp] .stars{opacity:.2}
+.village{position:absolute;left:0;right:0;bottom:0;width:100%;height:22vh}
+.hut-window{animation:hut 2s infinite}@keyframes hut{50%{opacity:.6}}
+.village-home .games-brand{color:#fff8e6;text-shadow:0 0 24px #dfe8ff55}
+:root[data-light=lamp] .village-home .games-brand{text-shadow:0 0 24px #f0a83a88}
+.village-home .games-header{border-color:#ffffff22}
+.village-home .home-pill{background:#ffffff14;border-color:#ffffff30;color:#eef0f7}
+.village-home .ranking-pill{background:#f0a83a26;border-color:#f0a83a66}
+.village-home .home-pill svg{stroke:#f3c55a}
+.village-home footer{color:#8a90a8}
+.home-hero{display:flex;align-items:center;gap:14px;margin:22px 0 4px}
+.home-hero p{margin:0 0 10px;max-width:36em;font-size:14px;line-height:1.8;color:#cfd3e2}
+.home-lantern{width:46px;flex-shrink:0;filter:drop-shadow(0 0 16px #f0a83a77)}
+.home-lantern .lantern-flame{transform-origin:30px 46px;animation:flame 1.6s ease-in-out infinite}
+@keyframes flame{30%{transform:scale(.92,1.08)}55%{transform:scale(1.04,.95)}}
+.light-switch{display:inline-flex;padding:3px;border-radius:99px;background:#0009;border:1px solid #ffffff22}
+.light-switch button{min-height:34px;padding:0 13px;border:0;border-radius:99px;background:none;color:#cfd3e2;font:inherit;font-size:13px;cursor:pointer}
+.light-switch button.is-on{background:#eef0f7;color:#111}
+:root[data-light=lamp] .light-switch button.is-on{background:#f0a83a;color:#2a1704}
+/* The tiles sit on a woven পাটি. */
+.village-home .game-tiles{padding:16px;border-radius:10px;background:repeating-linear-gradient(45deg,#c9a668 0 10px,#b38c4f 10px 20px),#c9a668;box-shadow:0 30px 60px #000c,inset 0 0 0 6px #8a1f1f,inset 0 0 0 9px #e2c48a,inset 0 0 0 12px #8a1f1f,inset 0 0 40px #0006}
+:root[data-light=moon] .village-home .game-tiles{filter:saturate(.75) brightness(.9)}
+.village-home .game-tile{box-shadow:0 8px 18px #0007}
+.chess-tile{background:linear-gradient(160deg,#4a2414,#2a1209)!important;color:#efe0bd!important}.chess-tile :is(h2,.tile-top){color:#efe0bd!important}.chess-tile .tile-arrow{background:#b8893b!important;color:#1a0b05!important}
+.chor-tile{background:linear-gradient(160deg,#fff8e1,#fde7c8)!important}.chor-tile h2{color:#e8505b!important}
+@media(max-width:650px){.home-hero{align-items:flex-start}.home-hero p{font-size:13px}}
+.village-home .game-tile:not(.chess-tile){color:#302d38}.village-home .game-tile:not(.chess-tile) :is(h2,.tile-top){color:#302d38}
+.village-home .moon{top:auto;bottom:calc(22vh + 30px);right:7%;opacity:.95}

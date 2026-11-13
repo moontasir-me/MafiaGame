@@ -20,6 +20,12 @@ function openProfile() {
   $('#profile-name').focus();
 }
 
+/* Moonlight or the hurricane lamp, remembered on this phone. */
+const light = () => { try { return localStorage.getItem('shitolpati.light') === 'lamp' ? 'lamp' : 'moon'; } catch { return 'moon'; } };
+function paintLight() { document.documentElement.dataset.light = light(); document.querySelectorAll('[data-light-set]').forEach(b => { const on = b.dataset.lightSet === light(); b.classList.toggle('is-on', on); b.setAttribute('aria-checked', on); }); }
+document.querySelectorAll('[data-light-set]').forEach(b => b.onclick = () => { try { localStorage.setItem('shitolpati.light', b.dataset.lightSet); } catch { } paintLight(); });
+paintLight();
+
 $('#profile-button').onclick = openProfile;
 paintProfile();
 if ('serviceWorker' in navigator && !window.Android) navigator.serviceWorker.register('./sw.js').catch(() => {});

@@ -28,7 +28,7 @@ function chips() {
   return list.length && s.names.some(n => !n.trim()) ? `<div class="acc-mini"><span>অ্যাকাউন্ট থেকে</span>${list.map(a => `<button type="button" data-action="fill" data-id="${esc(a.name)}">+ ${esc(a.name)}</button>`).join('')}</div>` : '';
 }
 function setup() {
-  return `<header class="lamp-head">${LANTERN}<div><h1>চোর ডাকাত পুলিশ বাবু</h1><p>চারটা কাগজ ভাঁজ করা। পুলিশ এক দানে চোর, পরের দানে ডাকাত খোঁজেন।</p></div></header>
+  return `<header class="lamp-head"><div><h1><span class="cr c1">চোর</span> <span class="cr c2">ডাকাত</span> <span class="cr c3">পুলিশ</span> <span class="cr c4">বাবু</span></h1><p>চারটা কাগজ ভাঁজ করা। পুলিশ এক দানে চোর, পরের দানে ডাকাত খোঁজেন।</p></div></header>
   <section class="lamp-panel"><h2>চারজন</h2>${s.names.map((n, i) => `<label class="lamp-field"><span class="side-dot" style="background:${playerColour('', i)}"></span><input data-name="${i}" maxlength="20" autocomplete="off" placeholder="খেলোয়াড় ${bn(i + 1)}" value="${esc(n)}"></label>`).join('')}${chips()}</section>
   <section class="lamp-panel">${numberPick({ name: 'rounds', label: 'কত দান', value: s.rounds, presets: ROUND_CHOICES, min: 1, max: 100, unit: 'দান' })}</section>
   <div class="chit-legend">${Object.keys(ROLES).map(r => roleChit(r)).join('')}</div>

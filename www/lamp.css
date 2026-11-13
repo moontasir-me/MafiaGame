@@ -185,3 +185,37 @@
 :root[data-light] .chor-page .suspect{border-style:dashed;border-radius:22px}
 .chor-page .num-row>button,.chor-page .num-own{background:#0000002e;border-color:#ffffff44;color:#fff}
 .chor-page .num-row>button.is-on{background:#ffe066;color:#222;border-color:#ffe066}
+
+/* ---------- শতরঞ্জি alone: grandfather's study, polished wood and brass ---------- */
+:root[data-theme][data-universe=lamp][data-look=grandpa]{--bg:#1c110a;--surface:#2a1a10;--border:#5a3a22;--text:#f1e2c4;--muted:#c2a57f;--accent:#c99a45}
+:root[data-universe=lamp][data-look=grandpa] body{background:repeating-linear-gradient(90deg,#ffffff05 0 2px,transparent 2px 11px),linear-gradient(#24150c,#160d07)}
+:root[data-look=grandpa] .lamp-page:before{background:radial-gradient(ellipse 70% 50% at 50% 30%,#f3d27a14,transparent 70%);animation:none}
+:root[data-look=grandpa] .lamp-head h1{color:#f3d27a!important;font-family:'Noto Serif Bengali',Georgia,serif;text-shadow:0 2px 0 #000a}
+:root[data-look=grandpa] .btn.primary{background:linear-gradient(#e6c06a,#b8893b)!important;border-color:#8a6424!important;color:#1a0b05!important;box-shadow:0 6px 18px #0008}
+:root[data-look=grandpa] :is(.kit-top,.kit-tabs){background:#1c110ae6;border-color:#4a2f1a}
+:root[data-look=grandpa] .lamp-panel{background:linear-gradient(#2e1c11,#22150c);border-color:#5a3a22}
+:root[data-look=grandpa] .lamp-seg button.is-on{background:#c99a45;color:#1a0b05}
+
+/* ---------- চোর ডাকাত পুলিশ বাবু alone: crayons on drawing paper ---------- */
+:root[data-theme][data-universe=lamp][data-look=crayon]{--bg:#fbf4e2;--surface:#fffdf6;--border:#e5d6b4;--text:#2b2420;--muted:#7a6a58;--accent:#e8505b;color-scheme:light}
+:root[data-universe=lamp][data-look=crayon] body{background:#fbf4e2}
+:root[data-look=crayon] .lamp-page:before{background:none;animation:none}
+:root[data-look=crayon] .chor-page .lamp-content{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Cg fill='none' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' opacity='.15'%3E%3Cpath d='M20 60h50l-10 14H30Z M45 60V36l18 22' stroke='%232f80ed'/%3E%3Cpath d='M150 20l24 24-24 24-24-24Z M150 68q-6 14 4 26q-8 10 2 22' stroke='%23e8505b'/%3E%3Cpath d='M60 150l5 11 12 2-9 8 2 12-10-6-10 6 2-12-9-8 12-2Z' stroke='%23f2b705'/%3E%3Ccircle cx='165' cy='165' r='16' stroke='%23f2994a'/%3E%3Cpath d='M100 110q10-14 20 0t20 0' stroke='%2327ae60'/%3E%3C/g%3E%3C/svg%3E")}
+:root[data-look=crayon] :is(.kit-top,.kit-tabs){background:#fbf4e2ee;border-color:#e5d6b4}
+:root[data-look=crayon] .lamp-head h1{font-family:'Kalpurush','Noto Serif Bengali',serif;text-shadow:none!important;color:#2b2420!important}
+.cr{display:inline-block}.cr.c1{color:#4f4f4f;transform:rotate(-3deg)}.cr.c2{color:#d64545;transform:rotate(2deg)}.cr.c3{color:#2f80ed;transform:rotate(-2deg)}.cr.c4{color:#e0a100;transform:rotate(3deg)}
+:root[data-look=crayon] .lamp-head p,:root[data-look=crayon] .lamp-stage .lede{color:var(--muted)}
+:root[data-light] .chor-page .lamp-panel,:root[data-look=crayon] .chor-page .lamp-panel{background:#fffdf6;border:3px solid #f2b705;border-radius:18px 22px 16px 24px;box-shadow:4px 5px 0 #e8505b33}
+:root[data-look=crayon] .chor-page .lamp-panel:nth-of-type(even){border-color:#2f80ed}
+:root[data-look=crayon] .chor-page .lamp-panel h2,:root[data-look=crayon] .chor-page .num-label{color:#2b2420}
+:root[data-look=crayon] .chor-page .lamp-field input{background:#fff;border:2px dashed #c9b88f;color:#2b2420}
+:root[data-look=crayon] .chor-page .num-row>button,:root[data-look=crayon] .chor-page .num-own{background:#fff;border:2px solid #e5d6b4;color:#2b2420}
+:root[data-look=crayon] .chor-page .num-row>button.is-on{background:#f2b705;border-color:#f2b705;color:#2b2420}
+:root[data-look=crayon] .chor-page .acc-mini button{background:#fff;border-color:#e5d6b4;color:#2b2420}
+:root[data-look=crayon] .lamp-stage h1{color:#2b2420}
+:root[data-look=crayon] .chit{box-shadow:3px 4px 0 #0000001f}
+:root[data-look=crayon] .chit.taken{background:#e9dcbd;opacity:.6}
+:root[data-look=crayon] .call-row,:root[data-look=crayon] .chor-page .suspect{background:#fff;border:2px dashed #c9b88f;color:#2b2420}
+:root[data-look=crayon] .lamp-page :is(.dialog,.rank-table-wrap,.fame-section,.rank-empty,.btn.secondary){background:#fffdf6;border-color:#e5d6b4;color:#2b2420}
+:root[data-look=crayon] .rank-table :is(th,td){border-color:#eadfc6}
+:root[data-look=crayon] :is(h1,h2,h3,.kit-title strong){color:#2b2420}

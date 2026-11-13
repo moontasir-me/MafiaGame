@@ -28,7 +28,7 @@ function chips() {
   return list.length ? `<div class="acc-mini"><span>অ্যাকাউন্ট থেকে</span>${list.map(a => `<button type="button" data-action="fill" data-id="${esc(a.name)}">+ ${esc(a.name)}</button>`).join('')}</div>` : '';
 }
 function setup() {
-  return `<header class="lamp-head">${LANTERN}<div><h1>শতরঞ্জি</h1><p>দাদুর আলমারি থেকে নামানো কাঠের ছক। পাটিতে বসে এক দান হয়ে যাক।</p></div></header>
+  return `<header class="lamp-head"><div><h1>শতরঞ্জি</h1><p>দাদুর আলমারি থেকে নামানো কাঠের ছক। এক দান হয়ে যাক।</p></div></header>
   <p class="grandpa-note"><svg viewBox="0 0 60 24" aria-hidden="true"><g fill="none" stroke="#b8893b" stroke-width="2"><circle cx="15" cy="13" r="9"/><circle cx="45" cy="13" r="9"/><path d="M24 12q6-5 12 0M6 10 1 6M54 10l5-4"/></g></svg>ছকের কোণে পিতলের পাত, ঘুঁটিগুলো হাতে হাতে ঘষে মসৃণ।</p>
   <section class="lamp-panel"><h2>কার সাথে</h2><div class="lamp-seg" role="radiogroup">${[['cpu', 'কম্পিউটার'], ['friends', 'বন্ধুর সাথে']].map(([k, l]) => `<button type="button" role="radio" aria-checked="${s.mode === k}" class="${s.mode === k ? 'is-on' : ''}" data-action="mode" data-id="${k}">${l}</button>`).join('')}</div>
   ${s.mode === 'cpu' ? `<div class="lamp-seg small" role="radiogroup" aria-label="কম্পিউটার কেমন খেলবে">${Object.entries(LEVELS).map(([k, l]) => `<button type="button" role="radio" aria-checked="${s.level === k}" class="${s.level === k ? 'is-on' : ''}" data-action="level" data-id="${k}">${l.name}</button>`).join('')}</div>` : ''}</section>
