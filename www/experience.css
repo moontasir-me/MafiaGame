@@ -1,0 +1,170 @@
+/* শীতলপাটি — shared materials, rhythm and interaction across the collection.
+   Game board geometry, physics canvases and private-card faces keep their own rules. */
+:root{
+  --ui-radius:20px;--ui-control:13px;--ui-ease:cubic-bezier(.22,.68,.2,1);
+  --ui-short:180ms;--ui-long:420ms;
+  --ui-shadow:0 12px 32px #20180c08,0 2px 5px #20180c04;
+}
+html{scroll-padding-top:92px}
+body{font-synthesis:none;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:inherit}
+button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}
+:where(button,a,input,select,textarea):focus-visible{outline:3px solid color-mix(in srgb,var(--world-accent,#d4ae73) 80%,var(--accent,#a67533));outline-offset:4px}
+:where(.kit-main,.content,.kit-title,.kit-side,.home-actions,.game-tile){min-width:0}
+:where(.btn,.kit-pill,.home-pill,.world-chip){transition:background-color var(--ui-short),border-color var(--ui-short),box-shadow var(--ui-short),transform var(--ui-short) var(--ui-ease)}
+.btn{border-radius:var(--ui-control);font-weight:600;min-height:48px}
+.btn.primary{box-shadow:0 5px 14px color-mix(in srgb,var(--accent) 13%,transparent),inset 0 1px 0 #ffffff20}
+.btn.secondary{box-shadow:inset 0 1px 0 #ffffff12}
+:where(.btn,.kit-pill,.home-pill):active:not(:disabled){transform:translateY(1px) scale(.985)}
+:where(.panel,.rs-panel,.ludo-panel,.cr-panel,.dt-panel,.tg-panel,.lamp-panel,.ol-card){border-radius:var(--ui-radius);box-shadow:var(--ui-shadow);padding:22px;border-color:color-mix(in srgb,var(--border) 85%,transparent)}
+:where(.rs-panel,.ludo-panel,.cr-panel,.dt-panel,.tg-panel,.lamp-panel) h2{font-size:15px;font-weight:600;margin-bottom:14px}
+:where(.rs-seg,.ludo-seg,.cr-seg,.dt-seg,.tg-seg,.lamp-seg){gap:5px;padding:5px;border-radius:15px;background:color-mix(in srgb,var(--world-dark) 5%,var(--bg));border:1px solid color-mix(in srgb,var(--border) 65%,transparent)}
+:where(.rs-seg,.ludo-seg,.cr-seg,.dt-seg,.tg-seg,.lamp-seg)>button{border-radius:10px;min-height:44px;transition:background-color .2s,color .2s,box-shadow .2s,transform .15s}
+:where(.rs-seg,.ludo-seg,.cr-seg,.dt-seg,.tg-seg,.lamp-seg)>button.is-on{box-shadow:0 2px 8px #20180c0c,inset 0 0 0 1px color-mix(in srgb,var(--accent) 18%,transparent)}
+:where(.name-form,.lamp-field,.cr-field,.dt-field,.tg-field,.ludo-field) input,
+:where(.spy-prefs,.ol-name) :is(input,select){border-radius:var(--ui-control);min-height:48px;transition:border-color .18s,box-shadow .18s;background-color:var(--surface);color:var(--text)}
+:where(.name-form,.lamp-field,.cr-field,.dt-field,.tg-field,.ludo-field) input:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 10%,transparent);outline:none}
+
+/* One calm navigation frame, with the world's colour still leading. */
+.kit-top{border-bottom-color:color-mix(in srgb,var(--border) 72%,transparent);box-shadow:0 4px 20px #20180c03;gap:12px}
+.kit-title{border:0;background:none;padding:3px 8px;font:inherit;cursor:pointer;overflow:hidden}
+.kit-title strong{font-size:17px;line-height:1.5;overflow:hidden;text-overflow:ellipsis}
+.kit-title small{font-size:10px;line-height:1.6;letter-spacing:.2px}
+.kit-pill{min-height:42px;border-color:color-mix(in srgb,var(--border) 78%,transparent);box-shadow:0 2px 7px #20180c03}
+.kit-side{background-image:radial-gradient(ellipse at 100% 0,#ffffff0a,transparent 65%),url('assets/ui/weave.svg');border-right:1px solid #ffffff12}
+.kit-brand{font-size:23px;gap:10px;overflow-wrap:anywhere}
+.kit-brand-icon{border-radius:15px;box-shadow:0 4px 18px #00000014,inset 0 1px 0 #ffffff55}
+.kit-side-item{min-height:48px;margin:3px 0;border:1px solid transparent}
+.kit-side-item.is-active{background:#ffffff14;border-color:#ffffff18}
+.kit-side-item.is-active .icon{color:var(--world-accent)}
+.kit-tabs{padding-top:8px;box-shadow:0 -8px 26px #20180c06;border-color:color-mix(in srgb,var(--border) 72%,transparent)}
+.kit-tab{border-radius:15px;position:relative;isolation:isolate}
+.kit-tab.is-active{background:color-mix(in srgb,var(--accent) 9%,transparent);color:var(--text)}
+.kit-tab.is-active:after{content:'';position:absolute;bottom:2px;width:14px;height:2px;border-radius:2px;background:var(--accent)}
+.kit-tab.is-active .icon{color:var(--accent)}
+.kit-main>.content{padding-top:30px}
+.page-head{margin-bottom:26px}.page-head .eyebrow{font-size:10px;letter-spacing:1.4px}
+.page-head h1{font-weight:600;letter-spacing:-.6px;line-height:1.4}
+.page-head .lede{max-width:56ch;line-height:1.8}
+:where(.rs-head,.cr-head,.dt-head,.tg-head,.ludo-head,.lamp-head){position:relative;isolation:isolate;min-height:156px;padding:24px;margin:0 0 26px;border:1px solid color-mix(in srgb,var(--border) 75%,transparent);border-radius:24px;background:linear-gradient(130deg,color-mix(in srgb,var(--surface) 90%,transparent),color-mix(in srgb,var(--world-mid) 30%,var(--surface)));overflow:hidden;box-shadow:var(--ui-shadow)}
+:where(.rs-head,.cr-head,.dt-head,.tg-head,.ludo-head,.lamp-head):after{content:'';position:absolute;right:-60px;top:-100px;width:290px;height:290px;background:url('assets/ui/rosette.svg') center/contain;z-index:-1;pointer-events:none;opacity:.8}
+:where(.rs-head,.cr-head,.tg-head)>img{width:126px;flex-shrink:0;border-radius:17px;box-shadow:0 6px 15px #20180c13;transform:rotate(-3deg)}
+:where(.rs-head,.cr-head,.dt-head,.tg-head,.ludo-head,.lamp-head) h1{font-size:clamp(28px,4vw,38px);font-weight:600;letter-spacing:-.7px;line-height:1.4}
+:where(.rs-head,.cr-head,.dt-head,.tg-head,.ludo-head,.lamp-head) p{font-size:14px;line-height:1.8;max-width:46ch}
+.rs-head h1{background:none;-webkit-text-fill-color:var(--text);color:var(--text)}
+.rush-page .kit-tab.is-active,.lamp-page .kit-tab.is-active{background:color-mix(in srgb,var(--world-accent) 13%,transparent);color:var(--text)}
+.lamp-page .lamp-panel,.rush-page .rs-panel{box-shadow:0 10px 30px #00000012,inset 0 1px 0 #ffffff05}
+.lamp-page .kit-main,.rush-page .kit-main{background-image:radial-gradient(ellipse at 95% 0,color-mix(in srgb,var(--world-accent) 5%,transparent),transparent 55%)}
+:where(.hero-art,.spy-cover,.kalidas-cover){position:relative}
+:where(.spy-cover,.kalidas-cover) img{border:1px solid color-mix(in srgb,var(--border) 70%,transparent);box-shadow:0 15px 35px color-mix(in srgb,var(--world-dark) 12%,transparent);border-radius:22px}
+:where(.hero-copy,.kd-hero-copy) h1{line-height:1.35}
+:where(.quote-card,.literary-quote){border-radius:18px;border-left-width:3px;padding:22px 24px;box-shadow:none;background:color-mix(in srgb,var(--surface) 88%,transparent)}
+.quote-card blockquote{font-size:16px;line-height:1.9}.quote-card figcaption{font-size:11px;line-height:1.8}
+:where(.rank-table-wrap,.fame-section,.rank-empty){border-radius:20px;box-shadow:var(--ui-shadow)}
+.rank-table tbody tr{transition:background-color .2s}.rank-table tbody tr:hover{background:color-mix(in srgb,var(--accent) 4%,transparent)}
+.rank-no{border-radius:12px}.result-avatar{transition:transform .2s}.result-avatar:hover{transform:translateY(-2px)}
+:where(.scrim,.room-scrim,.home-scrim){backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);background-color:#10151c70}
+:where(.dialog,.room-dialog,.home-dialog){border-radius:24px;box-shadow:0 28px 90px #080b1433,0 2px 8px #080b1412;border:1px solid color-mix(in srgb,var(--border,#cbbfae) 80%,transparent)}
+:where(.dialog,.room-dialog,.home-dialog) h2{line-height:1.5;font-size:23px;font-weight:600}
+:where(.app-menu-items,.room-menu-items){gap:9px}
+:where(.app-menu-items,.room-menu-items) .btn{justify-content:flex-start;padding:14px 17px;border-radius:13px}
+:where(.app-menu-items,.room-menu-items) .btn .icon{width:19px;height:19px;opacity:.8}
+.app-credit{border-color:color-mix(in srgb,var(--border) 65%,transparent);font-size:10px;letter-spacing:.1px;opacity:.8}
+
+/* Board finishes are decorative: hit regions, dimensions and coordinates do not move. */
+:where(.cr-board-wrap,.tg-ground,.dt-paper,.board-wrap,.bench-wrap){box-shadow:0 18px 36px #20180c22,0 3px 8px #20180c0d}
+:where(.ludo-players .lp,.dt-p,.cr-seat,.tg-seat,.seat){transition:background-color .2s,border-color .2s,box-shadow .2s}
+:where(.ludo-players .lp,.dt-p,.cr-seat,.tg-seat,.seat).is-turn{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 38%,transparent),0 3px 12px color-mix(in srgb,var(--accent) 8%,transparent)}
+:where(.dt-box,.tg-win){animation:ui-mark .25s var(--ui-ease) both}
+:where(.spy-verdict,.fib-verdict,.rs-over,.ludo-over,.cr-over,.dt-over,.tg-over){border-radius:18px;animation:ui-mark .3s var(--ui-ease) both}
+.rs-table{box-shadow:0 22px 50px #07180f45,inset 0 0 0 1px #ffffff0d}
+:where(.spy-timer,.discussion-timer){border-radius:20px}
+:where(.expired,.is-done){transition:background-color .3s,border-color .3s,color .3s}
+
+/* Home: the same courtyard, with quieter weaving and a clear library hierarchy. */
+body.village-home{--ui-ivory:#f6f0e4;--ui-brass:#cfaa70;--ui-ink:#121b2d;--ui-fade:#aab4c8;color:#eef1f8}
+.village-home .games-shell{max-width:1216px;padding:calc(26px + env(safe-area-inset-top)) 40px 24px}
+.village-home .games-header{padding:0 0 20px;border-color:#ffffff12;gap:16px}
+.village-home .games-brand{font-size:30px;font-weight:600;letter-spacing:-.8px;text-shadow:none;white-space:nowrap}
+.village-home .brand-dot{color:var(--ui-brass)}
+.village-home .profile-pill{background:#ffffff06;border-color:#ffffff20;padding:4px 13px 4px 5px;gap:9px;min-height:44px}
+.village-home .profile-face{background:#d1ae7433;color:#ebcb96;width:31px;height:31px;font-size:13px;border:1px solid #cfaa702a}
+.village-home .profile-pill span#profile-label{font-size:13px;max-width:160px}
+.village-home .home-hero{position:relative;isolation:isolate;display:block;margin:25px 0 22px;padding:28px 170px 28px 28px;min-height:190px;border:1px solid #cfaa7022;border-radius:24px;background:radial-gradient(ellipse at 100% 20%,#cfaa7014,transparent 60%),linear-gradient(115deg,#ffffff04,#ffffff02);overflow:hidden}
+.village-home .home-hero:after{content:'';position:absolute;right:10px;top:-55px;width:290px;height:290px;background:url('assets/ui/rosette.svg') center/contain;opacity:.5;z-index:-1}
+.village-home .home-poem{font-size:17px!important;line-height:1.9!important;color:#e8e4d9!important;letter-spacing:.1px}
+.village-home .hang-lantern{top:85px;right:80px;left:auto;width:60px;z-index:4}
+.village-home .hang-string{height:38px;background:linear-gradient(#cfaa7040,#cfaa70)}
+.village-home .hang-lantern svg{width:52px}
+.village-home .play-switch{max-width:100%;margin:0 0 28px;grid-template-columns:1fr 1fr;padding:5px;gap:6px;background:#070b1680;border:1px solid #ffffff14;border-radius:18px}
+.village-home .play-switch button{min-height:60px;border-radius:13px;transition:background-color .22s,color .22s,box-shadow .22s;color:var(--ui-fade)}
+.village-home .play-switch b{font-size:15px;font-weight:600}.village-home .play-switch small{font-size:11px}
+.village-home .play-switch button.is-on{background:var(--ui-ivory);color:#252323;box-shadow:0 3px 12px #00000018}
+:root[data-light=lamp] .village-home .play-switch button.is-on{background:#e3ba7b;color:#2d2215}
+.library-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 16px}
+.library-heading h1{font:600 20px/1.5 'Li Ador Noirrit','Noto Sans Bengali',Poppins,sans-serif;margin:0;color:#eee9df;letter-spacing:0}
+.library-heading span{font-size:11px;color:#9ba7bd}
+.village-home .game-tiles{margin:0;gap:18px!important;padding:20px;background:linear-gradient(135deg,#b18b4912,#dec18a08),url('assets/ui/weave.svg'),#10192a;border:1px solid #cfaa7038;border-radius:25px;box-shadow:0 18px 48px #03061130,inset 0 0 0 5px #cfaa7005;filter:none!important}
+.village-home .game-tile{position:relative;border-radius:18px;border:1px solid #e9ddc6!important;background:var(--ui-ivory)!important;box-shadow:0 4px 12px #00000016;transition:transform .28s var(--ui-ease),box-shadow .28s,border-color .28s;animation:none;color:#272724!important}
+.village-home .game-tile :is(h2,.tile-top){color:#272724!important}
+.village-home .game-tile .tile-top{padding:13px 15px 0!important;letter-spacing:1px;font-family:Poppins,system-ui,sans-serif;font-size:10px!important;color:#927c60!important}
+.village-home .game-tile .tile-arrow{width:25px!important;height:25px!important;border:1px solid #ac97733b!important;color:#786247!important;font-size:15px!important;transition:background .2s,transform .2s}
+.village-home .game-tile .tile-art{margin:10px 14px 0;border-radius:12px;box-shadow:none;background:color-mix(in srgb,var(--tile-accent,#756348) 9%,#eee4d2)}
+.village-home .game-tile .tile-art img{object-fit:contain!important;border-radius:12px;transition:transform .45s var(--ui-ease)}
+.village-home .tile-copy{padding:14px 15px 18px!important}
+.village-home .tile-copy h2{font-size:clamp(17px,1.6vw,21px)!important;font-weight:600;line-height:1.45;letter-spacing:-.3px!important}
+.village-home .game-tile.is-off{opacity:.42;filter:grayscale(.55);box-shadow:none}
+.village-home .tile-badge{border-radius:6px;background:#263e32;color:#ecf5ed;font-size:10px;font-weight:400;padding:2px 7px;margin-top:8px}
+.village-home .tile-badge:empty{display:none}
+.village-home .profile-menu{border-radius:18px;padding:7px;background:#131d30!important;border-color:#ffffff18;box-shadow:0 18px 45px #00000035}
+.village-home .profile-menu :is(a,button){font-size:14px;border-radius:11px;min-height:46px}.village-home .profile-menu svg{stroke:var(--ui-brass)}
+.village-home .moon{filter:blur(.3px);opacity:.6;width:80px;box-shadow:0 0 90px #c9d8ff15}
+.village-home .stars{opacity:.55}.village-home .village{opacity:.7}
+.village-home footer{padding:28px 0 12px;color:#8995aa;font-size:10px}
+:root[data-light=lamp] .village-home .game-tiles{background-color:#211b17;border-color:#bc8d4d50}
+:root[data-light=lamp] .village-home .home-hero{background:radial-gradient(ellipse at 100% 20%,#f0a83a20,transparent 65%),#ffffff03}
+:root[data-light=lamp] .village-home .profile-menu{background:#251c15!important}
+
+/* Motion stays on the surrounding UI, never on aiming surfaces or hit targets. */
+@keyframes ui-arrive{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+@keyframes ui-mark{from{opacity:.3;scale:.98}to{opacity:1;scale:1}}
+@keyframes ui-press{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent,#cfaa70) 18%,transparent)}100%{box-shadow:0 0 0 7px transparent}}
+.ui-arrive{animation:ui-arrive .5s var(--ui-ease) both;animation-delay:var(--ui-delay,0ms)}
+.ui-feedback{animation:ui-press .36s ease-out}
+@media(hover:hover) and (pointer:fine){
+ .btn:hover:not(:disabled){filter:brightness(1.035)}
+ .village-home .game-tile:not(.is-off):hover{transform:translateY(-5px);box-shadow:0 13px 28px #00000025;border-color:#c5a16a!important}
+ .village-home .game-tile:not(.is-off):hover .tile-art img{transform:scale(1.045)}
+ .village-home .game-tile:not(.is-off):hover .tile-arrow{background:#d7bc8d30!important;transform:rotate(45deg)}
+}
+@media(min-width:900px){.kit-shell{grid-template-columns:224px minmax(0,1fr)}.kit-side{padding:34px 14px}.kit-main>.content{padding:36px 36px 42px;max-width:960px}.kit-top{padding:15px 30px}.kit-brand{margin-bottom:38px}.kit-main>.content.home-content{max-width:1120px}}
+@media(max-width:650px){
+ .village-home .games-shell{padding:calc(18px + env(safe-area-inset-top)) 18px 22px}
+ .village-home .games-header{padding:0 0 16px;gap:12px}.village-home .games-brand{font-size:27px}
+ .village-home .profile-pill span#profile-label{max-width:95px;font-size:12px}.village-home .profile-pill{padding-right:9px;gap:6px}
+ .village-home .home-hero{margin:20px 0;padding:22px 78px 22px 20px;min-height:178px;border-radius:20px}
+ .village-home .home-poem{font-size:14px!important;line-height:1.95!important}
+ .village-home .home-hero:after{right:-90px;opacity:.5;top:-30px}
+ .village-home .hang-lantern{top:77px;right:40px;width:43px}.village-home .hang-string{height:35px}.village-home .hang-lantern svg{width:39px}
+ .village-home .play-switch{margin-bottom:25px}.village-home .play-switch button{min-height:55px}.village-home .play-switch b{font-size:14px}.village-home .play-switch small{font-size:10px}
+ .library-heading{margin-bottom:13px}.library-heading h1{font-size:19px}.library-heading span{font-size:10px}
+ .village-home .game-tiles{padding:12px;gap:12px!important;border-radius:22px}
+ .village-home .game-tile .tile-top{padding:10px 11px 0!important;font-size:9px!important}
+ .village-home .game-tile .tile-art{margin:8px 10px 0}
+ .village-home .tile-copy{padding:11px 11px 14px!important}.village-home .tile-copy h2{font-size:17px!important}
+ :where(.panel,.rs-panel,.ludo-panel,.cr-panel,.dt-panel,.tg-panel,.lamp-panel,.ol-card){padding:18px;border-radius:18px}
+ .kit-main>.content{padding:24px 18px 30px}.kit-top{gap:8px}.kit-title strong{font-size:15px}.kit-title small{font-size:10px}
+ .kit-pill{font-size:12px;padding:0 10px;min-height:42px}
+ :where(.rs-head,.cr-head,.dt-head,.tg-head,.ludo-head,.lamp-head){padding:19px 18px;min-height:144px;gap:16px;margin-bottom:22px;border-radius:21px}
+ :where(.rs-head,.cr-head,.tg-head)>img{width:85px;border-radius:13px}
+ :where(.rs-head,.cr-head,.dt-head,.tg-head,.ludo-head,.lamp-head) h1{font-size:28px;line-height:1.45}
+ :where(.rs-head,.cr-head,.dt-head,.tg-head,.ludo-head,.lamp-head) p{font-size:12px;line-height:1.8;margin-top:5px}
+ .rs-head{align-items:flex-start}.rs-head img{margin-top:8px}
+ .page-head h1{font-size:30px}.page-head .lede{font-size:14px}
+ :where(.quote-card,.literary-quote){padding:18px 19px}.quote-card blockquote{font-size:15px}
+}
+@media(max-width:360px){.village-home .games-brand{font-size:24px}.village-home .profile-pill span#profile-label{max-width:65px}.village-home .home-poem{font-size:13px!important}.village-home .home-hero{padding-left:16px;padding-right:61px}.village-home .hang-lantern{right:30px}.village-home .game-tiles{padding:9px;gap:9px!important}.village-home .tile-copy h2{font-size:15px!important}.kit-top{grid-template-columns:42px minmax(0,1fr) 42px}.kit-pill span{display:none}.kit-pill{width:42px;padding:0;justify-content:center}.kit-title{padding:3px 0}}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-delay:0ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+ .ui-arrive,.ui-feedback,.stars,.hut-window,.lantern-flame,.lantern-glow,.tap-hint i,.hang-lantern.swing{animation:none!important}
+}
