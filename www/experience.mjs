@@ -5,7 +5,15 @@ const observed = new WeakSet();
 const observer = 'IntersectionObserver' in window ? new IntersectionObserver(entries => {
   for (const {target,isIntersecting} of entries) {
     if (!isIntersecting) continue;
-    if (!reduced.matches) target.classList.add('ui-arrive');
+    if (!reduced.matches) {
+      const finish = event => {
+        if (event.target !== target || event.animationName !== 'ui-arrive') return;
+        target.classList.remove('ui-arrive');
+        target.removeEventListener('animationend', finish);
+      };
+      target.addEventListener('animationend', finish);
+      target.classList.add('ui-arrive');
+    }
     observer.unobserve(target);
   }
 }, {threshold:.12}) : null;
