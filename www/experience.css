@@ -171,3 +171,6 @@ body.village-home{--ui-ivory:#f6f0e4;--ui-brass:#cfaa70;--ui-ink:#121b2d;--ui-fa
 /* Intrinsic pen-card width must yield to compact phones. */
 .pen-steps>li{min-width:0}.pc-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr))}
 .rs-table{border-radius:24px}
+/* Override the legacy tile's animation reset only for its one-time entrance. */
+.village-home .game-tile.ui-arrive{animation:ui-arrive .5s var(--ui-ease) both;animation-delay:var(--ui-delay,0ms)}
+@media(prefers-reduced-motion:reduce){.village-home .game-tile.ui-arrive{animation:none!important}}
