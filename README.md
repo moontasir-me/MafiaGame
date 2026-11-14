@@ -24,7 +24,7 @@ A collection of Bangla party and board games for one phone or many. The home pag
 | ০৯ | **ক্যারম** — real board physics, queen, fouls, boric powder | 2 | ✓ | 3 levels | ✓ |
 | ১০ | **জায়গা দখল** — dots and boxes on a khata page | 2–4 | ✓ | 3 levels | ✓ |
 | ১১ | **তিন গুটি** — three pebbles each on a board scratched into the courtyard | 2 | ✓ | 3 levels | ✓ |
-| ১২ | **Colour Rush** — English colour-matching card game, Classic or Ruthless rules | 2–20 | | | ✓ (online only) |
+| ১২ | **Colour Rush** — English colour-matching card game, Classic or Ruthless rules | 2–20 online, 4 offline | ✓ (vs 3 bots) | 3 bots | ✓ |
 
 The **অফলাইন / অনলাইন** switch on the home page decides which version opens. Online, only games with an online room are active.
 
