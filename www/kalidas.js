@@ -52,7 +52,7 @@ function setup() {
   <div class="kd-hero-copy"><span class="kd-kicker">বাংলা ধাঁধার আসর</span><h1>কহেন কবি <em>কালিদাস</em></h1>
   <figure class="kd-bubble"><blockquote>${HERO[0].split('\n').map(esc).join('<br>')}</blockquote><details><summary>উত্তর দেখুন</summary><b>${esc(HERO[1])}</b></details></figure>
   <div class="hero-buttons">${button('ধাঁধা শুরু', 'start', 'primary', 'play')}<a class="btn secondary" href="#players">খেলোয়াড় যোগ করুন</a></div></div>
-  <div class="kd-hero-art"><img src="assets/kalidas/cover.svg" width="640" height="420" alt="বর্ষার মেঘের নিচে তালপাতার পুঁথি আর লেখনী"></div></section>
+  <div class="kd-hero-art"><img src="assets/kalidas/cover.svg" width="640" height="420" alt="মেঘের নিচে তালপাতায় লিখছেন কবি কালিদাস"></div></section>
   <h2 class="kd-title">ধাঁধা কতটা কঠিন হবে?</h2>
   <div class="kd-levels" role="radiogroup" aria-label="ধাঁধা কতটা কঠিন">${Object.entries(LEVELS).map(([k, l]) => `<button type="button" role="radio" aria-checked="${s.level === k}" class="kd-level lv-${k} ${s.level === k ? 'is-on' : ''}" data-action="level" data-id="${k}">${lamps(l.lamps)}<b>${l.label}</b><small>${l.note}</small><i>ঠিক উত্তরে +${bn(l.points)}</i></button>`).join('')}</div>
   <section class="panel kalidas-setup" id="players"><div class="list-heading"><span>কারা খেলছেন?</span><span>${bn(s.players.length)} / ২০</span></div>
