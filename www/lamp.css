@@ -257,3 +257,4 @@
 .cg-colour .pick-random .cg-side{background:linear-gradient(90deg,#efe0bd 50%,#1a0e07 50%);color:#c99a45;font-weight:700;font-family:Poppins,sans-serif}
 .cg-colour button.is-on{border-color:#c99a45;background:#2e1c10;box-shadow:0 0 0 3px #c99a4533}
 @media(max-width:420px){.cg-colour{grid-template-columns:repeat(3,1fr)}.cg-colour>span{grid-column:1/-1}}
+.cg-proverb{margin:-6px 0 18px;padding:14px 18px;border-left:3px solid #c99a45;border-radius:0 14px 14px 0;background:#2a1a10cc}.cg-proverb blockquote{margin:0;font-family:'Noto Serif Bengali',Georgia,serif;font-size:15.5px;line-height:1.8;color:#f1e2c4}.cg-proverb figcaption{margin-top:6px;font-size:12.5px;color:#c99a45}.cg-proverb figcaption:before{content:'— '}
