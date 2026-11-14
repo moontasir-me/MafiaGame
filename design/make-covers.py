@@ -67,10 +67,13 @@ E['dots'] = ''.join(f'<circle cx="{-105+c*70}" cy="{-105+r*70}" r="9" fill="{CRE
 E['tinguti'] = f'''<g stroke="#f2e3c6" stroke-width="9" stroke-linecap="round" opacity=".9"><path d="M-120 -120H120V120H-120Z M-120 0H120 M0 -120V120 M-120 -120 120 120 M120 -120-120 120" fill="none"/></g>
 <g><circle cx="-120" cy="-120" r="26" fill="{CREAM}"/><circle cx="0" cy="0" r="26" fill="{CREAM}"/><circle cx="120" cy="-120" r="26" fill="#4a2a16"/><circle cx="-120" cy="120" r="26" fill="#4a2a16"/><circle cx="120" cy="0" r="26" fill="#4a2a16"/><circle cx="0" cy="120" r="26" fill="{CREAM}"/></g>'''
 
+# Colour Rush: a fan of four coloured cards
+E['rush'] = ''.join(f'''<g transform="rotate({a}) translate(0 -20)"><rect x="-46" y="-100" width="92" height="138" rx="12" fill="{c}" stroke="{CREAM}" stroke-width="6"/><circle cx="0" cy="-31" r="30" fill="{CREAM}"/><text x="0" y="-21" font-family="Poppins,sans-serif" font-weight="700" font-size="30" text-anchor="middle" fill="{c}">{t}</text></g>''' for a, c, t in [(-30, '#2f72d6', '7'), (-10, '#2fa45b', '+2'), (10, '#f2c230', '⇄'), (30, '#e0412f', '★')])
+
 PALETTE = {
     'mafia': ('#4a1c1f', '#24100f', '#d6a14a'), 'spy': ('#22344a', '#111b27', '#e8c26b'), 'kalidas': ('#2f2a5c', '#17142e', '#f0b64b'),
     'pen': ('#2c4f43', '#152a23', '#e3b341'), 'fib': ('#174b47', '#0b2928', '#f3c55a'), 'shotoronji': ('#4a2614', '#21110a', '#d6b47a'),
-    'chor': ('#a8432c', '#5e2214', '#ffd27a'), 'ludo': ('#263a7a', '#121c40', '#f2b705'), 'carrom': ('#6b3c1a', '#2b1a0e', '#ecd3a0'), 'dots': ('#2a3a6e', '#141c38', '#8fb0ff'), 'tinguti': ('#8a5f3a', '#4a2f1b', '#f2e3c6'),
+    'chor': ('#a8432c', '#5e2214', '#ffd27a'), 'ludo': ('#263a7a', '#121c40', '#f2b705'), 'carrom': ('#6b3c1a', '#2b1a0e', '#ecd3a0'), 'dots': ('#2a3a6e', '#141c38', '#8fb0ff'), 'tinguti': ('#8a5f3a', '#4a2f1b', '#f2e3c6'), 'rush': ('#1f4636', '#0d1a15', '#f2c230'),
 }
 for key, (a, b, c) in PALETTE.items():
     open(f'www/assets/{key}/cover.svg', 'w').write(cover(a, b, c, E[key]))

@@ -170,3 +170,29 @@ test('তিন গুটি: place three each, then move along lines; three in 
   await assert.rejects(rooms.handle({ op: 'move', code: a.code, token: b.token, move: { to: 4 } }), /TURN/);
   const v = await rooms.handle({ op: 'move', code: a.code, token: a.token, move: { to: 4 } }); assert.equal(v.match.board[4], 0);
 });
+
+import * as U from '../www/rush-engine.mjs';
+test('Colour Rush: 20 players get 7 cards each, matching rules hold, and nobody sees another hand', async () => {
+  const g = U.newGame(Array.from({ length: 20 }, (_, i) => ({ name: 'p' + i })), 'classic');
+  assert.ok(g.players.every(p => p.hand.length === 7)); assert.ok(/^\d$/.test(U.top(g).v));
+  const bad = g.players[0].hand.find(c => !U.playable(g, c));
+  if (bad) assert.throws(() => U.act(g, 0, { type: 'play', card: bad.id }), /ACTION/);
+  assert.throws(() => U.act(g, 1, { type: 'draw' }), /TURN/);
+  const rooms = new LudoRooms(new MemoryLudoStore());
+  const a = await rooms.handle({ op: 'create', name: 'A', game: 'rush', rule: 'ruthless' });
+  const b = await rooms.handle({ op: 'join', name: 'B', code: a.code, game: 'rush' });
+  const v = await rooms.handle({ op: 'start', code: a.code, token: a.token });
+  assert.equal(v.match.mode, 'ruthless'); assert.equal(v.match.hand.length, 7);
+  assert.ok(!JSON.stringify(v.match).includes('"hand":[{') || v.match.players.every(p => !('hand' in p)), 'other hands are not sent');
+  assert.equal(v.match.players[1].count, 7);
+  const vb = await rooms.handle({ op: 'state', code: a.code, token: b.token });
+  assert.notDeepEqual(vb.match.hand.map(c => c.id), v.match.hand.map(c => c.id));
+});
+test('Colour Rush Ruthless: draw cards stack and 25 cards knocks a player out', () => {
+  let g = U.newGame([{ name: 'A' }, { name: 'B' }, { name: 'C' }], 'ruthless');
+  g.players[0].hand.push({ id: 'x1', c: 'w', v: 'wd4' }); g.players[1].hand.push({ id: 'x2', c: 'r', v: 'd2' });
+  g = U.act(g, 0, { type: 'play', card: 'x1', colour: 'r' }); assert.equal(g.pending, 4);
+  g = U.act(g, 1, { type: 'play', card: 'x2' }); assert.equal(g.pending, 6);
+  g.players[2].hand = Array.from({ length: 20 }, (_, i) => ({ id: 'z' + i, c: 'y', v: '3' }));
+  g = U.act(g, 2, { type: 'draw' }); assert.equal(g.players[2].out, true, '20 + 6 = 26 cards: out');
+});
