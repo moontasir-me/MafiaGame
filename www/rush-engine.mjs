@@ -40,12 +40,14 @@ export function newGame(players, mode = 'classic', rnd = Math.random) {
 }
 
 export const top = g => g.discard[g.discard.length - 1];
+/* Cards that leave play slide under the draw pile (draws come off the end), so the pile never runs out. */
+const recycle = (g, cards) => { g.draw.unshift(...cards.map(({ chosen, ...c }) => c)); };
 const live = g => g.players.map((p, i) => i).filter(i => !g.players[i].out);
 function step(g, from = g.turn, n = 1) { let i = from; for (let k = 0; k < n;) { i = (i + g.dir + g.players.length) % g.players.length; if (!g.players[i].out) k++; } return i; }
 function drawCards(g, k, n) {
   const got = [];
   for (let i = 0; i < n; i++) {
-    if (!g.draw.length) { const t = g.discard.pop(); g.draw = shuffle(g.discard.map(c => ({ ...c, chosen: undefined })), Math.random); g.discard = [t]; if (!g.draw.length) break; }
+    if (!g.draw.length) break; // only possible if every card is in someone's hand
     const c = g.draw.pop(); g.players[k].hand.push(c); got.push(c);
   }
   return got;
@@ -58,7 +60,7 @@ export function playable(g, card) {
 }
 function knockouts(g) {
   if (g.mode !== 'ruthless') return;
-  g.players.forEach((p, i) => { if (!p.out && p.hand.length >= KNOCKOUT) { p.out = true; g.order.unshift(i); g.discard.splice(0, 0, ...p.hand); p.hand = []; g.last = { ...g.last, knocked: [...(g.last?.knocked || []), i] }; } });
+  g.players.forEach((p, i) => { if (!p.out && p.hand.length >= KNOCKOUT) { p.out = true; g.order.unshift(i); recycle(g, p.hand); p.hand = []; g.last = { ...g.last, knocked: [...(g.last?.knocked || []), i] }; } });
   const left = live(g); if (left.length === 1 && g.winner === null) { g.winner = left[0]; }
   if (g.players[g.turn].out && g.winner === null) g.turn = step(g);
 }
@@ -99,14 +101,14 @@ export function act(g0, who, move) {
   if (g.drew && g.drew !== card.id) throw Error('ACTION');
   if (!playable(g, card)) throw Error('ACTION');
   if (card.c === 'w' && !COLOURS.includes(move.colour)) throw Error('COLOUR');
-  me.hand.splice(at, 1); g.discard.push({ ...card, chosen: card.c === 'w' ? move.colour : undefined });
+  me.hand.splice(at, 1); recycle(g, g.discard); g.discard = [{ ...card, chosen: card.c === 'w' ? move.colour : undefined }];
   g.colour = card.c === 'w' ? move.colour : card.c;
   g.last = { by: who, card: card.v, colour: g.colour };
   const n = live(g).length; let skip = 0;
   if (card.v === 'skip') skip = 1;
   else if (card.v === 'rev' || card.v === 'wrev4') { g.dir *= -1; if (n === 2 && card.v === 'rev') skip = 1; }
   else if (card.v === 'skipall') skip = n - 1;
-  else if (card.v === 'discall') { const keep = me.hand.filter(c => c.c !== card.c); g.discard.splice(g.discard.length - 1, 0, ...me.hand.filter(c => c.c === card.c)); g.last.discarded = me.hand.length - keep.length; me.hand = keep; }
+  else if (card.v === 'discall') { const keep = me.hand.filter(c => c.c !== card.c); recycle(g, me.hand.filter(c => c.c === card.c)); g.last.discarded = me.hand.length - keep.length; me.hand = keep; }
   if (DRAW[card.v] !== undefined) {
     if (g.mode === 'ruthless') g.pending += DRAW[card.v];
     else { const victim = step(g); drawCards(g, victim, DRAW[card.v]); g.last.victim = victim; skip = 1; }
@@ -132,7 +134,7 @@ export function viewFor(g, who) {
   if (!g) return g;
   return {
     owe: g.owe ?? null, precall: g.precall ?? null, penalty: g.penalty ?? null, mode: g.mode, colour: g.colour, dir: g.dir, turn: g.turn, pending: g.pending, winner: g.winner, last: g.last, seq: g.seq,
-    drew: g.turn === who ? g.drew : null, drawCount: g.draw.length, top: top(g),
+    drew: g.turn === who ? g.drew : null, top: top(g),
     players: g.players.map((p, i) => ({ name: p.name, count: p.hand.length, out: p.out })),
     hand: who >= 0 && g.players[who] ? g.players[who].hand : [],
     standings: g.winner === null ? null : g.players.map((p, i) => ({ i, n: p.out ? 999 : p.hand.length })).sort((a, b) => a.n - b.n).map(x => x.i)

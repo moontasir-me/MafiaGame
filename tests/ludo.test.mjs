@@ -208,3 +208,10 @@ test('Colour Rush: forgetting to call Rush! on your last card costs 2 when the n
   h.players[0].hand = [{ id: 'a1', c: h.colour, v: '5' }, { id: 'a2', c: 'b', v: '9' }];
   h = U.call(h, 0); h = U.act(h, 0, { type: 'play', card: 'a1' }); assert.equal(h.owe, null); assert.equal(h.last.called, true);
 });
+
+test('Colour Rush: played cards go under the draw pile, so the total never changes', () => {
+  let g = U.newGame([{ name: 'A' }, { name: 'B' }, { name: 'C' }], 'classic'); const total = gg => gg.draw.length + gg.discard.length + gg.players.reduce((a, p) => a + p.hand.length, 0);
+  const start = total(g); let k = 0;
+  while (g.winner === null && k++ < 300) { const who = g.turn, c = g.players[who].hand.find(x => U.playable(g, x) && (!g.drew || g.drew === x.id)); g = c ? U.act(g, who, { type: 'play', card: c.id, colour: 'r' }) : g.drew ? U.act(g, who, { type: 'pass' }) : U.act(g, who, { type: 'draw' }); assert.equal(g.discard.length, 1); }
+  assert.equal(total(g), start);
+});

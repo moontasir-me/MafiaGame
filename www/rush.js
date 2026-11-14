@@ -62,7 +62,7 @@ function table() {
   return `<div class="rs-table${around ? ' rs-around' : ''}">
   ${around ? others.map((i, k) => seatAt(i, spots[k])).join('') : `<ol class="rs-ring" aria-label="Players">${ring}</ol>`}
   <div class="rs-centre rs-${g.colour}"><div class="rs-dir ${g.dir > 0 ? 'cw' : 'ccw'}" aria-label="${g.dir > 0 ? 'Clockwise' : 'Anticlockwise'}">${g.dir > 0 ? '↻' : '↺'}</div>
-   <button type="button" class="rs-deck" data-action="draw" ${mine && !g.drew && !busy ? '' : 'disabled'} aria-label="Draw">${g.pending ? `<b>+${g.pending}</b>` : '<b>Draw</b>'}<small>${g.drawCount} left</small></button>
+   <button type="button" class="rs-deck" data-action="draw" ${mine && !g.drew && !busy ? '' : 'disabled'} aria-label="Draw">${g.pending ? `<b>+${g.pending}</b>` : '<b>Draw</b>'}</button>
    ${card(t, { cls: 'top', attrs: 'tabindex="-1"' })}
    <span class="rs-colour" aria-label="Colour in play: ${COLOUR_NAME[g.colour]}">${COLOUR_NAME[g.colour]}</span></div>
   <p class="rs-msg" role="status">${msg}</p>
