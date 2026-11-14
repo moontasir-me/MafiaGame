@@ -174,3 +174,7 @@ body.village-home{--ui-ivory:#f6f0e4;--ui-brass:#cfaa70;--ui-ink:#121b2d;--ui-fa
 /* Override the legacy tile's animation reset only for its one-time entrance. */
 .village-home .game-tile.ui-arrive{animation:ui-arrive .5s var(--ui-ease) both;animation-delay:var(--ui-delay,0ms)}
 @media(prefers-reduced-motion:reduce){.village-home .game-tile.ui-arrive{animation:none!important}}
+/* The profile sheet is ivory even when the courtyard is dark. */
+.village-home .home-dialog{--text:#302b31;--muted:#786f71;--accent:#8e6839;--world-accent:#c99d62;--border:#d8ccba;--surface:#fbf7ef;color:var(--text)}
+.village-home .home-dialog h2{color:var(--text)}
+.home-dialog .field input:focus{outline:none;box-shadow:0 0 0 3px #cfaa7028;border-color:#a47d49}
