@@ -1,9 +1,45 @@
 {
- "$schema":"https://openapi.vercel.sh/vercel.json",
- "framework":null,
- "buildCommand":"",
- "installCommand":"npm ci",
- "outputDirectory":"www",
- "functions":{"api/room.js":{"maxDuration":30}},
- "rewrites":[{"source":"/api/:route","destination":"/api/room?route=:route"}]
+ "$schema": "https://openapi.vercel.sh/vercel.json",
+ "framework": null,
+ "buildCommand": "",
+ "installCommand": "npm ci",
+ "outputDirectory": "www",
+ "functions": {
+  "api/room.js": {
+   "maxDuration": 30
+  }
+ },
+ "rewrites": [
+  {
+   "source": "/api/:route",
+   "destination": "/api/room?route=:route"
+  }
+ ],
+ "headers": [
+  {
+   "source": "/(.*)",
+   "headers": [
+    {
+     "key": "X-Content-Type-Options",
+     "value": "nosniff"
+    },
+    {
+     "key": "X-Frame-Options",
+     "value": "DENY"
+    },
+    {
+     "key": "Referrer-Policy",
+     "value": "strict-origin-when-cross-origin"
+    },
+    {
+     "key": "Permissions-Policy",
+     "value": "camera=(), microphone=(), geolocation=(), payment=()"
+    },
+    {
+     "key": "Strict-Transport-Security",
+     "value": "max-age=31536000"
+    }
+   ]
+  }
+ ]
 }

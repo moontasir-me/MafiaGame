@@ -142,3 +142,13 @@ test('জায়গা দখল: closing a box keeps the turn, the fourth sid
   await assert.rejects(rooms.handle({ op: 'line', code: a.code, token: b.token, line: 'h:0:0' }), /TURN/);
   v = await rooms.handle({ op: 'line', code: a.code, token: a.token, line: 'h:0:0' }); assert.equal(v.match.turn, 1);
 });
+
+test('table rooms: guessing codes is rate limited', async () => {
+  const { makeOnlineApi } = await import('../lib/online-api.mjs');
+  const rows = new Map(), rates = new Map();
+  const store = { async init() {}, async cleanup() {}, async touch() {}, async create(id, p) { rows.set(id, { revision: 1, payload: p }); return true; }, async load(id) { return rows.get(id) || null; }, async save() { return true; }, async allowRate(k, limit) { const n = (rates.get(k) || 0) + 1; rates.set(k, n); return n <= limit; } };
+  const api = makeOnlineApi({ store, protocol: 'http', getIp: () => '1.2.3.4' });
+  const call = async body => { const res = { headers: {}, setHeader(k, v) { this.headers[k] = v; }, end(x) { this.body = x; } }; await api({ url: '/api/table', method: 'POST', headers: { host: 'x', 'content-type': 'application/json' }, body }, res); return res.statusCode; };
+  let last; for (let i = 0; i < 41; i++) last = await call({ op: 'join', code: 'ZZZZZ', name: 'A' });
+  assert.equal(last, 429);
+});
