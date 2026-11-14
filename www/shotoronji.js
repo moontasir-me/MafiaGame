@@ -12,16 +12,17 @@ const GLYPH = { k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟' };
 const FILES = 'কখগঘঙচছজ';
 const ENDS = { mate: 'কিস্তিমাত!', stale: 'অচল: ড্র', fifty: '৫০ চালে কেউ কিছু খায়নি: ড্র', repeat: 'একই অবস্থা তিনবার: ড্র', material: 'মাত করার মতো ঘুঁটি নেই: ড্র', resign: 'হার মেনে নিলেন', draw: 'দুজনে মিলে ড্র' };
 
-function fresh() { return { v: 1, phase: 'setup', mode: 'cpu', level: 'medium', names: ['', ''], g: newGame(), past: [], moves: [], sel: -1, end: null, winner: null }; }
+function fresh() { return { v: 1, phase: 'setup', mode: 'cpu', level: 'medium', pick: 'w', side: 'w', names: ['', ''], g: newGame(), past: [], moves: [], sel: -1, end: null, winner: null }; }
 let s = fresh(), view = 'play', lastScreen = '', thinking = false;
 try { const d = JSON.parse(localStorage.getItem(KEY)); if (d?.v === 1) s = { ...fresh(), ...d, sel: -1 }; } catch { }
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify({ ...s, past: s.past.slice(-6) })); } catch { } };
-const nameOf = side => online ? (online.members[side === 'w' ? 0 : 1] || '') : side === 'w' ? s.names[0] : (s.mode === 'cpu' ? `${CPU} (${LEVELS[s.level].name})` : s.names[1]);
+const you = () => s.side || 'w';
+const nameOf = side => online ? (online.members[side === 'w' ? 0 : 1] || '') : s.mode === 'cpu' ? (side === you() ? s.names[0] : `${CPU} (${LEVELS[s.level].name})`) : side === 'w' ? s.names[0] : s.names[1];
 // The home page's Online/Offline switch decides which version opens.
 const ONLINE = isOnlineMode() || new URLSearchParams(location.search).has('online');
 let online = null, poll = 0; // {code, token, me, host, members, started}
-const mySide = () => online ? (online.me === 0 ? 'w' : 'b') : null;
-const cpuTurn = () => !online && s.mode === 'cpu' && s.phase === 'play' && s.g.turn === 'b' && !s.end;
+const mySide = () => online ? (online.me === 0 ? 'w' : 'b') : s.mode === 'cpu' ? you() : null;
+const cpuTurn = () => !online && s.mode === 'cpu' && s.phase === 'play' && s.g.turn !== you() && !s.end;
 const button = (label, action, cls, ic, extra = '') => `<button type="button" class="btn ${cls}" data-action="${action}" ${extra}>${icon(ic)}${label}</button>`;
 const piece = p => `<span class="sq-piece ${colour(p)}" aria-hidden="true">${GLYPH[p.toLowerCase()]}︎</span>`;
 const sqName = sq => FILES[sq & 7] + bn(8 - (sq >> 3));
@@ -38,8 +39,9 @@ function setup() {
   const card = (k, glyph, title, sub) => `<button type="button" role="radio" aria-checked="${s.mode === k}" class="cg-card${s.mode === k ? ' is-on' : ''}" data-action="mode" data-id="${k}"><span class="cg-glyph">${glyph}</span><b>${title}</b><small>${sub}</small></button>`;
   return `<header class="cg-hero"><div class="cg-hero-text"><h1>চতুরঙ্গ</h1><p class="chess-verse">তোমার নৌকোর মুখোমুখি আমার সৈন্যদল<br>বাঁচার লড়াই...<br>আমার মন্ত্রী খোয়া গেছে একটা চালের ভুল<br>কোথায় দাঁড়াই...</p></div><div class="cg-mini" aria-hidden="true">${cells}</div></header>
   <div class="cg-modes" role="radiogroup" aria-label="কার সাথে">${card('cpu', '♚\uFE0E', 'কম্পিউটারের সাথে', 'একা খেলুন, তিন স্তর')}${card('friends', '♚\uFE0E<em>♔\uFE0E</em>', 'বন্ধুর সাথে', 'এক ফোনে মুখোমুখি')}</div>
+  ${s.mode === 'cpu' ? `<div class="cg-colour" role="radiogroup" aria-label="আপনি কোন রং নেবেন"><span>আপনার ঘুঁটি</span>${[['w', '♔\uFE0E', 'সাদা', 'আগে চাল'], ['b', '♚\uFE0E', 'কালো', 'পরে চাল'], ['random', '?', 'যেকোনো', 'ভাগ্যে যা']].map(([k, g, t, sub]) => `<button type="button" role="radio" aria-checked="${s.pick === k}" class="${s.pick === k ? 'is-on' : ''} pick-${k}" data-action="pick" data-id="${k}"><span class="cg-side ${k === 'b' ? 'b' : 'w'}">${g}</span><b>${t}</b><small>${sub}</small></button>`).join('')}</div>` : ''}
   ${s.mode === 'cpu' ? `<div class="cg-levels" role="radiogroup" aria-label="কম্পিউটার কেমন খেলবে">${Object.entries(LEVELS).map(([k, l], n) => `<button type="button" role="radio" aria-checked="${s.level === k}" class="${s.level === k ? 'is-on' : ''}" data-action="level" data-id="${k}"><span>${'♟\uFE0E'.repeat(n + 1)}</span>${l.name}</button>`).join('')}</div>` : ''}
-  <section class="cg-names"><label class="cg-name"><span class="cg-side w">♔\uFE0E</span><input id="name-w" maxlength="20" autocomplete="off" placeholder="${s.mode === 'cpu' ? 'আপনার নাম' : 'সাদা ঘুঁটির খেলোয়াড়'}" value="${esc(s.names[0])}"></label>
+  <section class="cg-names"><label class="cg-name"><span class="cg-side ${s.mode === 'cpu' && s.pick === 'b' ? 'b' : 'w'}">${s.mode === 'cpu' && s.pick === 'b' ? '♚' : '♔'}\uFE0E</span><input id="name-w" maxlength="20" autocomplete="off" placeholder="${s.mode === 'cpu' ? 'আপনার নাম' : 'সাদা ঘুঁটির খেলোয়াড়'}" value="${esc(s.names[0])}"></label>
   ${s.mode === 'friends' ? `<label class="cg-name"><span class="cg-side b">♚\uFE0E</span><input id="name-b" maxlength="20" autocomplete="off" placeholder="কালো ঘুঁটির খেলোয়াড়" value="${esc(s.names[1])}"></label>` : ''}
   ${chips()}</section>
   ${button('দান শুরু', 'start', 'primary wide cg-start', 'play')}`;
@@ -147,7 +149,7 @@ async function tap(sq) {
 }
 function finish(end, winner) {
   s.end = end; s.winner = winner; sound(winner ? 'win' : 'notice');
-  const sides = online ? [mySide()] : s.mode === 'cpu' ? ['w'] : ['w', 'b'];
+  const sides = online ? [mySide()] : s.mode === 'cpu' ? [you()] : ['w', 'b'];
   const label = winner ? 'জয়' : 'ড্র';
   saveMatch({ id: crypto.randomUUID(), game: 'shotoronji', players: sides.map(side => ({ name: nameOf(side), points: winner === side ? 3 : winner ? 0 : 1, recent: [{ won: winner === side, img: ART, label: `চতুরঙ্গ · ${winner === side ? 'জয়' : winner ? 'হার' : label}` }] })) });
 }
@@ -164,18 +166,21 @@ async function act(action, id) {
       if (need.some(i => !s.names[i].trim())) return toast('আগে নাম লিখুন।');
       if (s.mode === 'friends' && s.names[0].trim().toLocaleLowerCase() === s.names[1].trim().toLocaleLowerCase()) return toast('দুজনের নাম আলাদা হতে হবে।');
       need.forEach(i => { try { s.names[i] = ensureAccount(s.names[i]).name; } catch { s.names[i] = s.names[i].trim(); } });
-      Object.assign(s, { phase: 'play', g: newGame(), past: [], moves: [], sel: -1, end: null, winner: null }); view = 'play'; save(); sound('notice'); return transition();
+      s.side = s.mode === 'cpu' ? (s.pick === 'random' ? (Math.random() < .5 ? 'w' : 'b') : s.pick) : 'w';
+      Object.assign(s, { phase: 'play', g: newGame(), past: [], moves: [], sel: -1, end: null, winner: null }); view = 'play'; save(); sound('notice'); transition(); if (cpuTurn()) setTimeout(cpuMove, 400); return;
     }
+    case 'pick': if (['w', 'b', 'random'].includes(id)) s.pick = id; save(); return render();
     case 'again': if (online) return send({ op: 'again' });
-      Object.assign(s, { g: newGame(), past: [], moves: [], sel: -1, end: null, winner: null }); save(); return render();
+      if (s.mode === 'cpu' && s.pick === 'random') s.side = Math.random() < .5 ? 'w' : 'b';
+      Object.assign(s, { g: newGame(), past: [], moves: [], sel: -1, end: null, winner: null }); save(); render(); if (cpuTurn()) cpuMove(); return;
     case 'undo': {
       if (!s.past.length || thinking) return;
-      const back = s.mode === 'cpu' && s.past.length >= 2 && s.g.turn === 'w' ? 2 : 1;
+      const back = s.mode === 'cpu' && s.past.length >= 2 && s.g.turn === you() ? 2 : 1;
       for (let i = 0; i < back; i++) { s.g = s.past.pop(); s.moves.pop(); }
       s.sel = -1; save(); return render();
     }
     case 'resign': if (online) { if (await confirmBox('হার মেনে নেবেন?', '', 'হ্যাঁ, হার মানি')) send({ op: 'resign' }); return; }
-      if (await confirmBox('হার মেনে নেবেন?', '', 'হ্যাঁ, হার মানি')) { finish('resign', s.g.turn === 'w' ? 'b' : 'w'); save(); render(); } return;
+      if (await confirmBox('হার মেনে নেবেন?', '', 'হ্যাঁ, হার মানি')) { const loser = s.mode === 'cpu' ? you() : s.g.turn; finish('resign', loser === 'w' ? 'b' : 'w'); save(); render(); } return;
     case 'draw': if (await confirmBox('দুজনেই ড্র চান?', '', 'হ্যাঁ, ড্র')) { finish('draw', null); save(); render(); } return;
     case 'quit': if (await confirmBox('এই দান বাতিল করবেন?', 'র‍্যাঙ্কিংয়ে কিছু যোগ হবে না।', 'হ্যাঁ, বাতিল')) { s.phase = 'setup'; save(); transition(); } return;
     case 'leave': if (!await confirmBox('ঘর ছেড়ে দেবেন?', '', 'হ্যাঁ')) return; clearInterval(poll); online = null; s.phase = 'setup'; s.end = null; save(); return transition();

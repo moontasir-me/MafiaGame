@@ -13,7 +13,7 @@ const ONLINE = isOnlineMode() || new URLSearchParams(location.search).has('onlin
 // Point i sits at column i % 3, row ⌊i / 3⌋ on a 3 × 3 grid.
 const XY = i => [60 + (i % 3) * 140, 60 + Math.floor(i / 3) * 140];
 
-function fresh() { return { v: 1, phase: 'setup', mode: 'cpu', level: 'medium', names: ['', ''], g: null, saved: false }; }
+function fresh() { return { v: 1, phase: 'setup', mode: 'cpu', level: 'medium', pick: 0, side: 0, names: ['', ''], g: null, saved: false }; }
 let s = fresh(), view = 'play', lastScreen = '', busy = false, online = null, poll = 0, pick = null;
 try { const d = JSON.parse(localStorage.getItem(KEY)); if (d?.v === 1) s = { ...fresh(), ...d }; } catch { }
 const save = () => { if (online) return; try { localStorage.setItem(KEY, JSON.stringify(s)); } catch { } };
@@ -32,8 +32,8 @@ const head = sub => `<header class="tg-head"><img src="${ART}" alt="" width="640
 function setup() {
   if (ONLINE) return online ? onlineLobby({ code: online.code, members: online.members, me: online.me, host: online.host, min: 2, max: 2, title: 'তিন গুটি · অনলাইন ঘর' }) : `${head('অনলাইন: বন্ধু নিজের ফোন থেকে খেলবে।')}${onlineEntry({ len: 5 })}`;
   return `${head('উঠোনের মাটিতে দাগ কাটা ঘর, তিনটা করে গুটি। এক লাইনে তিনটা মেলালেই জয়।')}
-  <section class="tg-panel"><h2>কার সাথে</h2>${seg('mode', { cpu: 'কম্পিউটার', friends: 'বন্ধুর সাথে' }, s.mode)}${s.mode === 'cpu' ? `<div class="tg-gap">${seg('level', CPU_LEVELS, s.level)}</div>` : ''}</section>
-  <section class="tg-panel"><h2>নাম</h2><label class="tg-field">${stone(0)}<input data-name="0" maxlength="20" autocomplete="off" placeholder="${s.mode === 'cpu' ? 'আপনার নাম' : 'সাদা নুড়ির খেলোয়াড়'}" value="${esc(s.names[0])}"></label>
+  <section class="tg-panel"><h2>কার সাথে</h2>${seg('mode', { cpu: 'কম্পিউটার', friends: 'বন্ধুর সাথে' }, s.mode)}${s.mode === 'cpu' ? `<div class="tg-gap tg-pick"><span>আপনার গুটি</span>${seg('pick', { 0: 'সাদা নুড়ি (আগে)', 1: 'তেঁতুল বিচি (পরে)', random: 'যেকোনো' }, String(s.pick ?? 0))}</div><div class="tg-gap">${seg('level', CPU_LEVELS, s.level)}</div>` : ''}</section>
+  <section class="tg-panel"><h2>নাম</h2><label class="tg-field">${stone(s.mode === 'cpu' && s.pick == 1 ? 1 : 0)}<input data-name="0" maxlength="20" autocomplete="off" placeholder="${s.mode === 'cpu' ? 'আপনার নাম' : 'সাদা নুড়ির খেলোয়াড়'}" value="${esc(s.names[0])}"></label>
   ${s.mode === 'friends' ? `<label class="tg-field">${stone(1)}<input data-name="1" maxlength="20" autocomplete="off" placeholder="তেঁতুল বিচির খেলোয়াড়" value="${esc(s.names[1])}"></label>` : ''}${chips()}</section>
   ${button('খেলা শুরু', 'start', 'primary wide', 'play')}`;
 }
@@ -55,7 +55,7 @@ function seat(side) {
   return `<div class="tg-seat${on ? ' is-on' : ''}${!online && s.mode === 'friends' && side === 1 ? ' flip' : ''}">${stone(side)}<span><b>${esc(g.players[side].name)}</b><small>${prompt || (left ? `হাতে ${bn(left)}টা গুটি` : STONE_NAME[side])}</small></span><span class="tg-hand">${Array.from({ length: left }, () => stone(side, 'small')).join('')}</span></div>`;
 }
 function playing() {
-  const g = s.g, near = online ? online.me : 0;
+  const g = s.g, near = online ? online.me : s.mode === 'cpu' ? (s.side || 0) : 0;
   return `<div class="tg-table">${seat(1 - near)}${board(g)}${seat(near)}</div>
   ${g.winner !== null || g.draw ? over(g) : button(online ? 'ঘর ছেড়ে দিন' : 'খেলা ছেড়ে দিন', online ? 'leave' : 'quit', 'text wide', 'close')}`;
 }
@@ -115,7 +115,7 @@ async function cpu() {
 }
 function finish() {
   if (s.saved) return; s.saved = true;
-  const g = s.g, sides = online ? [online.me] : s.mode === 'cpu' ? [0] : [0, 1];
+  const g = s.g, sides = online ? [online.me] : [0, 1];
   saveMatch({ id: crypto.randomUUID(), game: 'tinguti', players: sides.filter(k => !g.players[k].cpu).map(k => ({ name: g.players[k].name, points: g.draw ? 1 : g.winner === k ? 3 : 0, recent: [{ won: g.winner === k, img: ART, label: `তিন গুটি · ${g.draw ? 'ড্র' : g.winner === k ? 'জয়' : 'হার'}` }] })) });
 }
 
@@ -149,10 +149,13 @@ async function act(action, id) {
       if (list.some(x => !x)) return toast('আগে নাম লিখুন।');
       if (n === 2 && list[0].toLocaleLowerCase() === list[1].toLocaleLowerCase()) return toast('দুজনের নাম আলাদা হতে হবে।');
       const names = list.map(x => { try { return ensureAccount(x).name; } catch { return x; } });
-      s.g = newGame(s.mode === 'cpu' ? [{ name: names[0] }, { name: 'কম্পিউটার', cpu: s.level }] : names.map(name => ({ name })));
-      s.saved = false; s.phase = 'play'; pick = null; view = 'play'; save(); sound('notice'); return transition();
+      s.side = s.mode === 'cpu' ? (s.pick === 'random' ? (Math.random() < .5 ? 0 : 1) : Number(s.pick) || 0) : 0;
+      const me = { name: names[0] }, comp = { name: 'কম্পিউটার', cpu: s.level };
+      s.g = newGame(s.mode === 'cpu' ? (s.side ? [comp, me] : [me, comp]) : names.map(name => ({ name })));
+      s.saved = false; s.phase = 'play'; pick = null; view = 'play'; save(); sound('notice'); transition(); setTimeout(cpu, 300); return;
     }
-    case 'again': if (online) return send({ op: 'again' }); s.g = newGame(s.g.players); s.saved = false; pick = null; save(); render(); return cpu();
+    case 'pick': s.pick = id === 'random' ? 'random' : Number(id) ? 1 : 0; save(); return render();
+    case 'again': if (online) return send({ op: 'again' }); if (s.mode === 'cpu' && s.pick === 'random') { const side = Math.random() < .5 ? 0 : 1; if (side !== s.side) { s.side = side; s.g.players.reverse(); } } s.g = newGame(s.g.players); s.saved = false; pick = null; save(); render(); return cpu();
     case 'quit': if (await confirmBox('খেলা ছেড়ে দেবেন?', 'র‍্যাঙ্কিংয়ে কিছু যোগ হবে না।', 'হ্যাঁ')) { s.phase = 'setup'; s.g = null; busy = false; save(); transition(); } return;
     case 'leave': return leave();
     case 'game-home': view = 'play'; if (!online && s.g && (s.g.winner !== null || s.g.draw)) { s.phase = 'setup'; s.g = null; } save(); return transition();

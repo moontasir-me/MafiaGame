@@ -251,3 +251,9 @@
 .cg-start{min-height:54px;font-size:16px!important;border-radius:16px!important}
 @media(max-width:520px){.cg-mini{top:14px!important;right:16px!important;width:78px!important}}
 @media(max-width:520px){.cg-mini{display:none!important}}
+.cg-colour{display:grid;grid-template-columns:auto repeat(3,1fr);gap:8px;align-items:center;margin:0 0 10px}.cg-colour>span{font-size:13px;color:var(--muted);padding-right:2px}
+.cg-colour button{display:grid;justify-items:center;gap:3px;padding:10px 4px;border:1.5px solid #5a3a22;border-radius:14px;background:#21140b;color:var(--muted);font:inherit;cursor:pointer}
+.cg-colour button b{font-size:14px;color:var(--text)}.cg-colour button small{font-size:11px}.cg-colour .cg-side{width:32px;height:32px;font-size:20px}
+.cg-colour .pick-random .cg-side{background:linear-gradient(90deg,#efe0bd 50%,#1a0e07 50%);color:#c99a45;font-weight:700;font-family:Poppins,sans-serif}
+.cg-colour button.is-on{border-color:#c99a45;background:#2e1c10;box-shadow:0 0 0 3px #c99a4533}
+@media(max-width:420px){.cg-colour{grid-template-columns:repeat(3,1fr)}.cg-colour>span{grid-column:1/-1}}

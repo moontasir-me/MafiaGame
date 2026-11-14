@@ -16,14 +16,15 @@ let online = null, poll = 0, replay = null, sharing = false;
 const KEY = 'carrom.v1', ART = 'assets/carrom/cover.svg', CPU_NAME = 'কম্পিউটার';
 const COLOUR_NAME = { white: 'সাদা', black: 'কালো' };
 
-function fresh() { return { v: 1, phase: 'setup', mode: 'cpu', level: 'medium', names: ['', ''], g: null, saved: false }; }
+function fresh() { return { v: 1, phase: 'setup', mode: 'cpu', level: 'medium', pick: 0, side: 0, names: ['', ''], g: null, saved: false }; }
 let s = fresh(), view = 'play', lastScreen = '', moving = false, fell = [], aim = null, sx = S / 2, raf = 0, busy = false;
 try { const d = JSON.parse(localStorage.getItem(KEY)); if (d?.v === 1) s = { ...fresh(), ...d }; } catch { }
 if (s.g) s.g.pieces = s.g.pieces.filter(p => p.id !== 's');
 const save = () => { if (online) return; try { localStorage.setItem(KEY, JSON.stringify(s)); } catch { } };
 const button = (label, action, cls, ic, extra = '') => `<button type="button" class="btn ${cls}" data-action="${action}" ${extra}>${icon(ic)}${label}</button>`;
-const nameOf = side => online ? (online.members[side] || '') : side === 1 && s.mode === 'cpu' ? `${CPU_NAME} (${CPU_LEVELS[s.level].name})` : s.names[side];
-const cpuTurn = () => !online && s.mode === 'cpu' && s.phase === 'play' && s.g && s.g.turn === 1 && s.g.winner === null;
+const you = () => online ? online.me : s.mode === 'cpu' ? (s.side || 0) : 0, cpuSide = () => 1 - (s.side || 0);
+const nameOf = side => online ? (online.members[side] || '') : s.mode === 'cpu' ? (side === you() ? s.names[0] : `${CPU_NAME} (${CPU_LEVELS[s.level].name})`) : s.names[side];
+const cpuTurn = () => !online && s.mode === 'cpu' && s.phase === 'play' && s.g && s.g.turn === cpuSide() && s.g.winner === null;
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
 /* ---------- Screens ---------- */
@@ -36,7 +37,7 @@ function setup() {
   if (ONLINE) return online ? onlineLobby({ code: online.code, members: online.members, me: online.me, host: online.host, min: 2, max: 2, title: 'ক্যারম · অনলাইন ঘর' })
     : `<header class="cr-head"><img src="${ART}" alt="" width="640" height="420"><div><h1>ক্যারম</h1><p>অনলাইন: বন্ধু নিজের ফোন থেকে খেলবে। যিনি ঘর খোলেন তিনি সাদা।</p></div></header>${onlineEntry({ len: 5 })}`;
   return `<header class="cr-head"><img src="${ART}" alt="" width="640" height="420"><div><h1>ক্যারম</h1><p>স্ট্রাইকার টেনে ছাড়ুন, নিজের গুটি পকেটে ফেলুন।</p></div></header>
-  <section class="cr-panel"><h2>কার সাথে</h2>${seg('mode', { cpu: 'কম্পিউটার', friends: 'বন্ধুর সাথে' }, s.mode)}${s.mode === 'cpu' ? `<div class="cr-gap">${seg('level', Object.fromEntries(Object.entries(CPU_LEVELS).map(([k, v]) => [k, v.name])), s.level)}</div>` : ''}</section>
+  <section class="cr-panel"><h2>কার সাথে</h2>${seg('mode', { cpu: 'কম্পিউটার', friends: 'বন্ধুর সাথে' }, s.mode)}${s.mode === 'cpu' ? `<div class="cr-gap cr-pick"><span>আপনার গুটি</span>${seg('pick', { 0: 'সাদা (আগে)', 1: 'কালো (পরে)', random: 'যেকোনো' }, String(s.pick ?? 0))}</div>` : ''}${s.mode === 'cpu' ? `<div class="cr-gap">${seg('level', Object.fromEntries(Object.entries(CPU_LEVELS).map(([k, v]) => [k, v.name])), s.level)}</div>` : ''}</section>
   <section class="cr-panel"><h2>নাম</h2><label class="cr-field"><span class="cr-coin white"></span><input data-name="0" maxlength="20" autocomplete="off" placeholder="${s.mode === 'cpu' ? 'আপনার নাম' : 'সাদা গুটি (নিচে বসবেন)'}" value="${esc(s.names[0])}"></label>
   ${s.mode === 'friends' ? `<label class="cr-field"><span class="cr-coin black"></span><input data-name="1" maxlength="20" autocomplete="off" placeholder="কালো গুটি (উল্টো দিকে বসবেন)" value="${esc(s.names[1])}"></label>` : ''}${chips()}</section>
   ${button('খেলা শুরু', 'start', 'primary wide', 'play')}`;
@@ -63,7 +64,7 @@ function slider(g) {
   const me = online ? online.me : g.turn, show = g.winner === null && g.turn === me && !cpuTurn();
   return show ? `<label class="cr-slide"><span>স্ট্রাইকার সরান</span><input id="striker-x" type="range" min="${BASE.x0}" max="${BASE.x1}" step="1" value="${Math.round(turned() ? S - sx : sx)}" aria-label="স্ট্রাইকারের জায়গা"></label>` : '';
 }
-const turned = () => !!(online && online.me === 1);
+const turned = () => you() === 1;
 function paintSlider() { const el = $('#striker-x'); if (el) el.value = Math.round(turned() ? S - sx : sx); }
 function meter(g) {
   const f = g.friction ?? 1, pct = Math.round((f - FRICTION.min) / (FRICTION.max - FRICTION.min) * 100), me = online ? online.me : g.turn;
@@ -88,7 +89,7 @@ function fadeDust() {
 }
 function playing() {
   const g = s.g;
-  const near = online ? online.me : 0;
+  const near = you();
   return `<div class="cr-table">${seat(1 - near)}<div class="cr-board-wrap"><canvas id="board" class="${near ? 'turned' : ''}" aria-label="ক্যারম বোর্ড"></canvas></div>${seat(near)}</div>
   ${meter(g)}<p class="cr-msg" role="status">${message(g)}</p>
   ${g.winner !== null ? `<section class="cr-over"><h2>${esc(nameOf(g.winner))} জিতলেন!</h2><p>${bn(score(g, 0))} — ${bn(score(g, 1))}</p>${online ? (online.host ? button('আবার খেলি', 'again', 'primary wide', 'play') : '<p class="ol-note">ঘর যিনি খুলেছেন তিনি আবার শুরু করতে পারবেন।</p>') + button('ঘর ছেড়ে দিন', 'leave', 'secondary wide', 'close') : button('আবার খেলি', 'again', 'primary wide', 'play') + button('ক্যারমের শুরুর পাতা', 'game-home', 'secondary wide', 'home')}</section>`
@@ -186,9 +187,9 @@ async function done() {
 async function cpuMove() {
   busy = true; render(); await wait(2000); if (!cpuTurn()) { busy = false; return; }
   // A sticky board slows every shot: the computer powders it once when it gets bad.
-  if ((s.g.friction ?? 1) > 1.3 && canPowder(s.g, 1)) { spreadPowder(s.g, 1); dust = Array.from({ length: 260 }, () => ({ x: Math.random() * S, y: Math.random() * S, r: 1 + Math.random() * 3, a: .9 })); sound('coin'); render(); fadeDust(); await wait(1500); }
+  if ((s.g.friction ?? 1) > 1.3 && canPowder(s.g, cpuSide())) { spreadPowder(s.g, cpuSide()); dust = Array.from({ length: 260 }, () => ({ x: Math.random() * S, y: Math.random() * S, r: 1 + Math.random() * 3, a: .9 })); sound('coin'); render(); fadeDust(); await wait(1500); }
   const p = plan(s.g, s.level); sx = p.x; draw();
-  const len = Math.hypot(p.vx, p.vy), pull = len / POWER * 260; aim = { x: p.x, y: BASE.y[1], px: p.x - p.vx / len * pull, py: BASE.y[1] - p.vy / len * pull }; draw();
+  const len = Math.hypot(p.vx, p.vy), pull = len / POWER * 260; aim = { x: p.x, y: BASE.y[s.g.turn], px: p.x - p.vx / len * pull, py: BASE.y[s.g.turn] - p.vy / len * pull }; draw();
   await wait(900); aim = null; busy = false; shoot(p.x, p.vx, p.vy);
 }
 function bindBoard() {
@@ -226,7 +227,7 @@ addEventListener('resize', sizeBoard);
 
 function finish() {
   if (s.saved) return; s.saved = true; sound('win');
-  const g = s.g, sides = online ? [online.me] : s.mode === 'cpu' ? [0] : [0, 1];
+  const g = s.g, sides = online ? [online.me] : s.mode === 'cpu' ? [you()] : [0, 1];
   saveMatch({ id: crypto.randomUUID(), game: 'carrom', players: sides.map(side => ({ name: nameOf(side), points: g.winner === side ? 3 : 0, recent: [{ won: g.winner === side, img: ART, label: `ক্যারম · ${bn(score(g, 0))}–${bn(score(g, 1))}` }] })) });
 }
 
@@ -257,11 +258,14 @@ async function act(action, id) {
       if (need.some(i => !s.names[i].trim())) return toast('আগে নাম লিখুন।');
       if (s.mode === 'friends' && s.names[0].trim().toLocaleLowerCase() === s.names[1].trim().toLocaleLowerCase()) return toast('দুজনের নাম আলাদা হতে হবে।');
       need.forEach(i => { try { s.names[i] = ensureAccount(s.names[i]).name; } catch { s.names[i] = s.names[i].trim(); } });
-      s.g = newGame(); s.saved = false; s.phase = 'play'; sx = S / 2; view = 'play'; save(); sound('notice'); return transition();
+      s.side = s.mode === 'cpu' ? (s.pick === 'random' ? (Math.random() < .5 ? 0 : 1) : Number(s.pick) || 0) : 0;
+      s.g = newGame(); s.saved = false; s.phase = 'play'; sx = S / 2; view = 'play'; save(); sound('notice'); transition(); if (cpuTurn()) setTimeout(cpuMove, 300); return;
     }
     case 'powder': return powderNow();
+    case 'pick': s.pick = id === 'random' ? 'random' : Number(id) ? 1 : 0; save(); return render();
     case 'again': if (online) return send({ op: 'again' });
-      s.g = newGame(); s.saved = false; sx = S / 2; save(); return render();
+      if (s.mode === 'cpu' && s.pick === 'random') s.side = Math.random() < .5 ? 0 : 1;
+      s.g = newGame(); s.saved = false; sx = S / 2; save(); render(); if (cpuTurn()) cpuMove(); return;
     case 'quit': if (online) return leaveRoom();
       if (await confirmBox('খেলা ছেড়ে দেবেন?', 'র‍্যাঙ্কিংয়ে কিছু যোগ হবে না।', 'হ্যাঁ')) { cancelAnimationFrame(raf); moving = false; s.phase = 'setup'; s.g = null; save(); transition(); } return;
     case 'leave': return leaveRoom();
