@@ -54,6 +54,7 @@ function table() {
    ${card(t, { cls: 'top', attrs: 'tabindex="-1"' })}
    <span class="rs-colour" aria-label="Colour in play: ${COLOUR_NAME[g.colour]}">${COLOUR_NAME[g.colour]}</span></div>
   <p class="rs-msg" role="status">${msg}</p>
+  ${g.winner === null && (g.owe === me || (mine && g.hand.length === 2 && g.precall !== me)) ? `<button type="button" class="rs-call${g.owe === me ? ' urgent' : ''}" data-action="call">Rush!<small>${g.owe === me ? 'One card left: call it now or draw 2' : 'Going down to one card? Call it first'}</small></button>` : g.precall === me && mine ? '<p class="rs-called">Rush! called. Play your card.</p>' : ''}
   ${g.winner !== null ? over(g) : `<div class="rs-actions">${g.drew && mine ? button('Keep it, pass', 'pass', 'secondary', 'arrow') : ''}${mine && g.pending ? button(`Take ${g.pending} cards`, 'draw', 'secondary', 'plus') : ''}</div>`}
   <div class="rs-hand-wrap"><div class="rs-hand" aria-label="Your hand">${hand}</div><small class="rs-hand-n">${g.hand.length} card${g.hand.length === 1 ? '' : 's'} in your hand</small></div></div>`;
 }
@@ -72,7 +73,8 @@ function message(g) {
     if (l.swap !== undefined) s += ` Hands swapped with ${name(l.swap)}.`;
     if (l.rotate) s += ' Every hand moved on.';
     if (l.discarded) s += ` ${l.discarded} more discarded.`;
-    if (l.lastCard) s += ` <b>${name(l.by)} ${l.by === online.me ? 'have' : 'has'} one card left!</b>`;
+    if (l.lastCard || l.called) s += l.called ? ` <b>${name(l.by)} called Rush!</b>` : ` <b>${name(l.by)} ${l.by === online.me ? 'have' : 'has'} one card left…</b>`;
+    if (g.penalty && g.penalty.seq === g.seq) s += ` ${name(g.penalty.k)} forgot to call Rush! and drew 2.`;
     if (l.knocked) s += ` ${l.knocked.map(name).join(', ')} knocked out with 25 cards.`;
   }
   const now = g.turn === online.me ? (g.drew ? 'Play the card you drew, or pass.' : g.pending ? `Stack a draw card, or take ${g.pending}.` : 'Your turn.') : `${esc(turn.name)}'s turn…`;
@@ -88,6 +90,7 @@ function rules() {
   <li>Everyone gets 7 cards. On your turn, play a card that matches the colour or the symbol of the top card. Wild cards go on anything; you pick the next colour.</li>
   <li><b>Skip</b> skips the next player, <b>Reverse</b> turns the direction (with two players it acts as Skip), <b>+2</b> and <b>Wild +4</b> make the next player draw.</li>
   <li>Can't play? Draw. If the drawn card fits, you may play it, or keep it and pass.</li>
+  <li>When you get down to one card, press <b>Rush!</b> (before or right after playing your second-last card). If the next player moves before you call it, you draw 2.</li>
   <li>First to empty their hand wins. Ranking: 3 points for first, 2 for second, 1 for third (fewest cards left).</li></ol>
   <h2 class="rs-rule-h">Ruthless</h2><ol class="plain-rules">
   <li>Extra cards: coloured +4, Skip all (you play again), Discard all (drop every card of that colour), Wild +6, Wild +10, Wild reverse +4.</li>
@@ -190,6 +193,7 @@ async function act(action, id) {
     case 'share': { const text = `Play Colour Rush with me on শীতলপাটি. Code: ${online.code}`; try { if (navigator.share) await navigator.share({ text, url: location.href.split('?')[0] }); else { await navigator.clipboard.writeText(text); toast('Code copied.'); } } catch { } return; }
     case 'start': return send({ op: 'start' });
     case 'again': saved = false; return send({ op: 'again' });
+    case 'call': navigator.vibrate?.(30); sound('notice'); return send({ op: 'call' });
     case 'draw': return send({ op: 'draw' });
     case 'pass': return send({ op: 'pass' });
     case 'leave': if (!await confirmBox('Leave this room?', '', 'Leave', 'Stay')) return; clearInterval(poll); online = null; try { sessionStorage.removeItem('rush.online'); } catch { } view = 'play'; return transition();

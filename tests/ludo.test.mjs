@@ -196,3 +196,15 @@ test('Colour Rush Ruthless: draw cards stack and 25 cards knocks a player out', 
   g.players[2].hand = Array.from({ length: 20 }, (_, i) => ({ id: 'z' + i, c: 'y', v: '3' }));
   g = U.act(g, 2, { type: 'draw' }); assert.equal(g.players[2].out, true, '20 + 6 = 26 cards: out');
 });
+
+test('Colour Rush: forgetting to call Rush! on your last card costs 2 when the next player moves', () => {
+  let g = U.newGame([{ name: 'A' }, { name: 'B' }], 'classic');
+  const t = U.top(g);
+  g.players[0].hand = [{ id: 'a1', c: g.colour, v: '5' }, { id: 'a2', c: 'b', v: '9' }];
+  g.players[1].hand.push({ id: 'b1', c: 'w', v: 'wild' });
+  g = U.act(g, 0, { type: 'play', card: 'a1' }); assert.equal(g.owe, 0);
+  g = U.act(g, 1, { type: 'play', card: 'b1', colour: 'r' }); assert.equal(g.players[0].hand.length, 3, 'drew 2');
+  let h = U.newGame([{ name: 'A' }, { name: 'B' }], 'classic');
+  h.players[0].hand = [{ id: 'a1', c: h.colour, v: '5' }, { id: 'a2', c: 'b', v: '9' }];
+  h = U.call(h, 0); h = U.act(h, 0, { type: 'play', card: 'a1' }); assert.equal(h.owe, null); assert.equal(h.last.called, true);
+});

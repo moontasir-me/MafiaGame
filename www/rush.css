@@ -46,3 +46,9 @@
 .rs-choices .pick-r{background:var(--r)!important;color:#fff!important}.rs-choices .pick-y{background:var(--y)!important;color:#1c1606!important}.rs-choices .pick-g{background:var(--g)!important;color:#fff!important}.rs-choices .pick-b{background:var(--b)!important;color:#fff!important}
 .rs-over{margin:12px auto;text-align:center}.rs-over h2{margin:6px 0;font-size:26px;color:#f2c230!important}.rs-over ol{display:grid;gap:4px;max-width:320px;margin:10px auto;padding-left:24px;text-align:left}.rs-over small{color:var(--muted)}.rs-over .btn+.btn{margin-top:8px}
 .rs-rule-h{font-size:17px;margin:18px 0 6px}
+.rs-call{display:grid;gap:2px;justify-items:center;width:min(100%,320px);margin:10px auto 0;padding:12px 18px;border:3px solid #fff;border-radius:18px;background:linear-gradient(135deg,#e0412f,#f2c230);color:#fff;font:800 26px Poppins,sans-serif;letter-spacing:.5px;text-shadow:0 2px 0 #0004;cursor:pointer;box-shadow:0 8px 0 #0005,0 12px 24px #0006}
+.rs-call small{font:500 12px 'Noto Sans Bengali',Poppins,sans-serif;letter-spacing:0;text-shadow:none}
+.rs-call.urgent{animation:rscall .7s ease-in-out infinite}@keyframes rscall{50%{transform:scale(1.06)}}
+.rs-call:active{transform:translateY(4px);box-shadow:0 4px 0 #0005}
+.rs-called{margin:10px 0 0;text-align:center;font-weight:700;color:#f2c230}
+@media(prefers-reduced-motion:reduce){.rs-call.urgent{animation:none}}

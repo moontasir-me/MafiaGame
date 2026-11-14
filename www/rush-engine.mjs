@@ -31,7 +31,7 @@ export function newGame(players, mode = 'classic', rnd = Math.random) {
   // Enough decks for everyone's hand plus a healthy draw pile.
   const decks = Math.max(1, Math.ceil((players.length * HAND + 60) / (mode === 'ruthless' ? 168 : 108)));
   let id = 0; const pile = shuffle(Array.from({ length: decks }, () => oneDeck(mode)).flat().map(c => ({ ...c, id: 'k' + (id++) })), rnd);
-  const g = { mode, players: players.map(p => ({ name: p.name, hand: [], out: false })), draw: pile, discard: [], colour: null, dir: 1, turn: 0, pending: 0, drew: null, winner: null, order: [], last: null, seq: 0 };
+  const g = { owe: null, precall: null, penalty: null, mode, players: players.map(p => ({ name: p.name, hand: [], out: false })), draw: pile, discard: [], colour: null, dir: 1, turn: 0, pending: 0, drew: null, winner: null, order: [], last: null, seq: 0 };
   for (let k = 0; k < HAND; k++) for (const p of g.players) p.hand.push(g.draw.pop());
   // The first face-up card is a plain number.
   let top; do { top = g.draw.pop(); if (/^\d$/.test(top.v)) break; g.draw.unshift(top); } while (true);
@@ -65,11 +65,22 @@ function knockouts(g) {
 function finishTurn(g, skip = 0) { g.drew = null; g.turn = step(g, g.turn, 1 + skip); }
 
 /* Moves: {type:'play', card, colour?, target?} | {type:'draw'} | {type:'pass'}. Returns a new game or throws an error code. */
+/* "Rush!": whoever gets down to one card must call it. Call before or right after playing the second-last card.
+   If the next player moves first, the forgetful player draws 2. Anyone may call at any time; it only counts for the caller. */
+export const CALL_PENALTY = 2;
+export function call(g0, who) {
+  const g = structuredClone(g0), p = g.players[who]; if (!p || p.out || g.winner !== null) throw Error('ACTION');
+  if (g.owe === who) { g.owe = null; g.last = { by: who, called: true }; g.seq++; return g; }
+  if (g.turn === who && p.hand.length === 2) { g.precall = who; g.seq++; return g; }
+  throw Error('ACTION');
+}
 export function act(g0, who, move) {
   if (g0.winner !== null) throw Error('PHASE');
   if (who !== g0.turn) throw Error('TURN');
   const g = structuredClone(g0), me = g.players[who];
   g.seq++;
+  // The next player has moved: an uncalled last card costs 2.
+  if (g.owe !== null && g.owe !== undefined && g.owe !== who) { const k = g.owe; g.owe = null; drawCards(g, k, CALL_PENALTY); g.penalty = { k, seq: g.seq }; }
   if (move.type === 'draw') {
     if (g.drew) throw Error('ACTION');
     if (g.pending) { const n = g.pending; drawCards(g, who, n); g.pending = 0; g.last = { by: who, drewN: n }; finishTurn(g); knockouts(g); return g; }
@@ -110,7 +121,8 @@ export function act(g0, who, move) {
     }
   }
   if (!me.hand.length) { g.winner = who; g.last.won = true; return g; }
-  if (me.hand.length === 1) g.last.lastCard = true;
+  if (me.hand.length === 1) { g.last.lastCard = true; if (g.precall === who) g.last.called = true; else g.owe = who; }
+  g.precall = null;
   finishTurn(g, skip); knockouts(g);
   return g;
 }
@@ -119,7 +131,7 @@ export function act(g0, who, move) {
 export function viewFor(g, who) {
   if (!g) return g;
   return {
-    mode: g.mode, colour: g.colour, dir: g.dir, turn: g.turn, pending: g.pending, winner: g.winner, last: g.last, seq: g.seq,
+    owe: g.owe ?? null, precall: g.precall ?? null, penalty: g.penalty ?? null, mode: g.mode, colour: g.colour, dir: g.dir, turn: g.turn, pending: g.pending, winner: g.winner, last: g.last, seq: g.seq,
     drew: g.turn === who ? g.drew : null, drawCount: g.draw.length, top: top(g),
     players: g.players.map((p, i) => ({ name: p.name, count: p.hand.length, out: p.out })),
     hand: who >= 0 && g.players[who] ? g.players[who].hand : [],
