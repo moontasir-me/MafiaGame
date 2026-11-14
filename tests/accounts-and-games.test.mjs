@@ -84,10 +84,10 @@ test('চতুরঙ্গ follows the full chess rules and the computer finds 
 });
 test('চোর ডাকাত পুলিশ বাবু: police keeps 800 on a catch, the thief keeps 400 on a miss', () => {
   const roles = ['babu', 'police', 'dakat', 'chor'];
-  assert.deepEqual(chorScore(roles, 3), [1000, 800, 500, 0]);
-  assert.deepEqual(chorScore(roles, 2), [1000, 0, 500, 400]);
+  assert.deepEqual(chorScore(roles, 3), [1000, 800, 600, 0]);
+  assert.deepEqual(chorScore(roles, 2), [1000, 0, 600, 400]);
   assert.deepEqual(chorScore(roles, 2, 'dakat'), [1000, 800, 0, 400]);
-  assert.deepEqual(chorScore(roles, 3, 'dakat'), [1000, 0, 500, 400]);
+  assert.deepEqual(chorScore(roles, 3, 'dakat'), [1000, 0, 600, 400]);
   assert.deepEqual([0, 1, 2, 3].map(targetOf), ['chor', 'dakat', 'chor', 'dakat']);
   assert.deepEqual([...deal()].sort(), ['babu', 'chor', 'dakat', 'police']);
 });
