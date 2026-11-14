@@ -75,7 +75,7 @@ button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}
 :where(.cr-board-wrap,.tg-ground,.dt-paper,.board-wrap,.bench-wrap){box-shadow:0 18px 36px #20180c22,0 3px 8px #20180c0d}
 :where(.ludo-players .lp,.dt-p,.cr-seat,.tg-seat,.seat){transition:background-color .2s,border-color .2s,box-shadow .2s}
 :where(.ludo-players .lp,.dt-p,.cr-seat,.tg-seat,.seat).is-turn{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 38%,transparent),0 3px 12px color-mix(in srgb,var(--accent) 8%,transparent)}
-:where(.dt-box,.tg-win){animation:ui-mark .25s var(--ui-ease) both}
+.tg-win{animation:ui-mark .25s var(--ui-ease) both}
 :where(.spy-verdict,.fib-verdict,.rs-over,.ludo-over,.cr-over,.dt-over,.tg-over){border-radius:18px;animation:ui-mark .3s var(--ui-ease) both}
 .rs-table{box-shadow:0 22px 50px #07180f45,inset 0 0 0 1px #ffffff0d}
 :where(.spy-timer,.discussion-timer){border-radius:20px}
@@ -168,3 +168,6 @@ body.village-home{--ui-ivory:#f6f0e4;--ui-brass:#cfaa70;--ui-ink:#121b2d;--ui-fa
  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-delay:0ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
  .ui-arrive,.ui-feedback,.stars,.hut-window,.lantern-flame,.lantern-glow,.tap-hint i,.hang-lantern.swing{animation:none!important}
 }
+/* Intrinsic pen-card width must yield to compact phones. */
+.pen-steps>li{min-width:0}.pc-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr))}
+.rs-table{border-radius:24px}

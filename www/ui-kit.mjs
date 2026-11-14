@@ -8,10 +8,19 @@ export const menuIcon = () => '<svg class="icon" viewBox="0 0 24 24" fill="none"
 const reduceMotion = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* Plays the entrance animation on freshly rendered content. */
+const screenEntrances = new WeakMap();
 export function enterScreen(el) {
-  if (!el || reduceMotion()) return;
-  el.classList.remove('screen-in'); void el.offsetWidth; el.classList.add('screen-in');
-  el.addEventListener('animationend', () => el.classList.remove('screen-in'), { once: true });
+  if (!el) return;
+  clearTimeout(screenEntrances.get(el));
+  el.classList.remove('screen-in');
+  if (reduceMotion()) return;
+  void el.offsetWidth;
+  el.classList.add('screen-in');
+  // Let the last staggered child finish; the first child's bubbling event is too early.
+  screenEntrances.set(el, setTimeout(() => {
+    el.classList.remove('screen-in');
+    screenEntrances.delete(el);
+  }, 600));
 }
 
 /* Slides the current screen away, then runs the change. Keeps taps feeling deliberate. */
