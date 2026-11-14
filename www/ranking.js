@@ -5,7 +5,7 @@ import { esc, icon, appShell, pageHead, rankTable, fameTable, playerDot, enterSc
 const $ = q => document.querySelector(q);
 const bn = n => Number(n).toLocaleString('bn-BD');
 const date = d => new Date(d).toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' });
-const ART = { mafia: 'assets/bn/mafia.png', spy: 'assets/spy/detective.svg', kalidas: 'assets/kalidas/misir.svg', pen: 'assets/pen/pinpoint.svg', fib: 'assets/fib/spiral.svg', shotoronji: 'assets/shotoronji/cover.svg', chor: 'assets/chor/cover.svg', ludo: 'assets/ludo/cover.svg', carrom: 'assets/carrom/cover.svg', dots: 'assets/dots/cover.svg' };
+const ART = { mafia: 'assets/bn/mafia.png', spy: 'assets/spy/detective.svg', kalidas: 'assets/kalidas/kalidas.svg', pen: 'assets/pen/pinpoint.svg', fib: 'assets/fib/spiral.svg', shotoronji: 'assets/shotoronji/cover.svg', chor: 'assets/chor/cover.svg', ludo: 'assets/ludo/cover.svg', carrom: 'assets/carrom/cover.svg', dots: 'assets/dots/cover.svg' };
 let filter = new URLSearchParams(location.search).get('game');
 if (!GAMES[filter]) filter = null;
 

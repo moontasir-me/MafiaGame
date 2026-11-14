@@ -7,7 +7,7 @@ import { numberPick, bindNumberPick, fameTable, playerColour, esc, icon, rankTab
 
 const $ = q => document.querySelector(q), $$ = q => [...document.querySelectorAll(q)];
 const bn = n => Number(n).toLocaleString('bn-BD');
-const KEY = 'kalidas.v1', ART = { HIMU: 'assets/kalidas/himu.svg', MISIR: 'assets/kalidas/misir.svg' };
+const KEY = 'kalidas.v1', ART = { POET: 'assets/kalidas/kalidas.svg', WON: 'assets/kalidas/lotus.svg', LOST: 'assets/kalidas/cloud.svg' };
 const TIMES = [15, 30, 45, 60, 90, 120];
 const NOBODY = 'nobody', US = 'us';
 // A fresh short folk riddle on every visit (short enough to read at a glance, with a one-word answer).
@@ -52,7 +52,7 @@ function setup() {
   <div class="kd-hero-copy"><span class="kd-kicker">বাংলা ধাঁধার আসর</span><h1>কহেন কবি <em>কালিদাস</em></h1>
   <figure class="kd-bubble"><blockquote>${HERO[0].split('\n').map(esc).join('<br>')}</blockquote><details><summary>উত্তর দেখুন</summary><b>${esc(HERO[1])}</b></details></figure>
   <div class="hero-buttons">${button('ধাঁধা শুরু', 'start', 'primary', 'play')}<a class="btn secondary" href="#players">খেলোয়াড় যোগ করুন</a></div></div>
-  <div class="kd-hero-art"><img src="assets/kalidas/cover.svg" width="640" height="420" alt="জানালার বাইরে ল্যাম্পপোস্টের নিচে হলুদ পাঞ্জাবিতে হিমু প্রশ্ন ছুড়ছে; ভেতরে হারিকেনের আলোয় খাতা হাতে মিসির আলি"></div></section>
+  <div class="kd-hero-art"><img src="assets/kalidas/cover.svg" width="640" height="420" alt="বর্ষার মেঘের নিচে তালপাতার পুঁথি আর লেখনী"></div></section>
   <h2 class="kd-title">ধাঁধা কতটা কঠিন হবে?</h2>
   <div class="kd-levels" role="radiogroup" aria-label="ধাঁধা কতটা কঠিন">${Object.entries(LEVELS).map(([k, l]) => `<button type="button" role="radio" aria-checked="${s.level === k}" class="kd-level lv-${k} ${s.level === k ? 'is-on' : ''}" data-action="level" data-id="${k}">${lamps(l.lamps)}<b>${l.label}</b><small>${l.note}</small><i>ঠিক উত্তরে +${bn(l.points)}</i></button>`).join('')}</div>
   <section class="panel kalidas-setup" id="players"><div class="list-heading"><span>কারা খেলছেন?</span><span>${bn(s.players.length)} / ২০</span></div>
@@ -61,7 +61,7 @@ function setup() {
   ${s.players.length ? `<div class="name-list">${s.players.map((p, i) => `<div class="name-row kalidas-row ${p.id === newRow ? 'is-new' : ''}"><span class="seat-initial coloured" style="--dot:${playerColour(p.name, i)}" aria-hidden="true">${esc(p.name.charAt(0))}</span><div class="seat-name"><span class="player-name">${esc(p.name)}</span><small class="seat-number">${bn(i + 1)}</small></div><button type="button" class="icon-btn" data-action="remove" data-id="${p.id}" aria-label="${esc(p.name)} সরান">${icon('trash')}</button></div>`).join('')}</div>` : `<p class="kalidas-hint">নাম না দিলে সবাই মিলে এক দল হয়ে খেলবেন। নাম দিলে অ্যাকাউন্ট খুলে যায়, পয়েন্ট র‍্যাঙ্কিংয়ে জমে।</p>`}
   <div class="kd-secs">${numberPick({ name: 'secs', label: 'প্রতি ধাঁধার সময়', value: s.seconds, presets: TIMES, min: 5, max: 600, unit: 'সেকেন্ড' })}</div>
   <div class="form-bottom"><small>${LEVELS[s.level].label} ধাঁধা · ${s.players.length ? 'সবাই প্রস্তুত?' : 'একা বা দলে'}</small>${button('ধাঁধা শুরু', 'start', 'primary', 'play')}</div></section>
-  <details class="cast-drawer"><summary>চরিত্রগুলো দেখুন</summary><div class="cast-grid kalidas-cast"><article class="cast-card"><img class="character-avatar" src="${ART.HIMU}" alt="" width="80" height="80"><h3>হিমু</h3><small>ধাঁধা ধরে</small><p>হলুদ পাঞ্জাবি, খালি পা, রহস্যময় হাসি। প্রশ্ন ছুড়ে দিয়ে চুপ করে থাকে।</p></article><article class="cast-card"><img class="character-avatar" src="${ART.MISIR}" alt="" width="80" height="80"><h3>মিসির আলি</h3><small>উত্তর খোঁজেন · আপনারা</small><p>যুক্তি দিয়ে ভাবেন। ঠিক উত্তরে সবুজ ফ্রেম, না পারলে লাল।</p></article></div></details>`;
+  <details class="cast-drawer"><summary>কবি কালিদাস কে?</summary><div class="kd-poet"><img class="character-avatar" src="${ART.POET}" alt="" width="80" height="80"><div><h3>কালিদাস</h3><small>সংস্কৃত ভাষার কবি ও নাট্যকার</small><p>মেঘদূত, অভিজ্ঞানশকুন্তলম্‌, রঘুবংশ আর কুমারসম্ভব তাঁর লেখা। মেঘদূতে নির্বাসিত এক যক্ষ বর্ষার মেঘকে দূত করে প্রিয়ার কাছে খবর পাঠায়। বাংলার লোকধাঁধার শেষে প্রায়ই জুড়ে দেওয়া হয় “কহেন কবি কালিদাস”, যেন ধাঁধাটা কবিরই ছুড়ে দেওয়া।</p></div></div></details>`;
 }
 
 function choices() {
@@ -73,7 +73,7 @@ function asking() {
   const [q, a] = riddle(), n = left(), pct = s.seconds ? n / s.seconds : 0;
   const lv = LEVELS[s.currentLevel] || LEVELS.easy;
   return `<div class="reveal-step"><span>ধাঁধা ${bn(s.asked)}</span><span class="kd-chip lv-${s.currentLevel}">${lamps(lv.lamps)}${lv.label} · +${bn(lv.points)}</span></div>
-  <section class="riddle-card lv-${s.currentLevel} ${s.revealed ? 'is-revealed' : ''}"><div class="riddle-asker"><img src="${ART.HIMU}" alt="" width="56" height="56"><span><b>হিমু জিজ্ঞেস করছে</b><small>যে আগে বলবে, পয়েন্ট তার</small></span>
+  <section class="riddle-card lv-${s.currentLevel} ${s.revealed ? 'is-revealed' : ''}"><div class="riddle-asker"><img src="${ART.POET}" alt="" width="56" height="56"><span><b>কহেন কবি কালিদাস</b><small>যে আগে বলবে, পয়েন্ট তার</small></span>
   <div class="riddle-timer ${n <= 5 && !s.revealed ? 'is-urgent' : ''} ${s.revealed ? 'is-done' : ''}" role="timer" aria-label="বাকি সময়"><svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="19" class="track"/><circle cx="22" cy="22" r="19" class="ring" id="timer-ring" style="stroke-dashoffset:${119.4 * (1 - pct)}"/></svg><span id="timer-clock">${s.revealed ? '✓' : clock(n)}</span></div></div>
   <blockquote class="riddle-text">${q.split('\n').map(esc).join('<br>')}</blockquote>
   ${s.revealed ? `<div class="riddle-answer"><span>${s.timedOut ? 'সময় শেষ! উত্তর' : 'উত্তর'}</span><strong>${esc(a)}</strong></div>` : ''}</section>
@@ -85,7 +85,7 @@ function asking() {
 }
 
 function rows() {
-  const cell = h => ({ won: h.won, img: h.won ? ART.MISIR : ART.HIMU, label: (h.won ? 'ঠিক উত্তর' : 'পারেননি') + (LEVELS[h.level] ? ' · ' + LEVELS[h.level].label : '') });
+  const cell = h => ({ won: h.won, img: h.won ? ART.WON : ART.LOST, label: (h.won ? 'ঠিক উত্তর' : 'পারেননি') + (LEVELS[h.level] ? ' · ' + LEVELS[h.level].label : '') });
   return s.players.length ? s.players.map(p => ({ name: p.name, score: p.score, history: p.history.map(cell) })) : (s.asked ? [{ name: 'সবাই মিলে', score: s.group.score, history: s.group.history.map(cell) }] : []);
 }
 const labels = { caption: 'খেলার ফল', rank: '#', player: 'খেলোয়াড় · শেষ পাঁচ ধাঁধা', points: 'পয়েন্ট', win: 'সবুজ ফ্রেম ঠিক উত্তর', loss: 'লাল ফ্রেম পারেননি', order: 'নতুনটি বাঁ দিকে', empty: 'এখনও কোনো ধাঁধা খেলা হয়নি।', noGames: 'এখনও খেলেননি', number: bn };
@@ -93,15 +93,15 @@ const labels = { caption: 'খেলার ফল', rank: '#', player: 'খে�
 function summary() {
   const ranked = rows().sort((a, b) => b.score - a.score), best = ranked[0], tie = ranked.length > 1 && ranked[1].score === best?.score;
   const answered = s.asked;
-  return `<div class="over-heading"><div class="result-portrait win"><img src="${ART.MISIR}" alt="" width="112" height="112"></div><span class="eyebrow">খেলা শেষ · ${bn(answered)}টি ধাঁধা</span><h1>${!best ? 'খেলা শেষ!' : tie ? 'সমানে সমান!' : s.players.length ? esc(best.name) + ' জিতলেন!' : bn(best.score) + 'টি ধাঁধা ভাঙলেন!'}</h1><p class="lede">${best && !tie && s.players.length ? `${bn(best.score)} পয়েন্ট নিয়ে সবার আগে।` : 'হিমু হাসছে। পরের খেলায় নতুন ধাঁধা আসবে।'}</p></div>
+  return `<div class="over-heading"><div class="result-portrait win"><img src="${ART.POET}" alt="" width="112" height="112"></div><span class="eyebrow">খেলা শেষ · ${bn(answered)}টি ধাঁধা</span><h1>${!best ? 'খেলা শেষ!' : tie ? 'সমানে সমান!' : s.players.length ? esc(best.name) + ' জিতলেন!' : bn(best.score) + 'টি ধাঁধা ভাঙলেন!'}</h1><p class="lede">${best && !tie && s.players.length ? `${bn(best.score)} পয়েন্ট নিয়ে সবার আগে।` : 'কবি মুচকি হাসছেন। পরের খেলায় নতুন ধাঁধা আসবে।'}</p></div>
   <section class="rank-section"><h2>ফলাফল</h2><p>সহজ ধাঁধায় ১, মাঝারিতে ২, কঠিনে ৩ পয়েন্ট।</p>${rankTable(rows(), labels)}</section>
   <div class="end-actions">${button('আবার খেলুন', 'start', 'primary wide', 'play')}${button('নাম বা সময় বদলান', 'edit', 'secondary wide', 'edit')}${button('কালিদাসের শুরুর পাতা', 'game-home', 'text wide', 'home')}</div>
   <section class="fame-section"><h2>${icon('trophy')}হল অব ফেম</h2><p>শেষ ১০০টি খেলায় এক খেলায় সবচেয়ে বেশি ধাঁধা ভাঙা।</p>${fameTable(hallOfFame(readHistory(), 'kalidas'), { caption: 'হল অব ফেম', player: 'খেলোয়াড়', points: 'পয়েন্ট', empty: 'এখনও কেউ হল অব ফেমে ওঠেননি।', number: bn, meta: e => new Date(e.date).toLocaleDateString('bn-BD') + ' · ' + bn(e.games) + 'টি ধাঁধা' })}</section>`;
 }
 
 function rulesScreen() {
-  const steps = [['নাম ও সময়', 'খেলোয়াড়দের নাম লিখুন বা অ্যাকাউন্ট থেকে বেছে নিন, প্রতিটি ধাঁধার সময় বেছে নিন। নাম না দিলে সবাই মিলে এক দল।'], ['কতটা কঠিন', 'সহজ, মাঝারি বা কঠিন বেছে নিন। সহজ ধাঁধা ছোট, কঠিনগুলোতে অক্ষরের খেলা আর লম্বা ছড়া। ঠিক উত্তরে সহজে ১, মাঝারিতে ২, কঠিনে ৩ পয়েন্ট।'], ['ধাঁধা', 'হিমু একের পর এক বাংলা ধাঁধা ধরবে। কোনো নির্দিষ্ট সংখ্যা নেই; থামাতে চাইলে “খেলা শেষ”।'], ['কে পারল', 'যে আগে ঠিক উত্তর বলবে, তার নামের পাশে টিক দিন। কেউ না পারলে “কেউ পারেনি”।'], ['উত্তর', 'সময়ের আগেই “উত্তর দেখাও” চাপতে পারেন। সময় শেষ হলে উত্তর নিজে থেকে দেখাবে।'], ['ফল', '“খেলা শেষ” চাপলে টেবিলে সবার পয়েন্ট আর শেষ পাঁচ ধাঁধার ফল দেখা যাবে।']];
-  return `${pageHead('খেলার নিয়ম', 'কহেন কবি কালিদাস', 'এক ফোনে বাংলা ধাঁধার খেলা।')}<div class="rules-list">${steps.map((r, i) => `<article><b>${bn(i + 1)}</b><div><h3>${r[0]}</h3><p>${r[1]}</p></div></article>`).join('')}</div><p class="spy-source">“কহেন কবি কালিদাস” হুমায়ূন আহমেদের মিসির আলি-উপন্যাসের নাম; হিমু ও মিসির আলি তাঁর সৃষ্টি। এই খেলা ভক্তের শ্রদ্ধাঞ্জলি, ছবিগুলো এই অ্যাপের জন্য আঁকা ক্যারিকেচার। ধাঁধার বেশিরভাগ <a href="https://github.com/Labib1610/BanglaRiddleEval">BanglaRiddleEval</a> (MIT লাইসেন্স) থেকে, যা বাংলা ধাঁধার বই থেকে সংকলিত; বাকিগুলো বিভিন্ন বাংলা ধাঁধার ওয়েবপাতা থেকে বাছাই করা প্রচলিত ধাঁধা।</p>`;
+  const steps = [['নাম ও সময়', 'খেলোয়াড়দের নাম লিখুন বা অ্যাকাউন্ট থেকে বেছে নিন, প্রতিটি ধাঁধার সময় বেছে নিন। নাম না দিলে সবাই মিলে এক দল।'], ['কতটা কঠিন', 'সহজ, মাঝারি বা কঠিন বেছে নিন। সহজ ধাঁধা ছোট, কঠিনগুলোতে অক্ষরের খেলা আর লম্বা ছড়া। ঠিক উত্তরে সহজে ১, মাঝারিতে ২, কঠিনে ৩ পয়েন্ট।'], ['ধাঁধা', 'কবি কালিদাসের নামে একের পর এক বাংলা ধাঁধা আসবে। কোনো নির্দিষ্ট সংখ্যা নেই; থামাতে চাইলে “খেলা শেষ”।'], ['কে পারল', 'যে আগে ঠিক উত্তর বলবে, তার নামের পাশে টিক দিন। কেউ না পারলে “কেউ পারেনি”।'], ['উত্তর', 'সময়ের আগেই “উত্তর দেখাও” চাপতে পারেন। সময় শেষ হলে উত্তর নিজে থেকে দেখাবে।'], ['ফল', '“খেলা শেষ” চাপলে টেবিলে সবার পয়েন্ট আর শেষ পাঁচ ধাঁধার ফল দেখা যাবে।']];
+  return `${pageHead('খেলার নিয়ম', 'কহেন কবি কালিদাস', 'এক ফোনে বাংলা ধাঁধার খেলা।')}<div class="rules-list">${steps.map((r, i) => `<article><b>${bn(i + 1)}</b><div><h3>${r[0]}</h3><p>${r[1]}</p></div></article>`).join('')}</div><p class="spy-source">বাংলার পুরোনো ধাঁধার শেষে বলা হয় “কহেন কবি কালিদাস”; খেলার নাম সেখান থেকে। ছবিগুলো এই অ্যাপের জন্য আঁকা। ধাঁধার বেশিরভাগ <a href="https://github.com/Labib1610/BanglaRiddleEval">BanglaRiddleEval</a> (MIT লাইসেন্স) থেকে, যা বাংলা ধাঁধার বই থেকে সংকলিত; বাকিগুলো বিভিন্ন বাংলা ধাঁধার ওয়েবপাতা থেকে বাছাই করা প্রচলিত ধাঁধা।</p>`;
 }
 
 function rankingScreen() {
@@ -114,7 +114,7 @@ function screenKey() { return view !== 'play' ? view : playing() ? 'q:' + s.aske
 function render() {
   const draft = $('#player-name')?.value, focused = document.activeElement?.id, key = screenKey(), changed = key !== lastScreen; lastScreen = key;
   const body = view === 'rules' ? rulesScreen() : view === 'ranking' ? rankingScreen() : s.phase === 'setup' ? setup() : s.phase === 'over' ? summary() : asking();
-  $('#app').innerHTML = appShell({ brand: 'কহেন কবি কালিদাস', brandSub: 'বাংলা ধাঁধা', brandIcon: 'spark', brandAction: 'tab-play', crumb: view === 'rules' ? 'নিয়ম' : view === 'ranking' ? 'ফলাফল' : playing() ? `ধাঁধা ${bn(s.asked)}` : s.phase === 'over' ? 'ফলাফল' : 'হিমুর ধাঁধা', active: view, contentClass: view === 'play' && s.phase === 'setup' ? 'home-content kalidas-content' : 'game-content kalidas-content', labels: { back: 'সব খেলা', menu: 'মেনু', sections: 'খেলার অংশ' },
+  $('#app').innerHTML = appShell({ brand: 'কহেন কবি কালিদাস', brandSub: 'বাংলা ধাঁধা', brandIcon: 'spark', brandAction: 'tab-play', crumb: view === 'rules' ? 'নিয়ম' : view === 'ranking' ? 'ফলাফল' : playing() ? `ধাঁধা ${bn(s.asked)}` : s.phase === 'over' ? 'ফলাফল' : 'কালিদাসের ধাঁধা', active: view, contentClass: view === 'play' && s.phase === 'setup' ? 'home-content kalidas-content' : 'game-content kalidas-content', labels: { back: 'সব খেলা', menu: 'মেনু', sections: 'খেলার অংশ' },
     tabs: [{ id: 'play', label: 'খেলা', icon: 'play', action: 'tab-play' }, { id: 'rules', label: 'নিয়ম', icon: 'book', action: 'tab-rules' }, { id: 'ranking', label: 'ফলাফল', icon: 'trophy', action: 'tab-ranking' }], body });
   if (draft && $('#player-name')) $('#player-name').value = draft;
   if (focused === 'player-name') $('#player-name')?.focus();
