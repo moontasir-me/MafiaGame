@@ -10,3 +10,7 @@ android/**/build/
 .env.*
 !.env.example
 .vercel/
+
+# Built apps are published as a GitHub release, never stored in the repo.
+*.apk
+*.aab

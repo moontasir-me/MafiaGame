@@ -1,1 +1,10 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="108dp" android:height="108dp" android:viewportWidth="192" android:viewportHeight="192"><path android:fillColor="#d7ae66" android:pathData="M0,0h192v192h-192z"/><path android:fillColor="#171923" android:pathData="M34,68Q96,92 158,68L146,116Q125,151 96,125Q67,151 46,116Z"/><path android:fillColor="#d7ae66" android:pathData="M55,96l29,6 -13,12ZM137,96l-29,6 13,12Z"/></vector>
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="108dp" android:height="108dp" android:viewportWidth="512" android:viewportHeight="512">
+    <!-- শীতলপাটি motif: woven cane diamond with a red eye, on deep red -->
+    <path android:fillColor="#7d1b17" android:pathData="M0,0h512v512h-512z"/>
+    <path android:fillColor="#e2c07c" android:pathData="M256,112L400,256L256,400L112,256Z"/>
+    <path android:fillColor="#c79a52" android:pathData="M256,112L292,148L184,256L148,220ZM328,184L364,220L256,328L220,292ZM220,292L184,256L256,184L292,220Z"/>
+    <path android:fillColor="#c79a52" android:pathData="M148,292L184,256L256,328L220,364ZM292,148L328,184L364,148L328,112Z"/>
+    <path android:strokeColor="#f3dca5" android:strokeWidth="10" android:strokeLineJoin="round" android:fillColor="#00000000" android:pathData="M256,112L400,256L256,400L112,256Z"/>
+    <path android:fillColor="#7d1b17" android:pathData="M256,220L292,256L256,292L220,256Z"/>
+    <path android:fillColor="#f3dca5" android:pathData="M256,240L272,256L256,272L240,256Z"/>
+</vector>

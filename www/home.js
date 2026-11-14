@@ -44,6 +44,9 @@ document.querySelectorAll('[data-play-set]').forEach(b => b.onclick = () => { tr
 document.querySelectorAll('.game-tile').forEach(a => a.addEventListener('click', e => { if (a.classList.contains('is-off')) e.preventDefault(); }));
 paintPlay();
 
+/* Inside the Android app there is nothing to download. */
+if (location.hostname === 'appassets.androidplatform.net' || window.Android) $('#apk-link')?.remove();
+
 /* The profile pill opens a small menu. */
 const menu = $('#profile-menu'), pill = $('#profile-button');
 function paintSound() { const on = soundEnabled(); $('#sound-label').textContent = 'শব্দ: ' + (on ? 'চালু' : 'বন্ধ'); menu.querySelector('[data-menu=sound]').setAttribute('aria-checked', on); }

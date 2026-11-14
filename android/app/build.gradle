@@ -6,8 +6,22 @@ android {
         applicationId 'com.jomfa.app'
         minSdk 26
         targetSdk 35
-        versionCode 13
-        versionName '3.1'
+        // The build on GitHub passes its run number, so every new APK installs over the old one.
+        versionCode((project.findProperty('versionCode') ?: '13') as int)
+        versionName((project.findProperty('versionName') ?: '3.1') as String)
+    }
+    // One fixed key for every build, so updates keep the same signature.
+    // The password can be overridden with APK_STORE_PASSWORD (for example from a GitHub secret).
+    signingConfigs {
+        release {
+            storeFile file('shitolpati.keystore')
+            storePassword System.getenv('APK_STORE_PASSWORD') ?: 'shitolpati-play'
+            keyAlias 'shitolpati'
+            keyPassword System.getenv('APK_STORE_PASSWORD') ?: 'shitolpati-play'
+        }
+    }
+    buildTypes {
+        release { minifyEnabled false; signingConfig signingConfigs.release }
     }
     sourceSets { main { assets.srcDirs = ['../../www'] } }
     compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }

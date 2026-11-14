@@ -2,6 +2,8 @@
 import { readProfile, saveProfile } from './profile.mjs';
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+/* Inside the Android app the pages come from the phone itself, so online calls go to the live site. */
+export const API_BASE = location.hostname === 'appassets.androidplatform.net' ? 'https://mafiagame-tau.vercel.app' : '';
 export const onlineName = () => readProfile().name || '';
 export const isOnlineMode = () => { try { return localStorage.getItem('shitolpati.online') === '1'; } catch { return false; } };
 
@@ -69,7 +71,7 @@ export function bindLobby(root, { code, game, onStart, onLeave }) {
 }
 
 export async function tableApi(body) {
-  const res = await fetch('/api/table', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  const res = await fetch(API_BASE + '/api/table', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
   const data = await res.json().catch(() => ({ error: 'NETWORK' }));
   if (!res.ok || data.error) throw Error(data.error || 'NETWORK');
   return data;

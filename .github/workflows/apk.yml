@@ -1,0 +1,35 @@
+# Builds the Android app on every push to main and puts it at one fixed link:
+#   https://github.com/moontasir-me/MafiaGame/releases/download/apk-latest/Shitolpati.apk
+# The previous APK is deleted first, so only the newest one is ever stored.
+name: Android APK
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: apk
+  cancel-in-progress: true
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - name: Build
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon assembleRelease -PversionCode=$((100 + ${{ github.run_number }})) -PversionName=3.${{ github.run_number }}
+          cp app/build/outputs/apk/release/app-release.apk "$GITHUB_WORKSPACE/Shitolpati.apk"
+      - name: Replace the download
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete apk-latest --yes --cleanup-tag || true
+          gh release create apk-latest Shitolpati.apk --title "শীতলপাটি Android" --notes "Newest build from ${GITHUB_SHA::7}. Install over the old app; your data stays." --latest
