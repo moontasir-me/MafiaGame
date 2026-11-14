@@ -23,6 +23,7 @@ A collection of Bangla party and board games for one phone or many. The home pag
 | ০৮ | **লুডু** — classic ludo or সাপ লুডু, seats on four sides | 2–4 | ✓ | 3 levels | ✓ |
 | ০৯ | **ক্যারম** — real board physics, queen, fouls, boric powder | 2 | ✓ | 3 levels | ✓ |
 | ১০ | **জায়গা দখল** — dots and boxes on a khata page | 2–4 | ✓ | 3 levels | ✓ |
+| ১১ | **তিন গুটি** — three pebbles each on a board scratched into the courtyard | 2 | ✓ | 3 levels | ✓ |
 
 The **অফলাইন / অনলাইন** switch on the home page decides which version opens. Online, only games with an online room are active.
 
@@ -37,7 +38,7 @@ The **অফলাইন / অনলাইন** switch on the home page decides 
 One person opens a room and shares the code; others type it into the code boxes (5 letters, Mafia 6). Your profile name is used everywhere.
 
 - Rooms live in Neon Postgres behind the Vercel API (`/api/table` for the board games, `/api/*` for Mafia).
-- লুডু, চতুরঙ্গ and জায়গা দখল are checked move by move on the server; পেন ফাইট and ক্যারম run physics on the shooter's phone and share the result.
+- লুডু, চতুরঙ্গ, জায়গা দখল and তিন গুটি are checked move by move on the server; পেন ফাইট and ক্যারম run physics on the shooter's phone and share the result.
 - A room is deleted 2 hours after its last action, 10 minutes after the game ends, or at once when the host closes it.
 - Setup: connect Neon to the Vercel project and set `DATABASE_URL` (server only, never committed). See [design/VERCEL.md](design/VERCEL.md).
 

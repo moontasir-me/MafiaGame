@@ -1,7 +1,7 @@
 // One shared record of finished matches (game sets) for every game on this device.
 // A match: {id, game:'mafia'|'spy'|'kalidas'|'pen'|'fib'|'shotoronji'|'chor', date, games, players:[{name, points}]}
 const KEY = 'jomfa.history.v1', LIMIT = 500;
-export const GAMES = { mafia: 'Mafia', spy: 'Spy', kalidas: 'কহেন কবি কালিদাস', pen: 'পেন ফাইট', fib: 'Fibonacci', shotoronji: 'চতুরঙ্গ', chor: 'চোর ডাকাত পুলিশ বাবু', ludo: 'লুডু', carrom: 'ক্যারম', dots: 'জায়গা দখল' };
+export const GAMES = { mafia: 'Mafia', spy: 'Spy', kalidas: 'কহেন কবি কালিদাস', pen: 'পেন ফাইট', fib: 'Fibonacci', shotoronji: 'চতুরঙ্গ', chor: 'চোর ডাকাত পুলিশ বাবু', ludo: 'লুডু', carrom: 'ক্যারম', dots: 'জায়গা দখল', tinguti: 'তিন গুটি' };
 
 export function readHistory(storage = localStorage) {
   try { const list = JSON.parse(storage.getItem(KEY)); return Array.isArray(list) ? list.filter(m => m && GAMES[m.game] && Array.isArray(m.players)) : []; } catch { return []; }

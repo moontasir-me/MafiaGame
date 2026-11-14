@@ -63,10 +63,14 @@ E['carrom'] = f'''<rect x="-128" y="-128" width="256" height="256" rx="10" fill=
 E['dots'] = ''.join(f'<circle cx="{-105+c*70}" cy="{-105+r*70}" r="9" fill="{CREAM}"/>' for r in range(4) for c in range(4)) + f'''<rect x="-105" y="-105" width="70" height="70" fill="#5b8cff" fill-opacity=".45"/><rect x="-35" y="-35" width="70" height="70" fill="#ff6b5b" fill-opacity=".45"/>
 <path d="M-105 -105h70v70h-70Z" fill="none" stroke="#8fb0ff" stroke-width="8" stroke-linejoin="round"/><path d="M-35 -35h70v70h-70Z" fill="none" stroke="#ff8a7a" stroke-width="8" stroke-linejoin="round"/><path d="M35 35h70M-105 35v70" stroke="{CREAM}" stroke-width="8" stroke-linecap="round" opacity=".7"/>'''
 
+# তিন গুটি: the scratched board with pebbles and tamarind seeds
+E['tinguti'] = f'''<g stroke="#f2e3c6" stroke-width="9" stroke-linecap="round" opacity=".9"><path d="M-120 -120H120V120H-120Z M-120 0H120 M0 -120V120 M-120 -120 120 120 M120 -120-120 120" fill="none"/></g>
+<g><circle cx="-120" cy="-120" r="26" fill="{CREAM}"/><circle cx="0" cy="0" r="26" fill="{CREAM}"/><circle cx="120" cy="-120" r="26" fill="#4a2a16"/><circle cx="-120" cy="120" r="26" fill="#4a2a16"/><circle cx="120" cy="0" r="26" fill="#4a2a16"/><circle cx="0" cy="120" r="26" fill="{CREAM}"/></g>'''
+
 PALETTE = {
     'mafia': ('#4a1c1f', '#24100f', '#d6a14a'), 'spy': ('#22344a', '#111b27', '#e8c26b'), 'kalidas': ('#2f2a5c', '#17142e', '#f0b64b'),
     'pen': ('#2c4f43', '#152a23', '#e3b341'), 'fib': ('#174b47', '#0b2928', '#f3c55a'), 'shotoronji': ('#4a2614', '#21110a', '#d6b47a'),
-    'chor': ('#a8432c', '#5e2214', '#ffd27a'), 'ludo': ('#263a7a', '#121c40', '#f2b705'), 'carrom': ('#6b3c1a', '#2b1a0e', '#ecd3a0'), 'dots': ('#2a3a6e', '#141c38', '#8fb0ff'),
+    'chor': ('#a8432c', '#5e2214', '#ffd27a'), 'ludo': ('#263a7a', '#121c40', '#f2b705'), 'carrom': ('#6b3c1a', '#2b1a0e', '#ecd3a0'), 'dots': ('#2a3a6e', '#141c38', '#8fb0ff'), 'tinguti': ('#8a5f3a', '#4a2f1b', '#f2e3c6'),
 }
 for key, (a, b, c) in PALETTE.items():
     open(f'www/assets/{key}/cover.svg', 'w').write(cover(a, b, c, E[key]))

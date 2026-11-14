@@ -1,0 +1,33 @@
+/* তিন গুটি: lines scratched into the courtyard earth, pebbles and tamarind seeds. */
+:root[data-theme][data-universe=tinguti]{--bg:#efe3cf;--surface:#fbf5ea;--border:#dccaa8;--text:#2e2218;--muted:#7a6650;--accent:#8a4b22;--world-dark:#4a2f1b;--world-accent:#e3b341;--world-mid:#e6d3b1;--world-light:#fbf5ea}
+:root[data-universe=tinguti] body{background:#efe3cf}
+.tinguti-page .btn.primary{background:#8a4b22!important;border-color:#723c19!important;color:#fff!important}.tinguti-page .btn.primary .icon{color:#fff}
+.tg-head{display:flex;align-items:center;gap:14px;margin:4px 0 18px}.tg-head img{width:110px;height:auto;border-radius:12px;box-shadow:0 6px 16px #0003}.tg-head h1{margin:0;font-size:clamp(30px,7vw,42px)}.tg-head p{margin:4px 0 0;color:var(--muted);font-size:14px;line-height:1.6}
+.tg-panel{margin:0 0 12px;padding:14px;border:1px solid var(--border);border-radius:16px;background:var(--surface)}.tg-panel h2{margin:0 0 10px;font-size:15px}
+.tg-seg{display:flex;gap:4px;padding:4px;border-radius:12px;background:#ece0c8}.tg-seg button{flex:1;min-height:40px;border:0;border-radius:9px;background:none;color:var(--muted);font:inherit;font-size:14px;cursor:pointer}.tg-seg button.is-on{background:#fff;color:var(--text);font-weight:600;box-shadow:0 2px 6px #0002}
+.tg-gap{margin-top:8px}
+.tg-field{display:flex;align-items:center;gap:10px;margin:0 0 8px}.tg-field input{flex:1;min-width:0;min-height:46px;padding:10px 14px;border:1px solid var(--border);border-radius:12px;background:#fff;font:inherit;font-size:15px;color:var(--text)}
+.tg-stone{width:22px;height:22px;flex-shrink:0;border-radius:50% 46% 52% 48%;box-shadow:inset -3px -4px 0 #0002,0 2px 3px #0004}
+.tg-stone.white{background:radial-gradient(circle at 35% 30%,#fffdf6,#d8d2c4)}.tg-stone.dark{background:radial-gradient(circle at 35% 30%,#8a5a35,#3b2212)}
+.tg-stone.small{width:14px;height:14px}
+.tg-table{max-width:460px;margin:0 auto}
+.tg-seat{display:flex;align-items:center;gap:10px;min-height:54px;margin:8px 0;padding:6px 12px;border:2px solid var(--border);border-radius:14px;background:var(--surface)}
+.tg-seat.flip{transform:rotate(180deg)}.tg-seat.is-on{border-color:#8a4b22;box-shadow:0 0 0 4px #8a4b2222}
+.tg-seat>span:nth-child(2){display:grid;flex:1;min-width:0}.tg-seat b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tg-seat small{font-size:12px;color:var(--muted)}.tg-seat.is-on small{color:#8a4b22;font-weight:600}
+.tg-hand{display:flex;gap:4px}
+/* packed earth with a few scuffs */
+.tg-ground{padding:10px;border-radius:18px;background:radial-gradient(circle at 20% 30%,#a07a52 0 2px,transparent 3px) 0 0/38px 41px,radial-gradient(circle at 70% 60%,#8a6440 0 1.5px,transparent 2.5px) 0 0/29px 33px,radial-gradient(ellipse at 50% 40%,#b48a5e,#8d6740);box-shadow:inset 0 0 40px #4a2f1b88,0 12px 26px #0003}
+.tg-board{display:block;width:100%;height:auto;touch-action:manipulation}
+.tg-lines line{stroke:#f2e3c6;stroke-width:6;stroke-linecap:round;opacity:.85}
+.tg-win{stroke:#e3b341;stroke-width:14;stroke-linecap:round;opacity:.85;animation:tgwin .6s ease-out}@keyframes tgwin{from{stroke-dasharray:0 600}to{stroke-dasharray:600 0}}
+.tg-pt .hit{fill:transparent}.tg-pt .hole{fill:#5a3a22}
+.tg-pt .pebble{stroke:#0003;stroke-width:2;filter:drop-shadow(0 4px 3px #0006);transition:transform .2s}
+.tg-pt.white .pebble{fill:#f5efe2}.tg-pt.dark .pebble{fill:#4a2a16}
+.tg-pt.target,.tg-pt.movable{cursor:pointer}
+.tg-pt .ghost{opacity:.35}.tg-pt .ghost.white{fill:#f5efe2}.tg-pt .ghost.dark{fill:#4a2a16}
+.tg-pt.target .hole{fill:#e3b341}
+.tg-pt.movable .pebble{stroke:#e3b341;stroke-width:4}
+.tg-pt.picked .pebble{stroke:#fff;stroke-width:6;transform:translateY(-4px)}
+.tg-pt.last .pebble{stroke:#e3b341;stroke-width:3}
+.tg-pt:focus-visible .hit{stroke:#fff;stroke-width:3}
+.tg-over{max-width:460px;margin:12px auto;text-align:center}.tg-over h2{margin:6px 0 12px;font-size:22px}.tg-over .btn+.btn{margin-top:8px}

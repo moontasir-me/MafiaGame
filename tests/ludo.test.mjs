@@ -152,3 +152,21 @@ test('table rooms: guessing codes is rate limited', async () => {
   let last; for (let i = 0; i < 41; i++) last = await call({ op: 'join', code: 'ZZZZZ', name: 'A' });
   assert.equal(last, 429);
 });
+
+import * as T from '../www/tinguti-engine.mjs';
+test('তিন গুটি: place three each, then move along lines; three in a row wins; online checks turns', async () => {
+  let g = T.newGame([{ name: 'A' }, { name: 'B' }]);
+  for (const to of [0, 3, 1, 5]) g = T.play(g, { to });
+  assert.equal(T.play(g, { to: 0 }), g, 'a taken point cannot be used');
+  g = T.play(g, { to: 2 }); assert.equal(g.winner, 0, 'row 0-1-2');
+  g = T.newGame([{ name: 'A' }, { name: 'B' }]);
+  for (const to of [0, 1, 4, 2, 6, 8]) g = T.play(g, { to });
+  assert.ok(!T.placing(g) && T.legal(g).every(m => m.from !== undefined));
+  assert.equal(T.play(g, { from: 0, to: 5 }), g, 'only to a joined, empty point');
+  g = T.play(g, { from: 0, to: 3 }); assert.equal(g.winner, null);
+  const rooms = new LudoRooms(new MemoryLudoStore());
+  const a = await rooms.handle({ op: 'create', name: 'A', game: 'tinguti' }), b = await rooms.handle({ op: 'join', name: 'B', code: a.code, game: 'tinguti' });
+  await rooms.handle({ op: 'start', code: a.code, token: a.token });
+  await assert.rejects(rooms.handle({ op: 'move', code: a.code, token: b.token, move: { to: 4 } }), /TURN/);
+  const v = await rooms.handle({ op: 'move', code: a.code, token: a.token, move: { to: 4 } }); assert.equal(v.match.board[4], 0);
+});

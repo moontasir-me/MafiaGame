@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420">
+<defs><linearGradient id="b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a5f3a"/><stop offset="1" stop-color="#4a2f1b"/></linearGradient>
+<radialGradient id="h" cx=".5" cy=".46" r=".5"><stop offset="0" stop-color="#f2e3c6" stop-opacity=".32"/><stop offset="1" stop-color="#f2e3c6" stop-opacity="0"/></radialGradient>
+<pattern id="p" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="11" cy="11" r="1.4" fill="#fff" fill-opacity=".07"/></pattern></defs>
+<rect width="640" height="420" fill="url(#b)"/><rect width="640" height="420" fill="url(#p)"/><circle cx="320" cy="196" r="190" fill="url(#h)"/>
+<ellipse cx="320" cy="346" rx="150" ry="16" fill="#000" fill-opacity=".22"/>
+<g transform="translate(320 200)"><g stroke="#f2e3c6" stroke-width="9" stroke-linecap="round" opacity=".9"><path d="M-120 -120H120V120H-120Z M-120 0H120 M0 -120V120 M-120 -120 120 120 M120 -120-120 120" fill="none"/></g>
+<g><circle cx="-120" cy="-120" r="26" fill="#fff4dc"/><circle cx="0" cy="0" r="26" fill="#fff4dc"/><circle cx="120" cy="-120" r="26" fill="#4a2a16"/><circle cx="-120" cy="120" r="26" fill="#4a2a16"/><circle cx="120" cy="0" r="26" fill="#4a2a16"/><circle cx="0" cy="120" r="26" fill="#fff4dc"/></g></g></svg>
