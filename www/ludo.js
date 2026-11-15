@@ -16,7 +16,7 @@ const MODES = { local: 'এক ফোনে', cpu: 'কম্পিউটার'
 const ERR = { ...ONLINE_ERRORS, ROOM_GONE: 'এই কোডের কোনো ঘর নেই।', FULL: 'ঘরে চারজন হয়ে গেছে।', STARTED: 'খেলা শুরু হয়ে গেছে।', NAME_TAKEN: 'এই নাম ঘরে আছে, অন্য নাম দিন।', NAME: 'নাম লিখুন।', TURN: 'এখন আপনার চাল নয়।', COUNTS: 'অন্তত দুজন লাগবে।', RATE_LIMIT: 'একটু পরে আবার চেষ্টা করুন।' };
 
 function fresh() { return { v: 1, kind: 'ludo', mode: 'local', count: 2, names: ['', '', '', ''], cpus: 1, humans: 1, level: 'medium', phase: 'setup', match: null, online: null, saved: false }; }
-let s = fresh(), view = 'play', lastScreen = '', busy = false, poll = 0, rolling = false;
+let s = fresh(), view = 'play', lastScreen = '', busy = false, poll = 0, rolling = false, cpuGeneration = 0;
 try { const d = JSON.parse(localStorage.getItem(KEY)); if (d?.v === 1) s = { ...fresh(), ...d }; } catch { }
 {const c=mixedCounts(s.humans,s.cpus);s.humans=c.humans;s.cpus=c.bots;}
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch { } };
@@ -210,11 +210,16 @@ async function play(i) {
 async function next() {
   const x = m(); if (!x || online() || x.winner !== null) return;
   const p = x.players[x.turn]; if (!p.cpu || busy) return;
+  const generation=cpuGeneration;
   busy = true; render(); await wait(2000);
+  if(generation!==cpuGeneration)return;
   if (s.match !== x) { busy = false; return; }
-  rolling = true; render(); sound('vote'); await wait(700); rolling = false;
+  rolling = true; render(); sound('vote'); await wait(700);
+  if(generation!==cpuGeneration)return;
+  rolling = false;
+  if(s.match!==x){busy=false;return;}
   s.match = roll(x, 1 + Math.floor(Math.random() * 6)); render();
-  if (s.match.rolled && s.match.turn === x.turn) { await wait(1300); s.match = move(s.match, choose(s.match, p.cpu)); const l = s.match.last; sound(l?.captured || l?.snake ? 'hit' : 'notice'); }
+  if (s.match.rolled && s.match.turn === x.turn) { const rolled=s.match;await wait(1300);if(generation!==cpuGeneration)return;if(s.match!==rolled){busy=false;return;}s.match = move(s.match, choose(s.match, p.cpu)); const l = s.match.last; sound(l?.captured || l?.snake ? 'hit' : 'notice'); }
   busy = false; if (s.match.winner !== null) finish(); save(); render(); next();
 }
 function finish() {
@@ -244,15 +249,15 @@ async function act(action, id) {
     case 'start': {
       const list = names(s.mode === 'local' ? s.count : s.humans); if (!list) return;
       const players = s.mode === 'cpu' ? mixedRoster(list,{bots:s.cpus,level:s.level,botNames:CPU_NAMES,botsFirst:true}) : list.map(n => ({ name: n }));
-      s.match = newMatch(s.kind, players); s.phase = 'play'; s.saved = false; view = 'play'; save(); sound('notice'); transition(); return;
+      cpuGeneration++;busy=false;rolling=false;s.match = newMatch(s.kind, players); s.phase = 'play'; s.saved = false; view = 'play'; save(); sound('notice'); transition(); return next();
     }
-    case 'again': s.match = newMatch(m().kind, m().players.map(p => ({ name: p.name, cpu: p.cpu }))); s.saved = false; save(); render(); return next();
+    case 'again': cpuGeneration++;busy=false;rolling=false;s.match = newMatch(m().kind, m().players.map(p => ({ name: p.name, cpu: p.cpu }))); s.saved = false; save(); render(); return next();
     case 'roll': return doRoll();
     case 'online-start': try { adopt(await api({ op: 'start', code: s.online.code, token: s.online.token })); render(); } catch (e) { toast(ERR[e.message] || 'সংযোগে সমস্যা।'); } return;
     case 'share': { const text = `শীতলপাটিতে লুডু খেলি! কোড: ${s.online.code}`; try { if (navigator.share) await navigator.share({ text, url: location.href.split('?')[0] }); else { await navigator.clipboard.writeText(text); toast('কোড কপি হয়েছে।'); } } catch { } return; }
     case 'leave': case 'quit':
       if (!await confirmBox(online() ? 'ঘর ছেড়ে দেবেন?' : 'খেলা ছেড়ে দেবেন?', '', 'হ্যাঁ')) return;
-      clearInterval(poll); s.online = null; s.match = null; s.phase = 'setup'; save(); return transition();
+      cpuGeneration++;busy=false;rolling=false;clearInterval(poll); s.online = null; s.match = null; s.phase = 'setup'; save(); return transition();
     case 'game-home': view = 'play'; if (m()?.winner !== null && m()) { clearInterval(poll); s.online = null; s.match = null; s.phase = 'setup'; } save(); return transition();
   }
 }
