@@ -294,13 +294,13 @@ function onlineSetup() {
 }
 function setup() {
   if (ONLINE) return online ? onlineLobby({ code: online.code, members: online.members, me: online.me, host: online.host, min: 2, max: 4, title: 'পেন ফাইট · অনলাইন ঘর' }) : onlineSetup();
-  const need = vsCpu() ? 1 : 2, room = vsCpu() ? humans().length < 1 : humans().length < 4, ready = humans().length >= need;
+  const need = vsCpu() ? 1 : 2, room = s.players.length < 4, ready = humans().length >= need;
   return `<header class="pen-head"><img src="assets/pen/cover.svg" alt="" width="640" height="420"><div><h1>পেন ফাইট</h1><p>বেঞ্চে কলম টোকা দিয়ে অন্যের কলম ফেলে দিন। শেষ পর্যন্ত যার কলম টিকে থাকে, রাউন্ড তার।</p></div></header>
   <ol class="pen-steps">
   <li><h2><i>১</i>কার সাথে খেলবেন?</h2><div class="pen-modes" role="radiogroup" aria-label="কার সাথে খেলবেন">
-   <button type="button" role="radio" aria-checked="${vsCpu()}" class="${vsCpu() ? 'is-on' : ''}" data-action="mode" data-id="cpu">${icon('person')}<b>কম্পিউটারের সাথে</b><small>একা খেলুন</small></button>
+   <button type="button" role="radio" aria-checked="${vsCpu()}" class="${vsCpu() ? 'is-on' : ''}" data-action="mode" data-id="cpu">${icon('person')}<b>কম্পিউটারের সাথে</b><small>বন্ধুদেরও যোগ করতে পারেন</small></button>
    <button type="button" role="radio" aria-checked="${!vsCpu()}" class="${vsCpu() ? '' : 'is-on'}" data-action="mode" data-id="friends">${icon('people')}<b>বন্ধুদের সাথে</b><small>২–৪ জন, এক ফোনে পালা করে</small></button></div></li>
-  <li><h2><i>২</i>${vsCpu() ? 'আপনার নাম' : 'খেলোয়াড়দের নাম'}</h2>
+  <li><h2><i>২</i>খেলোয়াড়দের নাম</h2>
    ${room ? `<form id="name-form" class="name-form"><input id="player-name" maxlength="20" autocomplete="off" placeholder="নাম লিখুন" aria-label="খেলোয়াড়ের নাম"><button class="btn primary" type="submit">${icon('plus')}যোগ</button></form>${accountChips()}<p class="pen-hint">নাম দিলেই অ্যাকাউন্ট খুলে যায়। জেতা পয়েন্ট কয়েন হয়ে জমে।</p>` : `<p class="pen-hint">${humans().map(p => esc(p.name)).join(', ')} খেলছেন। অন্য কাউকে নিতে নিচের কার্ডে ✕ চাপুন।</p>`}
   </li>
   <li><h2><i>৩</i>কলম বাছুন</h2>${s.players.length ? `<div class="pc-grid">${s.players.map(playerCard).join('')}</div>` : '<p class="pen-hint">ওপরে নাম দিলে এখানে কলম বাছাই দেখা যাবে।</p>'}</li>
@@ -391,17 +391,20 @@ function render() {
   if (changed) enterScreen($('#screen'));
 }
 function addPlayer(name) {
-  if (vsCpu() ? humans().length >= 1 : humans().length >= 4) return toast(vsCpu() ? 'কম্পিউটারের সাথে একজন খেলে। আগের নাম বাদ দিন।' : 'সর্বোচ্চ ৪ জন।');
+  if(s.players.length>=4)return toast('মানুষ ও কম্পিউটার মিলিয়ে সর্বোচ্চ ৪ জন।');
   if (s.players.some(p => p.name.toLocaleLowerCase() === name.toLocaleLowerCase())) return toast('এই নাম আগেই আছে।');
   let acc; try { acc = ensureAccount(name); } catch (e) { return toast(e.message === 'FULL' ? 'এই ফোনে আর অ্যাকাউন্ট খোলা যাবে না। পুরোনো কোনোটা মুছুন।' : 'একটা নাম দিন।'); }
   s.players.splice(humans().length, 0, { id: crypto.randomUUID(), name: acc.name, pen: PEN_KEYS[humans().length % PEN_KEYS.length], score: 0, history: [] }); save(); render();
 }
 /* Against the computer: one person plus the computer. With friends: two to four people. */
 function setMode(mode) {
-  s.mode = mode === 'cpu' ? 'cpu' : 'friends';
-  const people = humans();
-  s.players = s.mode === 'cpu' ? [...people.slice(0, 1), { id: crypto.randomUUID(), name: 'কম্পিউটার', cpu: true, pen: 'hischool', score: 0, history: [] }] : people;
+  const people=humans();
+  if(mode==='cpu'&&people.length>=4){toast('কম্পিউটারের জন্য একটি আসন খালি করুন।');return;}
+  s.mode=mode==='cpu'?'cpu':'friends';
+  const bots=s.players.filter(p=>p.cpu);
+  s.players=s.mode==='cpu'?[...people,bots[0]||{id:crypto.randomUUID(),name:'কম্পিউটার',cpu:true,pen:'hischool',score:0,history:[]}]:people;
 }
+
 function transition() { const el = $('#screen'); el ? leaveScreen(el, render) : render(); }
 
 function startRound() {

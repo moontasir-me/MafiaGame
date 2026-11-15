@@ -1,3 +1,4 @@
+import {mixedCounts,mixedRoster,mixedControls} from './offline-roster.mjs';
 import { newGame, play, choose, free, scores, standings, touching, drawn, CPU_LEVELS } from './dots-engine.mjs';
 import { sound } from './sound.mjs';
 import { saveMatch, readHistory, overallRanking, hallOfFame } from './history.mjs';
@@ -11,9 +12,10 @@ const KEY = 'dots.v1', ART = 'assets/dots/cover.svg';
 const INK = ['#1f4fbf', '#d0342c', '#1e8a4c', '#9a3fb8'];
 const ONLINE = isOnlineMode() || new URLSearchParams(location.search).has('online');
 
-function fresh() { return { v: 1, phase: 'setup', mode: 'cpu', level: 'medium', count: 2, size: 4, names: ['', '', '', ''], g: null, saved: false }; }
+function fresh() { return { v: 1, phase: 'setup', mode: 'cpu', level: 'medium', count: 2, humans: 1, cpus: 1, size: 4, names: ['', '', '', ''], g: null, saved: false }; }
 let s = fresh(), view = 'play', lastScreen = '', busy = false, online = null, poll = 0;
 try { const d = JSON.parse(localStorage.getItem(KEY)); if (d?.v === 1) s = { ...fresh(), ...d }; } catch { }
+{const c=mixedCounts(s.humans,s.cpus);s.humans=c.humans;s.cpus=c.bots;}
 const save = () => { if (online) return; try { localStorage.setItem(KEY, JSON.stringify(s)); } catch { } };
 const button = (label, action, cls, ic, extra = '') => `<button type="button" class="btn ${cls}" data-action="${action}" ${extra}>${icon(ic)}${label}</button>`;
 const wait = ms => new Promise(r => setTimeout(r, ms));
@@ -29,10 +31,10 @@ const head = sub => `<header class="dt-head"><svg class="dt-mark" viewBox="0 0 6
 function setup() {
   if (ONLINE) return online ? onlineLobby({ code: online.code, members: online.members, me: online.me, host: online.host, min: 2, max: 4, title: `জায়গা দখল · ${bn(online.size?.[0] || s.size)}×${bn(online.size?.[1] || s.size)}` })
     : `${head('অনলাইন: ২–৪ জন, যার যার ফোনে')}<section class="dt-panel">${numberPick({ name: 'size', label: 'ঘরের মাপ (প্রতি দিকে কটা বাক্স)', value: s.size, presets: [3, 4, 5, 6], min: 2, max: 9 })}</section>${onlineEntry({ len: 5 })}`;
-  const n = s.mode === 'friends' ? s.count : 1;
+  const n = s.mode === 'friends' ? s.count : s.humans;
   return `${head('দুটো বিন্দু জুড়ে দাগ টানুন। বাক্সের চার দিক যে বন্ধ করে, বাক্স তার।')}
   <section class="dt-panel"><h2>কার সাথে</h2>${seg('mode', { cpu: 'কম্পিউটার', friends: 'বন্ধুদের সাথে' }, s.mode)}
-  ${s.mode === 'cpu' ? `<div class="dt-gap">${seg('level', CPU_LEVELS, s.level)}</div>` : `<div class="dt-gap dt-row"><span>কয়জন</span>${seg('count', { 2: '২', 3: '৩', 4: '৪' }, s.count)}</div>`}</section>
+  ${s.mode === 'cpu' ? `${mixedControls({humans:s.humans,bots:s.cpus})}<div class="dt-gap">${seg('level', CPU_LEVELS, s.level)}</div>` : `<div class="dt-gap dt-row"><span>কয়জন</span>${seg('count', { 2: '২', 3: '৩', 4: '৪' }, s.count)}</div>`}</section>
   <section class="dt-panel">${numberPick({ name: 'size', label: 'ঘরের মাপ (প্রতি দিকে কটা বাক্স)', value: s.size, presets: [3, 4, 5, 6], min: 2, max: 9 })}</section>
   <section class="dt-panel"><h2>${n > 1 ? 'নাম' : 'আপনার নাম'}</h2>${Array.from({ length: n }, (_, i) => `<label class="dt-field"><span class="dt-ink" style="--ink:${INK[i]}"></span><input data-name="${i}" maxlength="20" autocomplete="off" placeholder="${n > 1 ? `খেলোয়াড় ${bn(i + 1)}` : 'নাম'}" value="${esc(s.names[i])}"></label>`).join('')}${chips(n)}</section>
   ${button('খেলা শুরু', 'start', 'primary wide', 'play')}`;
@@ -141,14 +143,15 @@ async function act(action, id) {
     case 'app-menu': return openMenu(inGame() ? [[online ? 'ঘর ছেড়ে দিন' : 'খেলা ছেড়ে নতুন করে সাজান', 'edit', online ? 'leave' : 'quit', 'tone-danger']] : [], act);
     case 'mode': s.mode = id === 'friends' ? 'friends' : 'cpu'; save(); return render();
     case 'level': if (CPU_LEVELS[id]) s.level = id; save(); return render();
+    case 'humans': case 'cpus': {const c=mixedCounts(action==='humans'?Number(id):s.humans,action==='cpus'?Number(id):s.cpus);s.humans=c.humans;s.cpus=c.bots;save();return render();}
     case 'count': s.count = Math.max(2, Math.min(4, Number(id))); save(); return render();
-    case 'fill': { const n = s.mode === 'friends' ? s.count : 1, i = s.names.slice(0, n).findIndex(x => !x.trim()); s.names[i >= 0 ? i : 0] = id; save(); return render(); }
+    case 'fill': { const n = s.mode === 'friends' ? s.count : s.humans, i = s.names.slice(0, n).findIndex(x => !x.trim()); s.names[i >= 0 ? i : 0] = id; save(); return render(); }
     case 'start': {
-      const n = s.mode === 'friends' ? s.count : 1, list = s.names.slice(0, n).map(x => x.trim().replace(/\s+/g, ' '));
+      const n = s.mode === 'friends' ? s.count : s.humans, list = s.names.slice(0, n).map(x => x.trim().replace(/\s+/g, ' '));
       if (list.some(x => !x)) return toast(n > 1 ? 'সবার নাম লিখুন।' : 'আপনার নাম লিখুন।');
       if (new Set(list.map(x => x.toLocaleLowerCase())).size < n) return toast('নামগুলো আলাদা হতে হবে।');
       const names = list.map(x => { try { return ensureAccount(x).name; } catch { return x; } });
-      const players = s.mode === 'cpu' ? [{ name: names[0] }, { name: 'কম্পিউটার', cpu: s.level }] : names.map(name => ({ name }));
+      const players = s.mode === 'cpu' ? mixedRoster(names,{bots:s.cpus,level:s.level}) : names.map(name => ({ name }));
       s.g = newGame(s.size, s.size, players); s.saved = false; s.phase = 'play'; view = 'play'; save(); sound('notice'); return transition();
     }
     case 'again': if (online) return send({ op: 'again' }); s.g = newGame(s.g.rows, s.g.cols, s.g.players); s.saved = false; save(); render(); return cpu();

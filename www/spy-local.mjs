@@ -15,3 +15,11 @@ export function voteSpy(s,id,now=Date.now()){check(s.phase==='vote','PHASE');con
 export function leaveSpyPlayer(s,id,now=Date.now()){check(['discussion','vote'].includes(s.phase),'PHASE');const p=s.players.find(p=>p.id===id&&p.alive);check(p,'PLAYER');p.quit=true;p.alive=false;s.verdict={name:p.name,left:true};if(id===s.spyId)return finish(s,'WORD',now);if(s.players.filter(p=>p.alive).length<=2)return finish(s,'SPY',now);return s;}
 export function resetSpy(s){s.phase='setup';s.word=null;s.spyId=null;s.winner=null;s.order=[];s.revealIndex=0;s.verdict=null;s.timer=newTimer(s.duration);s.players.forEach(p=>{p.alive=true;p.quit=false;});return s;}
 export function restoreSpy(raw){check(raw?.version===1&&Array.isArray(raw.players)&&raw.players.length<=20,'SAVE');const s=structuredClone(raw);check(['setup','reveal','discussion','vote','over'].includes(s.phase),'SAVE');check(s.players.every(p=>typeof p.id==='string'&&typeof p.name==='string'&&Array.isArray(p.history)&&Number.isFinite(p.score)),'SAVE');if(s.phase!=='setup')check(s.players.some(p=>p.id===s.spyId)&&s.order.every(id=>s.players.some(p=>p.id===id)),'SAVE');return s;}
+
+export const caughtSpyCase=s=>s.phase==='over'&&s.winner==='WORD'&&s.verdict?.spy===true;
+export function nextCaughtSpyCase(s,options){
+ check(caughtSpyCase(s),'PHASE');
+ if(s.set&&!s.set.games.includes(s.gameId)){s.set.games.push(s.gameId);}
+ if(s.set&&s.set.games.length>=s.set.total)s.set.total=s.set.games.length+1;
+ resetSpy(s);return dealSpy(s,options);
+}

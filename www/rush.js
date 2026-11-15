@@ -1,3 +1,5 @@
+import {mixedCounts,mixedRoster,mixedControls} from './offline-roster.mjs';
+import {humanSeats,prepareRushSeat,needsRushHandoff,privateRushView} from './rush-offline.mjs';
 import { COLOURS, COLOUR_NAME, LABEL, DRAW, newGame, act as engineAct, call as engineCall, viewFor, playable } from './rush-engine.mjs';
 import { sound } from './sound.mjs';
 import { saveMatch, readHistory, overallRanking, hallOfFame } from './history.mjs';
@@ -9,15 +11,15 @@ const ONLINE = isOnlineMode() || new URLSearchParams(location.search).has('onlin
 const BOTS = ['Mina', 'Raju', 'Tara'];
 import { readProfile, saveProfile } from './profile.mjs';
 
-/* Colour Rush: always online, 2–20 players, Classic or Ruthless. English throughout. */
+/* Colour Rush: online 2–20 players, or up to four people and computers on one phone. */
 const ART = 'assets/rush/cover.svg', RULES = { classic: 'Classic', ruthless: 'Ruthless' };
 const ERR = { ROOM_GONE: 'No room with that code.', FULL: 'That room is full (20 players).', STARTED: 'That game has already started.', NAME_TAKEN: 'Someone in the room already has that name. Change your name and try again.', NAME: 'Enter your name.', TURN: "It's not your turn.", ACTION: "That card can't be played now.", COLOUR: 'Pick a colour.', TARGET: 'Pick a player to swap with.', COUNTS: 'At least two players are needed.', RATE_LIMIT: 'Too many tries. Wait a moment.', WRONG_GAME: 'That code belongs to another game.', ONLINE_NOT_CONFIGURED: 'Online play is not available right now.' };
-let view = 'play', lastScreen = '', online = null, poll = 0, busy = false, rule = 'classic', saved = false, local = null, botTimer = 0;
+let view = 'play', lastScreen = '', online = null, poll = 0, busy = false, rule = 'classic', saved = false, local = null, botTimer = 0, localSeats=[], localSeat=0, handReady=false, people=1, computers=3, localNames=[onlineName()||'You','','',''];
 try { rule = localStorage.getItem('rush.rule') === 'ruthless' ? 'ruthless' : 'classic'; } catch { }
 const button = (label, action, cls, ic, extra = '') => `<button type="button" class="btn ${cls}" data-action="${action}" ${extra}>${icon(ic)}${label}</button>`;
-const me = () => online ? me() : 0;
-const m = () => online ? online.match : local ? viewFor(local, 0) : null;
-const myTurn = () => m() && m().winner === null && m().turn === me();
+const me = () => online ? online.me : localSeat;
+const m = () => online ? online.match : local ? privateRushView(local,localSeats,localSeat,handReady) : null;
+const myTurn = () => m() && m().winner === null && m().turn === me() && (ONLINE || handReady);
 const SYMBOL = { skip: '⊘', rev: '⇄', d2: '+2', d4c: '+4', skipall: '⊘⊘', discall: '✕', wild: '★', wd4: '+4', wd6: '+6', wd10: '+10', wrev4: '⇄+4' };
 const label = c => /^\d$/.test(c.v) ? c.v : LABEL[c.v];
 
@@ -38,8 +40,9 @@ function entry() {
   <button type="button" class="btn secondary wide" data-action="join" disabled>Join</button></section>`;
 }
 function offlineEntry() {
-  return `<header class="rs-head"><img src="${ART}" alt="" width="640" height="420"><div><h1>Colour Rush</h1><p>You against three bots: ${BOTS.join(', ')}. Match the colour or the symbol and empty your hand first.</p></div></header>
+  return `<header class="rs-head"><img src="${ART}" alt="" width="640" height="420"><div><h1>Colour Rush</h1><p>People and computers at one table. Match the colour or the symbol and empty your hand first.</p></div></header>
   <section class="rs-panel"><h2>Rules</h2><div class="rs-seg" role="radiogroup">${Object.entries(RULES).map(([k, l]) => `<button type="button" role="radio" aria-checked="${rule === k}" class="${rule === k ? 'is-on' : ''}" data-action="rule" data-id="${k}"><b>${l}</b><small>${k === 'classic' ? 'The familiar game' : 'Stacking draws, swaps, knock-outs'}</small></button>`).join('')}</div></section>
+  <section class="rs-panel"><h2>Your table</h2>${mixedControls({humans:people,bots:computers,minBots:0,english:true,prefix:'offline-'})}${Array.from({length:people},(_,i)=>`<label class="mixed-name">Player ${i+1}<input data-local-name="${i}" maxlength="20" autocomplete="off" value="${esc(localNames[i])}" placeholder="Player ${i+1} name"></label>`).join('')}<p class="mixed-seat-note">${people>1?'Pass the phone at each human turn. Hands stay hidden until the next player is ready.':'Your hand stays on this phone. Computers take their own turns.'}</p></section>
   ${button('Deal the cards', 'deal', 'primary wide rs-deal', 'play')}`;
 }
 function lobby() {
@@ -67,16 +70,16 @@ function table() {
    <span class="rs-colour" aria-label="Colour in play: ${COLOUR_NAME[g.colour]}">${COLOUR_NAME[g.colour]}</span></div>
   <p class="rs-msg" role="status">${msg}</p>
   ${g.winner === null && (g.owe === my || (mine && g.hand.length === 2 && g.precall !== my)) ? `<button type="button" class="rs-call${g.owe === my ? ' urgent' : ''}" data-action="call">Rush!<small>${g.owe === my ? 'One card left: call it now or draw 2' : 'Going down to one card? Call it first'}</small></button>` : g.precall === my && mine ? '<p class="rs-called">Rush! called. Play your card.</p>' : ''}
-  <div class="rs-you${g.turn === my && g.winner === null ? ' is-turn' : ''}"><span class="rs-avatar a${my % 4}">${esc(g.players[my].name.charAt(0))}</span><b>You</b>${g.turn === my && g.winner === null ? '<span class="rs-yourturn">Your turn</span>' : ''}</div>
+  <div class="rs-you${g.turn === my && g.winner === null ? ' is-turn' : ''}"><span class="rs-avatar a${my % 4}">${esc(g.players[my].name.charAt(0))}</span><b>${esc(!ONLINE&&humanSeats(localSeats).length>1?g.players[my].name:'You')}</b>${g.turn === my && g.winner === null ? '<span class="rs-yourturn">Your turn</span>' : ''}</div>
   ${g.winner !== null ? over(g) : `<div class="rs-actions">${g.drew && mine ? button('Keep it, pass', 'pass', 'secondary', 'arrow') : ''}${mine && g.pending ? button(`Take ${g.pending} cards`, 'draw', 'secondary', 'plus') : ''}</div>`}
-  <div class="rs-hand-wrap"><div class="rs-hand${g.hand.length <= 12 ? ' fan' : ''}" aria-label="Your hand">${hand}</div><small class="rs-hand-n">${g.hand.length} card${g.hand.length === 1 ? '' : 's'} in your hand</small></div></div>`;
+  ${ONLINE||handReady?`<div class="rs-hand-wrap"><div class="rs-hand${g.hand.length <= 12 ? ' fan' : ''}" aria-label="Your hand">${hand}</div><small class="rs-hand-n">${g.hand.length} card${g.hand.length === 1 ? '' : 's'} in your hand</small></div>`:'<p class="mixed-seat-note">Hands hidden while computers play.</p>'}</div>`;
 }
 function playableHere(g, c) {
   if (g.pending) return g.mode === 'ruthless' && DRAW[c.v] !== undefined;
   return c.c === 'w' || c.c === g.colour || c.v === g.top.v;
 }
 function message(g) {
-  const name = i => i === me() ? 'You' : esc(g.players[i].name), l = g.last, turn = g.players[g.turn];
+  const name = i => i === me() && (ONLINE||humanSeats(localSeats).length===1) ? 'You' : esc(g.players[i].name), l = g.last, turn = g.players[g.turn];
   if (g.winner !== null) return '';
   let s = '';
   if (l) {
@@ -120,15 +123,18 @@ function ranking() {
   <section class="fame-section"><h2>${icon('trophy')}Hall of fame</h2>${fameTable(hallOfFame(list, 'rush'), { caption: 'Hall of fame', player: 'Player', points: 'Points', empty: 'Nobody yet.', number: n => String(n), meta: e => new Date(e.date).toLocaleDateString('en-GB') })}</section>`;
 }
 
+function handoff(){const p=local.players[local.turn];return `<section class="rs-handoff">${icon('cards')}<h1>${esc(p.name)}, your turn</h1><p>Pass the phone to ${esc(p.name)}. Everyone else should look away before the hand is opened.</p>${button('I am '+esc(p.name)+' · Show my hand','ready','primary wide','eye')}</section>`;}
+
 /* ---------- Shell ---------- */
 function render() {
-  const screen = !ONLINE ? (local ? 'table' : 'offline') : !online ? 'entry' : !online.started ? 'lobby' : 'table', key = view + screen, changed = key !== lastScreen; lastScreen = key;
+  const screen = !ONLINE ? (local ? needsRushHandoff(local,localSeats,localSeat,handReady)?'handoff':'table' : 'offline') : !online ? 'entry' : !online.started ? 'lobby' : 'table', key = view + screen, changed = key !== lastScreen; lastScreen = key;
   const keepScroll = $('.rs-hand')?.scrollLeft;
-  const body = view === 'rules' ? rules() : view === 'ranking' ? ranking() : screen === 'offline' ? offlineEntry() : screen === 'entry' ? entry() : screen === 'lobby' ? lobby() : table();
-  $('#app').innerHTML = appShell({ brand: 'Colour Rush', brandSub: RULES[online?.rule || local?.mode || rule], brandIcon: 'cards', brandAction: 'tab-play', crumb: view === 'rules' ? 'Rules' : view === 'ranking' ? 'Ranking' : screen === 'table' && online ? `Room ${online.code}` : screen === 'table' ? 'You vs 3 bots' : '', active: view, contentClass: 'game-content rush-content', labels: { back: 'All games', menu: 'Menu', sections: 'Sections' }, backHref: 'index.html', tabs: [{ id: 'play', label: 'Play', icon: 'play', action: 'tab-play' }, { id: 'rules', label: 'Rules', icon: 'book', action: 'tab-rules' }, { id: 'ranking', label: 'Ranking', icon: 'trophy', action: 'tab-ranking' }], body });
+  const body = view === 'rules' ? rules() : view === 'ranking' ? ranking() : screen === 'offline' ? offlineEntry() : screen === 'entry' ? entry() : screen === 'lobby' ? lobby() : screen === 'handoff' ? handoff() : table();
+  $('#app').innerHTML = appShell({ brand: 'Colour Rush', brandSub: RULES[online?.rule || local?.mode || rule], brandIcon: 'cards', brandAction: 'tab-play', crumb: view === 'rules' ? 'Rules' : view === 'ranking' ? 'Ranking' : screen === 'table' && online ? `Room ${online.code}` : screen === 'table' ? `${humanSeats(localSeats).length} people · ${localSeats.filter(p=>p.cpu).length} computers` : '', active: view, hideTabs:screen==='handoff', contentClass: 'game-content rush-content', labels: { back: 'All games', menu: 'Menu', sections: 'Sections' }, backHref: 'index.html', tabs: [{ id: 'play', label: 'Play', icon: 'play', action: 'tab-play' }, { id: 'rules', label: 'Rules', icon: 'book', action: 'tab-rules' }, { id: 'ranking', label: 'Ranking', icon: 'trophy', action: 'tab-ranking' }], body });
   $$('[data-action]').forEach(el => el.onclick = e => { e.preventDefault(); act(el.dataset.action, el.dataset.id); });
   $$('[data-card]').forEach(el => el.onclick = () => play(el.dataset.card));
   if (keepScroll && $('.rs-hand')) $('.rs-hand').scrollLeft = keepScroll;
+  $$('[data-local-name]').forEach(el=>el.oninput=()=>localNames[Number(el.dataset.localName)]=el.value);
   bindCode();
   if (changed) enterScreen($('#screen'));
 }
@@ -154,8 +160,8 @@ function adopt(v) {
 }
 function finish(g) {
   if (saved) return; saved = true; sound(g.winner === me() ? 'win' : 'out');
-  const place = (g.standings || []).indexOf(me()), pts = [3, 2, 1][place] ?? 0;
-  saveMatch({ id: crypto.randomUUID(), game: 'rush', players: [{ name: online ? g.players[me()].name : (onlineName() || 'You'), points: pts, recent: [{ won: g.winner === me(), img: ART, label: `Colour Rush · ${place + 1}${['st', 'nd', 'rd'][place] || 'th'}` }] }] });
+  const recipients=online?[me()]:humanSeats(localSeats);
+  saveMatch({id:crypto.randomUUID(),game:'rush',players:recipients.map(i=>{const place=(g.standings||[]).indexOf(i);return {name:g.players[i].name,points:[3,2,1][place]??0,recent:[{won:g.winner===i,img:ART,label:`Colour Rush · ${place+1}${['st','nd','rd'][place]||'th'}`}]};})});
 }
 function startPolling() {
   clearInterval(poll);
@@ -167,13 +173,14 @@ function startPolling() {
 }
 function localMove(body) {
   try {
-    if (body.op === 'call') local = engineCall(local, 0);
-    else if (body.op === 'again') { local = newGame([{ name: onlineName() || 'You' }, ...BOTS.map(name => ({ name }))], local.mode); saved = false; }
-    else local = engineAct(local, 0, { type: body.op, card: body.card, colour: body.colour, target: body.target });
+    if(!local||(!handReady&&body.op!=='again'))return;
+    if (body.op === 'call') local = engineCall(local, localSeat);
+    else if (body.op === 'again') { local = newGame(localSeats, local.mode); saved = false; }
+    else local = engineAct(local, localSeat, { type: body.op, card: body.card, colour: body.colour, target: body.target });
   } catch (e) { toast(ERR[e.message] || "That move isn't allowed."); }
   afterLocal(); render(); bots();
 }
-function afterLocal() { const g = m(); if (g?.winner !== null && g) finish(g); }
+function afterLocal() { const next=prepareRushSeat(local,localSeats,localSeat,handReady);localSeat=next.seat;handReady=next.ready;const g=m();if(g&&g.winner!==null)finish(g); }
 /* Bots: play a card that fits (draw cards and actions first when someone is close to winning), keep wilds for last,
    pick the colour they hold most of, and call Rush! — usually. */
 function botMove(g, k) {
@@ -191,7 +198,7 @@ function botMove(g, k) {
 function bots() {
   clearTimeout(botTimer);
   if (!local || local.winner !== null) return;
-  const k = local.turn; if (k === 0) return;
+  const k = local.turn; if (!localSeats[k]?.cpu) return;
   botTimer = setTimeout(() => {
     if (!local || local.turn !== k || local.winner !== null) return;
     try {
@@ -241,7 +248,9 @@ async function act(action, id) {
       catch (e) { busy = false; online = null; toast(ERR[e.message] || 'Connection problem. Try again.'); }
       return;
     }
-    case 'deal': local = newGame([{ name: onlineName() || 'You' }, ...BOTS.map(name => ({ name }))], rule); saved = false; view = 'play'; sound('notice'); transition(); return bots();
+    case 'offline-humans': case 'offline-cpus': {const c=mixedCounts(action==='offline-humans'?Number(id):people,action==='offline-cpus'?Number(id):computers,4,0);people=c.humans;computers=c.bots;return render();}
+    case 'ready': if(local&&!localSeats[local.turn]?.cpu){localSeat=local.turn;handReady=true;return render();}return;
+    case 'deal': try{localSeats=mixedRoster(localNames.slice(0,people),{bots:computers,max:4,botNames:BOTS});local=newGame(localSeats,rule);localSeat=0;handReady=people===1;saved=false;view='play';sound('notice');transition();return bots();}catch(e){return toast(e.message==='NAME'?'Enter a different name for each person (1–20 characters).':'Use 2–4 people and computers in total.');}
     case 'share': { const text = `Play Colour Rush with me on শীতলপাটি. Code: ${online.code}`; try { if (navigator.share) await navigator.share({ text, url: location.href.split('?')[0] }); else { await navigator.clipboard.writeText(text); toast('Code copied.'); } } catch { } return; }
     case 'start': return send({ op: 'start' });
     case 'again': saved = false; return send({ op: 'again' });
@@ -257,3 +266,6 @@ async function act(action, id) {
 if (ONLINE) try { const s = JSON.parse(sessionStorage.getItem('rush.online')); if (s) api({ op: 'state', ...s }).then(v => { online = { ...s }; adopt(v); startPolling(); render(); }).catch(() => { }); } catch { }
 render();
 if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw.js').catch(() => { });
+
+function hideLocalHands(){if(!ONLINE&&local&&humanSeats(localSeats).length>1&&handReady){handReady=false;render();}}
+addEventListener('blur',hideLocalHands);document.addEventListener('visibilitychange',()=>{if(document.hidden)hideLocalHands();});window.onNativePause=hideLocalHands;

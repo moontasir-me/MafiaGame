@@ -1,3 +1,4 @@
+import {mixedCounts,mixedRoster,mixedControls} from './offline-roster.mjs';
 import { newMatch, roll, move, movable, choose, standings, cell, snakeCell, SNAKES, LADDERS, SAFE, PATH, LANE, START, HOME, COLOUR_NAMES, CPU_LEVELS } from './ludo-engine.mjs';
 import { sound } from './sound.mjs';
 import { saveMatch, readHistory, overallRanking, hallOfFame } from './history.mjs';
@@ -14,9 +15,10 @@ const KINDS = { ludo: 'লুডু', snake: 'সাপ লুডু' };
 const MODES = { local: 'এক ফোনে', cpu: 'কম্পিউটার' };
 const ERR = { ...ONLINE_ERRORS, ROOM_GONE: 'এই কোডের কোনো ঘর নেই।', FULL: 'ঘরে চারজন হয়ে গেছে।', STARTED: 'খেলা শুরু হয়ে গেছে।', NAME_TAKEN: 'এই নাম ঘরে আছে, অন্য নাম দিন।', NAME: 'নাম লিখুন।', TURN: 'এখন আপনার চাল নয়।', COUNTS: 'অন্তত দুজন লাগবে।', RATE_LIMIT: 'একটু পরে আবার চেষ্টা করুন।' };
 
-function fresh() { return { v: 1, kind: 'ludo', mode: 'local', count: 2, names: ['', '', '', ''], cpus: 1, level: 'medium', phase: 'setup', match: null, online: null, saved: false }; }
+function fresh() { return { v: 1, kind: 'ludo', mode: 'local', count: 2, names: ['', '', '', ''], cpus: 1, humans: 1, level: 'medium', phase: 'setup', match: null, online: null, saved: false }; }
 let s = fresh(), view = 'play', lastScreen = '', busy = false, poll = 0, rolling = false;
 try { const d = JSON.parse(localStorage.getItem(KEY)); if (d?.v === 1) s = { ...fresh(), ...d }; } catch { }
+{const c=mixedCounts(s.humans,s.cpus);s.humans=c.humans;s.cpus=c.bots;}
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch { } };
 const button = (label, action, cls, ic, extra = '') => `<button type="button" class="btn ${cls}" data-action="${action}" ${extra}>${icon(ic)}${label}</button>`;
 const m = () => s.match;
@@ -35,12 +37,12 @@ function setup() {
   if (ONLINE) return `<header class="ludo-head"><div class="ludo-dice-art">${diceFace(5)}${diceFace(3)}</div><div><h1>লুডু</h1><p>অনলাইন: বন্ধুরা নিজের ফোন থেকে</p></div></header>
   <section class="ludo-panel"><h2>কোন লুডু</h2>${seg('kind', KINDS, s.kind)}</section>${onlineEntry({ len: 5 })}`;
   if (s.mode === 'online') s.mode = 'local';
-  const n = s.mode === 'local' ? s.count : 1;
+  const n = s.mode === 'local' ? s.count : s.humans;
   return `<header class="ludo-head"><div class="ludo-dice-art">${diceFace(5)}${diceFace(3)}</div><div><h1>লুডু</h1><p>ছক্কা উঠলে ঘুঁটি বের হবে।</p></div></header>
   <section class="ludo-panel"><h2>কোন লুডু</h2>${seg('kind', KINDS, s.kind)}</section>
   <section class="ludo-panel"><h2>কীভাবে খেলবেন</h2>${seg('mode', MODES, s.mode)}
   ${s.mode === 'local' ? `<div class="ludo-count"><span>কয়জন</span>${seg('count', { 2: '২', 3: '৩', 4: '৪' }, String(s.count))}</div>` : ''}
-  ${s.mode === 'cpu' ? `<div class="ludo-count"><span>কম্পিউটার কয়টা</span>${seg('cpus', { 1: '১', 2: '২', 3: '৩' }, String(s.cpus))}</div><div class="ludo-count"><span>কেমন খেলবে</span>${seg('level', CPU_LEVELS, s.level)}</div>` : ''}</section>
+  ${s.mode === 'cpu' ? `${mixedControls({humans:s.humans,bots:s.cpus})}<div class="ludo-count"><span>কেমন খেলবে</span>${seg('level', CPU_LEVELS, s.level)}</div>` : ''}</section>
   <section class="ludo-panel"><h2>${n > 1 ? 'নাম' : 'আপনার নাম'}</h2>${Array.from({ length: n }, (_, i) => nameField(i, n > 1 ? `খেলোয়াড় ${bn(i + 1)}` : 'নাম')).join('')}${chips(n)}</section>
   ${button('খেলা শুরু', 'start', 'primary wide', 'play')}`;
 }
@@ -236,12 +238,12 @@ async function act(action, id) {
     case 'kind': s.kind = KINDS[id] ? id : 'ludo'; save(); return render();
     case 'mode': s.mode = MODES[id] ? id : 'local'; save(); return render();
     case 'count': s.count = Math.max(2, Math.min(4, Number(id))); save(); return render();
-    case 'cpus': s.cpus = Math.max(1, Math.min(3, Number(id))); save(); return render();
+    case 'humans': case 'cpus': {const c=mixedCounts(action==='humans'?Number(id):s.humans,action==='cpus'?Number(id):s.cpus);s.humans=c.humans;s.cpus=c.bots;save();return render();}
     case 'level': if (CPU_LEVELS[id]) s.level = id; save(); return render();
-    case 'fill': { const n = s.mode === 'local' ? s.count : 1, i = s.names.slice(0, n).findIndex(x => !x.trim()); s.names[i >= 0 ? i : 0] = id; save(); return render(); }
+    case 'fill': { const n = s.mode === 'local' ? s.count : s.humans, i = s.names.slice(0, n).findIndex(x => !x.trim()); s.names[i >= 0 ? i : 0] = id; save(); return render(); }
     case 'start': {
-      const list = names(s.mode === 'local' ? s.count : 1); if (!list) return;
-      const players = s.mode === 'cpu' ? [...CPU_NAMES.slice(0, s.cpus).map(n => ({ name: n, cpu: s.level })), { name: list[0] }] : list.map(n => ({ name: n }));
+      const list = names(s.mode === 'local' ? s.count : s.humans); if (!list) return;
+      const players = s.mode === 'cpu' ? mixedRoster(list,{bots:s.cpus,level:s.level,botNames:CPU_NAMES,botsFirst:true}) : list.map(n => ({ name: n }));
       s.match = newMatch(s.kind, players); s.phase = 'play'; s.saved = false; view = 'play'; save(); sound('notice'); transition(); return;
     }
     case 'again': s.match = newMatch(m().kind, m().players.map(p => ({ name: p.name, cpu: p.cpu }))); s.saved = false; save(); render(); return next();

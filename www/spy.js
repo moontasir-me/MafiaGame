@@ -1,4 +1,4 @@
-import { newSpySession, addSpyPlayer, removeSpyPlayer, dealSpy, spyIdentity, nextSpyReveal, endSpyDiscussion, tickSpy, voteSpy, leaveSpyPlayer, resetSpy, restoreSpy } from './spy-local.mjs';
+import { newSpySession, addSpyPlayer, removeSpyPlayer, dealSpy, spyIdentity, nextSpyReveal, endSpyDiscussion, tickSpy, voteSpy, leaveSpyPlayer, resetSpy, restoreSpy, caughtSpyCase, nextCaughtSpyCase } from './spy-local.mjs';
 import { newTimer, startTimer, pauseTimer, secondsLeft } from './game-tools.mjs';
 import { sound, soundEnabled, toggleSound } from './sound.mjs';
 import { characterImage } from './characters.mjs';
@@ -8,7 +8,7 @@ import { fameTable, playerColour, esc, icon, tapCard, bindTapCard, setTapCard, r
 const $ = q => document.querySelector(q), $$ = q => [...document.querySelectorAll(q)];
 const bn = n => Number(n).toLocaleString('bn-BD');
 const KEY = 'mafia.spy.pass.v1';
-let s = newSpySession(), view = 'play', shown = false, seen = false, choice = null, toastTimer, modalResolve, lastScreen = '', newRow = null;
+let s = newSpySession(), view = 'play', shown = false, seen = false, choice = null, toastTimer, modalResolve, lastScreen = '', newRow = null, autoCaseDeadline=null, autoCaseId=null, heldCase=null;
 
 try { const raw = JSON.parse(localStorage.getItem(KEY)); if (raw) s = restoreSpy(raw); } catch { }
 // Carry over the roster from the old single-phone room version.
@@ -45,7 +45,7 @@ function setup() {
 }
 
 function rulesScreen() {
-  const steps = [['শব্দ বণ্টন', 'ফোন একে একে ঘুরবে। কার্ড ছুঁয়ে নিজের পাতা দেখুন। সবাই গোয়েন্দা, একই শব্দ পাবেন; একজন গুপ্তচর, তার পাতা ফাঁকা।'], ['সূত্র', 'শব্দটা সরাসরি বলবেন না। ছোট সূত্র দিন। খুব সহজ সূত্র দিলে গুপ্তচর শব্দটা ধরে ফেলবে।'], ['যুক্তি', 'কার সূত্র বেমানান? আলোচনার সময় শেষে সবাই মিলে একজনকে বাদ দিন।'], ['রায়', 'গুপ্তচর বাদ পড়লে কেস সমাধান। দুজন বাকি থাকতে গুপ্তচর টিকে থাকলে সে পালিয়ে যায়, জিতে যায়।'], ['পয়েন্ট', 'গুপ্তচরের জয়ে ৩। গোয়েন্দাদের জয়ে প্রত্যেকে ১। খেলা ছেড়ে গেলে পয়েন্ট নেই।']];
+  const steps = [['শব্দ বণ্টন', 'ফোন একে একে ঘুরবে। কার্ড ছুঁয়ে নিজের পাতা দেখুন। সবাই গোয়েন্দা, একই শব্দ পাবেন; একজন গুপ্তচর, তার পাতা ফাঁকা।'], ['সূত্র', 'শব্দটা সরাসরি বলবেন না। ছোট সূত্র দিন। খুব সহজ সূত্র দিলে গুপ্তচর শব্দটা ধরে ফেলবে।'], ['যুক্তি', 'কার সূত্র বেমানান? আলোচনার সময় শেষে সবাই মিলে একজনকে বাদ দিন।'], ['রায়', 'গুপ্তচর বাদ পড়লে কেস সমাধান। ফল দেখিয়ে পাঁচ সেকেন্ড পরে নতুন কেস শুরু হবে, ফোন যাবে আগের গুপ্তচরের হাতে। দুজন বাকি থাকতে গুপ্তচর টিকে থাকলে সে পালিয়ে যায়, জিতে যায়।'], ['পয়েন্ট', 'গুপ্তচরের জয়ে ৩। গোয়েন্দাদের জয়ে প্রত্যেকে ১। খেলা ছেড়ে গেলে পয়েন্ট নেই।']];
   return `${pageHead('খেলার নিয়ম', 'গোয়েন্দা বনাম গুপ্তচর', 'এক ফোন, কোনো হোস্ট নেই। ৩ থেকে ২০ জন।')}<div class="rules-list">${steps.map((r, i) => `<article><b>${bn(i + 1)}</b><div><h3>${r[0]}</h3><p>${r[1]}</p></div></article>`).join('')}</div><p class="spy-source">শব্দতালিকা: <a href="https://github.com/hermitdave/FrequencyWords">FrequencyWords · CC BY-SA 4.0</a></p>`;
 }
 
@@ -90,6 +90,7 @@ function rankingScreen() {
 function results() {
   const spy = byId(s.spyId), won = s.winner === 'WORD';
   return `<div class="over-heading"><div class="result-portrait win"><img src="${portrait(won ? 'WORD' : 'SPY')}" alt="" width="112" height="112"></div><span class="eyebrow">কেস ${caseOf(s.gameId)} · ${won ? 'সমাধান' : 'অমীমাংসিত'}</span><h1>${won ? 'গুপ্তচর ধরা পড়েছে!' : 'গুপ্তচর পালিয়ে গেল!'}</h1><p class="lede"><strong>${esc(spy.name)}</strong> ছিলেন গুপ্তচর। ${won ? 'গোয়েন্দাদের সূত্র মিলে গেল।' : 'কেউ তাকে ধরতে পারেনি।'}</p></div>
+  ${caughtSpyCase(s)&&heldCase!==s.gameId?`<section class="spy-auto-next" aria-live="polite">পরের কেস শুরু হবে <b id="auto-case-clock">৫</b> সেকেন্ডে। ফোন যাবে ${esc(spy.name)}-এর হাতে।${button('ফল দেখে থাকুন','hold-result','secondary','pause')}</section>`:''}
   <div class="spy-word-reveal"><span>গোপন শব্দটি ছিল</span><strong>${esc(s.word)}</strong></div>
   ${matchPanel()}
   <div class="end-actions">${matchActions()}${button('নাম বা সময় বদলান', 'edit', 'secondary wide', 'edit')}${button('Spy-এর শুরুর পাতা', 'game-home', 'text wide', 'home')}</div>
@@ -114,7 +115,7 @@ function render() {
     tabs: [{ id: 'play', label: 'খেলা', icon: 'play', action: 'tab-play' }, { id: 'rules', label: 'নিয়ম', icon: 'book', action: 'tab-rules' }, { id: 'ranking', label: 'র‍্যাঙ্কিং', icon: 'trophy', action: 'tab-ranking' }], body });
   if (draft && $('#player-name')) $('#player-name').value = draft;
   if (focused === 'player-name') $('#player-name')?.focus();
-  newRow = null;
+  newRow = null, autoCaseDeadline=null, autoCaseId=null, heldCase=null;
   bind();
   if (changed) enterScreen($('#screen'));
 }
@@ -140,6 +141,7 @@ function transition(fn) { leaveScreen($('#screen'), () => { fn?.(); render(); wi
 async function act(action, id) {
   try {
     switch (action) {
+      case 'hold-result': heldCase=s.gameId;autoCaseDeadline=null;return render();
       case 'games': location.href = 'index.html'; return;
       case 'tab-play': case 'tab-rules': case 'tab-ranking': { const next = action.slice(4); if (view === next) return; hide(); view = next; return transition(); }
       case 'app-menu': return openMenu();
@@ -211,7 +213,14 @@ window.onNativePause = hide;
 window.onNativeBack = () => { if ($('#overlay').children.length) { closeOverlay(); return; } if (view !== 'play') act('tab-play'); else if (s.phase === 'setup') location.href = 'index.html'; else openMenu(); };
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#overlay').children.length) hide(); });
 
+function advanceCaseIfReady(){
+  if(!caughtSpyCase(s)||view!=='play'||document.hidden||$('#overlay').children.length||heldCase===s.gameId){autoCaseDeadline=null;return;}
+  if(autoCaseId!==s.gameId||autoCaseDeadline===null){autoCaseId=s.gameId;autoCaseDeadline=Date.now()+5000;}
+  const left=Math.max(0,Math.ceil((autoCaseDeadline-Date.now())/1000)),clock=$('#auto-case-clock');if(clock)clock.textContent=bn(left);
+  if(!left){nextCaughtSpyCase(s);autoCaseDeadline=null;shown=false;seen=false;choice=null;save();sound('notice');transition();}
+}
 setInterval(() => {
+  advanceCaseIfReady();
   if (s.phase !== 'discussion') return;
   const phase = s.phase; tickSpy(s);
   if (s.phase !== phase) { choice = null; save(); sound('timer'); transition(); return; }
