@@ -1,181 +1,196 @@
 {
   "mafia": {
-    "source": "exec-b0579fcd-32f4-4c4c-a784-a36bfaa24acc.png",
+    "source": "exec-62b2d9dc-adb9-4168-b202-c38370367040.png",
     "assets": {
       "cover-art.webp": {
         "width": 1200,
         "height": 800,
-        "bytes": 239122
+        "bytes": 332214
       },
       "cover-tile.webp": {
         "width": 600,
         "height": 400,
-        "bytes": 82566
+        "bytes": 108626
       }
     }
   },
   "spy": {
-    "source": "exec-ed66e6cd-4f8d-4fdd-a699-034162e246ac.png",
+    "source": "exec-4c2dc293-0e84-4d39-b6ba-bdfd0ac61aea.png",
     "assets": {
       "cover-art.webp": {
         "width": 1200,
         "height": 800,
-        "bytes": 290974
+        "bytes": 371920
       },
       "cover-tile.webp": {
         "width": 600,
         "height": 400,
-        "bytes": 91942
+        "bytes": 121120
       }
     }
   },
   "kalidas": {
-    "source": "exec-c7969b83-dfa1-4a77-bb31-a628e343fe60.png",
+    "source": "exec-6b580167-aadc-48c2-b3c6-4bb7154ca61a.png",
     "assets": {
       "cover-art.webp": {
         "width": 1200,
         "height": 800,
-        "bytes": 354390
+        "bytes": 356924
       },
       "cover-tile.webp": {
         "width": 600,
         "height": 400,
-        "bytes": 105620
+        "bytes": 118400
       }
     }
   },
   "pen": {
-    "source": "exec-7372c78d-2413-4554-ab59-131419e4f78f.png",
+    "source": "exec-3a288135-dc24-4411-be59-97652a1e1aaa.png",
     "assets": {
       "cover-art.webp": {
         "width": 1200,
         "height": 800,
-        "bytes": 207194
+        "bytes": 355670
       },
       "cover-tile.webp": {
         "width": 600,
         "height": 400,
-        "bytes": 71862
+        "bytes": 112450
       }
     }
   },
   "fib": {
-    "source": "exec-45cc62e3-07a3-48b1-9ef5-27684f93cd96.png",
+    "source": "exec-802ba324-7475-47da-825c-ade82eeaafc6.png",
     "assets": {
       "cover-art.webp": {
         "width": 1200,
         "height": 800,
-        "bytes": 237140
+        "bytes": 327174
       },
       "cover-tile.webp": {
         "width": 600,
         "height": 400,
-        "bytes": 76076
+        "bytes": 108092
       }
     }
   },
   "shotoronji": {
-    "source": "exec-367ee426-d09d-4846-af09-3af3e5243c9c.png",
+    "source": "exec-39b6170d-fa79-4eed-b95a-34cef3ca4ce7.png",
     "assets": {
       "cover-art.webp": {
         "width": 1200,
         "height": 800,
-        "bytes": 291708
+        "bytes": 438048
       },
       "cover-tile.webp": {
         "width": 600,
         "height": 400,
-        "bytes": 96380
+        "bytes": 131946
       }
     }
   },
   "chor": {
-    "source": "exec-9edf19f6-3739-404a-83f8-1219997c2fdd.png",
+    "source": "exec-5e8df24c-e073-4b1c-9fb7-1a70e5716634.png",
     "assets": {
       "cover-art.webp": {
         "width": 1200,
         "height": 800,
-        "bytes": 326620
+        "bytes": 374078
       },
       "cover-tile.webp": {
         "width": 600,
         "height": 400,
-        "bytes": 102008
+        "bytes": 123484
       }
     }
   },
   "ludo": {
-    "source": "exec-5359dbad-acc7-460d-9369-14dfb4b8124c.png",
+    "source": "exec-10b15ad6-33cb-4781-a0b7-af6e21177af0.png",
     "assets": {
       "cover-art.webp": {
         "width": 1200,
         "height": 800,
-        "bytes": 288946
+        "bytes": 362662
       },
       "cover-tile.webp": {
         "width": 600,
         "height": 400,
-        "bytes": 98014
+        "bytes": 123920
       }
     }
   },
   "carrom": {
-    "source": "exec-0275f51e-6817-48f3-a9ba-7753a607baae.png",
+    "source": "exec-f76fb5fc-498a-43a8-b15e-80ff7f7034ec.png",
     "assets": {
       "cover-art.webp": {
         "width": 1200,
         "height": 800,
-        "bytes": 235530
+        "bytes": 358856
       },
       "cover-tile.webp": {
         "width": 600,
         "height": 400,
-        "bytes": 73966
+        "bytes": 112492
       }
     }
   },
   "dots": {
-    "source": "exec-76ae74e8-c87a-4f47-b598-dddd0d2b30f5.png",
+    "source": "exec-d012a32d-ccc0-47d5-b239-9bec4353405b.png",
     "assets": {
       "cover-art.webp": {
         "width": 1200,
         "height": 800,
-        "bytes": 216802
+        "bytes": 273410
       },
       "cover-tile.webp": {
         "width": 600,
         "height": 400,
-        "bytes": 65954
+        "bytes": 95440
       }
     }
   },
   "tinguti": {
-    "source": "exec-731afa70-aee9-4817-b61a-dc2780707a16.png",
+    "source": "exec-dd17fe9d-1e17-49bb-84b7-6cf43a697d90.png",
     "assets": {
       "cover-art.webp": {
         "width": 1200,
         "height": 800,
-        "bytes": 294788
+        "bytes": 415210
       },
       "cover-tile.webp": {
         "width": 600,
         "height": 400,
-        "bytes": 87402
+        "bytes": 127180
       }
     }
   },
   "rush": {
-    "source": "exec-8fba432a-7e29-4b79-bb38-d5aecfe937fa.png",
+    "source": "exec-d64d2bd4-d25b-481b-8c44-3737dab3c9f3.png",
     "assets": {
       "cover-art.webp": {
         "width": 1200,
         "height": 800,
-        "bytes": 257232
+        "bytes": 325242
       },
       "cover-tile.webp": {
         "width": 600,
         "height": 400,
-        "bytes": 89032
+        "bytes": 108924
+      }
+    }
+  },
+  "poet": {
+    "source": "exec-76239af0-83f1-4cb2-b39f-c7ad161d04c4.png",
+    "assets": {
+      "poet-art.webp": {
+        "width": 960,
+        "height": 960,
+        "bytes": 290792
+      },
+      "poet-avatar.webp": {
+        "width": 240,
+        "height": 240,
+        "bytes": 30564
       }
     }
   }
