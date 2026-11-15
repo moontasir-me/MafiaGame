@@ -124,3 +124,6 @@
 .end-game{display:flex;justify-content:center;gap:8px}
 .winner-pick .guess-option strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}@media(max-width:520px){.winner-pick .guess-option.is-nobody{grid-column:1/-1}}
 .kd-poet{display:flex;gap:14px;align-items:flex-start;padding:14px 0 4px}.kd-poet img{width:72px;height:72px;border-radius:16px;flex-shrink:0}.kd-poet h3{margin:0}.kd-poet small{color:var(--muted);font-size:12px}.kd-poet p{margin:8px 0 0;font-size:13.5px;line-height:1.8;color:var(--muted)}
+
+/* Original painterly poet portrait, shown whole rather than clipped into the old banner. */
+.kd-hero-art{display:grid;place-items:center}.kd-hero-art img{width:100%;max-width:340px;height:auto;max-height:none;aspect-ratio:1;object-fit:contain;border:1px solid #e4ba6d66;border-radius:22px;transform:none;box-shadow:0 16px 38px #0005}.kd-poet img,.riddle-asker img{background:#f0e4cd;object-fit:cover}.kalidas-page .result-portrait img{object-fit:contain}@media(max-width:700px){.kd-hero-art img{width:min(100%,250px);max-height:none;height:auto;object-fit:contain}.kd-hero-art{margin-bottom:4px}}

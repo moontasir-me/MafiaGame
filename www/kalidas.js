@@ -7,7 +7,7 @@ import { numberPick, bindNumberPick, fameTable, playerColour, esc, icon, rankTab
 
 const $ = q => document.querySelector(q), $$ = q => [...document.querySelectorAll(q)];
 const bn = n => Number(n).toLocaleString('bn-BD');
-const KEY = 'kalidas.v1', ART = { POET: 'assets/kalidas/kalidas.svg', WON: 'assets/kalidas/lotus.svg', LOST: 'assets/kalidas/cloud.svg' };
+const KEY = 'kalidas.v1', ART = { POET: 'assets/kalidas/poet-avatar.webp', PORTRAIT: 'assets/kalidas/poet-art.webp', WON: 'assets/kalidas/lotus.svg', LOST: 'assets/kalidas/cloud.svg' };
 const TIMES = [15, 30, 45, 60, 90, 120];
 const NOBODY = 'nobody', US = 'us';
 // A fresh short folk riddle on every visit (short enough to read at a glance, with a one-word answer).
@@ -52,7 +52,7 @@ function setup() {
   <div class="kd-hero-copy"><span class="kd-kicker">বাংলা ধাঁধার আসর</span><h1>কহেন কবি <em>কালিদাস</em></h1>
   <figure class="kd-bubble"><blockquote>${HERO[0].split('\n').map(esc).join('<br>')}</blockquote><details><summary>উত্তর দেখুন</summary><b>${esc(HERO[1])}</b></details></figure>
   <div class="hero-buttons">${button('ধাঁধা শুরু', 'start', 'primary', 'play')}<a class="btn secondary" href="#players">খেলোয়াড় যোগ করুন</a></div></div>
-  <div class="kd-hero-art"><img src="assets/kalidas/cover.svg" width="640" height="420" alt="মেঘের নিচে তালপাতায় লিখছেন কবি কালিদাস"></div></section>
+  <div class="kd-hero-art"><img src="${ART.PORTRAIT}" width="960" height="960" alt="তালপাতার পুঁথি ও লেখনী হাতে হাস্যোজ্জ্বল কবি কালিদাসের কারিকেচার" fetchpriority="high" decoding="async"></div></section>
   <h2 class="kd-title">ধাঁধা কতটা কঠিন হবে?</h2>
   <div class="kd-levels" role="radiogroup" aria-label="ধাঁধা কতটা কঠিন">${Object.entries(LEVELS).map(([k, l]) => `<button type="button" role="radio" aria-checked="${s.level === k}" class="kd-level lv-${k} ${s.level === k ? 'is-on' : ''}" data-action="level" data-id="${k}">${lamps(l.lamps)}<b>${l.label}</b><small>${l.note}</small><i>ঠিক উত্তরে +${bn(l.points)}</i></button>`).join('')}</div>
   <section class="panel kalidas-setup" id="players"><div class="list-heading"><span>কারা খেলছেন?</span><span>${bn(s.players.length)} / ২০</span></div>
