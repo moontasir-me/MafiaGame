@@ -1,6 +1,6 @@
 import {mixedCounts,mixedRoster,mixedControls} from './offline-roster.mjs';
 import {humanSeats,prepareRushSeat,needsRushHandoff,privateRushView} from './rush-offline.mjs';
-import { COLOURS, COLOUR_NAME, LABEL, DRAW, newGame, act as engineAct, call as engineCall, viewFor, playable } from './rush-engine.mjs';
+import { COLOURS, COLOUR_NAME, LABEL, DRAW, newGame, act as engineAct, call as engineCall, playable } from './rush-engine.mjs';
 import { sound } from './sound.mjs';
 import { saveMatch, readHistory, overallRanking, hallOfFame } from './history.mjs';
 import { esc, icon, appShell, pageHead, rankTable, fameTable, enterScreen, leaveScreen } from './ui-kit.mjs';

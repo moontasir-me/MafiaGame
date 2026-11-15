@@ -108,7 +108,7 @@ function seatCard(x, colour, top) {
   const p = x.players[k], turn = k === x.turn && x.winner === null, mine = turn && myTurn(), last = x.last?.by === k ? x.last.roll : null;
   const prompt = mine ? (x.rolled ? 'ঘুঁটি বাছুন' : 'ছক্কা চালুন') : turn ? (p.cpu ? 'ভাবছে…' : online() ? 'চালের অপেক্ষা…' : 'আপনার চাল') : '';
   const done = x.kind === 'ludo' ? `${bn(p.tokens.filter(t => t === HOME).length)}/৪ ঘরে` : `ঘর ${bn(p.tokens[0])}`;
-  return `<div class="seat4 ${colour}${turn ? ' is-turn' : ''}${top && !online() && x.players.filter(q => !q.cpu).length > 1 ? ' flip' : ''}"><div class="seat4-name"><span class="pawn ${colour}"></span><b>${esc(p.name)}</b><small>${done}</small></div>
+  return `<div class="seat4 ${colour}${turn ? ' is-turn' : ''}${top && !online() && !p.cpu && x.players.filter(q => !q.cpu).length > 1 ? ' flip' : ''}"><div class="seat4-name"><span class="pawn ${colour}"></span><b>${esc(p.name)}</b><small>${done}</small></div>
   ${turn ? `<button type="button" class="dice-btn" data-action="roll" ${mine && !x.rolled && !busy ? '' : 'disabled'} aria-label="${esc(p.name)}: ছক্কা চালুন">${diceFace(x.dice || last || 6, rolling ? 'spin' : '')}</button><small class="seat4-prompt">${prompt}</small>`
     : last ? `<span class="seat4-last">${diceFace(last, 'small')}</span>` : ''}</div>`;
 }
