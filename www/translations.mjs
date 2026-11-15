@@ -892,3 +892,5 @@ const datesAndLabels=`
 গল্পের উৎস|Story source
 `;
 UI_PAIRS.push(...datesAndLabels.trim().split('\n').map(line=>line.split('|')));
+
+UI_PAIRS.push(['টং মামার আসর','Tong mama’s corner'],['টংয়ের আড্ডা','The village tea stall']);

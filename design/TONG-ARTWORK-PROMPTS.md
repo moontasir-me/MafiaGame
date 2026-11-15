@@ -1,0 +1,20 @@
+# Tong mama home artwork
+
+Generated with the built-in imagegen tool. The existing Mafia cover at `www/assets/mafia/cover-art.webp` was the style reference for both assets. The original generated PNGs remain in the Codex image library; production WebP files preserve the artwork and sprite alpha.
+
+## Production files
+
+- `www/assets/tong/village-night.webp` — 1672 × 941 cartoon village background.
+- `www/assets/tong/mama-poses.webp` — 1536 × 1024 transparent three-pose strip. Equal 512-pixel-wide frames: greeting, pouring, serving.
+
+## Sprite prompt
+
+Use case: illustration-story. Asset type: transparent animation sprite strip for a Bangladeshi mobile game homepage. Reference image is STYLE REFERENCE ONLY: match its cheerful hand-drawn Bangladeshi cartoon caricatures, bold clean ink outlines, warm painted colours and expressive friendly faces. Create ONE WIDE horizontal transparent sprite sheet with EXACTLY THREE EQUAL-WIDTH PANELS side by side, same character at the same scale and alignment in every panel, all objects contained in their own third. No panel borders or labels, no text, no background. Character: friendly middle-aged Bangladeshi village tong tea-stall uncle, round smiling face, short black-and-grey hair, moustache, simple faded sage short-sleeved shirt and red checked gamcha over shoulder. Waist-up behind a short rustic wooden tea counter, a little clear glass tea cup and aluminium kettle, warm hurricane-lantern illumination. LEFT FRAME: idle greeting, smiling at viewer, holding kettle upright and empty glass on counter. CENTRE FRAME: same uncle pouring amber milk tea from a visibly tilted kettle into the glass on counter, visible narrow tea stream, delighted smile. RIGHT FRAME: same uncle serving, extending one full steaming clear glass of milk tea toward viewer, kettle upright on counter. Each frame must show exactly one uncle, one kettle, one glass. Consistent geometry and costume, no duplicated hands, no cropped heads, no text or logos. Full alpha transparency outside the character and counter in all three panels. Requested wide image 3:2 overall so each panel has a tall 1:2 portrait silhouette, with generous clear padding separating poses.
+
+## Background prompt
+
+Use case: illustration-story. Asset type: wide illustrated background for a Bangladeshi village game website. Reference image is STYLE REFERENCE ONLY, match the same clean bold ink outlines and lovingly painted colourful Bangladeshi cartoon village, NOT photorealistic and NOT Indian iconography. Scene: a peaceful Bangladeshi rural tong tea-stall courtyard during loadshedding at blue hour after sunset. Tin-roof huts, a bamboo tea stall at the far LEFT edge with a warm hanging hurricane lantern, banana plants and coconut palms framing outer edges, a quiet pond and a tiny wooden boat in the far RIGHT background, worn earthen courtyard across bottom foreground. No people anywhere. Deep muted indigo and teal night sky, earthy forest green foliage, warm amber windows and lantern highlights, whimsical inviting hand-drawn cartoon atmosphere. Composition: very wide 16:9 landscape, scenery concentrated on far left and right edges and lower third; central region and upper sky should stay calm, spacious and dark enough for foreground UI cards to remain readable. The environment must be visibly illustrated, not black silhouettes and not a solid gradient. Crisp outlines, expressive illustrated shapes, flat painted shadows, subtle paper texture consistent with the supplied cartoons. No text, no logos, no sign lettering, no borders or UI elements. Keep background detail subordinate to game cards but recognizable as a Bangladeshi village tea courtyard.
+
+## Interaction
+
+Tap or activate mama with Enter/Space. He pours for 2.1 seconds, then offers a glass. Further taps during the pour are ignored. Tap again after serving to repeat. The dialogue follows the app language. Reduced-motion visitors receive the served pose immediately. Pour and cup sounds respect the shared sound preference.

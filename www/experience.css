@@ -209,3 +209,52 @@ body.village-home{
 .language-options button{display:flex;justify-content:space-between;align-items:center;min-height:54px;padding:12px 16px;border:1px solid var(--home-line);border-radius:12px;background:var(--home-control);color:var(--home-ink);font:inherit;cursor:pointer}
 .language-options button[aria-checked=true]{background:var(--home-accent);border-color:var(--home-accent);color:var(--home-on)}
 html[lang=en] .village-home .library-heading h1,html[lang=en] .home-poem{font-family:Poppins,system-ui,sans-serif}
+
+/* A painted village and a welcoming tea-stall host, with the original soft UI. */
+:root[data-light] .village-home .night{background-size:cover;background-position:center bottom;background-repeat:no-repeat}
+.village-home .night{background-image:linear-gradient(180deg,#07121d30,#10180e35),url('assets/tong/village-night.webp');background-size:cover;background-position:center bottom;background-repeat:no-repeat}
+:root[data-light=lamp] .village-home .night{background-image:linear-gradient(180deg,#15120918,#24170b25),url('assets/tong/village-night.webp')}
+.village-home .night:after,.village-home .night :is(.moon,.stars,.village){display:none}
+.village-home .games-header{border-color:#edbc6c50}
+.village-home .home-hero.tong-hero{display:grid;grid-template-columns:minmax(0,1fr) 230px;align-items:center;gap:28px;min-height:300px;padding:18px 46px 0 34px;background:linear-gradient(110deg,#17251bf0,#28251ac9);border:1px solid #d3a85f45;box-shadow:0 12px 32px #0003;overflow:visible}
+.village-home .tong-hero:after{display:none}
+.tong-copy{min-width:0;padding:10px 0 22px;position:relative;z-index:1}
+.tong-eyebrow{display:block;color:#e6bd79;font-size:12px;font-weight:600;letter-spacing:.5px;margin-bottom:16px}
+.tea-question{display:inline-block;position:relative;max-width:100%;margin:0;padding:17px 22px;border:1px solid #e6c995;border-radius:19px;background:#f1dfbb;color:#3a2d18;font-size:clamp(26px,3.2vw,38px);font-weight:600;line-height:1.55;letter-spacing:-.5px;box-shadow:0 7px 22px #0002;overflow-wrap:break-word}
+.tea-question:after{content:'';position:absolute;right:-12px;top:27px;width:22px;height:20px;background:#f1dfbb;clip-path:polygon(0 0,100% 50%,0 100%)}
+.tong-hero .tea-hint{margin:21px 0 0;color:#decba7;font-size:13px;line-height:1.8;max-width:35ch}
+.tea-actor{display:block;align-self:end;width:100%;max-width:230px;padding:0;border:0;border-radius:18px;background:none;cursor:pointer;touch-action:manipulation;position:relative;transition:transform .2s var(--ui-ease);-webkit-tap-highlight-color:transparent}
+.tea-actor:focus-visible{outline:3px solid #edbc6c;outline-offset:5px}
+.tea-actor:disabled{opacity:1;cursor:wait}
+.tea-sprite{position:relative;display:block;width:100%;aspect-ratio:2/3;filter:drop-shadow(0 10px 12px #0004)}
+.tea-pose{position:absolute;inset:0;display:block;overflow:hidden;opacity:0;transition:opacity .16s ease-in-out;pointer-events:none}
+.tea-pose img{position:absolute;top:-24%;left:0;display:block;width:300%;height:auto;max-width:none;user-select:none;-webkit-user-drag:none}
+.tea-pouring img{transform:translateX(-33.333333%)}
+.tea-served img{transform:translateX(-66.666667%)}
+[data-tea=idle] .tea-idle,[data-tea=pouring] .tea-pouring,[data-tea=served] .tea-served{opacity:1}
+.tea-flow{display:block;position:absolute;left:47.5%;top:55%;height:18%;width:4px;border-radius:50%;opacity:0;background:repeating-linear-gradient(180deg,#f8c774 0 8px,#ba6c23 9px 14px);background-size:100% 28px;pointer-events:none}
+[data-tea=pouring] .tea-flow{opacity:.65;animation:tea-flow .3s linear infinite}
+.tea-steam{display:block;position:absolute;left:38%;top:34%;width:10px;height:34px;border-radius:50%;border-left:2px solid #fff4dc;filter:blur(1px);opacity:0;pointer-events:none}
+.tea-steam.steam-two{left:42%;height:28px}
+[data-tea=served] .tea-steam{animation:tea-steam 1.9s ease-out infinite}
+[data-tea=served] .steam-two{animation-delay:.65s}
+[data-tea=served] .tea-sprite{animation:tea-offer .55s var(--ui-ease) both}
+@keyframes tea-flow{to{background-position:0 28px}}
+@keyframes tea-steam{0%{opacity:0;transform:translateY(3px) scaleX(.7)}30%{opacity:.48}100%{opacity:0;transform:translateY(-22px) scaleX(1.2)}}
+@keyframes tea-offer{0%{transform:translateY(6px) scale(.97)}65%{transform:translateY(-4px) scale(1.025)}100%{transform:none}}
+.village-home .hang-lantern{top:88px;right:55px}
+@media(hover:hover) and (pointer:fine){.tea-actor:not(:disabled):hover{transform:translateY(-3px)}.tea-actor:not(:disabled):active{transform:translateY(1px)}}
+@media(max-width:650px){
+ :root[data-light] .village-home .night{background-position:18% bottom}
+ .village-home .home-hero.tong-hero{grid-template-columns:minmax(0,1fr) 140px;gap:10px;min-height:232px;padding:17px 12px 0 17px;margin-top:23px}
+ .tong-copy{padding:7px 0 23px}.tong-eyebrow{font-size:10px;margin-bottom:12px;letter-spacing:0}
+ .tea-question{font-size:21px;line-height:1.6;padding:13px 12px;border-radius:15px;letter-spacing:-.3px}.tea-question:after{right:-10px;top:24px;width:16px;height:17px}
+ .tong-hero .tea-hint{font-size:11px;line-height:1.75;margin-top:15px}.tea-sprite{filter:drop-shadow(0 6px 7px #0003)}
+ .village-home .hang-lantern{top:75px;right:23px;width:33px}.village-home .hang-lantern svg{width:29px}.village-home .hang-string{height:21px}
+ .tea-flow{width:3px}
+}
+@media(max-width:360px){
+ .village-home .home-hero.tong-hero{grid-template-columns:minmax(0,1fr) 114px;gap:8px;padding:15px 9px 0 12px;min-height:220px}
+ .tea-question{font-size:18px;padding:11px 10px}.tong-eyebrow{font-size:9px}.tong-hero .tea-hint{font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){.tea-pose{transition:none}.tea-flow,.tea-steam,.tea-sprite{animation:none!important}.tea-actor{transition:none}}

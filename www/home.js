@@ -1,3 +1,4 @@
+import { bindTeaHost } from './tea-host.mjs';
 import { getLanguage, saveLanguage, t } from './locale.mjs';
 import { readProfile, saveProfile, photoFromFile } from './profile.mjs';
 import { soundEnabled, toggleSound, sound } from './sound.mjs';
@@ -73,3 +74,6 @@ function openLanguage() {
   document.querySelector(`[data-language="${getLanguage()}"]`).focus();
 }
 menu.querySelector('[data-menu=language]').onclick=()=>{showMenu(false);openLanguage();};
+
+// Mama greets, pours, then offers a fresh glass.
+bindTeaHost(document.querySelector('.tong-hero'),{sound});
