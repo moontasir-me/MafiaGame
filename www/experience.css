@@ -122,14 +122,13 @@ body.village-home{
 .library-heading span{font-size:11px;color:var(--home-muted)}
 :root[data-light] .village-home .game-tiles{margin:0;gap:20px!important;padding:0;background:none;border:0;border-radius:0;box-shadow:none;filter:none!important}
 .village-home .game-tile{position:relative;display:flex;flex-direction:column;min-width:0;border-radius:21px;border:1px solid var(--home-line)!important;background:linear-gradient(155deg,var(--home-wash),var(--home-paper) 65%)!important;box-shadow:0 6px 18px #00000025,inset 0 1px 0 #ffe5ad08;transition:transform .25s var(--ui-ease),box-shadow .25s,border-color .25s;animation:none;color:var(--home-ink)!important}
-.village-home .game-tile :is(h2,.tile-top){color:var(--home-ink)!important}
-.village-home .game-tile .tile-top{position:absolute;right:16px;bottom:17px;padding:0!important;z-index:1}
-.village-home .tile-top>span:first-child{display:none}
-.village-home .game-tile .tile-arrow{width:29px!important;height:29px!important;border:1px solid var(--home-line)!important;border-radius:50%;background:var(--home-control)!important;color:var(--home-accent)!important;font-size:18px!important;transition:background .2s,color .2s,transform .2s}
+.village-home .game-tile h2{color:var(--home-ink)!important}
 .village-home .game-tile .tile-art{position:relative;display:block;margin:8px 8px 0;padding:0;height:auto;aspect-ratio:3/2;border-radius:14px;background:var(--home-control);box-shadow:none;overflow:hidden;isolation:isolate}
 .village-home .game-tile .tile-art img{display:block;width:100%;height:auto;max-width:100%;aspect-ratio:3/2;object-fit:contain!important;border-radius:14px;transition:transform .45s var(--ui-ease)}
-.village-home .tile-copy{padding:15px 52px 18px 17px!important;min-height:65px;display:flex;flex-direction:column;justify-content:center;flex:1}
+.village-home .tile-copy{padding:15px 17px 16px!important;min-height:99px;display:flex;flex-direction:column;justify-content:space-between;flex:1}
 .village-home .tile-copy h2{font-size:clamp(17px,1.6vw,21px)!important;font-weight:600;line-height:1.45;letter-spacing:-.3px!important;margin:0}
+.village-home .tile-players{display:inline-flex;align-items:center;align-self:flex-end;gap:6px;margin-top:12px;padding:4px 9px;border:1px solid var(--home-line);border-radius:8px;background:var(--home-control);color:var(--home-accent);font-size:12px;line-height:1.5;white-space:nowrap}
+.village-home .tile-players svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 .village-home .game-tile.is-off{opacity:.55;filter:grayscale(.35);box-shadow:none}
 .village-home .tile-badge{align-self:flex-start;border-radius:6px;background:var(--home-control);color:var(--home-ink);font-size:10px;font-weight:400;padding:2px 7px;margin-top:8px}
 .village-home .tile-badge:empty{display:none}
@@ -149,10 +148,9 @@ body.village-home{
  .library-heading{margin-bottom:13px}.library-heading h1{font-size:19px}.library-heading span{font-size:10px}
  :root[data-light] .village-home .game-tiles{gap:13px!important}
  .village-home .game-tile{border-radius:17px}.village-home .game-tile .tile-art{margin:6px 6px 0;border-radius:11px}.village-home .game-tile .tile-art img{border-radius:11px}
- .village-home .game-tile .tile-top{right:11px;bottom:14px}.village-home .game-tile .tile-arrow{width:24px!important;height:24px!important;font-size:15px!important}
- .village-home .tile-copy{padding:12px 40px 15px 12px!important;min-height:62px}.village-home .tile-copy h2{font-size:16px!important}
+ .village-home .tile-copy{padding:12px!important;min-height:91px}.village-home .tile-copy h2{font-size:16px!important}
 }
-@media(max-width:360px){.village-home .games-brand{font-size:24px}.village-home .profile-pill span#profile-label{max-width:65px}:root[data-light] .village-home .home-poem{font-size:13px!important}.village-home .home-hero{padding-left:16px;padding-right:61px}.village-home .hang-lantern{right:30px}:root[data-light] .village-home .game-tiles{gap:10px!important}.village-home .tile-copy h2{font-size:14px!important}.village-home .tile-copy{padding-right:33px!important}.village-home .game-tile .tile-top{right:8px}.village-home .game-tile .tile-arrow{width:21px!important;height:21px!important}}
+@media(max-width:360px){.village-home .games-brand{font-size:24px}.village-home .profile-pill span#profile-label{max-width:65px}:root[data-light] .village-home .home-poem{font-size:13px!important}.village-home .home-hero{padding-left:16px;padding-right:61px}.village-home .hang-lantern{right:30px}:root[data-light] .village-home .game-tiles{gap:10px!important}.village-home .tile-copy h2{font-size:14px!important}}
 
 /* Motion stays on the surrounding UI, never on aiming surfaces or hit targets. */
 @keyframes ui-arrive{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
@@ -164,7 +162,6 @@ body.village-home{
  .btn:hover:not(:disabled){filter:brightness(1.035)}
  .village-home .game-tile:not(.is-off):hover{transform:translateY(-3px);box-shadow:0 12px 28px #00000045;border-color:var(--home-accent)!important}
  .village-home .game-tile:not(.is-off):hover .tile-art img{transform:scale(1.018)}
- .village-home .game-tile:not(.is-off):hover .tile-arrow{background:var(--home-accent)!important;color:var(--home-on)!important;transform:translate(1px,-1px)}
 }
 @media(min-width:900px){.kit-shell{grid-template-columns:224px minmax(0,1fr)}.kit-side{padding:34px 14px}.kit-main>.content{padding:36px 36px 42px;max-width:960px}.kit-top{padding:15px 30px}.kit-brand{margin-bottom:38px}.kit-main>.content.home-content{max-width:1120px}}
 @media(max-width:650px){

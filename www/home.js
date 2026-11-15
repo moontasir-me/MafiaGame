@@ -36,6 +36,8 @@ function paintPlay() {
     const ok = on ? !!a.dataset.online : !a.dataset.onlyOnline;
     a.classList.toggle('is-off', !ok); a.toggleAttribute('aria-disabled', !ok); a.tabIndex = ok ? 0 : -1;
     if (a.dataset.offline) a.href = on ? a.dataset.online : a.dataset.offline;
+    const count = a.querySelector('.tile-players');
+    if (count) { const label = on && count.dataset.countOnline ? count.dataset.countOnline : count.dataset.countOffline; count.querySelector('span').textContent = label; count.title = on && count.dataset.countOnline ? (a.classList.contains('mafia-tile') ? label + ' খেলোয়াড়, সঙ্গে ১ জন হোস্ট' : label + ' খেলোয়াড়') : count.dataset.countHint; }
     a.querySelector('.tile-badge')?.remove();
     if (on) a.querySelector('.tile-copy').insertAdjacentHTML('beforeend', `<span class="tile-badge">${ok ? 'অনলাইন' : 'শুধু অফলাইনে'}</span>`);
     else if (a.dataset.onlyOnline) a.querySelector('.tile-copy').insertAdjacentHTML('beforeend', '<span class="tile-badge">শুধু অনলাইনে</span>');
