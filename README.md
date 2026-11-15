@@ -67,3 +67,9 @@ All pages are plain ES modules in `www/`; game rules live in their own testable 
 ## Mafia notes
 
 The host runs the game and holds no role. Points: Mafia win — Mafia 3, Betrayer 2; village win — Doctor and Police 2, other villagers 1; host 1 per finished game. Before a village win the Mafia get one shared guess at the Police. Worlds: Polashi, Sicily and Classic, each with its own cast. See [literary and historical sources](design/LITERARY-SOURCES.md).
+
+## Mixed offline tables and consecutive Spy cases
+
+Ludo (including Snake Ludo) and Dots & Boxes now let you choose human and computer counts together, within four total seats. Name every human; computer difficulty remains configurable. Pen Fight’s computer mode allows up to three people alongside its computer, preserving each person’s pen and account. Colour Rush supports 2–4 total human/computer seats, including an all-human table. Human cards stay out of the page between turns and while computers play; a named handoff screen opens the next hand only after confirmation. Completed games record every human’s ranking points.
+
+When a Spy is caught by a confirmed vote, the case ends and points are recorded once. The result stays visible for five seconds, then a fresh word and new roles are dealt, starting the phone order from the caught Spy. “ফল দেখে থাকুন” pauses automatic progression for reading scores. Automatic progression also pauses in background tabs, menus and other sections. Existing match scores continue across cases; the match can still be finished and saved manually.

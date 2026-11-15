@@ -21,5 +21,5 @@ export function nextCaughtSpyCase(s,options){
  check(caughtSpyCase(s),'PHASE');
  if(s.set&&!s.set.games.includes(s.gameId)){s.set.games.push(s.gameId);}
  if(s.set&&s.set.games.length>=s.set.total)s.set.total=s.set.games.length+1;
- resetSpy(s);return dealSpy(s,options);
+ const previousWord=s.word;resetSpy(s);dealSpy(s,options);if(s.word===previousWord){const words=s.pool==='extended'?SPY_WORDS:SPY_COMMON;s.word=words[(words.indexOf(s.word)+1)%words.length];}return s;
 }

@@ -102,7 +102,7 @@ function over(g) {
   ${!online ? button('Deal again', 'again', 'primary wide', 'play') + button('Back to start', 'leave', 'secondary wide', 'home') : online.host ? button('Deal again', 'again', 'primary wide', 'play') + button('Leave room', 'leave', 'secondary wide', 'close') : '<p class="ol-note">The host can deal again.</p>' + button('Leave room', 'leave', 'secondary wide', 'close')}</section>`;
 }
 function rules() {
-  return `${pageHead('Rules', 'Colour Rush', 'Every player uses their own phone. 2 to 20 players.')}<ol class="plain-rules">
+  return `${pageHead('Rules', 'Colour Rush', ONLINE?'Every player uses their own phone. 2 to 20 players.':'2–4 people and computers. Pass one phone between human turns; each hand opens only when its owner is ready.')}<ol class="plain-rules">
   <li>Everyone gets 7 cards. On your turn, play a card that matches the colour or the symbol of the top card. Wild cards go on anything; you pick the next colour.</li>
   <li><b>Skip</b> skips the next player, <b>Reverse</b> turns the direction (with two players it acts as Skip), <b>+2</b> and <b>Wild +4</b> make the next player draw.</li>
   <li>Can't play? Draw. If the drawn card fits, you may play it, or keep it and pass.</li>
