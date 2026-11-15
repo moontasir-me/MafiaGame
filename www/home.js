@@ -1,7 +1,7 @@
 import { bindTeaHost } from './tea-host.mjs';
 import { getLanguage, saveLanguage, t } from './locale.mjs';
 import { readProfile, saveProfile, photoFromFile } from './profile.mjs';
-import { soundEnabled, toggleSound, sound } from './sound.mjs';
+import { soundEnabled, toggleSound, sound, unlockSound } from './sound.mjs';
 const $ = q => document.querySelector(q);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
@@ -76,4 +76,4 @@ function openLanguage() {
 menu.querySelector('[data-menu=language]').onclick=()=>{showMenu(false);openLanguage();};
 
 // Mama greets, pours, then offers a fresh glass.
-bindTeaHost(document.querySelector('.tong-hero'),{sound});
+bindTeaHost(document.querySelector('.tong-hero'),{sound:kind=>{unlockSound();sound(kind);}});
