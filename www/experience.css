@@ -212,9 +212,13 @@ html[lang=en] .village-home .library-heading h1,html[lang=en] .home-poem{font-fa
 
 /* A painted village and a welcoming tea-stall host, with the original soft UI. */
 :root[data-light] .village-home .night{background-size:cover;background-position:center bottom;background-repeat:no-repeat}
-.village-home .night{background-image:linear-gradient(180deg,#07121d30,#10180e35),url('assets/tong/village-night.webp');background-size:cover;background-position:center bottom;background-repeat:no-repeat}
-:root[data-light=lamp] .village-home .night{background-image:linear-gradient(180deg,#15120918,#24170b25),url('assets/tong/village-night.webp')}
-.village-home .night:after,.village-home .night :is(.moon,.stars,.village){display:none}
+:root[data-light] .village-home .night{background-image:url('assets/tong/village-night.webp')}
+/* Shade the scenery behind the UI; artwork and controls keep their full contrast. */
+.village-home .night:before{content:'';position:absolute;inset:0;background:#000;opacity:.82;pointer-events:none;transition:opacity .65s ease}
+:root[data-light=lamp] .village-home .night:before{opacity:.58}
+.village-home .night:after{content:'';display:block;position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 82% 14%,#edb25940 0,#d58b2b12 32%,transparent 67%);opacity:0;transition:opacity .65s ease}
+:root[data-light=lamp] .village-home .night:after{opacity:1}
+.village-home .night :is(.moon,.stars,.village){display:none}
 .village-home .games-header{border-color:#edbc6c50}
 .village-home .home-hero.tong-hero{display:grid;grid-template-columns:minmax(0,1fr) 230px;align-items:center;gap:28px;min-height:300px;padding:18px 46px 0 34px;background:linear-gradient(110deg,#17251bf0,#28251ac9);border:1px solid #d3a85f45;box-shadow:0 12px 32px #0003;overflow:visible}
 .village-home .tong-hero:after{display:none}
@@ -265,3 +269,6 @@ html[lang=en] .village-home .library-heading h1,html[lang=en] .home-poem{font-fa
 .village-home .home-actions{flex-shrink:0}
 @media(max-width:650px){.village-home .games-brand{font-size:22px;gap:3px}.village-home .games-brand .brand-label{max-width:220px}.village-home .brand-dot{display:none}}
 @media(max-width:360px){.village-home .games-brand{font-size:19px}.village-home .games-brand .brand-label{max-width:180px}}
+
+:root[data-light=lamp] .village-home .home-hero.tong-hero{box-shadow:0 12px 32px #0003,0 0 42px #e3a33a18;border-color:#d3a85f70}
+@media(prefers-reduced-motion:reduce){.village-home .night:before,.village-home .night:after{transition:none}}
