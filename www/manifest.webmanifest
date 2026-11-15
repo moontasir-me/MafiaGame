@@ -4,8 +4,8 @@
   "lang": "bn",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#7d1b17",
-  "theme_color": "#7d1b17",
+  "background_color": "#edf1e7",
+  "theme_color": "#edf1e7",
   "orientation": "portrait",
   "icons": [
     {
