@@ -90,14 +90,8 @@ body.village-home{
  --ui-ivory:var(--home-ink);--ui-brass:var(--home-accent);--ui-fade:var(--home-muted);
  color:var(--home-ink);background:var(--home-bg);isolation:isolate;
 }
-.village-home .night:after{content:'';position:absolute;inset:0;pointer-events:none;background:url('assets/ui/paper.svg');opacity:.16}
 :root[data-light=lamp] body.village-home{--home-ink:#f6e7c8;--home-muted:#c3b294;--home-line:#594832;--home-paper:#30291f;--home-accent:#edbc6c;--home-wash:#48351f;--home-control:#453724;--home-bg:radial-gradient(ellipse at 80% 5%,#b77a2338,transparent 48%),radial-gradient(ellipse at 5% 65%,#42473130,transparent 55%),linear-gradient(165deg,#17140f,#262217 60%,#191d16)}
 .village-home .night{display:block;background:var(--home-bg)}
-.village-home .moon{width:54px;opacity:.35;box-shadow:0 0 60px #c4d9e91c}
-:root[data-light=lamp] .village-home .moon{opacity:.08}
-.village-home .stars{opacity:.45}
-:root[data-light=lamp] .village-home .stars{opacity:.16}
-.village-home .village{height:20vh;opacity:.55}
 .village-home .games-shell{max-width:1216px;padding:calc(26px + env(safe-area-inset-top)) 40px 24px}
 .village-home .games-header{padding:0 0 20px;border-color:var(--home-line);gap:16px}
 .village-home .games-brand{font-size:30px;font-weight:600;letter-spacing:-.8px;color:var(--home-ink);text-shadow:none!important;white-space:nowrap}
@@ -106,9 +100,8 @@ body.village-home{
 .village-home .profile-face{background:var(--home-control);color:var(--home-accent);width:31px;height:31px;font-size:13px;border:1px solid var(--home-line)}
 .village-home .profile-pill span#profile-label{font-size:13px;max-width:160px}
 .village-home .home-pill svg{stroke:var(--home-accent)}
-.village-home .home-hero{position:relative;isolation:isolate;display:block;margin:25px 0 20px;padding:26px 170px 26px 28px;min-height:176px;border:1px solid var(--home-line);border-radius:22px;background:radial-gradient(ellipse at 95% 20%,#e9af4520,transparent 65%),linear-gradient(120deg,var(--home-wash),var(--home-paper));box-shadow:inset 0 1px 0 #ffe5ad0a,0 12px 32px #00000018;overflow:hidden}
-.village-home .home-hero:after{content:'';position:absolute;inset:0;background:url('assets/ui/weave.svg');opacity:.08;z-index:-1;pointer-events:none}
-:root[data-light] .village-home .home-poem{font-size:17px!important;line-height:1.9!important;color:var(--home-ink)!important;text-shadow:none;letter-spacing:.1px}
+.village-home .home-hero{position:relative;isolation:isolate;margin:25px 0 20px;border-radius:22px}
+
 .village-home .hang-lantern{top:85px;right:80px;left:auto;width:60px;z-index:4}
 .village-home .hang-string{height:30px;background:linear-gradient(#86735020,#a58a5d)}
 .village-home .hang-lantern svg{width:52px}
@@ -119,14 +112,14 @@ body.village-home{
 .village-home .play-switch button.is-on small{color:var(--home-on)}
 .library-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 16px}
 .library-heading h1{font:600 20px/1.5 'Li Ador Noirrit','Noto Sans Bengali',Poppins,sans-serif;margin:0;color:var(--home-ink);letter-spacing:0}
-.library-heading span{font-size:11px;color:var(--home-muted)}
+
 :root[data-light] .village-home .game-tiles{margin:0;gap:20px!important;padding:0;background:none;border:0;border-radius:0;box-shadow:none;filter:none!important}
-.village-home .game-tile{--tile-surface:var(--home-paper);--tile-ink:var(--home-ink);--tile-line:var(--home-line);--tile-detail:var(--home-accent);--tile-chip:var(--home-control);position:relative;display:flex;flex-direction:column;min-width:0;border-radius:21px;border:1px solid var(--tile-line)!important;background:linear-gradient(155deg,#ffffff06,#00000008),var(--tile-surface)!important;box-shadow:0 6px 18px #00000025,inset 0 1px 0 #ffe5ad08;transition:transform .25s var(--ui-ease),box-shadow .25s,border-color .25s,background-color .25s,color .25s;animation:none;color:var(--tile-ink)!important}
+.village-home .game-tile{--tile-surface:#584538;--tile-ink:var(--home-ink);--tile-line:#8b7055;--tile-detail:var(--home-accent);--tile-chip:var(--home-control);position:relative;display:flex;flex-direction:column;min-width:0;border-radius:16px;border:2px solid var(--tile-line)!important;background:repeating-linear-gradient(2deg,#24170b00 0 4px,#24170b18 5px 6px),linear-gradient(135deg,#ffffff0c,#00000014),var(--tile-surface)!important;box-shadow:0 6px 18px #00000025,inset 0 1px 0 #ffe5ad08;transition:transform .25s var(--ui-ease),box-shadow .25s,border-color .25s,background-color .25s,color .25s;animation:none;color:var(--tile-ink)!important}
 /* Outrank legacy per-game title colours, including their important declarations. */
 .village-home .game-tile .tile-copy h2{color:var(--tile-ink)!important;transition:color .25s}
-.village-home .game-tile .tile-art{position:relative;display:block;margin:8px 8px 0;padding:0;height:auto;aspect-ratio:3/2;border-radius:14px;background:var(--home-control);box-shadow:none;overflow:hidden;isolation:isolate}
-.village-home .game-tile .tile-art img{display:block;width:100%;height:auto;max-width:100%;aspect-ratio:3/2;object-fit:contain!important;border-radius:14px;transition:transform .45s var(--ui-ease)}
-.village-home .tile-copy{padding:15px 17px 16px!important;min-height:99px;display:flex;flex-direction:column;justify-content:space-between;flex:1}
+.village-home .game-tile .tile-art{position:relative;display:block;margin:0;padding:0;height:auto;aspect-ratio:3/2;border:7px solid #171b1c;border-radius:15px;background:#111719;box-shadow:0 0 0 1px #8a8b7866,inset 0 0 8px #000a,0 2px 3px #0004;overflow:hidden;isolation:isolate}
+.village-home .game-tile .tile-art img{display:block;width:100%;height:100%;max-width:100%;aspect-ratio:3/2;object-fit:contain!important;border-radius:8px;transition:transform .45s var(--ui-ease)}
+.village-home .tile-copy{padding:15px!important;min-height:100px;display:flex;flex-direction:column;justify-content:space-between;flex:1}
 .village-home .tile-copy h2{font-size:clamp(17px,1.6vw,21px)!important;font-weight:600;line-height:1.45;letter-spacing:-.3px!important;margin:0}
 .village-home .tile-players{display:inline-flex;align-items:center;align-self:flex-end;gap:6px;margin-top:12px;padding:4px 9px;border:1px solid var(--tile-line);border-radius:8px;background:var(--tile-chip);color:var(--tile-detail);font-size:12px;line-height:1.5;white-space:nowrap;transition:background-color .25s,color .25s,border-color .25s}
 .village-home .tile-players svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
@@ -142,16 +135,16 @@ body.village-home{
  .village-home .games-shell{padding:calc(18px + env(safe-area-inset-top)) 18px 22px}
  .village-home .games-header{padding:0 0 16px;gap:12px}.village-home .games-brand{font-size:27px}
  .village-home .profile-pill span#profile-label{max-width:95px;font-size:12px}.village-home .profile-pill{padding-right:9px;gap:6px}
- .village-home .home-hero{margin:20px 0;padding:22px 78px 22px 20px;min-height:166px;border-radius:19px}
- :root[data-light] .village-home .home-poem{font-size:14px!important;line-height:1.95!important}
+ .village-home .home-hero{margin:20px 0;border-radius:19px}
+
  .village-home .hang-lantern{top:77px;right:40px;width:43px}.village-home .hang-string{height:29px}.village-home .hang-lantern svg{width:39px}
  .village-home .play-switch{margin-bottom:25px}.village-home .play-switch button{min-height:52px}.village-home .play-switch b{font-size:14px}.village-home .play-switch small{font-size:10px}
- .library-heading{margin-bottom:13px}.library-heading h1{font-size:19px}.library-heading span{font-size:10px}
+ .library-heading{margin-bottom:13px}.library-heading h1{font-size:19px}
  :root[data-light] .village-home .game-tiles{gap:13px!important}
- .village-home .game-tile{border-radius:17px}.village-home .game-tile .tile-art{margin:6px 6px 0;border-radius:11px}.village-home .game-tile .tile-art img{border-radius:11px}
- .village-home .tile-copy{padding:12px!important;min-height:91px}.village-home .tile-copy h2{font-size:16px!important}
+ .village-home .game-tile{border-radius:13px}.village-home .game-tile .tile-art{border-width:6px;border-radius:12px}.village-home .game-tile .tile-art img{border-radius:6px}
+ .village-home .tile-copy{padding:11px!important;min-height:92px}.village-home .tile-copy h2{font-size:16px!important}
 }
-@media(max-width:360px){.village-home .games-brand{font-size:24px}.village-home .profile-pill span#profile-label{max-width:65px}:root[data-light] .village-home .home-poem{font-size:13px!important}.village-home .home-hero{padding-left:16px;padding-right:61px}.village-home .hang-lantern{right:30px}:root[data-light] .village-home .game-tiles{gap:10px!important}.village-home .tile-copy h2{font-size:14px!important}}
+@media(max-width:360px){.village-home .games-brand{font-size:24px}.village-home .profile-pill span#profile-label{max-width:65px}.village-home .hang-lantern{right:30px}:root[data-light] .village-home .game-tiles{gap:10px!important}.village-home .tile-copy h2{font-size:14px!important}}
 
 /* Keyboard and touch feedback use the same inverse surface as pointer hover. */
 .village-home .game-tile:not(.is-off):is(:focus-visible,:active){--tile-surface:#f3dcb0;--tile-ink:#2b2114;--tile-line:#be9455;--tile-detail:#59401c;--tile-chip:#e4c58c;}
@@ -208,7 +201,7 @@ body.village-home{
 .language-options{display:grid;gap:10px}
 .language-options button{display:flex;justify-content:space-between;align-items:center;min-height:54px;padding:12px 16px;border:1px solid var(--home-line);border-radius:12px;background:var(--home-control);color:var(--home-ink);font:inherit;cursor:pointer}
 .language-options button[aria-checked=true]{background:var(--home-accent);border-color:var(--home-accent);color:var(--home-on)}
-html[lang=en] .village-home .library-heading h1,html[lang=en] .home-poem{font-family:Poppins,system-ui,sans-serif}
+html[lang=en] .village-home .library-heading h1{font-family:Poppins,system-ui,sans-serif}
 
 /* A painted village and a welcoming tea-stall host, with the original soft UI. */
 :root[data-light] .village-home .night{background-size:cover;background-position:center bottom;background-repeat:no-repeat}
@@ -218,10 +211,10 @@ html[lang=en] .village-home .library-heading h1,html[lang=en] .home-poem{font-fa
 :root[data-light=lamp] .village-home .night:before{opacity:.58}
 .village-home .night:after{content:'';display:block;position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 82% 14%,#edb25940 0,#d58b2b12 32%,transparent 67%);opacity:0;transition:opacity .65s ease}
 :root[data-light=lamp] .village-home .night:after{opacity:1}
-.village-home .night :is(.moon,.stars,.village){display:none}
+
 .village-home .games-header{border-color:#edbc6c50}
 .village-home .home-hero.tong-hero{display:grid;grid-template-columns:minmax(0,1fr) 230px;align-items:center;gap:28px;min-height:300px;padding:18px 46px 0 34px;background:linear-gradient(110deg,#17251bf0,#28251ac9);border:1px solid #d3a85f45;box-shadow:0 12px 32px #0003;overflow:visible}
-.village-home .tong-hero:after{display:none}
+
 .tong-copy{min-width:0;padding:10px 0 22px;position:relative;z-index:1}
 
 .tea-question{display:inline-block;position:relative;max-width:100%;margin:0;padding:17px 22px;border:1px solid #e6c995;border-radius:19px;background:#f1dfbb;color:#3a2d18;font-size:clamp(26px,3.2vw,38px);font-weight:600;line-height:1.55;letter-spacing:-.5px;box-shadow:0 7px 22px #0002;overflow-wrap:break-word}
@@ -272,3 +265,26 @@ html[lang=en] .village-home .library-heading h1,html[lang=en] .home-poem{font-fa
 
 :root[data-light=lamp] .village-home .home-hero.tong-hero{box-shadow:0 12px 32px #0003,0 0 42px #e3a33a18;border-color:#d3a85f70}
 @media(prefers-reduced-motion:reduce){.village-home .night:before,.village-home .night:after{transition:none}}
+
+/* Vintage TV cases: picture glass, tuning dials, speaker vents and short feet. */
+.village-home .game-tile{overflow:visible;margin-bottom:7px}
+.village-home .game-tile:before,.village-home .game-tile:after{content:'';position:absolute;top:100%;width:19px;height:7px;background:#211b16;border-radius:0 0 4px 4px;box-shadow:0 2px 2px #0005;pointer-events:none}
+.village-home .game-tile:before{left:19px}.village-home .game-tile:after{right:19px}
+.tv-face{display:grid;grid-template-columns:minmax(0,1fr) 25px;gap:11px;padding:13px 12px 0;align-items:stretch}
+.village-home .game-tile .tile-art:after{content:'';position:absolute;inset:0;pointer-events:none;border-radius:8px;box-shadow:inset 0 0 10px #0003;background:linear-gradient(135deg,#ffffff0c,transparent 38%)}
+.tv-controls{display:flex;flex-direction:column;align-items:center;gap:10px;padding-top:5px;position:relative;pointer-events:none}
+.tv-dial{display:block;position:relative;width:24px;height:24px;flex-shrink:0;border-radius:50%;border:2px solid #292925;background:radial-gradient(circle at 35% 30%,#b6b09d,#777567 55%,#44483f);box-shadow:0 1px 0 #cfc2a966,0 2px 3px #0008}
+.tv-dial:after{content:'';position:absolute;top:2px;bottom:2px;left:8px;width:3px;background:#30362f;border-radius:2px;transform:rotate(-28deg)}
+.tv-dial:nth-child(2):after{transform:rotate(35deg)}
+.tv-speaker{display:block;width:20px;min-height:24px;flex:1;border-radius:4px;background:repeating-linear-gradient(180deg,#181c18 0 2px,transparent 2px 5px);opacity:.8}
+.tv-controls:after{content:'';width:4px;height:4px;border-radius:50%;background:#acbf80;box-shadow:0 0 5px #bcda7270}
+
+.village-home .tile-players{border-color:#92734e;background:color-mix(in srgb,var(--tile-chip) 80%,#1e1b15);box-shadow:inset 0 1px 3px #0003}
+@media(hover:hover) and (pointer:fine){.village-home .game-tile:not(.is-off):hover .tile-art img{transform:none}.village-home .game-tile:not(.is-off):hover .tile-art{box-shadow:0 0 0 1px #b8b98d88,0 0 12px #ecc78028}}
+@media(max-width:900px){
+ .tv-face{grid-template-columns:minmax(0,1fr);gap:7px;padding:9px 9px 0}
+ .tv-controls{flex-direction:row;gap:8px;padding:0;min-height:15px;justify-content:flex-end}
+ .tv-dial{width:15px;height:15px;border-width:1px}.tv-dial:after{left:5px;top:1px;bottom:1px;width:2px}
+ .tv-speaker{order:-1;flex:1;min-height:12px;max-width:65%;width:auto;background:repeating-linear-gradient(90deg,#171c18 0 2px,transparent 2px 5px)}
+
+}
