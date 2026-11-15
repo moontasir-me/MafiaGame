@@ -57,3 +57,7 @@ Use case: illustration-story. One premium landscape 3:2 game cover. Unmistakably
 ### poet
 
 Use case: illustration-story. Create ONE square premium 2D Bangladeshi cartoon character portrait for a folk riddle game, Kalidash as a wise funny elder storyteller. Bold clean dark outlines, exaggerated expressive smiling face, rounded forms, crisp cel shading, subtle printed-paper grain, elegant teal green mustard coral cream palette. Male elder with wavy silver hair, grey moustache and knowing raised eyebrow, ordinary off-white panjabi, green checked lungi and red-white checked gamcha over shoulder, palm-leaf manuscript and reed stylus in hands. Upper body prominent with full hair and hands inside frame, seated in Bangladesh tin-roof village courtyard with banana leaves, bamboo stool, shital pati and hurricane lantern. Friendly witty local adda personality. No religious forehead mark, saffron robe, topknot, jewelry, palace, ornate Indian dress, temple, 3D, realism or painterly rendering. No text, watermark, logo or border.
+
+## Production cleanup
+
+Duplicate legacy SVG cover wrappers and the obsolete vector-cover generator have been removed. The active `cover-art.webp` and `cover-tile.webp` files remain the production sources. Saved result-image URLs are upgraded by `www/asset-urls.mjs`.
