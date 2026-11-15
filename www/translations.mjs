@@ -867,3 +867,28 @@ const finishing = `
 লাইসেন্স) থেকে, যা বাংলা ধাঁধার বই থেকে সংকলিত; বাকিগুলো বিভিন্ন বাংলা ধাঁধার ওয়েবপাতা থেকে বাছাই করা প্রচলিত ধাঁধা।|licence), compiled from Bengali riddle books, alongside traditional riddles from Bengali websites. English mode uses its own collection of English riddles.
 `;
 UI_PAIRS.push(...finishing.trim().split('\n').map(line=>line.split('|')));
+const datesAndLabels=`
+জানুয়ারি|January
+ফেব্রুয়ারি|February
+মার্চ|March
+এপ্রিল|April
+মে|May
+জুন|June
+জুলাই|July
+আগস্ট|August
+সেপ্টেম্বর|September
+অক্টোবর|October
+নভেম্বর|November
+ডিসেম্বর|December
+রবিবার|Sunday
+সোমবার|Monday
+মঙ্গলবার|Tuesday
+বুধবার|Wednesday
+বৃহস্পতিবার|Thursday
+শুক্রবার|Friday
+শনিবার|Saturday
+উৎস|Source
+ছোট ধাঁধা|Short riddles
+গল্পের উৎস|Story source
+`;
+UI_PAIRS.push(...datesAndLabels.trim().split('\n').map(line=>line.split('|')));

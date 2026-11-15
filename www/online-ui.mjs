@@ -1,3 +1,4 @@
+import { translateText } from './localization.mjs';
 /* The one online entry used by every শীতলপাটি game: your profile name, "open a room", or type a code in OTP-style boxes. */
 import { readProfile, saveProfile } from './profile.mjs';
 
@@ -66,7 +67,7 @@ export function bindLobby(root, { code, game, onStart, onLeave }) {
   root.querySelector('[data-ol=leave]')?.addEventListener('click', onLeave);
   root.querySelector('[data-ol=share]')?.addEventListener('click', async () => {
     const text = `শীতলপাটিতে ${game} খেলি! কোড: ${code}`;
-    try { if (navigator.share) await navigator.share({ text, url: location.href.split('?')[0] + '?online=1' }); else { await navigator.clipboard.writeText(text); } } catch { }
+    try { if (navigator.share) await navigator.share({ text:translateText(text), url: location.href.split('?')[0] + '?online=1' }); else { await navigator.clipboard.writeText(translateText(text)); } } catch { }
   });
 }
 

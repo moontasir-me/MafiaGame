@@ -1,4 +1,4 @@
-import { number as localeNumber } from './locale.mjs';
+import { number as localeNumber, t } from './locale.mjs';
 import { readHistory, overallRanking, hallOfFame, clearHistory, GAMES } from './history.mjs';
 import { readAccounts, ensureAccount, deleteAccount } from './accounts.mjs';
 import { esc, icon, appShell, pageHead, rankTable, fameTable, playerDot, enterScreen } from './ui-kit.mjs';
@@ -49,13 +49,13 @@ function render(animate = true) {
   });
   $('#acc-form')?.addEventListener('submit', e => {
     e.preventDefault(); const v = $('#acc-name').value;
-    try { ensureAccount(v); render(false); $('#acc-name').focus(); } catch (err) { alert(err.message === 'FULL' ? 'এই ফোনে আর অ্যাকাউন্ট খোলা যাবে না।' : 'একটা নাম দিন।'); }
+    try { ensureAccount(v); render(false); $('#acc-name').focus(); } catch (err) { alert(err.message === 'FULL' ? t('এই ফোনে আর অ্যাকাউন্ট খোলা যাবে না।','This phone has reached its account limit.') : t('একটা নাম দিন।','Enter a name.')); }
   });
   document.querySelectorAll('[data-delete]').forEach(el => el.onclick = () => {
     const a = readAccounts().find(x => x.id === el.dataset.delete);
-    if (a && confirm(`${a.name} অ্যাকাউন্ট মুছবেন? কয়েন, কেনা জিনিস আর র‍্যাঙ্কিংয়ের সব পয়েন্ট মুছে যাবে।`)) { deleteAccount(a.id); render(false); }
+    if (a && confirm(`${a.name}: ${t('অ্যাকাউন্ট মুছবেন? কয়েন, কেনা জিনিস আর র‍্যাঙ্কিংয়ের সব পয়েন্ট মুছে যাবে।','Delete this account? Coins, purchases and all ranking points will be removed.')}`)) { deleteAccount(a.id); render(false); }
   });
-  $('#clear')?.addEventListener('click', () => { if (confirm('ইতিহাস মুছবেন? এটা ফেরত আনা যাবে না।')) { clearHistory(filter); render(); } });
+  $('#clear')?.addEventListener('click', () => { if (confirm(t('ইতিহাস মুছবেন? এটা ফেরত আনা যাবে না।','Clear history? This cannot be undone.'))) { clearHistory(filter); render(); } });
   if (animate) enterScreen($('#screen'));
   if (animate && location.hash === '#accounts') $('#accounts')?.scrollIntoView();
 }
