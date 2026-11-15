@@ -59,6 +59,9 @@ function table() {
   const ring = g.players.map((p, i) => `<li class="rs-seat${i === g.turn && g.winner === null ? ' is-turn' : ''}${p.out ? ' is-out' : ''}${i === my ? ' is-me' : ''}"><span class="ol-face">${esc(p.name.charAt(0))}</span><b>${esc(i === my ? 'You' : p.name)}</b><span class="rs-count" aria-label="${p.count} cards">${p.out ? 'out' : p.count}</span></li>`).join('');
   const hand = g.hand.map(c => { const ok = mine && (!g.drew || g.drew === c.id) && playableHere(g, c); return card(c, { cls: ok ? 'can' : 'cannot', attrs: `data-card="${c.id}" style="--i:${g.hand.indexOf(c) - (g.hand.length - 1) / 2};--n:${g.hand.length}"${ok ? '' : ' aria-disabled="true"'}` }); }).join('');
   const msg = message(g);
+  const callDue = g.winner === null && !g.players[my]?.out && (g.owe === my || (mine && g.hand.length === 2 && g.precall !== my));
+  const canCall = callDue && !busy && (ONLINE || handReady);
+  const callHint = g.winner !== null ? 'Game finished' : g.precall === my ? 'Called. Play your card.' : g.owe === my ? 'One card left: call it now or draw 2' : canCall ? 'Going down to one card? Call it first' : 'Call before playing your second-last card';
   const n = g.players.length, around = n <= 4;
   const seatAt = (i, pos) => { const p = g.players[i]; return `<div class="rs-opp ${pos}${i === g.turn && g.winner === null ? ' is-turn' : ''}${p.out ? ' is-out' : ''}"><div class="rs-fan">${Array.from({ length: Math.min(p.count, 9) }, (_, k) => `<i style="--k:${k - (Math.min(p.count, 9) - 1) / 2}"></i>`).join('')}</div><div class="rs-who"><span class="rs-avatar a${i % 4}">${esc(p.name.charAt(0))}</span><b>${esc(p.name)}</b><span class="rs-count">${p.out ? 'out' : p.count}</span></div>${g.owe === i ? '<span class="rs-bubble">one card!</span>' : ''}</div>`; };
   const others = Array.from({ length: n - 1 }, (_, k) => (my + 1 + k) % n), spots = n === 2 ? ['top'] : n === 3 ? ['left', 'right'] : ['left', 'top', 'right'];
@@ -69,7 +72,7 @@ function table() {
    ${card(t, { cls: 'top', attrs: 'tabindex="-1"' })}
    <span class="rs-colour" aria-label="Colour in play: ${COLOUR_NAME[g.colour]}">${COLOUR_NAME[g.colour]}</span></div>
   <p class="rs-msg" role="status">${msg}</p>
-  ${g.winner === null && (g.owe === my || (mine && g.hand.length === 2 && g.precall !== my)) ? `<button type="button" class="rs-call${g.owe === my ? ' urgent' : ''}" data-action="call">Rush!<small>${g.owe === my ? 'One card left: call it now or draw 2' : 'Going down to one card? Call it first'}</small></button>` : g.precall === my && mine ? '<p class="rs-called">Rush! called. Play your card.</p>' : ''}
+  <button type="button" class="rs-call${canCall && g.owe === my ? ' urgent' : ''}" data-action="call" ${canCall ? '' : 'disabled'}>Rush!<small>${callHint}</small></button>
   <div class="rs-you${g.turn === my && g.winner === null ? ' is-turn' : ''}"><span class="rs-avatar a${my % 4}">${esc(g.players[my].name.charAt(0))}</span><b>${esc(!ONLINE&&humanSeats(localSeats).length>1?g.players[my].name:'You')}</b>${g.turn === my && g.winner === null ? '<span class="rs-yourturn">Your turn</span>' : ''}</div>
   ${g.winner !== null ? over(g) : `<div class="rs-actions">${g.drew && mine ? button('Keep it, pass', 'pass', 'secondary', 'arrow') : ''}${mine && g.pending ? button(`Take ${g.pending} cards`, 'draw', 'secondary', 'plus') : ''}</div>`}
   ${ONLINE||handReady?`<div class="rs-hand-wrap"><div class="rs-hand${g.hand.length <= 12 ? ' fan' : ''}" aria-label="Your hand">${hand}</div><small class="rs-hand-n">${g.hand.length} card${g.hand.length === 1 ? '' : 's'} in your hand</small></div>`:'<p class="mixed-seat-note">Hands hidden while computers play.</p>'}</div>`;

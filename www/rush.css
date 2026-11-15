@@ -49,7 +49,7 @@
 .rs-call{display:grid;gap:2px;justify-items:center;width:min(100%,320px);margin:10px auto 0;padding:12px 18px;border:3px solid #fff;border-radius:18px;background:linear-gradient(135deg,#e0412f,#f2c230);color:#fff;font:800 26px Poppins,sans-serif;letter-spacing:.5px;text-shadow:0 2px 0 #0004;cursor:pointer;box-shadow:0 8px 0 #0005,0 12px 24px #0006}
 .rs-call small{font:500 12px 'Noto Sans Bengali',Poppins,sans-serif;letter-spacing:0;text-shadow:none}
 .rs-call.urgent{animation:rscall .7s ease-in-out infinite}@keyframes rscall{50%{transform:scale(1.06)}}
-.rs-call:active{transform:translateY(4px);box-shadow:0 4px 0 #0005}
+.rs-call:active:not(:disabled){transform:translateY(4px);box-shadow:0 4px 0 #0005}
 .rs-called{margin:10px 0 0;text-align:center;font-weight:700;color:#f2c230}
 @media(prefers-reduced-motion:reduce){.rs-call.urgent{animation:none}}
 
@@ -116,3 +116,7 @@
 @media(max-width:520px){.rs-around .rs-opp.left,.rs-around .rs-opp.right{transform:scale(.82)}.rs-around .rs-opp.left .rs-who b,.rs-around .rs-opp.right .rs-who b{max-width:48px}.rs-around .rs-centre{padding:12px 14px;gap:10px;min-height:170px}.rs-around .rc.top{width:70px;height:104px}.rs-around .rs-deck{width:58px;height:88px}}
 .rs-hand-wrap{overflow-x:clip}
 @media(max-width:520px){.rs-hand.fan .rc{margin:0 calc(-1 * min(26px, 10px + (var(--n) - 4) * 3px))}}
+
+/* Keep the call control in place; enable it only during a legal call window. */
+.rs-call:disabled{background:#294438;border-color:#567363;color:#9eb4a6;text-shadow:none;box-shadow:0 4px 0 #0003;cursor:not-allowed;animation:none;opacity:1}
+.rs-call:disabled small{color:#9eb4a6}
