@@ -12,7 +12,7 @@ const BOTS = ['Mina', 'Raju', 'Tara'];
 import { readProfile, saveProfile } from './profile.mjs';
 
 /* Colour Rush: online 2–20 players, or up to four people and computers on one phone. */
-const ART = 'assets/rush/cover.svg', RULES = { classic: 'Classic', ruthless: 'Ruthless' };
+const ART = 'assets/rush/cover-tile.webp', RULES = { classic: 'Classic', ruthless: 'Ruthless' };
 const ERR = { ROOM_GONE: 'No room with that code.', FULL: 'That room is full (20 players).', STARTED: 'That game has already started.', NAME_TAKEN: 'Someone in the room already has that name. Change your name and try again.', NAME: 'Enter your name.', TURN: "It's not your turn.", ACTION: "That card can't be played now.", COLOUR: 'Pick a colour.', TARGET: 'Pick a player to swap with.', COUNTS: 'At least two players are needed.', RATE_LIMIT: 'Too many tries. Wait a moment.', WRONG_GAME: 'That code belongs to another game.', ONLINE_NOT_CONFIGURED: 'Online play is not available right now.' };
 let view = 'play', lastScreen = '', online = null, poll = 0, busy = false, rule = 'classic', saved = false, local = null, botTimer = 0, localSeats=[], localSeat=0, handReady=false, people=1, computers=3, localNames=[onlineName()||'You','','',''];
 try { rule = localStorage.getItem('rush.rule') === 'ruthless' ? 'ruthless' : 'classic'; } catch { }

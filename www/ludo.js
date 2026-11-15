@@ -10,7 +10,7 @@ import { onlineEntry, bindOnlineEntry, onlineLobby, bindLobby, tableApi, isOnlin
 const ONLINE = isOnlineMode() || new URLSearchParams(location.search).has('online');
 
 /* লুডু: the four-colour board or সাপ লুডু, on one phone, against the computer, or online with a join code. */
-const KEY = 'ludo.v1', ART = 'assets/ludo/cover.svg', CPU_NAMES = ['কম্পিউটার ১', 'কম্পিউটার ২', 'কম্পিউটার ৩'];
+const KEY = 'ludo.v1', ART = 'assets/ludo/cover-tile.webp', CPU_NAMES = ['কম্পিউটার ১', 'কম্পিউটার ২', 'কম্পিউটার ৩'];
 const KINDS = { ludo: 'লুডু', snake: 'সাপ লুডু' };
 const MODES = { local: 'এক ফোনে', cpu: 'কম্পিউটার' };
 const ERR = { ...ONLINE_ERRORS, ROOM_GONE: 'এই কোডের কোনো ঘর নেই।', FULL: 'ঘরে চারজন হয়ে গেছে।', STARTED: 'খেলা শুরু হয়ে গেছে।', NAME_TAKEN: 'এই নাম ঘরে আছে, অন্য নাম দিন।', NAME: 'নাম লিখুন।', TURN: 'এখন আপনার চাল নয়।', COUNTS: 'অন্তত দুজন লাগবে।', RATE_LIMIT: 'একটু পরে আবার চেষ্টা করুন।' };

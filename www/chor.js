@@ -7,7 +7,7 @@ import { $, $$, bn, LANTERN, toast, confirmBox, openMenu, SHELL_LABELS, TABS, BA
 
 /* চোর ডাকাত পুলিশ বাবু on one phone: four players take turns drawing a folded chit and peek alone.
    বাবু speaks up, পুলিশ names the চোর. Ranking points are the total divided by 100. */
-const KEY = 'chor.v1', ART = 'assets/chor/cover.svg', ROUND_CHOICES = [5, 10, 15];
+const KEY = 'chor.v1', ART = 'assets/chor/cover-tile.webp', ROUND_CHOICES = [5, 10, 15];
 
 function fresh() { return { v: 1, phase: 'setup', rounds: 5, round: 0, names: ['', '', '', ''], totals: [0, 0, 0, 0], chits: [], owner: [], drawer: 0, start: 0, guess: -1, gained: [], history: [[], [], [], []] }; }
 let s = fresh(), view = 'play', lastScreen = '';

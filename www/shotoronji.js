@@ -7,7 +7,7 @@ import { onlineEntry, bindOnlineEntry, onlineLobby, bindLobby, tableApi, isOnlin
 import { $, $$, bn, LANTERN, toast, confirmBox, chooseBox, openMenu, SHELL_LABELS, TABS, BACK } from './lamp.mjs';
 
 /* চতুরঙ্গ: chess on one phone, against a friend or the computer. Win 3 points, draw 1. */
-const KEY = 'shotoronji.v1', ART = 'assets/shotoronji/cover.svg', CPU = 'কম্পিউটার';
+const KEY = 'shotoronji.v1', ART = 'assets/shotoronji/cover-tile.webp', CPU = 'কম্পিউটার';
 const GLYPH = { k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟' };
 const FILES = 'কখগঘঙচছজ';
 const ENDS = { mate: 'কিস্তিমাত!', stale: 'অচল: ড্র', fifty: '৫০ চালে কেউ কিছু খায়নি: ড্র', repeat: 'একই অবস্থা তিনবার: ড্র', material: 'মাত করার মতো ঘুঁটি নেই: ড্র', resign: 'হার মেনে নিলেন', draw: 'দুজনে মিলে ড্র' };

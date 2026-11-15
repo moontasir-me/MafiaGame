@@ -7,7 +7,7 @@ import { $, $$, bn, toast, confirmBox, openMenu, SHELL_LABELS, TABS, BACK } from
 import { onlineEntry, bindOnlineEntry, onlineLobby, bindLobby, tableApi, isOnlineMode, ONLINE_ERRORS } from './online-ui.mjs';
 
 /* তিন গুটি: pebbles on lines scratched into the courtyard. Two on one phone, against the computer, or online. */
-const KEY = 'tinguti.v1', ART = 'assets/tinguti/cover.svg';
+const KEY = 'tinguti.v1', ART = 'assets/tinguti/cover-tile.webp';
 const STONE = ['white', 'dark'], STONE_NAME = ['সাদা নুড়ি', 'তেঁতুল বিচি'];
 const ONLINE = isOnlineMode() || new URLSearchParams(location.search).has('online');
 // Point i sits at column i % 3, row ⌊i / 3⌋ on a 3 × 3 grid.

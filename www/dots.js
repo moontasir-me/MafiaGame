@@ -8,7 +8,7 @@ import { $, $$, bn, toast, confirmBox, openMenu, SHELL_LABELS, TABS, BACK } from
 import { onlineEntry, bindOnlineEntry, onlineLobby, bindLobby, tableApi, isOnlineMode, ONLINE_ERRORS } from './online-ui.mjs';
 
 /* জায়গা দখল: dots and boxes on a khata page. Two to four people on one phone, against the computer, or online. */
-const KEY = 'dots.v1', ART = 'assets/dots/cover.svg';
+const KEY = 'dots.v1', ART = 'assets/dots/cover-tile.webp';
 const INK = ['#1f4fbf', '#d0342c', '#1e8a4c', '#9a3fb8'];
 const ONLINE = isOnlineMode() || new URLSearchParams(location.search).has('online');
 

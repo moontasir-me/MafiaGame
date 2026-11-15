@@ -13,7 +13,7 @@ let online = null, poll = 0, replay = null, sharing = false;
 
 /* ক্যারম: two players on one phone (sitting on opposite sides) or against the computer.
    Slide the striker along your line, then pull back from it and let go. */
-const KEY = 'carrom.v1', ART = 'assets/carrom/cover.svg', CPU_NAME = 'কম্পিউটার';
+const KEY = 'carrom.v1', ART = 'assets/carrom/cover-tile.webp', CPU_NAME = 'কম্পিউটার';
 const COLOUR_NAME = { white: 'সাদা', black: 'কালো' };
 
 function fresh() { return { v: 1, phase: 'setup', mode: 'cpu', level: 'medium', pick: 0, side: 0, names: ['', ''], g: null, saved: false }; }

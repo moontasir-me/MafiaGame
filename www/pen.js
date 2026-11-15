@@ -288,14 +288,14 @@ function accountChips() {
 }
 function onlineSetup() {
   const k = PEN_KEYS.indexOf(myPen);
-  return `<header class="pen-head"><img src="assets/pen/cover.svg" alt="" width="640" height="420"><div><h1>পেন ফাইট</h1><p>অনলাইন: ২–৪ জন, যার যার ফোনে</p></div></header>
+  return `<header class="pen-head"><img src="assets/pen/cover-tile.webp" alt="" width="640" height="420"><div><h1>পেন ফাইট</h1><p>অনলাইন: ২–৪ জন, যার যার ফোনে</p></div></header>
   <section class="ol-card"><div class="pc-pen"><button type="button" class="pc-arrow" data-action="my-pen" data-id="-1" aria-label="আগের কলম">‹</button><img src="${penImg(myPen)}" alt="" width="64" height="64"><span><b>${esc(PENS[myPen].name)}</b><small>আপনার কলম · ${bn(k + 1)}/${bn(PEN_KEYS.length)}</small>${statLine(myPen, gearOf({ name: onlineName() }))}</span><button type="button" class="pc-arrow" data-action="my-pen" data-id="1" aria-label="পরের কলম">›</button></div></section>
   ${onlineEntry({ len: 5 })}`;
 }
 function setup() {
   if (ONLINE) return online ? onlineLobby({ code: online.code, members: online.members, me: online.me, host: online.host, min: 2, max: 4, title: 'পেন ফাইট · অনলাইন ঘর' }) : onlineSetup();
   const need = vsCpu() ? 1 : 2, room = s.players.length < 4, ready = humans().length >= need;
-  return `<header class="pen-head"><img src="assets/pen/cover.svg" alt="" width="640" height="420"><div><h1>পেন ফাইট</h1><p>বেঞ্চে কলম টোকা দিয়ে অন্যের কলম ফেলে দিন। শেষ পর্যন্ত যার কলম টিকে থাকে, রাউন্ড তার।</p></div></header>
+  return `<header class="pen-head"><img src="assets/pen/cover-tile.webp" alt="" width="640" height="420"><div><h1>পেন ফাইট</h1><p>বেঞ্চে কলম টোকা দিয়ে অন্যের কলম ফেলে দিন। শেষ পর্যন্ত যার কলম টিকে থাকে, রাউন্ড তার।</p></div></header>
   <ol class="pen-steps">
   <li><h2><i>১</i>কার সাথে খেলবেন?</h2><div class="pen-modes" role="radiogroup" aria-label="কার সাথে খেলবেন">
    <button type="button" role="radio" aria-checked="${vsCpu()}" class="${vsCpu() ? 'is-on' : ''}" data-action="mode" data-id="cpu">${icon('person')}<b>কম্পিউটারের সাথে</b><small>বন্ধুদেরও যোগ করতে পারেন</small></button>
