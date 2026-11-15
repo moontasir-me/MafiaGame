@@ -1,9 +1,10 @@
+import { number as localeNumber } from './locale.mjs';
 import { readHistory, overallRanking, hallOfFame, clearHistory, GAMES } from './history.mjs';
 import { readAccounts, ensureAccount, deleteAccount } from './accounts.mjs';
 import { esc, icon, appShell, pageHead, rankTable, fameTable, playerDot, enterScreen } from './ui-kit.mjs';
 
 const $ = q => document.querySelector(q);
-const bn = n => Number(n).toLocaleString('bn-BD');
+const bn = localeNumber;
 const date = d => new Date(d).toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' });
 const ART = { mafia: 'assets/bn/mafia.png', spy: 'assets/spy/detective.svg', kalidas: 'assets/kalidas/poet-avatar.webp', pen: 'assets/pen/pinpoint.svg', fib: 'assets/fib/spiral.svg', shotoronji: 'assets/shotoronji/cover-tile.webp', chor: 'assets/chor/cover-tile.webp', ludo: 'assets/ludo/cover-tile.webp', carrom: 'assets/carrom/cover-tile.webp', dots: 'assets/dots/cover-tile.webp', tinguti: 'assets/tinguti/cover-tile.webp', rush: 'assets/rush/cover-tile.webp' };
 let filter = new URLSearchParams(location.search).get('game');

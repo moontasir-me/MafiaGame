@@ -1,3 +1,4 @@
+import { getLanguage, number as localeNumber } from './locale.mjs';
 import { newSpySession, addSpyPlayer, removeSpyPlayer, dealSpy, spyIdentity, nextSpyReveal, endSpyDiscussion, tickSpy, voteSpy, leaveSpyPlayer, resetSpy, restoreSpy, caughtSpyCase, nextCaughtSpyCase } from './spy-local.mjs';
 import { newTimer, startTimer, pauseTimer, secondsLeft } from './game-tools.mjs';
 import { sound, soundEnabled, toggleSound } from './sound.mjs';
@@ -6,7 +7,7 @@ import { readHistory, saveMatch, overallRanking, hallOfFame } from './history.mj
 import { fameTable, playerColour, esc, icon, tapCard, bindTapCard, setTapCard, rankTable, enterScreen, leaveScreen, appShell, pageHead } from './ui-kit.mjs';
 
 const $ = q => document.querySelector(q), $$ = q => [...document.querySelectorAll(q)];
-const bn = n => Number(n).toLocaleString('bn-BD');
+const bn = localeNumber;
 const KEY = 'mafia.spy.pass.v1';
 let s = newSpySession(), view = 'play', shown = false, seen = false, choice = null, toastTimer, modalResolve, lastScreen = '', newRow = null, autoCaseDeadline=null, autoCaseId=null, heldCase=null;
 
@@ -51,7 +52,7 @@ function rulesScreen() {
 
 function revealBack() {
   const p = current(), id = spyIdentity(s, p.id), spy = id.role === 'SPY';
-  return `<span class="secret-kicker">${esc(p.name)}, আপনি</span><img class="secret-portrait" src="${portrait(id.role)}" alt="" width="128" height="128">${spy ? `<span class="secret-title red">আপনি গুপ্তচর</span><span class="secret-text">আপনার পাতা ফাঁকা। মুখ শান্ত রাখুন; অন্যদের সূত্র শুনে শব্দটা আন্দাজ করুন, ধরা পড়বেন না।</span>` : `<span class="secret-sub">গোয়েন্দা · গোপন শব্দ</span><span class="secret-word">${esc(id.word)}</span><span class="secret-text">শব্দটা সরাসরি বলবেন না। ছোট সূত্র দিন, অসঙ্গতি খুঁজুন।</span>`}<span class="secret-close">আবার ছুঁয়ে ঢেকে দিন</span>`;
+  return `<span class="secret-kicker">${esc(p.name)}, আপনি</span><img class="secret-portrait" src="${portrait(id.role)}" alt="" width="128" height="128">${spy ? `<span class="secret-title red">আপনি গুপ্তচর</span><span class="secret-text">আপনার পাতা ফাঁকা। মুখ শান্ত রাখুন; অন্যদের সূত্র শুনে শব্দটা আন্দাজ করুন, ধরা পড়বেন না।</span>` : `<span class="secret-sub">গোয়েন্দা · গোপন শব্দ</span><span class="secret-word"><span data-no-translate>${esc(id.word)}</span></span><span class="secret-text">শব্দটা সরাসরি বলবেন না। ছোট সূত্র দিন, অসঙ্গতি খুঁজুন।</span>`}<span class="secret-close">আবার ছুঁয়ে ঢেকে দিন</span>`;
 }
 
 function reveal() {
@@ -91,7 +92,7 @@ function results() {
   const spy = byId(s.spyId), won = s.winner === 'WORD';
   return `<div class="over-heading"><div class="result-portrait win"><img src="${portrait(won ? 'WORD' : 'SPY')}" alt="" width="112" height="112"></div><span class="eyebrow">কেস ${caseOf(s.gameId)} · ${won ? 'সমাধান' : 'অমীমাংসিত'}</span><h1>${won ? 'গুপ্তচর ধরা পড়েছে!' : 'গুপ্তচর পালিয়ে গেল!'}</h1><p class="lede"><strong>${esc(spy.name)}</strong> ছিলেন গুপ্তচর। ${won ? 'গোয়েন্দাদের সূত্র মিলে গেল।' : 'কেউ তাকে ধরতে পারেনি।'}</p></div>
   ${caughtSpyCase(s)&&heldCase!==s.gameId?`<section class="spy-auto-next" aria-live="polite">পরের কেস শুরু হবে <b id="auto-case-clock">৫</b> সেকেন্ডে। ফোন যাবে ${esc(spy.name)}-এর হাতে।${button('ফল দেখে থাকুন','hold-result','secondary','pause')}</section>`:''}
-  <div class="spy-word-reveal"><span>গোপন শব্দটি ছিল</span><strong>${esc(s.word)}</strong></div>
+  <div class="spy-word-reveal"><span>গোপন শব্দটি ছিল</span><strong><span data-no-translate>${esc(s.word)}</span></strong></div>
   ${matchPanel()}
   <div class="end-actions">${matchActions()}${button('নাম বা সময় বদলান', 'edit', 'secondary wide', 'edit')}${button('Spy-এর শুরুর পাতা', 'game-home', 'text wide', 'home')}</div>
   ${famePanel()}`;
@@ -146,7 +147,7 @@ async function act(action, id) {
       case 'tab-play': case 'tab-rules': case 'tab-ranking': { const next = action.slice(4); if (view === next) return; hide(); view = next; return transition(); }
       case 'app-menu': return openMenu();
       case 'remove': removeSpyPlayer(s, id); break;
-      case 'start': view = 'play'; if (!s.set) { s.set = { id: crypto.randomUUID(), total: 5, games: [] }; s.players.forEach(p => { p.score = 0; }); } dealSpy(s); shown = false; seen = false; save(); sound('notice'); return transition();
+      case 'start': view = 'play'; if (!s.set) { s.set = { id: crypto.randomUUID(), total: 5, games: [] }; s.players.forEach(p => { p.score = 0; }); } dealSpy(s,{language:getLanguage()}); shown = false; seen = false; save(); sound('notice'); return transition();
       case 'next': {
         if (!seen) return;
         const card = $('[data-tap-card]');
@@ -157,7 +158,7 @@ async function act(action, id) {
       }
       case 'pause': s.timer = s.timer.running ? pauseTimer(s.timer) : startTimer(s.timer); break;
       case 'end-discussion': if (!await confirmDialog('আলোচনা শেষ করবেন?', 'এখন সবাই মিলে ভোট দিতে পারবেন।')) return; endSpyDiscussion(s); sound('timer'); save(); return transition();
-      case 'rematch': view = 'play'; resetSpy(s); dealSpy(s); shown = false; seen = false; save(); return transition();
+      case 'rematch': view = 'play'; resetSpy(s); dealSpy(s,{language:getLanguage()}); shown = false; seen = false; save(); return transition();
       case 'edit': view = 'play'; resetSpy(s); save(); return transition();
       case 'game-home': hide(); view = 'play'; if (s.phase === 'over') { resetSpy(s); save(); } return transition();
       case 'new':
@@ -217,7 +218,7 @@ function advanceCaseIfReady(){
   if(!caughtSpyCase(s)||view!=='play'||document.hidden||$('#overlay').children.length||heldCase===s.gameId){autoCaseDeadline=null;return;}
   if(autoCaseId!==s.gameId||autoCaseDeadline===null){autoCaseId=s.gameId;autoCaseDeadline=Date.now()+5000;}
   const left=Math.max(0,Math.ceil((autoCaseDeadline-Date.now())/1000)),clock=$('#auto-case-clock');if(clock)clock.textContent=bn(left);
-  if(!left){nextCaughtSpyCase(s);autoCaseDeadline=null;shown=false;seen=false;choice=null;save();sound('notice');transition();}
+  if(!left){nextCaughtSpyCase(s,{language:getLanguage()});autoCaseDeadline=null;shown=false;seen=false;choice=null;save();sound('notice');transition();}
 }
 setInterval(() => {
   advanceCaseIfReady();

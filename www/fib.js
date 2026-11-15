@@ -1,3 +1,4 @@
+import { number as localeNumber } from './locale.mjs';
 import { LEVELS, makeQuestion } from './fib-questions.mjs';
 import { sound, soundEnabled, toggleSound } from './sound.mjs';
 import { saveMatch, readHistory, overallRanking, hallOfFame } from './history.mjs';
@@ -9,7 +10,7 @@ import { numberPick, bindNumberPick, esc, icon, appShell, pageHead, rankTable, f
    Infinity mode: no clock, three hearts; +1 right, a wrong answer costs a heart. */
 
 const $ = q => document.querySelector(q), $$ = q => [...document.querySelectorAll(q)];
-const bn = n => (n < 0 ? '−' : '') + Math.abs(Number(n)).toLocaleString('bn-BD');
+const bn = localeNumber;
 const KEY = 'fib.v2', TIMES = [60, 90, 120], HEARTS = 3, LETTERS = ['ক', 'খ', 'গ', 'ঘ'], ART = 'assets/fib/spiral.svg';
 const MODES = {
   timer: { name: 'সময়ের খেলা', note: 'ঠিক +১ · ভুল −১' },

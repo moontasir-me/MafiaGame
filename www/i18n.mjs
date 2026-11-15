@@ -1,11 +1,12 @@
+import { getLanguage, saveLanguage } from './locale.mjs';
+import { translateText } from './localization.mjs';
 import {WORLD_OPTIONS} from './universe.mjs';
-import {rhythmicBengali} from './rhyming-copy.mjs';
 const storedWorld=localStorage.getItem('mafia.universe');const savedWorld=storedWorld==='mosnod'?'polashi':storedWorld;
 export let universeId=WORLD_OPTIONS.some(w=>w.id===savedWorld)?savedWorld:(localStorage.getItem('mafia.language')==='en'?'sicily':'polashi');
 export let language=WORLD_OPTIONS.find(w=>w.id===universeId).locale;
-export const tr=(bn,en)=>language!=='bn'?en:rhythmicBengali(bn);
+export const tr=(bn,en)=>getLanguage()==='en'?en:bn;
 export function setUniverse(id){const world=WORLD_OPTIONS.find(w=>w.id===id);if(!world)return false;universeId=id;language=world.locale;localStorage.setItem('mafia.universe',id);localStorage.setItem('mafia.language',language);return true;}
-export function setLanguage(value){setUniverse(value==='en'?'sicily':'polashi');}
+export function setLanguage(value){saveLanguage(value);}
 const entries = [
 ['মাফিয়া','Mafia'],['ডাক্তার','Doctor'],['পুলিশ','Police'],['সাধারণ','Villager'],['গ্রামবাসী','Villager'],['সিটিজেন','Villagers'],
 ['চেনা মুখ। অচেনা পরিচয়।','Familiar faces. Secret identities.'],['তোমার আসর','YOUR GAME NIGHT'],['হোম','Home'],['কীভাবে খেলবে','How to play'],['কীভাবে খেলবে?','How to play?'],['চলমান গেম','Current game'],['অফলাইন, সবসময়','Always offline'],['লগইন নেই। ইন্টারনেট নেই।','No login. No internet.'],['শুধু তুমি আর তোমার বন্ধুরা।','Just you and your friends.'],['আড্ডার নতুন ঠিকানা','Your new game-night ritual'],['খেলার নিয়ম','Game rules'],['নতুন গেম','New game'],['রোল সেটআপ','Role setup'],['হোস্ট লক','Host lock'],['গোপন পরিচয়','Secret identities'],['কন্ট্রোল রুম','Control room'],['ফলাফল','Results'],['রাত নামুক, খেলা জমুক','Night falls. The game begins.'],
@@ -47,9 +48,10 @@ export function english(text) {
  return text.replace(raw,value);
 }
 export function localize(root=document.body) {
+ if(!root)return;
 
  const walk=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
  const nodes=[];while(walk.nextNode())nodes.push(walk.currentNode);
- for(const node of nodes){if(node.parentElement?.closest('script,style,textarea,input,.player-name,.avatar,.player-info > strong,[data-player-name]'))continue;const value=language!=='bn'?english(node.nodeValue):rhythmicBengali(node.nodeValue);if(value!==node.nodeValue)node.nodeValue=value;}
- root.querySelectorAll('[placeholder],[aria-label],[title]').forEach(el=>{for(const a of ['placeholder','aria-label','title']){const value=el.getAttribute(a);if(value)el.setAttribute(a,language!=='bn'?english(value):rhythmicBengali(value))}});
+ for(const node of nodes){if(node.parentElement?.closest('script,style,textarea,input,.player-name,.avatar,.player-info > strong,[data-player-name]'))continue;const value=translateText(getLanguage()==='en'?english(node.nodeValue):node.nodeValue);if(value!==node.nodeValue)node.nodeValue=value;}
+ root.querySelectorAll('[placeholder],[aria-label],[title]').forEach(el=>{for(const a of ['placeholder','aria-label','title']){const value=el.getAttribute(a);if(value)el.setAttribute(a,translateText(getLanguage()==='en'?english(value):value))}});
 }

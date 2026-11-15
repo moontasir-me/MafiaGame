@@ -1,3 +1,4 @@
+import { number as localeNumber } from './locale.mjs';
 /* Shared bits for the two hurricane-lamp games (চতুরঙ্গ, চোর ডাকাত পুলিশ বাবু): the lamp drawing, dialogs, toast. */
 import { esc, icon } from './ui-kit.mjs';
 import { soundEnabled, toggleSound } from './sound.mjs';
@@ -7,7 +8,7 @@ export const readLight = () => { try { return localStorage.getItem('shitolpati.l
 export function setLight(v) { try { localStorage.setItem('shitolpati.light', v); } catch { } document.documentElement.dataset.light = v; }
 
 export const $ = q => document.querySelector(q), $$ = q => [...document.querySelectorAll(q)];
-export const bn = n => (n < 0 ? '−' : '') + Math.abs(Number(n)).toLocaleString('bn-BD');
+export const bn = localeNumber;
 
 /* A hurricane lantern with a living flame. */
 export const LANTERN = `<svg class="lantern" viewBox="0 0 60 92" aria-hidden="true"><path d="M30 2a9 9 0 0 1 9 9" fill="none" stroke="#6b5a45" stroke-width="2.4" stroke-linecap="round"/><path d="M21 11a9 9 0 0 1 9-9" fill="none" stroke="#6b5a45" stroke-width="2.4" stroke-linecap="round"/><rect x="17" y="11" width="26" height="7" rx="2" fill="#3c4a3e"/><path d="M19 18h22l5 14v20l-5 14H19l-5-14V32Z" fill="#ffd27a" fill-opacity=".16" stroke="#9aa79a" stroke-width="1.6"/><ellipse class="lantern-glow" cx="30" cy="44" rx="15" ry="18" fill="#ffb347" fill-opacity=".35"/><path class="lantern-flame" d="M30 32c5 7 6 11 3 15a4 4 0 0 1-6 0c-3-4-2-8 3-15Z" fill="#ffcf5c"/><path d="M30 41c2 3 2 5 1 6h-2c-1-1-1-3 1-6Z" fill="#fff4d0"/><rect x="25" y="49" width="10" height="4" rx="1" fill="#5a4a36"/><path d="M14 66h32l4 8c0 6-6 9-20 9s-20-3-20-9Z" fill="#41503f"/><path d="M12 80h36" stroke="#2d382c" stroke-width="3" stroke-linecap="round"/><path d="M16 18 12 30m32-12 4 12M12 54l4 12m32-12-4 12" stroke="#6b7a68" stroke-width="1.6" stroke-linecap="round"/></svg>`;

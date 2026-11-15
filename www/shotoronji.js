@@ -1,3 +1,4 @@
+import { getLanguage } from './locale.mjs';
 import { newGame, legal, play, result, inCheck, bestMove, colour, NAMES, VALUE, LEVELS } from './shotoronji-engine.mjs';
 import { sound } from './sound.mjs';
 import { saveMatch, readHistory, overallRanking, hallOfFame } from './history.mjs';
@@ -9,7 +10,7 @@ import { $, $$, bn, LANTERN, toast, confirmBox, chooseBox, openMenu, SHELL_LABEL
 /* চতুরঙ্গ: chess on one phone, against a friend or the computer. Win 3 points, draw 1. */
 const KEY = 'shotoronji.v1', ART = 'assets/shotoronji/cover-tile.webp', CPU = 'কম্পিউটার';
 const GLYPH = { k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟' };
-const FILES = 'কখগঘঙচছজ';
+const FILES = getLanguage()==='en'?'abcdefgh':'কখগঘঙচছজ';
 const ENDS = { mate: 'কিস্তিমাত!', stale: 'অচল: ড্র', fifty: '৫০ চালে কেউ কিছু খায়নি: ড্র', repeat: 'একই অবস্থা তিনবার: ড্র', material: 'মাত করার মতো ঘুঁটি নেই: ড্র', resign: 'হার মেনে নিলেন', draw: 'দুজনে মিলে ড্র' };
 
 function fresh() { return { v: 1, phase: 'setup', mode: 'cpu', level: 'medium', pick: 'w', side: 'w', names: ['', ''], g: newGame(), past: [], moves: [], sel: -1, end: null, winner: null }; }

@@ -1,4 +1,7 @@
-import { RIDDLES } from './riddles.mjs';
+import { RIDDLES as RIDDLES_BN } from './riddles.mjs';
+import { RIDDLES_EN } from './riddles-en.mjs';
+import { getLanguage, number as localeNumber } from './locale.mjs';
+const RIDDLES=getLanguage()==='en'?RIDDLES_EN:RIDDLES_BN;
 import { LEVELS, byLevel } from './riddle-levels.mjs';
 import { readAccounts, ensureAccount } from './accounts.mjs';
 import { sound, soundEnabled, toggleSound } from './sound.mjs';
@@ -6,7 +9,7 @@ import { saveMatch, readHistory, hallOfFame } from './history.mjs';
 import { numberPick, bindNumberPick, fameTable, playerColour, esc, icon, rankTable, enterScreen, leaveScreen, appShell, pageHead } from './ui-kit.mjs';
 
 const $ = q => document.querySelector(q), $$ = q => [...document.querySelectorAll(q)];
-const bn = n => Number(n).toLocaleString('bn-BD');
+const bn = localeNumber;
 const KEY = 'kalidas.v1', ART = { POET: 'assets/kalidas/poet-avatar.webp', PORTRAIT: 'assets/kalidas/poet-art.webp', WON: 'assets/kalidas/lotus.svg', LOST: 'assets/kalidas/cloud.svg' };
 const TIMES = [15, 30, 45, 60, 90, 120];
 const NOBODY = 'nobody', US = 'us';
@@ -34,7 +37,7 @@ try {
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch { toast('তথ্য সেভ করা যায়নি।'); } };
 function toast(text) { clearTimeout(toastTimer); const t = $('#toast'); t.textContent = text; t.classList.add('visible'); toastTimer = setTimeout(() => t.classList.remove('visible'), 2600); }
 const button = (text, action, cls = 'primary', ico = 'arrow', extra = '') => `<button type="button" class="btn ${cls}" data-action="${action}" ${extra}>${text}${ico ? icon(ico) : ''}</button>`;
-const riddle = () => RIDDLES[s.current] || ['', ''];
+const riddle = () => RIDDLES[s.current % RIDDLES.length] || ['', ''];
 const left = () => s.endsAt ? Math.max(0, Math.ceil((s.endsAt - Date.now()) / 1000)) : 0;
 const clock = n => `${bn(Math.floor(n / 60))}:${bn(n % 60).padStart(2, '০')}`;
 const playing = () => s.phase === 'ask';

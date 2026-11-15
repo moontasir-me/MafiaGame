@@ -1,3 +1,4 @@
+import { getLanguage } from './locale.mjs';
 import {sound,toggleSound,soundEnabled} from './sound.mjs';
 import {RoomService} from './room-service.mjs';
 import {characterFor,characterImage,characterName} from './characters.mjs';
@@ -14,7 +15,7 @@ let syncingProfile=false,online=location.protocol==='https:',lastPoll=0;
 let profile=saveProfile(readProfile());
 const loadQuotes={bn:nextQuote('bn'),en:nextQuote('en'),classic:nextQuote('classic')};
 const native=false; // rooms always go through the online server, also inside the Android app
-const t=(bn,en)=>locale==='bn'?bn:en,n=n=>Number(n).toLocaleString(locale==='bn'?'bn-BD':'en-US'),roleName=r=>UNIVERSES[locale].roles[r]?.name||'';
+const t=(bn,en)=>getLanguage()==='bn'?bn:en,n=n=>Number(n).toLocaleString(getLanguage()==='bn'?'bn-BD':'en-US'),roleName=r=>UNIVERSES[locale].roles[r]?.name||'';
 const svg=(name)=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${({crown:'m3 7 4 4 5-7 5 7 4-4-2 13H5L3 7ZM8 16h8',spark:'m12 3 3 6 6 3-6 3-3 6-3-6-6-3 6-3 3-6Z',menu:'M5 6h14M5 12h14M5 18h14',lock:'M6 10h12v11H6V10Zm3 0V6a3 3 0 0 1 6 0v4m-3 4v3',arrow:'M5 12h14m-5-5 5 5-5 5',close:'m6 6 12 12M6 18 18 6',people:'M16 21v-2a6 6 0 0 0-12 0v2M14 3a4 4 0 0 1 0 8m6 10v-2a6 6 0 0 0-3-5M14 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z'})[name]}"/></svg>`;
 const app=$('#room-app'),btn=(label,action,cls='primary',attrs='')=>`<button type="button" class="btn ${cls}" data-do="${action}" ${busy||!connected?'disabled':''} ${attrs}>${label}</button>`;
 let authority;
@@ -50,7 +51,7 @@ function header(){return `<header class="room-header"><a href="index.html" id="r
 function quoteCard(){const q=state?QUOTES[locale][state.edition%QUOTES[locale].length]:loadQuotes[locale];return `<blockquote class="room-quote"><span>“</span><p>${q.text}</p>${q.url?`<a href="${q.url}" target="_blank" rel="noopener noreferrer">${q.credit} ↗</a>`:`<cite>${q.credit}</cite>`}</blockquote>`;}
 function worldArt(){return `<img class="room-world-art" src="assets/${locale}/cover.png" width="1672" height="941" alt="${locale==='classic'?'The Classic neighborhood gathers for tea':t('পলাশীর দরবারের চরিত্ররা একসাথে','The faces of a Sicilian affair')}">`;}
 function render(){
- document.documentElement.lang=locale==='bn'?'bn':'en';document.documentElement.dataset.universe=locale;window.Android?.setPalette?.(getComputedStyle(document.documentElement).getPropertyValue('--bg').trim(),true);document.title='Mafia · '+UNIVERSES[locale].universeName;
+ document.documentElement.lang=getLanguage();document.documentElement.dataset.universe=locale;window.Android?.setPalette?.(getComputedStyle(document.documentElement).getPropertyValue('--bg').trim(),true);document.title='Mafia · '+UNIVERSES[locale].universeName;
  const draftName=$('#room-name')?.value;app.innerHTML=header()+(state?live():entry())+'<footer class="app-credit">Developed by Tanim</footer>';if(draftName&&$('#room-name'))$('#room-name').value=draftName;bind();updateClock();
  $('#room-home').onclick=e=>{if(native&&session){e.preventDefault();leaveNative();}};
 }
@@ -106,7 +107,7 @@ async function act(type,id){
  await mutate({type,id});
 }
 let lastExpired=null;
-function updateClock(){if(!state)return;const seconds=secondsLeft(state.timer,Date.now()+offset),el=$('#room-clock');if(el){el.textContent=n(Math.floor(seconds/60))+':'+n(seconds%60).padStart(2,locale==='bn'?'০':'0');el.closest('.timer-stat').classList.toggle('expired',seconds===0);}if(state.timer.running&&seconds===0&&lastExpired!==state.timer.endsAt){lastExpired=state.timer.endsAt;sound('timer');notice(t('আলোচনার সময় শেষ। এবার ভোট দিন।','Discussion time is up. Gather your arguments for the vote.'));}}
+function updateClock(){if(!state)return;const seconds=secondsLeft(state.timer,Date.now()+offset),el=$('#room-clock');if(el){el.textContent=n(Math.floor(seconds/60))+':'+n(seconds%60).padStart(2,getLanguage()==='bn'?'০':'0');el.closest('.timer-stat').classList.toggle('expired',seconds===0);}if(state.timer.running&&seconds===0&&lastExpired!==state.timer.endsAt){lastExpired=state.timer.endsAt;sound('timer');notice(t('আলোচনার সময় শেষ। এবার ভোট দিন।','Discussion time is up. Gather your arguments for the vote.'));}}
 function hide(){if($('#inspect-player'))closeDialog();if(visible){visible=false;render();}}
 window.addEventListener('blur',hide);document.addEventListener('visibilitychange',()=>{if(document.hidden)hide();});window.onNativePause=hide;window.onNativeBack=()=>{if($('#room-overlay').childElementCount)closeDialog();else if(visible)hide();else openMenu();};
 async function network(){try{const data=native?JSON.parse(Android.startLan()):await (await fetch(API_BASE+'/api/network',{cache:'no-store',signal:AbortSignal.timeout(25000)})).json();online=!native&&data.mode==='online';if(data.error)throw Error(data.error);transportError=data.available===false;addresses=data.addresses||[];address=online?location.origin:addresses[0]||(!['localhost','127.0.0.1'].includes(location.hostname)?location.origin:'');if(transportError)notice(messages.ONLINE_NOT_CONFIGURED());}catch(e){transportError=true;notice(native?t('আসরের দরজা খুলল না, অ্যাপটি আবার খোলো।','Could not open the local room server. Reopen the app.'):messages.BACKEND_UNAVAILABLE());}}

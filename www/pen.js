@@ -1,3 +1,5 @@
+import { translateText } from './localization.mjs';
+import { number as localeNumber } from './locale.mjs';
 import { sound, soundEnabled, toggleSound } from './sound.mjs';
 import { saveMatch, readHistory, overallRanking, hallOfFame } from './history.mjs';
 import { numberPick, bindNumberPick, esc, icon, appShell, pageHead, rankTable, fameTable, playerColour, playerDot, enterScreen, leaveScreen } from './ui-kit.mjs';
@@ -17,7 +19,7 @@ try { myPen = localStorage.getItem('pen.online.pen') || 'pinpoint'; } catch { }
    Every point won is also a coin for the player's account, spent in the shop on add-ons. */
 
 const $ = q => document.querySelector(q), $$ = q => [...document.querySelectorAll(q)];
-const bn = n => Number(n).toLocaleString('bn-BD');
+const bn = localeNumber;
 const KEY = 'pen.v2', ROUNDS = 5;
 const PEN_KEYS = Object.keys(PENS), penImg = k => `assets/pen/${k}.svg`;
 const CPU = {
@@ -190,7 +192,7 @@ function draw() {
   for (const e of fx) {
     const t = e.life / e.max;
     if (e.kind === 'dust') { g.globalAlpha = t * .8; g.fillStyle = '#f3dfbf'; g.beginPath(); g.arc(e.x, e.y, 1.5 + (1 - t) * 2.5, 0, 7); g.fill(); }
-    else { g.globalAlpha = Math.min(1, t * 2); g.font = '700 20px Poppins, sans-serif'; g.textAlign = 'center'; g.lineWidth = 5; g.strokeStyle = '#3b210c'; g.fillStyle = '#ffd34d'; g.strokeText(e.text, e.x, e.y); g.fillText(e.text, e.x, e.y); }
+    else { g.globalAlpha = Math.min(1, t * 2); g.font = '700 20px Poppins, sans-serif'; g.textAlign = 'center'; g.lineWidth = 5; g.strokeStyle = '#3b210c'; g.fillStyle = '#ffd34d'; g.strokeText(translateText(e.text), e.x, e.y); g.fillText(translateText(e.text), e.x, e.y); }
   }
   g.globalAlpha = 1;
   if (aim) {
@@ -201,13 +203,13 @@ function draw() {
     // Power bar along the bottom of the bench.
     g.fillStyle = '#00000066'; g.beginPath(); g.roundRect(W / 2 - 90, H - 34, 180, 14, 7); g.fill();
     g.fillStyle = pct > .75 ? '#e5533d' : pct > .4 ? '#f2c230' : '#7bd389'; g.beginPath(); g.roundRect(W / 2 - 88, H - 32, 176 * pct, 10, 5); g.fill();
-    g.font = '600 12px Poppins, sans-serif'; g.textAlign = 'center'; g.fillStyle = '#fffaf0'; g.fillText('জোর ' + bn(Math.round(pct * 100)) + '%', W / 2, H - 42);
+    g.font = '600 12px Poppins, sans-serif'; g.textAlign = 'center'; g.fillStyle = '#fffaf0'; g.fillText(translateText('জোর ' + bn(Math.round(pct * 100)) + '%'), W / 2, H - 42);
   }
   if (bannerUp()) {
     const t = (banner.until - performance.now()) / 1600, a = Math.min(1, t * 3, (1 - t) * 6 + .2);
     g.globalAlpha = a * .55; g.fillStyle = '#1b0f05'; g.fillRect(0, H / 2 - 50, W, 100); g.globalAlpha = a;
-    g.font = '700 34px Poppins, sans-serif'; g.textAlign = 'center'; g.fillStyle = '#ffd34d'; g.fillText(banner.text, W / 2, H / 2 + 4);
-    g.font = '500 15px Poppins, sans-serif'; g.fillStyle = '#fffaf0'; g.fillText(banner.sub, W / 2, H / 2 + 32); g.globalAlpha = 1;
+    g.font = '700 34px Poppins, sans-serif'; g.textAlign = 'center'; g.fillStyle = '#ffd34d'; g.fillText(translateText(banner.text), W / 2, H / 2 + 4);
+    g.font = '500 15px Poppins, sans-serif'; g.fillStyle = '#fffaf0'; g.fillText(translateText(banner.sub), W / 2, H / 2 + 32); g.globalAlpha = 1;
   }
 }
 // Next frame: a repaint when the browser gives one, otherwise a timer, so a paused screen never stalls the game.

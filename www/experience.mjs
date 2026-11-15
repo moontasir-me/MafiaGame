@@ -1,3 +1,5 @@
+import { startLocalization } from './localization.mjs';
+startLocalization();
 /* Shared visual feedback only. No game state, timers, rules or board coordinates. */
 const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 const targets = '.game-tile,.home-hero,.library-heading,.play-switch';

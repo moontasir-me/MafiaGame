@@ -1,3 +1,4 @@
+import { getLanguage, saveLanguage, t } from './locale.mjs';
 import { readProfile, saveProfile, photoFromFile } from './profile.mjs';
 import { soundEnabled, toggleSound, sound } from './sound.mjs';
 const $ = q => document.querySelector(q);
@@ -6,7 +7,7 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': 
 function paintProfile() {
   const p = readProfile();
   $('#profile-face').innerHTML = p.photo ? `<img src="${p.photo}" alt="">` : esc((p.name || '?').charAt(0));
-  $('#profile-label').textContent = p.name || 'প্রোফাইল';
+  $('#profile-label').textContent = p.name || t('প্রোফাইল','Profile');
 }
 
 function openProfile() {
@@ -61,3 +62,14 @@ document.addEventListener('click', e => { if (!menu.hidden && !menu.contains(e.t
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !menu.hidden) { showMenu(false); pill.focus(); } });
 paintProfile();
 if ('serviceWorker' in navigator && !window.Android) navigator.serviceWorker.register('./sw.js').catch(() => {});
+
+function openLanguage() {
+  const close = () => { $('#home-overlay').innerHTML = ''; pill.focus(); };
+  $('#home-overlay').innerHTML = `<div class="home-scrim"><section class="home-dialog" role="dialog" aria-modal="true" aria-labelledby="language-title"><div class="home-dialog-head"><h2 id="language-title">${t('ভাষা বেছে নিন','Choose language')}</h2><button type="button" class="home-close" id="language-close" aria-label="${t('বন্ধ করুন','Close')}">×</button></div><p class="language-note">${t('সব খেলা আপনার পছন্দের ভাষায় দেখাবে। Colour Rush সবসময় ইংরেজিতে থাকবে।','Your choice applies to every game. Colour Rush stays in English.')}</p><div class="language-options" role="radiogroup" aria-label="Language">${[['bn','বাংলা'],['en','English']].map(([id,label])=>`<button type="button" data-language="${id}" role="radio" aria-checked="${getLanguage()===id}" data-no-translate><span>${label}</span><span aria-hidden="true">${getLanguage()===id?'✓':''}</span></button>`).join('')}</div></section></div>`;
+  $('#language-close').onclick=close;
+  $('.home-scrim').onclick=e=>{if(e.target===e.currentTarget)close();};
+  $('.home-dialog').onkeydown=e=>{if(e.key==='Escape')close();};
+  document.querySelectorAll('[data-language]').forEach(b=>b.onclick=()=>{saveLanguage(b.dataset.language);location.reload();});
+  document.querySelector(`[data-language="${getLanguage()}"]`).focus();
+}
+menu.querySelector('[data-menu=language]').onclick=()=>{showMenu(false);openLanguage();};

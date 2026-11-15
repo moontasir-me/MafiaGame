@@ -1,11 +1,13 @@
 import {randomInt} from './engine.mjs';
 import {SPY_COMMON,SPY_WORDS} from './spy-words.mjs';
+import {SPY_EN_COMMON,SPY_EN_WORDS} from './spy-words-en.mjs';
+export const spyWords = (s, language=s.language) => language==='en' ? (s.pool==='extended'?SPY_EN_WORDS:SPY_EN_COMMON) : (s.pool==='extended'?SPY_WORDS:SPY_COMMON);
 import {newTimer,startTimer,pauseTimer,secondsLeft} from './game-tools.mjs';
 const check=(ok,code)=>{if(!ok)throw Error(code);};
-export function newSpySession(){return {version:1,phase:'setup',players:[],lastSpyId:null,spyId:null,word:null,order:[],revealIndex:0,round:0,duration:180,pool:'common',timer:newTimer(),winner:null,verdict:null,awarded:false};}
+export function newSpySession(){return {version:1,phase:'setup',players:[],lastSpyId:null,spyId:null,word:null,order:[],revealIndex:0,round:0,duration:180,pool:'common',language:'bn',timer:newTimer(),winner:null,verdict:null,awarded:false};}
 export function addSpyPlayer(s,name){name=String(name||'').trim();check(s.phase==='setup','PHASE');check(name.length>0&&name.length<=20&&!s.players.some(p=>p.name.toLocaleLowerCase()===name.toLocaleLowerCase()),'NAME');check(s.players.length<20,'FULL');s.players.push({id:crypto.randomUUID(),name,score:0,history:[],alive:true});return s;}
 export function removeSpyPlayer(s,id){check(s.phase==='setup','PHASE');s.players=s.players.filter(p=>p.id!==id);return s;}
-export function dealSpy(s,{random=randomInt}={}){check(s.phase==='setup','PHASE');check(s.players.length>=3&&s.players.length<=20,'COUNT');check(Number.isInteger(s.duration)&&s.duration>=60&&s.duration<=1800,'DURATION');const words=s.pool==='extended'?SPY_WORDS:SPY_COMMON;s.word=words[random(words.length)];s.spyId=s.players[random(s.players.length)].id;const start=Math.max(0,s.players.findIndex(p=>p.id===s.lastSpyId));s.order=s.players.map((_,i)=>s.players[(start+i)%s.players.length].id);s.lastSpyId=s.spyId;s.players.forEach(p=>{p.alive=true;p.quit=false;});s.gameId=crypto.randomUUID();s.revealIndex=0;s.round=1;s.phase='reveal';s.winner=null;s.verdict=null;s.awarded=false;s.timer=newTimer(s.duration);return s;}
+export function dealSpy(s,{random=randomInt,language=s.language||'bn'}={}){check(s.phase==='setup','PHASE');check(s.players.length>=3&&s.players.length<=20,'COUNT');check(Number.isInteger(s.duration)&&s.duration>=60&&s.duration<=1800,'DURATION');s.language=language==='en'?'en':'bn';const words=spyWords(s);s.word=words[random(words.length)];s.spyId=s.players[random(s.players.length)].id;const start=Math.max(0,s.players.findIndex(p=>p.id===s.lastSpyId));s.order=s.players.map((_,i)=>s.players[(start+i)%s.players.length].id);s.lastSpyId=s.spyId;s.players.forEach(p=>{p.alive=true;p.quit=false;});s.gameId=crypto.randomUUID();s.revealIndex=0;s.round=1;s.phase='reveal';s.winner=null;s.verdict=null;s.awarded=false;s.timer=newTimer(s.duration);return s;}
 export function spyIdentity(s,id){check(s.phase!=='setup'&&s.players.some(p=>p.id===id),'PLAYER');return id===s.spyId?{role:'SPY',word:null}:{role:'WORD',word:s.word};}
 export function nextSpyReveal(s,now=Date.now()){check(s.phase==='reveal','PHASE');s.revealIndex++;if(s.revealIndex>=s.order.length){s.phase='discussion';s.timer=startTimer(newTimer(s.duration),now);}return s;}
 export function endSpyDiscussion(s,now=Date.now()){check(s.phase==='discussion','PHASE');s.timer={...pauseTimer(s.timer,now),remaining:0};s.phase='vote';return s;}
@@ -21,5 +23,5 @@ export function nextCaughtSpyCase(s,options){
  check(caughtSpyCase(s),'PHASE');
  if(s.set&&!s.set.games.includes(s.gameId)){s.set.games.push(s.gameId);}
  if(s.set&&s.set.games.length>=s.set.total)s.set.total=s.set.games.length+1;
- const previousWord=s.word;resetSpy(s);dealSpy(s,options);if(s.word===previousWord){const words=s.pool==='extended'?SPY_WORDS:SPY_COMMON;s.word=words[(words.indexOf(s.word)+1)%words.length];}return s;
+ const previousWord=s.word;resetSpy(s);dealSpy(s,options);if(s.word===previousWord){const words=spyWords(s);s.word=words[(words.indexOf(s.word)+1)%words.length];}return s;
 }
