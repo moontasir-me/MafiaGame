@@ -37,6 +37,8 @@ export function startLocalization() {
   if(started || typeof document==='undefined')return;started=true;
   // Colour Rush deliberately uses English regardless of the device preference.
   const language=pageLanguage();document.documentElement.lang=language;
+  const manifest=document.querySelector('link[rel=manifest]');if(manifest)manifest.href=language==='en'?'manifest-en.webmanifest':'manifest.webmanifest';
+  const installTitle=document.querySelector('meta[name=apple-mobile-web-app-title]');if(installTitle)installTitle.content=translateText(installTitle.content,language);
   const title=translateText(document.title,language);if(title!==document.title)document.title=title;
   localizeTree(document.body,language);
   const options={subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['placeholder','aria-label','title','alt']};

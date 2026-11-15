@@ -219,7 +219,7 @@ html[lang=en] .village-home .library-heading h1,html[lang=en] .home-poem{font-fa
 .village-home .home-hero.tong-hero{display:grid;grid-template-columns:minmax(0,1fr) 230px;align-items:center;gap:28px;min-height:300px;padding:18px 46px 0 34px;background:linear-gradient(110deg,#17251bf0,#28251ac9);border:1px solid #d3a85f45;box-shadow:0 12px 32px #0003;overflow:visible}
 .village-home .tong-hero:after{display:none}
 .tong-copy{min-width:0;padding:10px 0 22px;position:relative;z-index:1}
-.tong-eyebrow{display:block;color:#e6bd79;font-size:12px;font-weight:600;letter-spacing:.5px;margin-bottom:16px}
+
 .tea-question{display:inline-block;position:relative;max-width:100%;margin:0;padding:17px 22px;border:1px solid #e6c995;border-radius:19px;background:#f1dfbb;color:#3a2d18;font-size:clamp(26px,3.2vw,38px);font-weight:600;line-height:1.55;letter-spacing:-.5px;box-shadow:0 7px 22px #0002;overflow-wrap:break-word}
 .tea-question:after{content:'';position:absolute;right:-12px;top:27px;width:22px;height:20px;background:#f1dfbb;clip-path:polygon(0 0,100% 50%,0 100%)}
 .tong-hero .tea-hint{margin:21px 0 0;color:#decba7;font-size:13px;line-height:1.8;max-width:35ch}
@@ -247,7 +247,7 @@ html[lang=en] .village-home .library-heading h1,html[lang=en] .home-poem{font-fa
 @media(max-width:650px){
  :root[data-light] .village-home .night{background-position:18% bottom}
  .village-home .home-hero.tong-hero{grid-template-columns:minmax(0,1fr) 140px;gap:10px;min-height:232px;padding:17px 12px 0 17px;margin-top:23px}
- .tong-copy{padding:7px 0 23px}.tong-eyebrow{font-size:10px;margin-bottom:12px;letter-spacing:0}
+ .tong-copy{padding:7px 0 23px}
  .tea-question{font-size:21px;line-height:1.6;padding:13px 12px;border-radius:15px;letter-spacing:-.3px}.tea-question:after{right:-10px;top:24px;width:16px;height:17px}
  .tong-hero .tea-hint{font-size:11px;line-height:1.75;margin-top:15px}.tea-sprite{filter:drop-shadow(0 6px 7px #0003)}
  .village-home .hang-lantern{top:75px;right:23px;width:33px}.village-home .hang-lantern svg{width:29px}.village-home .hang-string{height:21px}
@@ -255,6 +255,13 @@ html[lang=en] .village-home .library-heading h1,html[lang=en] .home-poem{font-fa
 }
 @media(max-width:360px){
  .village-home .home-hero.tong-hero{grid-template-columns:minmax(0,1fr) 114px;gap:8px;padding:15px 9px 0 12px;min-height:220px}
- .tea-question{font-size:18px;padding:11px 10px}.tong-eyebrow{font-size:9px}.tong-hero .tea-hint{font-size:10px}
+ .tea-question{font-size:18px;padding:11px 10px}.tong-hero .tea-hint{font-size:10px}
 }
 @media(prefers-reduced-motion:reduce){.tea-pose{transition:none}.tea-flow,.tea-steam,.tea-sprite{animation:none!important}.tea-actor{transition:none}}
+
+/* The longer tea-stall name wraps cleanly beside the profile menu. */
+.village-home .games-brand{display:flex;align-items:center;gap:5px;white-space:normal;min-width:0;line-height:1.35}
+.village-home .games-brand .brand-label{color:inherit}
+.village-home .home-actions{flex-shrink:0}
+@media(max-width:650px){.village-home .games-brand{font-size:22px;gap:3px}.village-home .games-brand .brand-label{max-width:220px}.village-home .brand-dot{display:none}}
+@media(max-width:360px){.village-home .games-brand{font-size:19px}.village-home .games-brand .brand-label{max-width:180px}}

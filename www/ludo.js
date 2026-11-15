@@ -255,7 +255,7 @@ async function act(action, id) {
     case 'again': cpuGeneration++;busy=false;rolling=false;s.match = newMatch(m().kind, m().players.map(p => ({ name: p.name, cpu: p.cpu }))); s.saved = false; save(); render(); return next();
     case 'roll': return doRoll();
     case 'online-start': try { adopt(await api({ op: 'start', code: s.online.code, token: s.online.token })); render(); } catch (e) { toast(ERR[e.message] || 'সংযোগে সমস্যা।'); } return;
-    case 'share': { const text = t(`শীতলপাটিতে লুডু খেলি! কোড: ${s.online.code}`,`Join my Ludo game on Shitolpati! Code: ${s.online.code}`); try { if (navigator.share) await navigator.share({ text, url: location.href.split('?')[0] }); else { await navigator.clipboard.writeText(text); toast('কোড কপি হয়েছে।'); } } catch { } return; }
+    case 'share': { const text = t(`আনোয়ার মামা টি স্টলে লুডু খেলি! কোড: ${s.online.code}`,`Join my Ludo game on Anwar Mama Tea Stall! Code: ${s.online.code}`); try { if (navigator.share) await navigator.share({ text, url: location.href.split('?')[0] }); else { await navigator.clipboard.writeText(text); toast('কোড কপি হয়েছে।'); } } catch { } return; }
     case 'leave': case 'quit':
       if (!await confirmBox(online() ? 'ঘর ছেড়ে দেবেন?' : 'খেলা ছেড়ে দেবেন?', '', 'হ্যাঁ')) return;
       cpuGeneration++;busy=false;rolling=false;clearInterval(poll); s.online = null; s.match = null; s.phase = 'setup'; save(); return transition();

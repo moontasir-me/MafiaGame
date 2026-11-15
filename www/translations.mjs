@@ -1,7 +1,7 @@
 // UI copy shared by the home screen and individual games. Dynamic names and private
 // words are kept separate by localization.mjs. Long phrases take precedence.
 const lines = `
-শীতলপাটি|Shitolpati
+আনোয়ার মামা টি স্টল|Anwar Mama Tea Stall
 প্রোফাইল|Profile
 আমার প্রোফাইল|My profile
 নাম ও ছবি|Name & photo
@@ -635,7 +635,7 @@ const boardLines = `
 সবার নাম লিখুন।|Enter every player's name.
 আপনার নাম লিখুন।|Enter your name.
 খেলা ছেড়ে নতুন করে সাজান|Quit and set up again
-শীতলপাটিতে লুডু খেলি! কোড|Join my Ludo game on Shitolpati! Code
+আনোয়ার মামা টি স্টলে লুডু খেলি! কোড|Join my Ludo game on Anwar Mama Tea Stall! Code
 কোড কপি হয়েছে।|Code copied.
 খেলা ছেড়ে দেবেন?|Quit the game?
 `;
@@ -765,7 +765,7 @@ const extras = `
 অপেক্ষা…|Waiting…
 আরেকজনের অপেক্ষা…|Waiting for another player…
 ঘর যিনি খুলেছেন তিনি শুরু করবেন।|The room host will start the game.
-শীতলপাটিতে|On Shitolpati
+আনোয়ার মামা টি স্টলে|On Anwar Mama Tea Stall
 খেলি! কোড|Join my game! Code
 ঘর ভরে গেছে।|The room is full.
 এই নাম ঘরে আছে। প্রোফাইলের নাম বদলে আবার চেষ্টা করুন।|That name is taken in this room. Change your profile name and try again.
@@ -893,4 +893,4 @@ const datesAndLabels=`
 `;
 UI_PAIRS.push(...datesAndLabels.trim().split('\n').map(line=>line.split('|')));
 
-UI_PAIRS.push(['টং মামার আসর','Tong mama’s corner'],['টংয়ের আড্ডা','The village tea stall']);
+UI_PAIRS.push(['টংয়ের আড্ডা','The village tea stall']);

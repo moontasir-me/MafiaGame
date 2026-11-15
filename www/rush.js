@@ -254,7 +254,7 @@ async function act(action, id) {
     case 'offline-humans': case 'offline-cpus': {const c=mixedCounts(action==='offline-humans'?Number(id):people,action==='offline-cpus'?Number(id):computers,4,0);people=c.humans;computers=c.bots;return render();}
     case 'ready': if(local&&!localSeats[local.turn]?.cpu){localSeat=local.turn;handReady=true;return render();}return;
     case 'deal': try{localSeats=mixedRoster(localNames.slice(0,people),{bots:computers,max:4,botNames:BOTS});local=newGame(localSeats,rule);localSeat=0;handReady=people===1;saved=false;view='play';sound('notice');transition();return bots();}catch(e){return toast(e.message==='NAME'?'Enter a different name for each person (1–20 characters).':'Use 2–4 people and computers in total.');}
-    case 'share': { const text = `Play Colour Rush with me on শীতলপাটি. Code: ${online.code}`; try { if (navigator.share) await navigator.share({ text, url: location.href.split('?')[0] }); else { await navigator.clipboard.writeText(text); toast('Code copied.'); } } catch { } return; }
+    case 'share': { const text = `Play Colour Rush with me on Anwar Mama Tea Stall. Code: ${online.code}`; try { if (navigator.share) await navigator.share({ text, url: location.href.split('?')[0] }); else { await navigator.clipboard.writeText(text); toast('Code copied.'); } } catch { } return; }
     case 'start': return send({ op: 'start' });
     case 'again': saved = false; return send({ op: 'again' });
     case 'call': navigator.vibrate?.(30); sound('notice'); return send({ op: 'call' });

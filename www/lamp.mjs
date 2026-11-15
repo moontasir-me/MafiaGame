@@ -3,7 +3,7 @@ import { number as localeNumber } from './locale.mjs';
 import { esc, icon } from './ui-kit.mjs';
 import { soundEnabled, toggleSound } from './sound.mjs';
 
-/* The night's light: moonlight or the hurricane lamp. Chosen on the শীতলপাটি page, remembered on this phone. */
+/* The night's light: moonlight or the hurricane lamp. Chosen on the আনোয়ার মামা টি স্টল page, remembered on this phone. */
 export const readLight = () => { try { return localStorage.getItem('shitolpati.light') === 'lamp' ? 'lamp' : 'moon'; } catch { return 'moon'; } };
 export function setLight(v) { try { localStorage.setItem('shitolpati.light', v); } catch { } document.documentElement.dataset.light = v; }
 

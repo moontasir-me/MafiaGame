@@ -32,4 +32,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release delete apk-latest --yes --cleanup-tag || true
-          gh release create apk-latest Shitolpati.apk --title "শীতলপাটি Android" --notes "Newest build from ${GITHUB_SHA::7}. Install over the old app; your data stays." --latest
+          gh release create apk-latest Shitolpati.apk --title "আনোয়ার মামা টি স্টল Android" --notes "Newest build from ${GITHUB_SHA::7}. Install over the old app; your data stays." --latest
