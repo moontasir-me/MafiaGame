@@ -21,9 +21,9 @@ function openProfile() {
   $('#profile-name').focus();
 }
 
-/* The hanging lamp warms the paper palette; tap again for the cooler sage palette. */
-const lit = () => { try { return localStorage.getItem('shitolpati.light') === 'lamp'; } catch { return false; } };
-function paintLight() { const on = lit(); document.documentElement.dataset.light = on ? 'lamp' : 'moon'; const b = $('#lantern'); b.classList.toggle('is-lit', on); b.setAttribute('aria-pressed', on); b.setAttribute('aria-label', on ? 'হারিকেন নিভিয়ে দিন' : 'হারিকেন জ্বালান'); }
+/* The courtyard stays dark: lantern warmth or cool moonlight. New visitors arrive with the lamp lit. */
+const lit = () => { try { return localStorage.getItem('shitolpati.light') !== 'moon'; } catch { return true; } };
+function paintLight() { const on = lit(); document.documentElement.dataset.light = on ? 'lamp' : 'moon'; document.querySelector('meta[name="theme-color"]').content = on ? '#17140f' : '#101b24'; const b = $('#lantern'); b.classList.toggle('is-lit', on); b.setAttribute('aria-pressed', on); b.setAttribute('aria-label', on ? 'হারিকেন নিভিয়ে দিন' : 'হারিকেন জ্বালান'); }
 $('#lantern').onclick = () => { try { localStorage.setItem('shitolpati.light', lit() ? 'moon' : 'lamp'); } catch { } paintLight(); $('#lantern').classList.remove('swing'); void $('#lantern').offsetWidth; $('#lantern').classList.add('swing'); if (lit()) sound('notice'); };
 paintLight();
 
