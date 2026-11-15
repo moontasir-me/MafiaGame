@@ -1,0 +1,188 @@
+[
+  {
+    "world": "bn",
+    "role": "host",
+    "source": "exec-84d72aca-179c-44e6-83fb-96ca9a752c9f.png",
+    "asset": "www/assets/bn/host.png"
+  },
+  {
+    "world": "bn",
+    "role": "mafia",
+    "source": "exec-299531e8-ec17-4c3f-832d-e38099800a8a.png",
+    "asset": "www/assets/bn/mafia.png"
+  },
+  {
+    "world": "bn",
+    "role": "mafia-2",
+    "source": "exec-97be68fd-035b-4a3c-8150-25c885308c1f.png",
+    "asset": "www/assets/bn/mafia-2.png"
+  },
+  {
+    "world": "bn",
+    "role": "mafia-3",
+    "source": "exec-858352a2-3bc6-4cad-a4fc-ead39fd89d0c.png",
+    "asset": "www/assets/bn/mafia-3.png"
+  },
+  {
+    "world": "bn",
+    "role": "doctor",
+    "source": "exec-5e84b0cb-90a5-405d-87f0-2efcf9f6dc82.png",
+    "asset": "www/assets/bn/doctor.png"
+  },
+  {
+    "world": "bn",
+    "role": "police",
+    "source": "exec-6567746a-9e72-434d-8931-481b9d3f54fb.png",
+    "asset": "www/assets/bn/police.png"
+  },
+  {
+    "world": "bn",
+    "role": "bodyguard",
+    "source": "exec-334efdd1-bf5c-4406-977d-6c0ab731ebf5.png",
+    "asset": "www/assets/bn/bodyguard.png"
+  },
+  {
+    "world": "bn",
+    "role": "betrayer",
+    "source": "exec-7bd1f007-307d-4872-9526-d334a0179c21.png",
+    "asset": "www/assets/bn/betrayer.png"
+  },
+  {
+    "world": "bn",
+    "role": "astrologer",
+    "source": "exec-7132b290-dc62-43b9-b022-a54d8c284423.png",
+    "asset": "www/assets/bn/astrologer.png"
+  },
+  {
+    "world": "bn",
+    "role": "villager",
+    "source": "exec-d7a796f9-5ff9-47df-935c-89b197c12242.png",
+    "asset": "www/assets/bn/villager.png"
+  },
+  {
+    "world": "classic",
+    "role": "mafia",
+    "source": "exec-1c11a844-44e4-45c0-aeca-a469f1377e27.png",
+    "asset": "www/assets/classic/characters.svg#mafia"
+  },
+  {
+    "world": "classic",
+    "role": "doctor",
+    "source": "exec-572535a9-928b-4c0f-a075-46ffc2813315.png",
+    "asset": "www/assets/classic/characters.svg#doctor"
+  },
+  {
+    "world": "classic",
+    "role": "villager",
+    "source": "exec-bd483be0-54ad-43e1-8cd2-faf87f91e956.png",
+    "asset": "www/assets/classic/characters.svg#villager"
+  },
+  {
+    "world": "classic",
+    "role": "police",
+    "source": "exec-6ca19b02-cecf-4b6c-b9fd-d98ff873a217.png",
+    "asset": "www/assets/classic/characters.svg#police"
+  },
+  {
+    "world": "classic",
+    "role": "betrayer",
+    "source": "exec-d9ca83af-41d7-4da9-8489-c900b82b9de7.png",
+    "asset": "www/assets/classic/characters.svg#betrayer"
+  },
+  {
+    "world": "classic",
+    "role": "host",
+    "source": "exec-72f736dc-ed57-490d-87e6-ad435a9e5708.png",
+    "asset": "www/assets/classic/characters.svg#host"
+  },
+  {
+    "world": "spy",
+    "role": "agent",
+    "source": "exec-d6138c75-8034-421c-9535-461cc0b2592d.png",
+    "asset": "www/assets/spy/agent.svg"
+  },
+  {
+    "world": "spy",
+    "role": "detective",
+    "source": "exec-9cbfb1b6-ee6a-49e6-a9dd-02516806a327.png",
+    "asset": "www/assets/spy/detective.svg"
+  },
+  {
+    "world": "en",
+    "role": "host",
+    "source": "exec-42da9ddc-35cd-4b4a-a50c-a867e49c3bae.png",
+    "asset": "www/assets/en/host.png"
+  },
+  {
+    "world": "en",
+    "role": "mafia",
+    "source": "exec-8d9c6e1c-0308-401b-98d3-605040b1048b.png",
+    "asset": "www/assets/en/mafia.png"
+  },
+  {
+    "world": "en",
+    "role": "mafia-2",
+    "source": "exec-ca7fa601-a4c4-4205-9190-c799bbd7ce75.png",
+    "asset": "www/assets/en/mafia-2.png"
+  },
+  {
+    "world": "en",
+    "role": "mafia-3",
+    "source": "exec-5f33bb39-abbc-485d-bb0b-67fa7ba77d68.png",
+    "asset": "www/assets/en/mafia-3.png"
+  },
+  {
+    "world": "en",
+    "role": "doctor",
+    "source": "exec-64c30f67-dcc5-47cf-bea0-0ae421929ebb.png",
+    "asset": "www/assets/en/doctor.png"
+  },
+  {
+    "world": "en",
+    "role": "police",
+    "source": "exec-6a5ac34d-519b-4843-95aa-c480df34f566.png",
+    "asset": "www/assets/en/police.png"
+  },
+  {
+    "world": "en",
+    "role": "bodyguard",
+    "source": "exec-857d3bdc-3b7e-4576-8749-1fb8b1205009.png",
+    "asset": "www/assets/en/bodyguard.png"
+  },
+  {
+    "world": "en",
+    "role": "betrayer",
+    "source": "exec-ccfd1228-7515-4374-9912-aab167db78a5.png",
+    "asset": "www/assets/en/betrayer.png"
+  },
+  {
+    "world": "en",
+    "role": "astrologer",
+    "source": "exec-1a18a89c-0122-425a-b659-1dada495f059.png",
+    "asset": "www/assets/en/astrologer.png"
+  },
+  {
+    "world": "en",
+    "role": "villager",
+    "source": "exec-9ba1d3aa-0c17-4d4d-a7f3-d601febcead4.png",
+    "asset": "www/assets/en/villager.png"
+  },
+  {
+    "world": "bn",
+    "role": "cover",
+    "source": "exec-d4cd53ef-ac09-49cc-8371-4b51e5d787d7.png",
+    "asset": "www/assets/bn/cover.png"
+  },
+  {
+    "world": "en",
+    "role": "cover",
+    "source": "exec-3bf11829-9b3e-4ace-b0c4-343da3ec7d60.png",
+    "asset": "www/assets/en/cover.png"
+  },
+  {
+    "world": "classic",
+    "role": "cover",
+    "source": "exec-71ad7ae1-b97a-4142-9bb9-621160c7ef3a.png",
+    "asset": "www/assets/classic/cover.png"
+  }
+]
