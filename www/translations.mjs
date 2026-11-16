@@ -1,6 +1,8 @@
 // UI copy shared by the home screen and individual games. Dynamic names and private
 // words are kept separate by localization.mjs. Long phrases take precedence.
 const lines = `
+ধনী হবার মজার খেলা|Dhoni Hobar Mojar Khela
+অনলাইনে ২–৬ জন|2–6 players online
 আনোয়ার মামা টি স্টল|Anwar Mama Tea Stall
 প্রোফাইল|Profile
 আমার প্রোফাইল|My profile

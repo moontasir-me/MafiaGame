@@ -53,7 +53,7 @@ function settleAuction(m,now) {const a=m.auction;if(a.bidder!==null){const p=m.p
 function bankrupt(m,i,now) {
  const p=m.players[i],creditor=m.debt?.who===i?m.debt.to:null;p.out=true;p.eliminated=m.seq+1;
  if(creditor!==null&&!m.players[creditor].out){m.players[creditor].cash+=p.cash;for(const id of own(m,i))m.assets[id].owner=creditor;}
- else for(const id of own(m,i))m.assets[id]={owner:null,level:0,mortgaged:false};p.cash=0;m.offer=null;log(m,'out',{who:i});
+ else for(const id of own(m,i))m.assets[id]={owner:null,level:0,mortgaged:false};p.cash=0;if(m.debt?.to===i)m.debt.to=null;m.offer=null;log(m,'out',{who:i});
  if(m.auction){if(m.auction.bidder===i){m.auction.bid=0;m.auction.bidder=null;}if(!m.auction.passed.includes(i))m.auction.passed.push(i);}
  if(live(m).length<=1){finish(m,'last');return;}
  if(m.turn===i){m.auction=null;m.extra=false;next(m,now);}
