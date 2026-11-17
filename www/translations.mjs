@@ -1,6 +1,12 @@
 // UI copy shared by the home screen and individual games. Dynamic names and private
 // words are kept separate by localization.mjs. Long phrases take precedence.
 const lines = `
+পোকার|Poker
+বাঘাডুলি|Baghaduli
+এক ফোনে|One device
+খেলা শেষ করুন|End game
+নিশানা · বোর্ডে যেদিকে মারবেন ছুঁয়ে দিন|Aim · tap the board in the direction you want to strike
+মারার দিক|Strike direction
 ধনী হবার মজার খেলা|Dhoni Hobar Mojar Khela
 অনলাইনে ২–৬ জন|2–6 players online
 আনোয়ার মামা টি স্টল|Anwar Mama Tea Stall

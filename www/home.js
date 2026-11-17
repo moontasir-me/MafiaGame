@@ -1,5 +1,5 @@
 import { bindTeaHost } from './tea-host.mjs';
-import { getLanguage, saveLanguage, t } from './locale.mjs';
+import { t } from './locale.mjs';
 import { readProfile, saveProfile, photoFromFile } from './profile.mjs';
 import { soundEnabled, toggleSound, sound, unlockSound } from './sound.mjs';
 const $ = q => document.querySelector(q);
@@ -25,8 +25,8 @@ function openProfile() {
 
 /* The courtyard stays dark: lantern warmth or cool moonlight. New visitors arrive with the lamp lit. */
 const lit = () => { try { return localStorage.getItem('shitolpati.light') !== 'moon'; } catch { return true; } };
-function paintLight() { const on = lit(); document.documentElement.dataset.light = on ? 'lamp' : 'moon'; document.querySelector('meta[name="theme-color"]').content = on ? '#17140f' : '#101b24'; const b = $('#lantern'); b.classList.toggle('is-lit', on); b.setAttribute('aria-pressed', on); b.setAttribute('aria-label', on ? 'হারিকেন নিভিয়ে দিন' : 'হারিকেন জ্বালান'); }
-$('#lantern').onclick = () => { try { localStorage.setItem('shitolpati.light', lit() ? 'moon' : 'lamp'); } catch { } paintLight(); $('#lantern').classList.remove('swing'); void $('#lantern').offsetWidth; $('#lantern').classList.add('swing'); if (lit()) sound('notice'); };
+function paintLight() { const on = lit(); document.documentElement.dataset.light = on ? 'lamp' : 'moon';document.documentElement.dataset.period=on?'night':'day'; document.querySelector('meta[name="theme-color"]').content = on ? '#17140f' : '#101b24'; const b = $('#lantern'); b.classList.toggle('is-lit', on); b.setAttribute('aria-pressed', on); b.setAttribute('aria-label', on ? 'হারিকেন নিভিয়ে দিন' : 'হারিকেন জ্বালান'); }
+$('#lantern').onclick = () => { try { localStorage.setItem('shitolpati.light', lit() ? 'moon' : 'lamp'); } catch { } paintLight();dispatchEvent(new Event('app-light-change')); $('#lantern').classList.remove('swing'); void $('#lantern').offsetWidth; $('#lantern').classList.add('swing'); if (lit()) sound('notice'); };
 paintLight();
 
 /* Offline: every game, on one phone. Online: only games that have an online room, opened in their online version. */
@@ -35,13 +35,13 @@ function paintPlay() {
   const on = playOnline();
   document.querySelectorAll('[data-play-set]').forEach(b => { const me = (b.dataset.playSet === 'online') === on; b.classList.toggle('is-on', me); b.setAttribute('aria-checked', me); });
   document.querySelectorAll('.game-tile').forEach(a => {
-    const ok = on ? !!a.dataset.online : !a.dataset.onlyOnline;
+    const ok = !a.dataset.onlyOnline || on;
     a.classList.toggle('is-off', !ok); a.toggleAttribute('aria-disabled', !ok); a.tabIndex = ok ? 0 : -1;
-    if (a.dataset.offline) a.href = on ? a.dataset.online : a.dataset.offline;
+    if (a.dataset.offline) a.href = on && a.dataset.online ? a.dataset.online : a.dataset.offline;
     const count = a.querySelector('.tile-players');
     if (count) { const label = on && count.dataset.countOnline ? count.dataset.countOnline : count.dataset.countOffline; count.querySelector('span').textContent = label; count.title = on && count.dataset.countOnline ? (a.classList.contains('mafia-tile') ? label + ' খেলোয়াড়, সঙ্গে ১ জন হোস্ট' : label + ' খেলোয়াড়') : count.dataset.countHint; }
     a.querySelector('.tile-badge')?.remove();
-    if (on) a.querySelector('.tile-copy').insertAdjacentHTML('beforeend', `<span class="tile-badge">${ok ? 'অনলাইন' : 'শুধু অফলাইনে'}</span>`);
+    if (on) a.querySelector('.tile-copy').insertAdjacentHTML('beforeend', `<span class="tile-badge">${a.dataset.online?'অনলাইন':'এক ফোনে'}</span>`);
     else if (a.dataset.onlyOnline) a.querySelector('.tile-copy').insertAdjacentHTML('beforeend', '<span class="tile-badge">শুধু অনলাইনে</span>');
   });
 }
@@ -64,16 +64,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && !menu.hidd
 paintProfile();
 if ('serviceWorker' in navigator && !window.Android) navigator.serviceWorker.register('./sw.js').catch(() => {});
 
-function openLanguage() {
-  const close = () => { $('#home-overlay').innerHTML = ''; pill.focus(); };
-  $('#home-overlay').innerHTML = `<div class="home-scrim"><section class="home-dialog" role="dialog" aria-modal="true" aria-labelledby="language-title"><div class="home-dialog-head"><h2 id="language-title">${t('ভাষা বেছে নিন','Choose language')}</h2><button type="button" class="home-close" id="language-close" aria-label="${t('বন্ধ করুন','Close')}">×</button></div><p class="language-note">${t('সব খেলা আপনার পছন্দের ভাষায় দেখাবে। Colour Rush সবসময় ইংরেজিতে থাকবে।','Your choice applies to every game. Colour Rush stays in English.')}</p><div class="language-options" role="radiogroup" aria-label="Language">${[['bn','বাংলা'],['en','English']].map(([id,label])=>`<button type="button" data-language="${id}" role="radio" aria-checked="${getLanguage()===id}" data-no-translate><span>${label}</span><span aria-hidden="true">${getLanguage()===id?'✓':''}</span></button>`).join('')}</div></section></div>`;
-  $('#language-close').onclick=close;
-  $('.home-scrim').onclick=e=>{if(e.target===e.currentTarget)close();};
-  $('.home-dialog').onkeydown=e=>{if(e.key==='Escape')close();};
-  document.querySelectorAll('[data-language]').forEach(b=>b.onclick=()=>{saveLanguage(b.dataset.language);location.reload();});
-  document.querySelector(`[data-language="${getLanguage()}"]`).focus();
-}
-menu.querySelector('[data-menu=language]').onclick=()=>{showMenu(false);openLanguage();};
 
-// Mama greets, pours, then offers a fresh glass.
+addEventListener('app-light-change',paintLight);
+addEventListener('app-language-change',paintProfile);
 bindTeaHost(document.querySelector('.tong-hero'),{sound:kind=>{unlockSound();sound(kind);}});

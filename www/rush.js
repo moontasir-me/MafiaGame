@@ -272,3 +272,5 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.ser
 
 function hideLocalHands(){if(!ONLINE&&local&&humanSeats(localSeats).length>1&&handReady){handReady=false;render();}}
 addEventListener('blur',hideLocalHands);document.addEventListener('visibilitychange',()=>{if(document.hidden)hideLocalHands();});window.onNativePause=hideLocalHands;
+
+addEventListener('app-language-change',()=>render());

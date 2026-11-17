@@ -1,7 +1,7 @@
 import { RIDDLES as RIDDLES_BN } from './riddles.mjs';
 import { RIDDLES_EN } from './riddles-en.mjs';
 import { getLanguage, number as localeNumber } from './locale.mjs';
-const RIDDLES=getLanguage()==='en'?RIDDLES_EN:RIDDLES_BN;
+let RIDDLES=getLanguage()==='en'?RIDDLES_EN:RIDDLES_BN;
 import { LEVELS, byLevel } from './riddle-levels.mjs';
 import { readAccounts, ensureAccount } from './accounts.mjs';
 import { sound, soundEnabled, toggleSound } from './sound.mjs';
@@ -14,10 +14,10 @@ const KEY = 'kalidas.v1', ART = { POET: 'assets/kalidas/poet-avatar.webp', PORTR
 const TIMES = [15, 30, 45, 60, 90, 120];
 const NOBODY = 'nobody', US = 'us';
 // A fresh short folk riddle on every visit (short enough to read at a glance, with a one-word answer).
-const SHORT = RIDDLES.filter(([q, a]) => q.length <= 70 && a.length <= 14 && !/[A-Za-z?]/.test(q)), HERO = SHORT[crypto.getRandomValues(new Uint32Array(1))[0] % SHORT.length] || RIDDLES[0];
+let SHORT = RIDDLES.filter(([q, a]) => q.length <= 70 && a.length <= 14 && !/[A-Za-z?]/.test(q)), HERO = SHORT[crypto.getRandomValues(new Uint32Array(1))[0] % SHORT.length] || RIDDLES[0];
 
 // Riddles never repeat within a level until that whole level has been played once.
-const BY = byLevel(RIDDLES), LEVEL_KEYS = Object.keys(LEVELS);
+let BY = byLevel(RIDDLES);const LEVEL_KEYS = Object.keys(LEVELS);
 function shuffle(list) { const a = [...list]; for (let i = a.length - 1; i > 0; i--) { const j = crypto.getRandomValues(new Uint32Array(1))[0] % (i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 const freshDecks = () => Object.fromEntries(LEVEL_KEYS.map(k => [k, shuffle(BY[k])]));
 function fresh() { return { v: 2, phase: 'setup', players: [], seconds: 45, level: 'easy', decks: freshDecks(), pos: { easy: 0, medium: 0, hard: 0 }, asked: 0, endsAt: null, revealed: false, timedOut: false, current: null, currentLevel: 'easy', choice: null, group: { score: 0, history: [] } }; }
@@ -37,7 +37,7 @@ try {
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch { toast('তথ্য সেভ করা যায়নি।'); } };
 function toast(text) { clearTimeout(toastTimer); const t = $('#toast'); t.textContent = text; t.classList.add('visible'); toastTimer = setTimeout(() => t.classList.remove('visible'), 2600); }
 const button = (text, action, cls = 'primary', ico = 'arrow', extra = '') => `<button type="button" class="btn ${cls}" data-action="${action}" ${extra}>${text}${ico ? icon(ico) : ''}</button>`;
-const riddle = () => RIDDLES[s.current % RIDDLES.length] || ['', ''];
+const riddle = () => s.activeRiddle || RIDDLES[s.current % RIDDLES.length] || ['', ''];
 const left = () => s.endsAt ? Math.max(0, Math.ceil((s.endsAt - Date.now()) / 1000)) : 0;
 const clock = n => `${bn(Math.floor(n / 60))}:${bn(n % 60).padStart(2, '০')}`;
 const playing = () => s.phase === 'ask';
@@ -150,7 +150,7 @@ const transition = fn => leaveScreen($('#screen'), () => { fn?.(); render(); win
 function nextRiddle() {
   const k = s.level, deck = s.decks[k];
   if (s.pos[k] >= deck.length) { s.decks[k] = shuffle(BY[k]); s.pos[k] = 0; }
-  s.current = s.decks[k][s.pos[k]++]; s.currentLevel = k; s.asked++; s.phase = 'ask'; s.revealed = false; s.timedOut = false; s.choice = null; s.endsAt = Date.now() + s.seconds * 1000;
+  s.current = s.decks[k][s.pos[k]++];s.activeRiddle=RIDDLES[s.current % RIDDLES.length]; s.currentLevel = k; s.asked++; s.phase = 'ask'; s.revealed = false; s.timedOut = false; s.choice = null; s.endsAt = Date.now() + s.seconds * 1000;
 }
 function reveal(timedOut = false) { if (!playing() || s.revealed) return; s.revealed = true; s.timedOut = timedOut; s.endsAt = null; save(); sound(timedOut ? 'timer' : 'notice'); render(); }
 function record() {
@@ -222,3 +222,5 @@ window.onNativeBack = () => { if ($('#overlay').children.length) return closeOve
 
 render();
 if ('serviceWorker' in navigator && !window.Android && location.protocol !== 'file:') navigator.serviceWorker.register('./sw.js').catch(() => { });
+
+addEventListener('app-language-change',()=>{if(s.phase==='ask'&&!s.activeRiddle)s.activeRiddle=riddle();RIDDLES=getLanguage()==='en'?RIDDLES_EN:RIDDLES_BN;BY=byLevel(RIDDLES);s.decks=freshDecks();s.pos={easy:0,medium:0,hard:0};SHORT=RIDDLES.filter(([q,a])=>q.length<=70&&a.length<=14);HERO=SHORT[0]||RIDDLES[0];save();render();});

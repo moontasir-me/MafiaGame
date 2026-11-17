@@ -266,3 +266,5 @@ async function act(action, id) {
 render();
 if (online()) startPolling(); else next();
 if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw.js').catch(() => { });
+
+addEventListener('app-language-change',()=>render());

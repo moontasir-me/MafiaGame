@@ -165,3 +165,5 @@ async function act(action, id) {
 if (ONLINE) { s = { ...fresh() }; try { const saved = JSON.parse(sessionStorage.getItem('tinguti.online')); if (saved) tableApi({ game: 'tinguti', op: 'state', ...saved }).then(v => { online = { ...saved }; adopt(v); startPolling(); render(); }).catch(() => { }); } catch { } }
 render(); cpu();
 if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw.js').catch(() => { });
+
+addEventListener('app-language-change',()=>render());

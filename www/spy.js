@@ -249,3 +249,5 @@ async function endMatch() {
   if (s.set?.games.length) saveMatch({ id: s.set.id, game: 'spy', games: s.set.games.length, players: s.players.map(p => ({ name: p.name, points: p.score, recent: p.history.slice(0, 5).map(h => ({ won: h.won, img: portrait(h.role), label: `${ROLE[h.role] || h.role} · ${h.won ? 'জয়' : 'পরাজয়'}` })) })) });
   s.set = null; s.players.forEach(p => { p.score = 0; }); resetSpy(s); view = 'play'; save(); toast('ম্যাচের ফল সেভ হয়েছে'); transition();
 }
+
+addEventListener('app-language-change',()=>render());

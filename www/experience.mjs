@@ -1,3 +1,4 @@
+import './app-controls.mjs';
 import { startLocalization } from './localization.mjs';
 startLocalization();
 /* Shared visual feedback only. No game state, timers, rules or board coordinates. */

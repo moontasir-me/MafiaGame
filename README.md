@@ -83,3 +83,11 @@ The host runs the game and holds no role. Points: Mafia win — Mafia 3, Betraye
 Ludo (including Snake Ludo) and Dots & Boxes now let you choose human and computer counts together, within four total seats. Name every human; computer difficulty remains configurable. Pen Fight’s computer mode allows up to three people alongside its computer, preserving each person’s pen and account. Colour Rush supports 2–4 total human/computer seats, including an all-human table. Human cards stay out of the page between turns and while computers play; a named handoff screen opens the next hand only after confirmation. Completed games record every human’s ranking points.
 
 When a Spy is caught by a confirmed vote, the case ends and points are recorded once. The result stays visible for five seconds, then a fresh word and new roles are dealt, starting the phone order from the caught Spy. “ফল দেখে থাকুন” pauses automatic progression for reading scores. Automatic progression also pauses in background tabs, menus and other sections. Existing match scores continue across cases; the match can still be finished and saved manually.
+
+## Welcoming day/night update
+
+The small controls beside the menu switch Bangla/English without restarting a game, toggle daylight/lantern night, and end the current game back at its own setup screen. Colour Rush continues to use English. Hidden words and dealt cards retain their identities when the UI language changes. Online/offline preference no longer blocks opening games that only use one device.
+
+Pen Fight supports tap-to-aim and a pulsing strength button, with a manual power slider; dragging a pen remains available. Dhoni uses Dhaka locations, proper pip dice, house/hotel pieces and an independent scrolling information panel next to the board on tablets and desktops.
+
+**Baghaduli** plays five marbles per round on a simulated sloped peg board; the red pocket ends that round with zero round points. **Poker** is offline Texas Hold’em for 2–6 seats, with friends, computers, private-card handoffs, blinds, legal raises, side pots and split pots. Both use the same cartoon tea-stall illustration style and save their games locally.

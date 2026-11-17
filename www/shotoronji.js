@@ -220,3 +220,5 @@ if (ONLINE) try { const saved = JSON.parse(sessionStorage.getItem('shotoronji.on
 render();
 if (cpuTurn()) cpuMove();
 if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw.js').catch(() => { });
+
+addEventListener('app-language-change',()=>render());

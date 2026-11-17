@@ -2,7 +2,7 @@ import {assetUrl} from './asset-urls.mjs';
 // One shared record of finished matches (game sets) for every game on this device.
 // A match: {id, game:'mafia'|'spy'|'kalidas'|'pen'|'fib'|'shotoronji'|'chor', date, games, players:[{name, points}]}
 const KEY = 'jomfa.history.v1', LIMIT = 500;
-export const GAMES = { dhoni:'ধনী হবার মজার খেলা', mafia: 'Mafia', spy: 'Spy', kalidas: 'কহেন কবি কালিদাস', pen: 'পেন ফাইট', fib: 'Fibonacci', shotoronji: 'চতুরঙ্গ', chor: 'চোর ডাকাত পুলিশ বাবু', ludo: 'লুডু', carrom: 'ক্যারম', dots: 'জায়গা দখল', tinguti: 'তিন গুটি', rush: 'Colour Rush' };
+export const GAMES = { poker:'পোকার',baghaduli:'বাঘাডুলি', dhoni:'ধনী হবার মজার খেলা', mafia: 'Mafia', spy: 'Spy', kalidas: 'কহেন কবি কালিদাস', pen: 'পেন ফাইট', fib: 'Fibonacci', shotoronji: 'চতুরঙ্গ', chor: 'চোর ডাকাত পুলিশ বাবু', ludo: 'লুডু', carrom: 'ক্যারম', dots: 'জায়গা দখল', tinguti: 'তিন গুটি', rush: 'Colour Rush' };
 
 export function readHistory(storage = localStorage) {
   try { const list = JSON.parse(storage.getItem(KEY)); if(!Array.isArray(list))return [];const valid=list.filter(m=>m&&GAMES[m.game]&&Array.isArray(m.players));for(const m of valid)for(const p of m.players)for(const r of(Array.isArray(p?.recent)?p.recent:[]))if(r.img)r.img=assetUrl(r.img);return valid; } catch { return []; }

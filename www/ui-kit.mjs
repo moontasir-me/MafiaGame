@@ -1,3 +1,4 @@
+import {t as liveText} from './locale.mjs';
 import {assetUrl} from './asset-urls.mjs';
 // Shared pieces for Mafia and Spy, so both games look and behave the same way.
 export const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -77,7 +78,7 @@ export function appShell({ brand, brandSub, brandIcon, brandAction, homeAction =
   const item = (t, cls) => `<button type="button" class="${cls}${t.id === active ? ' is-active' : ''}" data-action="${t.action}"${t.id === active ? ' aria-current="page"' : ''}>${icon(t.icon)}<span>${t.label}</span></button>`;
   return `<div class="kit-shell${hideTabs ? ' no-tabs' : ''}">
 <aside class="kit-side"><a class="kit-brand" href="#" data-action="${brandAction}"><span class="kit-brand-icon">${icon(brandIcon)}</span><span>${brand}${brandSub && brandSub !== brand ? `<small>${brandSub}</small>` : ''}</span></a>${hideTabs ? '' : `<nav class="kit-side-nav" aria-label="${esc(labels.sections)}">${tabs.map(t => item(t, 'kit-side-item')).join('')}</nav>`}</aside>
-<main class="kit-main"><header class="kit-top"><a class="kit-pill kit-back" href="${backHref}">${icon('back')}<span>${labels.back}</span></a><button type="button" class="kit-title" data-action="${homeAction}" aria-label="${esc(brand)}: এই খেলার শুরুর পাতা"><strong>${brand}</strong>${crumb && crumb !== brand ? `<small>${crumb}</small>` : ''}</button><button type="button" class="kit-pill kit-menu" data-action="app-menu" aria-haspopup="dialog">${menuIcon()}<span>${labels.menu}</span></button></header>
+<main class="kit-main"><header class="kit-top"><a class="kit-pill kit-back" href="${backHref}">${icon('back')}<span>${labels.back}</span></a><button type="button" class="kit-title" data-action="${homeAction}" aria-label="${esc(brand)}: ${liveText('এই খেলার শুরু','Game home')}"><strong>${brand}</strong>${crumb && crumb !== brand ? `<small>${crumb}</small>` : ''}</button><button type="button" class="kit-pill kit-menu" data-action="app-menu" aria-haspopup="dialog">${menuIcon()}<span>${labels.menu}</span></button></header>
 <div class="content ${contentClass}" id="screen">${body}</div><footer class="app-credit">${credit}</footer></main>
 ${hideTabs ? '' : `<nav class="kit-tabs" aria-label="${esc(labels.sections)}">${tabs.map(t => item(t, 'kit-tab')).join('')}</nav>`}</div>`;
 }

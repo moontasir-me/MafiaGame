@@ -6,7 +6,7 @@ import { esc, icon, appShell, pageHead, rankTable, fameTable, playerDot, enterSc
 const $ = q => document.querySelector(q);
 const bn = localeNumber;
 const date = d => new Date(d).toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' });
-const ART = { dhoni:'assets/dhoni/cover-tile.webp', mafia: 'assets/bn/mafia.webp', spy: 'assets/spy/detective.webp', kalidas: 'assets/kalidas/poet-avatar.webp', pen: 'assets/pen/pinpoint.svg', fib: 'assets/fib/cover-tile.webp', shotoronji: 'assets/shotoronji/cover-tile.webp', chor: 'assets/chor/cover-tile.webp', ludo: 'assets/ludo/cover-tile.webp', carrom: 'assets/carrom/cover-tile.webp', dots: 'assets/dots/cover-tile.webp', tinguti: 'assets/tinguti/cover-tile.webp', rush: 'assets/rush/cover-tile.webp' };
+const ART = { poker:'assets/poker/cover-tile.webp',baghaduli:'assets/baghaduli/cover-tile.webp', dhoni:'assets/dhoni/cover-tile.webp', mafia: 'assets/bn/mafia.webp', spy: 'assets/spy/detective.webp', kalidas: 'assets/kalidas/poet-avatar.webp', pen: 'assets/pen/pinpoint.svg', fib: 'assets/fib/cover-tile.webp', shotoronji: 'assets/shotoronji/cover-tile.webp', chor: 'assets/chor/cover-tile.webp', ludo: 'assets/ludo/cover-tile.webp', carrom: 'assets/carrom/cover-tile.webp', dots: 'assets/dots/cover-tile.webp', tinguti: 'assets/tinguti/cover-tile.webp', rush: 'assets/rush/cover-tile.webp' };
 let filter = new URLSearchParams(location.search).get('game');
 if (!GAMES[filter]) filter = null;
 

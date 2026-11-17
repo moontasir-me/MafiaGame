@@ -220,3 +220,5 @@ if (s.phase === 'play' && s.picked !== null) newQuestion();
 
 render();
 if ('serviceWorker' in navigator && !window.Android && location.protocol !== 'file:') navigator.serviceWorker.register('./sw.js').catch(() => { });
+
+addEventListener('app-language-change',()=>render());

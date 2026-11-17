@@ -1,3 +1,5 @@
+import {t} from './locale.mjs';
+import {strengthControl,bindStrength} from './pulse-strength.mjs';
 import { translateText } from './localization.mjs';
 import { number as localeNumber } from './locale.mjs';
 import { sound, soundEnabled, toggleSound } from './sound.mjs';
@@ -29,7 +31,7 @@ const CPU = {
 };
 
 let s = load(), view = 'play', lastScreen = '', aim = null, raf = 0, modalResolve = null, shopFor = null;
-let fx = [], shake = 0, banner = null;
+let fx = [], shake = 0, banner = null,strikeAngle=0,disposeStrength=()=>{};
 // The round banner runs on the real clock, so nothing waits on screen repaints.
 const bannerUp = () => { if (banner && performance.now() >= banner.until) banner = null; return !!banner; };
 
@@ -247,7 +249,7 @@ function bindBench() {
   c.onpointerdown = e => {
     if (s.round.moving || byId(s.round.turn)?.cpu || (online && s.round.turn !== 'p' + online.me)) return; const p = s.round.pens.find(q => q.pid === s.round.turn && !q.out); if (!p) return;
     const [x, y] = toWorld(e), [a0, a1, b0, b1] = ends(p), ux = b0 - a0, uy = b1 - a1, t = Math.max(0, Math.min(1, ((x - a0) * ux + (y - a1) * uy) / (ux * ux + uy * uy))), cx = a0 + ux * t, cy = a1 + uy * t;
-    if (Math.hypot(x - cx, y - cy) > 34) return toast(`${byId(p.pid).name}-এর কলম ধরে টেনে ছাড়ুন।`);
+    if (Math.hypot(x - cx, y - cy) > 34){strikeAngle=Math.atan2(y-p.y,x-p.x);const el=$('#pen-angle');if(el)el.value=Math.round((strikeAngle*180/Math.PI+360)%360);if($('#pen-direction'))$('#pen-direction').style.transform=`rotate(${strikeAngle}rad)`;return;}
     aim = { pen: p, cx, cy, x, y, sx: x, sy: y }; c.setPointerCapture(e.pointerId); loop();
   };
   c.onpointermove = e => { if (!aim) return; [aim.sx, aim.sy] = toWorld(e); };
@@ -340,7 +342,7 @@ function play() {
   const r = s.round, p = byId(r.turn), i = s.players.indexOf(p);
   return `<div class="pen-turn" style="--dot:${playerColour(p.name, i)}">${playerDot(p.name, i)}<span><b>${esc(p.name)}-এর চাল</b><small>${r.moving ? 'কলম চলছে…' : p.cpu ? 'কম্পিউটার নিশানা ঠিক করছে…' : 'নিজের কলম ধরে পেছনে টেনে ছেড়ে দিন'}</small></span><span class="pen-round">রাউন্ড ${bn(s.set.rounds + 1)}/${bn(s.set.total)}</span></div>
   <div class="bench-wrap"><canvas id="bench" aria-label="বেঞ্চ: ${s.round.pens.filter(q => !q.out).map(q => byId(q.pid).name).join(', ')}-এর কলম আছে"></canvas></div>
-  <div class="pen-scores">${s.players.map((q, k) => `<span class="${r.pens.find(x => x.pid === q.id)?.out ? 'is-out' : ''}">${playerDot(q.name, k)}${esc(q.name)} <b>${bn(q.score)}</b></span>`).join('')}</div>
+  <section class="pen-strike-ui"><label>${t('নিশানা · বোর্ডে যেদিকে মারবেন ছুঁয়ে দিন','Aim · tap the board in the direction you want to strike')}<span id="pen-direction" class="pen-direction" aria-hidden="true">➜</span><input id="pen-angle" type="range" min="0" max="359" value="${Math.round((strikeAngle*180/Math.PI+360)%360)}" aria-label="${t('মারার দিক','Strike direction')}"></label>${strengthControl('pen-strength')}</section><div class="pen-scores">${s.players.map((q, k) => `<span class="${r.pens.find(x => x.pid === q.id)?.out ? 'is-out' : ''}">${playerDot(q.name, k)}${esc(q.name)} <b>${bn(q.score)}</b></span>`).join('')}</div>
   ${button('ম্যাচ শেষ করুন', 'end', 'text wide pen-end', 'trophy')}`;
 }
 const table = () => rankTable(s.players.map(p => ({ name: p.name, score: p.score, history: (p.history || []).map(h => ({ ...h })) })), labels);
@@ -375,7 +377,7 @@ function ranking() {
 const button = (label, action, cls, ic, extra = '') => `<button type="button" class="btn ${cls}" data-action="${action}" ${extra}>${icon(ic)}${label}</button>`;
 
 function screenKey() { return view + s.phase + (s.set?.rounds || 0); }
-function render() {
+function render() {disposeStrength();
   const key = screenKey(), changed = key !== lastScreen; lastScreen = key;
   const body = view === 'rules' ? rules() : view === 'ranking' ? ranking() : view === 'shop' ? shop() : s.phase === 'play' ? play() : s.phase === 'roundover' || s.phase === 'over' ? roundOver() : setup();
   $('#app').innerHTML = appShell({ brand: 'পেন ফাইট', brandSub: 'বেঞ্চের খেলা', brandIcon: 'edit', brandAction: 'tab-play', crumb: ({ rules: 'নিয়ম', ranking: 'র‍্যাঙ্কিং', shop: 'দোকান' })[view] || (s.phase === 'setup' ? 'কলম বাছাই' : `রাউন্ড ${bn(s.set.rounds + (s.phase === 'play' ? 1 : 0))}`), active: view, contentClass: 'game-content pen-content', labels: { back: 'সব খেলা', menu: 'মেনু', sections: 'খেলার অংশ' },
@@ -389,7 +391,7 @@ function render() {
   if (view === 'play' && ONLINE && !online) bindOnlineEntry($('#screen'), { onCreate: name => enter({ op: 'create', name, pen: myPen }), onJoin: (name, code) => enter({ op: 'join', name, code, pen: myPen }) });
   if (view === 'play' && online && !online.started) bindLobby($('#screen'), { code: online.code, game: 'পেন ফাইট', onStart: () => send({ op: 'start' }), onLeave: () => leaveRoom() });
   if (view === 'shop') drawPreview();
-  if (view === 'play' && s.phase === 'play') { bindBench(); if (s.round.moving || bannerUp() || fx.length) loop(); cpuTurn(); }
+  if (view === 'play' && s.phase === 'play') { bindBench();const own=()=>s.round?.pens.find(p=>p.pid===s.round.turn&&!p.out),allowed=()=>!s.round?.moving&&!byId(s.round?.turn)?.cpu&&(!online||s.round.turn==='p'+online.me);const p=own(),target=s.round.pens.find(q=>!q.out&&q!==p);if(p&&target)strikeAngle=Math.atan2(target.y-p.y,target.x-p.x);$('#pen-angle').value=Math.round((strikeAngle*180/Math.PI+360)%360);$('#pen-direction').style.transform=`rotate(${strikeAngle}rad)`;$('#pen-angle').oninput=e=>{strikeAngle=Number(e.target.value)*Math.PI/180;$('#pen-direction').style.transform=`rotate(${strikeAngle}rad)`;};disposeStrength=bindStrength($('#pen-strength'),power=>{const p=own();if(!p||!allowed())return;aim=null;flick(p,p.x,p.y,Math.cos(strikeAngle)*POWER*p.m*power,Math.sin(strikeAngle)*POWER*p.m*power);},{enabled:allowed}); if (s.round.moving || bannerUp() || fx.length) loop(); cpuTurn(); }
   if (changed) enterScreen($('#screen'));
 }
 function addPlayer(name) {
@@ -440,7 +442,7 @@ async function act(action, id) {
       if (s.phase === 'setup') return;
       if (!await confirm('ম্যাচ শেষ করবেন?', 'ম্যাচের ফল র‍্যাঙ্কিংয়ে সেভ হবে, তারপর নতুন খেলা শুরু করা যাবে।')) return;
       if (s.set?.rounds) saveMatch({ id: s.set.id, game: 'pen', games: s.set.rounds, players: s.players.map(p => ({ name: p.name, points: p.score, recent: p.history || [] })) });
-      stop(); s = { ...fresh(), mode: s.mode, cpuLevel: s.cpuLevel, rounds: s.rounds, players: s.players.map(p => ({ ...p, score: 0, history: [] })) }; save(); view = 'ranking'; return transition();
+      stop(); s = { ...fresh(), mode: s.mode, cpuLevel: s.cpuLevel, rounds: s.rounds, players: s.players.map(p => ({ ...p, score: 0, history: [] })) }; save(); view = 'play'; return transition();
   }
 }
 
@@ -522,6 +524,10 @@ if (ONLINE) { s = { ...fresh(), phase: 'setup' }; try { const saved = JSON.parse
 // A roll interrupted by a reload resumes from where the pens were last saved.
 if (s.round?.moving) { s.round.moving = false; s.round.pens.forEach(p => { p.vx = p.vy = p.w = 0; if (p.out) p.fall = 1; }); }
 // Players removed from the device accounts since the last visit leave the table.
-if (s.phase === 'setup') { s.players = s.players.filter(p => p.cpu || findAccount(p.name)); setMode(s.mode || (s.players.some(p => p.cpu) || !s.players.length ? 'cpu' : 'friends')); }
+if (s.phase === 'setup') { s.players = s.players.filter(p => p.cpu || findAccount(p.name));if(!ONLINE&&!s.players.some(p=>!p.cpu)){const name=onlineName()||t('আপনি','You');try{ensureAccount(name);s.players.unshift({id:crypto.randomUUID(),name,pen:'pinpoint',score:0,history:[]});}catch{}}setMode(s.mode || (s.players.some(p => p.cpu) || !s.players.length ? 'cpu' : 'friends')); }
 if (new URLSearchParams(location.search).get('view') === 'shop') view = 'shop';
 render();
+
+addEventListener('app-language-change',()=>render());
+
+addEventListener('app-end-game',e=>{e.preventDefault();if(online){act('end');return;}if(s.set?.rounds)saveMatch({id:s.set.id,game:'pen',games:s.set.rounds,players:s.players.map(p=>({name:p.name,points:p.score,recent:p.history||[]}))});disposeStrength();stop();s={...fresh(),mode:s.mode,cpuLevel:s.cpuLevel,rounds:s.rounds,players:s.players.map(p=>({...p,score:0,history:[]}))};save();view='play';render();scrollTo({top:0,behavior:'auto'});});

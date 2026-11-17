@@ -164,3 +164,5 @@ async function act(action, id) {
 if (ONLINE) { s = { ...fresh(), size: s.size }; try { const saved = JSON.parse(sessionStorage.getItem('dots.online')); if (saved) tableApi({ game: 'dots', op: 'state', ...saved }).then(v => { online = { ...saved }; adopt(v); startPolling(); render(); }).catch(() => { }); } catch { } }
 render(); cpu();
 if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw.js').catch(() => { });
+
+addEventListener('app-language-change',()=>render());
