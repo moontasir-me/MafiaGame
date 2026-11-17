@@ -26,13 +26,15 @@ A collection of Bangla party and board games for one phone or many. The home pag
 | ১১ | **তিন গুটি** — three pebbles each on a board scratched into the courtyard | 2 | ✓ | 3 levels | ✓ |
 | ১২ | **Colour Rush** — English colour-matching card game, Classic or Ruthless rules | 2–20 online, 4 offline | ✓ (vs 3 bots) | 3 bots | ✓ |
 
-| ১৩ | **ধনী হবার মজার খেলা** — Bangladesh property trading, auctions, building and deals | 2–6 | | | ✓ |
+| ১৩ | **ধনী হবার মজার খেলা** — Bangladesh property trading, auctions, building and deals | 1–6 offline, 2–6 online | ✓ | ✓ | ✓ |
 
 The **অফলাইন / অনলাইন** switch on the home page decides which version opens. Online, only games with an online room are active.
 
 ## Dhoni Hobar Mojar Khela
 
 Choose **Online**, open **ধনী হবার মজার খেলা**, and create a room. Share the join link, five-character code, or QR with friends; each person joins on their own phone. Any internet connection works. The room owner plays too and chooses a 30, 45, 60 minute game or no time limit.
+
+For iPad, choose **Offline** and open the same game. Set 1–6 human seats and optional computer opponents (2–6 seats total). Play pass-and-play on one iPad or alone against computers. The board and controls adapt to portrait, landscape and split-screen widths. During auctions, select the human bidder; trade offers must be reviewed by the recipient. Local games autosave, pause when the app is hidden, and restore paused so time never runs while the app is closed. Open the site once online to cache the game before disconnecting; Safari’s Add to Home Screen also works.
 
 The original 32-space Bangladesh board uses game taka and locations from Old Dhaka to Cox’s Bazar. Dice, purchases, auctions, rent, even building, mortgages, consensual trades, jail, bankruptcy, turn deadlines and results are validated on the server. Shared rooms use the existing Neon/Vercel backend; no extra services or secrets are needed. Bangla and English follow the profile language setting. A finished game records points on participating devices; the room owner can return everyone to a lobby for the next game.
 
