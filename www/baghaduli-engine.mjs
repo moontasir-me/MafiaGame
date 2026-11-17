@@ -1,0 +1,11 @@
+export const BW=480,BH=760;
+export const POCKETS=[{x:88,y:230,score:100},{x:270,y:270,score:50},{x:170,y:390,score:30},{x:335,y:450,score:50},{x:80,y:540,score:20},{x:240,y:600,score:100},{x:350,y:620,score:0,red:true}];
+export const PEGS=Array.from({length:9},(_,row)=>Array.from({length:7},(_,col)=>({x:45+col*54+(row%2)*22,y:155+row*54}))).flat().filter(p=>p.x<415&&!POCKETS.some(h=>Math.hypot(p.x-h.x,p.y-h.y)<37));
+export function launch(power){if(!Number.isFinite(power)||power<.12||power>1)throw Error('POWER');let x=448,y=688,vx=0,vy=-580-power*750,lane=true;const trace=[[x,y]];let pocket=null;const dt=1/120,r=8;
+ for(let k=0;k<3000;k++){
+  if(lane){y+=vy*dt;vy+=400*dt;if(y<86){lane=false;x=417;y=80;vx=-150-power*240;vy=-100;}else if(vy>=0){lane=false;x=418;vx=-110;}}
+  else{vy+=540*dt;vx*=.998;vy*=.999;x+=vx*dt;y+=vy*dt;if(x<22+r){x=22+r;vx=Math.abs(vx)*.73;}if(x>419-r){x=419-r;vx=-Math.abs(vx)*.73;}if(y<42+r){y=42+r;vy=Math.abs(vy)*.75;}for(const peg of PEGS){const dx=x-peg.x,dy=y-peg.y,d=Math.hypot(dx,dy);if(d<r+5&&d>0){const nx=dx/d,ny=dy/d,normal=vx*nx+vy*ny;x=peg.x+nx*(r+5);y=peg.y+ny*(r+5);if(normal<0){vx-=1.7*normal*nx;vy-=1.7*normal*ny;}vx+=(peg.x%7-3)*.6;}}pocket=POCKETS.find(h=>Math.hypot(x-h.x,y-h.y)<18&&Math.hypot(vx,vy)<720)||null;if(pocket||y>BH-30)break;}
+  if(k%3===0)trace.push([x,y]);
+ }trace.push([x,y]);return {trace,pocket:pocket?POCKETS.indexOf(pocket):-1,score:pocket?.score||0,red:!!pocket?.red};}
+export function newBag(players,rounds=3){if(players.length<1||players.length>4)throw Error('COUNTS');return {id:globalThis.crypto?.randomUUID?.()||String(Date.now()),players:players.map(p=>({name:p.name,cpu:!!p.cpu,score:0})),rounds:Math.max(1,Math.min(5,rounds)),round:1,turn:0,balls:0,roundScore:0,phase:'play',last:null,seq:0};}
+export function bagShot(input,power){if(input.phase!=='play')throw Error('PHASE');const flight=launch(power),m=structuredClone(input);m.last={...flight,by:m.turn};m.balls++;m.roundScore+=flight.score;if(flight.red){m.roundScore=0;m.balls=5;}if(m.balls===5){m.players[m.turn].score+=m.roundScore;m.balls=0;m.roundScore=0;m.turn++;if(m.turn===m.players.length){m.turn=0;m.round++;if(m.round>m.rounds)m.phase='over';}}m.seq++;return {match:m,flight};}
