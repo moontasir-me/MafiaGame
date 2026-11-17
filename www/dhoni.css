@@ -34,3 +34,4 @@ body.dhoni-page{background:radial-gradient(ellipse at 80% 0,#e3c67d38,transparen
 @media(min-width:701px) and (max-width:1399px){
  .dhoni-page .dh-players:has(>article:nth-child(4)){grid-template-columns:repeat(4,minmax(0,1fr))}.dhoni-page .dh-players:has(>article:nth-child(5)){grid-template-columns:repeat(5,minmax(0,1fr))}.dhoni-page .dh-players:has(>article:nth-child(6)){grid-template-columns:repeat(6,minmax(0,1fr))}.dhoni-page .dh-players:has(>article:nth-child(4)) article{padding:8px;gap:3px}.dhoni-page .dh-players:has(>article:nth-child(4)) .dh-player-name{font-size:11px;gap:4px}.dhoni-page .dh-players:has(>article:nth-child(4)) .dh-player-name>small{display:none}.dhoni-page .dh-players:has(>article:nth-child(4)) article>strong{font-size:17px}.dhoni-page .dh-players:has(>article:nth-child(4)) article>small{font-size:9px}
 }
+.dhoni-page .dh-cell .dh-tokens:has(>.dh-token:nth-child(4)) .dh-token{width:12px;height:12px;font-size:7px;border-width:1px}
