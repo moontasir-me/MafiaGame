@@ -267,24 +267,3 @@ html[lang=en] .village-home .library-heading h1{font-family:Poppins,system-ui,sa
 @media(prefers-reduced-motion:reduce){.village-home .night:before,.village-home .night:after{transition:none}}
 
 /* Vintage TV cases: picture glass, tuning dials, speaker vents and short feet. */
-.village-home .game-tile{overflow:visible;margin-bottom:7px}
-.village-home .game-tile:before,.village-home .game-tile:after{content:'';position:absolute;top:100%;width:19px;height:7px;background:#211b16;border-radius:0 0 4px 4px;box-shadow:0 2px 2px #0005;pointer-events:none}
-.village-home .game-tile:before{left:19px}.village-home .game-tile:after{right:19px}
-.tv-face{display:grid;grid-template-columns:minmax(0,1fr) 25px;gap:11px;padding:13px 12px 0;align-items:stretch}
-.village-home .game-tile .tile-art:after{content:'';position:absolute;inset:0;pointer-events:none;border-radius:8px;box-shadow:inset 0 0 10px #0003;background:linear-gradient(135deg,#ffffff0c,transparent 38%)}
-.tv-controls{display:flex;flex-direction:column;align-items:center;gap:10px;padding-top:5px;position:relative;pointer-events:none}
-.tv-dial{display:block;position:relative;width:24px;height:24px;flex-shrink:0;border-radius:50%;border:2px solid #292925;background:radial-gradient(circle at 35% 30%,#b6b09d,#777567 55%,#44483f);box-shadow:0 1px 0 #cfc2a966,0 2px 3px #0008}
-.tv-dial:after{content:'';position:absolute;top:2px;bottom:2px;left:8px;width:3px;background:#30362f;border-radius:2px;transform:rotate(-28deg)}
-.tv-dial:nth-child(2):after{transform:rotate(35deg)}
-.tv-speaker{display:block;width:20px;min-height:24px;flex:1;border-radius:4px;background:repeating-linear-gradient(180deg,#181c18 0 2px,transparent 2px 5px);opacity:.8}
-.tv-controls:after{content:'';width:4px;height:4px;border-radius:50%;background:#acbf80;box-shadow:0 0 5px #bcda7270}
-
-.village-home .tile-players{border-color:#92734e;background:color-mix(in srgb,var(--tile-chip) 80%,#1e1b15);box-shadow:inset 0 1px 3px #0003}
-@media(hover:hover) and (pointer:fine){.village-home .game-tile:not(.is-off):hover .tile-art img{transform:none}.village-home .game-tile:not(.is-off):hover .tile-art{box-shadow:0 0 0 1px #b8b98d88,0 0 12px #ecc78028}}
-@media(max-width:900px){
- .tv-face{grid-template-columns:minmax(0,1fr);gap:7px;padding:9px 9px 0}
- .tv-controls{flex-direction:row;gap:8px;padding:0;min-height:15px;justify-content:flex-end}
- .tv-dial{width:15px;height:15px;border-width:1px}.tv-dial:after{left:5px;top:1px;bottom:1px;width:2px}
- .tv-speaker{order:-1;flex:1;min-height:12px;max-width:65%;width:auto;background:repeating-linear-gradient(90deg,#171c18 0 2px,transparent 2px 5px)}
-
-}

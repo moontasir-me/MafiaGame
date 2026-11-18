@@ -25,7 +25,7 @@ function openProfile() {
 
 /* The courtyard stays dark: lantern warmth or cool moonlight. New visitors arrive with the lamp lit. */
 const lit = () => { try { return localStorage.getItem('shitolpati.light') !== 'moon'; } catch { return true; } };
-function paintLight() { const on = lit(); document.documentElement.dataset.light = on ? 'lamp' : 'moon';document.documentElement.dataset.period=on?'night':'day'; document.querySelector('meta[name="theme-color"]').content = on ? '#17140f' : '#101b24'; const b = $('#lantern'); b.classList.toggle('is-lit', on); b.setAttribute('aria-pressed', on); b.setAttribute('aria-label', on ? 'হারিকেন নিভিয়ে দিন' : 'হারিকেন জ্বালান'); }
+function paintLight() { const on = lit(); document.documentElement.dataset.light = on ? 'lamp' : 'moon';document.documentElement.dataset.period=on?'night':'day'; document.querySelector('meta[name="theme-color"]').content = on ? '#17140f' : '#101b24'; const tip=$('.lantern-tip');if(tip)tip.textContent=on?t('দিনের আলো আনতে হারিকেনে ট্যাপ করুন।','Tap the lantern for daylight.'):t('রাতের আড্ডা চাইলে হারিকেনে ট্যাপ করুন।','Tap the lantern for a night-time adda.');const b = $('#lantern'); b.classList.toggle('is-lit', on); b.setAttribute('aria-pressed', on); b.setAttribute('aria-label', on ? 'হারিকেন নিভিয়ে দিন' : 'হারিকেন জ্বালান'); }
 $('#lantern').onclick = () => { try { localStorage.setItem('shitolpati.light', lit() ? 'moon' : 'lamp'); } catch { } paintLight();dispatchEvent(new Event('app-light-change')); $('#lantern').classList.remove('swing'); void $('#lantern').offsetWidth; $('#lantern').classList.add('swing'); if (lit()) sound('notice'); };
 paintLight();
 
@@ -66,5 +66,5 @@ if ('serviceWorker' in navigator && !window.Android) navigator.serviceWorker.reg
 
 
 addEventListener('app-light-change',paintLight);
-addEventListener('app-language-change',paintProfile);
+addEventListener('app-language-change',()=>{paintProfile();paintLight();});
 bindTeaHost(document.querySelector('.tong-hero'),{sound:kind=>{unlockSound();sound(kind);}});

@@ -1,5 +1,5 @@
 import {t} from './locale.mjs';
-import {strengthControl,bindStrength} from './pulse-strength.mjs';
+import {lifeOf,MAX_PULL,pullImpulse,penWins} from './pen-life.mjs';
 import { translateText } from './localization.mjs';
 import { number as localeNumber } from './locale.mjs';
 import { sound, soundEnabled, toggleSound } from './sound.mjs';
@@ -31,7 +31,7 @@ const CPU = {
 };
 
 let s = load(), view = 'play', lastScreen = '', aim = null, raf = 0, modalResolve = null, shopFor = null;
-let fx = [], shake = 0, banner = null,strikeAngle=0,disposeStrength=()=>{};
+let fx = [], shake = 0, banner = null,keyboardAngle=-Math.PI/2,keyboardPower=.65,benchObserver=null;
 // The round banner runs on the real clock, so nothing waits on screen repaints.
 const bannerUp = () => { if (banner && performance.now() >= banner.until) banner = null; return !!banner; };
 
@@ -54,7 +54,7 @@ const gearOf = p => p.cpu ? CPU[s.cpuLevel].gear : fitted(findAccount(p.name));
 function placePens(starter) {
   const n = s.players.length, pens = s.players.map((p, i) => {
     const t = Math.PI / 2 + (i / n) * Math.PI * 2, gear = gearOf(p);
-    return { pid: p.id, x: W / 2 + Math.cos(t) * 120, y: H / 2 + Math.sin(t) * 150, a: t + Math.PI / 2 + (Math.random() - .5) * .7, vx: 0, vy: 0, w: 0, out: false, gear, ...penStats(p.pen, gear) };
+    return { pid: p.id, x: W / 2 + Math.cos(t) * 120, y: H / 2 + Math.sin(t) * 150, a: t + Math.PI / 2 + (Math.random() - .5) * .7, vx: 0, vy: 0, w: 0, out: false,life:100,hits:0,damageAt:-10, gear, ...penStats(p.pen, gear) };
   });
   s.round = { pens, turn: starter, out: [], moving: false };
 }
@@ -64,9 +64,9 @@ const effects = {
     if (speed < 40) return;
     const n = Math.min(14, 3 + speed / 70 | 0);
     for (let i = 0; i < n; i++) { const a = Math.random() * 7, v = 40 + Math.random() * speed * .25; fx.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: .5 + Math.random() * .3, max: .8, kind: 'dust' }); }
-    shake = Math.max(shake, Math.min(9, speed / 90)); if (speed > 160) sound('hit');
+    paintLife();shake = Math.max(shake, Math.min(9, speed / 90)); if (speed > 160) sound('hit');
   },
-  out(p) { sound('out'); shake = 10; navigator.vibrate?.(60); fx.push({ x: Math.max(30, Math.min(W - 30, p.x)), y: Math.max(40, Math.min(H - 20, p.y)), vx: 0, vy: -40, life: 1.4, max: 1.4, kind: 'text', text: byId(p.pid).name + ' পড়ে গেল!' }); }
+  out(p) {paintLife();sound('out'); shake = 10; navigator.vibrate?.(60); fx.push({ x: Math.max(30, Math.min(W - 30, p.x)), y: Math.max(40, Math.min(H - 20, p.y)), vx: 0, vy: -40, life: 1.4, max: 1.4, kind: 'text', text: byId(p.pid).name + (p.broken?' ভেঙে গেছে!':' পড়ে গেল!') }); }
 };
 
 function flick(p, cx, cy, jx, jy) {
@@ -113,13 +113,13 @@ function cpuTurn() {
   cpuTimer = setTimeout(() => {
     if (s.phase !== 'play' || view !== 'play' || s.round.moving || !byId(s.round.turn)?.cpu) return;
     if (bannerUp()) return cpuTurn();
-    const me = s.round.pens.find(p => p.pid === s.round.turn), shot = plan(), len = Math.hypot(shot.jx, shot.jy), pull = len / (POWER * me.m) * 200;
+    const me = s.round.pens.find(p => p.pid === s.round.turn), shot = plan(), len = Math.hypot(shot.jx, shot.jy), pull = len / (POWER * me.m) * MAX_PULL;
     aim = { pen: me, cx: shot.cx, cy: shot.cy, x: shot.cx, y: shot.cy, sx: shot.cx - shot.jx / len * pull, sy: shot.cy - shot.jy / len * pull }; loop();
     setTimeout(() => { aim = null; flick(me, shot.cx, shot.cy, shot.jx, shot.jy); }, 700);
   }, bannerUp() ? 400 : 750);
 }
 function endRound(winner) {
-  if (winner) { byId(winner).score += 2; coins(byId(winner), 2); }
+  if (winner) {byId(winner).roundWins=penWins(byId(winner))+1; byId(winner).score += 2; coins(byId(winner), 2); }
   for (const p of s.players) { p.history = [{ won: p.id === winner, img: penImg(p.pen), label: `${PENS[p.pen].name} · ${p.id === winner ? 'রাউন্ড জয়' : 'পড়ে গেছে'}` }, ...(p.history || [])].slice(0, 5); }
   s.set.rounds++; s.lastWinner = winner; s.phase = 'roundover'; save(); sound(winner ? 'win' : 'notice');
   setTimeout(transition, 500);
@@ -182,7 +182,7 @@ function drawPen(g, p, colour, active) {
   const f = p.out ? 1 - (p.fall || 0) : 1; if (f <= 0) return;
   g.save(); g.translate(p.x, p.y); g.rotate(p.a); g.scale(f, f); g.globalAlpha = f;
   paintPen(g, byId(p.pid)?.pen, p.gear, p.L, colour, active, f);
-  g.restore();
+  if(lifeOf(p)<70||p.broken){g.strokeStyle='#492c25';g.lineWidth=1.7;for(let i=0;i<(lifeOf(p)<35?3:1);i++){const x=-p.L*.2+i*17;g.beginPath();g.moveTo(x,-R);g.lineTo(x+4,-2);g.lineTo(x-1,2);g.lineTo(x+5,R);g.stroke();}if(p.broken){g.clearRect(-2,-R-3,4,R*2+6);}}g.restore();
 }
 function draw() {
   const c = $('#bench'); if (!c || !s.round) return;
@@ -198,14 +198,11 @@ function draw() {
   }
   g.globalAlpha = 1;
   if (aim) {
-    const dx = aim.sx - aim.x, dy = aim.sy - aim.y, len = Math.min(Math.hypot(dx, dy), 200), u = Math.hypot(dx, dy) || 1, ex = aim.cx - dx / u * len * .9, ey = aim.cy - dy / u * len * .9, pct = len / 200;
+    const dx = aim.sx - aim.x, dy = aim.sy - aim.y, len = Math.min(Math.hypot(dx, dy), MAX_PULL), u = Math.hypot(dx, dy) || 1, ex = aim.cx - dx / u * len * .9, ey = aim.cy - dy / u * len * .9, pct = len / MAX_PULL;
     g.setLineDash([6, 6]); g.strokeStyle = '#fffaf0'; g.lineWidth = 3; g.beginPath(); g.moveTo(aim.cx, aim.cy); g.lineTo(ex, ey); g.stroke(); g.setLineDash([]);
     g.fillStyle = pct > .75 ? '#e5533d' : pct > .4 ? '#f2c230' : '#7bd389'; g.beginPath(); g.arc(ex, ey, 6, 0, 7); g.fill();
     g.strokeStyle = '#ffffff88'; g.lineWidth = 2; g.beginPath(); g.arc(aim.cx, aim.cy, 10 + len / 6, 0, 7); g.stroke();
-    // Power bar along the bottom of the bench.
-    g.fillStyle = '#00000066'; g.beginPath(); g.roundRect(W / 2 - 90, H - 34, 180, 14, 7); g.fill();
-    g.fillStyle = pct > .75 ? '#e5533d' : pct > .4 ? '#f2c230' : '#7bd389'; g.beginPath(); g.roundRect(W / 2 - 88, H - 32, 176 * pct, 10, 5); g.fill();
-    g.font = '600 12px Poppins, sans-serif'; g.textAlign = 'center'; g.fillStyle = '#fffaf0'; g.fillText(translateText('জোর ' + bn(Math.round(pct * 100)) + '%'), W / 2, H - 42);
+
   }
   if (bannerUp()) {
     const t = (banner.until - performance.now()) / 1600, a = Math.min(1, t * 3, (1 - t) * 6 + .2);
@@ -237,11 +234,8 @@ function loop() {
   raf = next(tick);
 }
 function sizeBench() {
-  const c = $('#bench'); if (!c) return;
-  // Fit the bench between its own top and the bottom tab bar, leaving room for the scores under it.
-  const box = c.parentElement.getBoundingClientRect(), tabs = $('.kit-tabs')?.getBoundingClientRect(), bottom = tabs && getComputedStyle($('.kit-tabs')).display !== 'none' ? tabs.top : innerHeight;
-  const maxH = Math.max(320, bottom - Math.max(0, box.top) - 64), cssW = Math.min(box.width, maxH * W / H), dpr = devicePixelRatio || 1;
-  c.style.width = cssW + 'px'; c.style.height = cssW * H / W + 'px'; c.width = Math.round(cssW * dpr); c.height = Math.round(cssW * H / W * dpr); draw();
+ const c=$('#bench'),arena=$('#pen-arena');if(!c||!arena)return;const box=arena.getBoundingClientRect(),cssW=Math.max(70,Math.min(box.width-96,(box.height-8)*W/H)),dpr=devicePixelRatio||1;
+ c.style.width=cssW+'px';c.style.height=cssW*H/W+'px';c.width=Math.round(cssW*dpr);c.height=Math.round(cssW*H/W*dpr);draw();
 }
 function bindBench() {
   const c = $('#bench'); if (!c) return; sizeBench();
@@ -249,15 +243,17 @@ function bindBench() {
   c.onpointerdown = e => {
     if (s.round.moving || byId(s.round.turn)?.cpu || (online && s.round.turn !== 'p' + online.me)) return; const p = s.round.pens.find(q => q.pid === s.round.turn && !q.out); if (!p) return;
     const [x, y] = toWorld(e), [a0, a1, b0, b1] = ends(p), ux = b0 - a0, uy = b1 - a1, t = Math.max(0, Math.min(1, ((x - a0) * ux + (y - a1) * uy) / (ux * ux + uy * uy))), cx = a0 + ux * t, cy = a1 + uy * t;
-    if (Math.hypot(x - cx, y - cy) > 34){strikeAngle=Math.atan2(y-p.y,x-p.x);const el=$('#pen-angle');if(el)el.value=Math.round((strikeAngle*180/Math.PI+360)%360);if($('#pen-direction'))$('#pen-direction').style.transform=`rotate(${strikeAngle}rad)`;return;}
+    if (Math.hypot(x - cx, y - cy) > 40)return;
     aim = { pen: p, cx, cy, x, y, sx: x, sy: y }; c.setPointerCapture(e.pointerId); loop();
   };
   c.onpointermove = e => { if (!aim) return; [aim.sx, aim.sy] = toWorld(e); };
   const release = () => {
     if (!aim) return; const a = aim; aim = null;
     const dx = a.x - a.sx, dy = a.y - a.sy, len = Math.hypot(dx, dy); if (len < 12) return draw();
-    const power = Math.min(len, 200) / 200 * POWER * a.pen.m; flick(a.pen, a.cx, a.cy, dx / len * power, dy / len * power);
+    const impulse=pullImpulse(dx,dy,a.pen.m);if(impulse)flick(a.pen,a.cx,a.cy,impulse.jx,impulse.jy);
   };
+  c.onkeydown=e=>{if(s.round.moving||byId(s.round.turn)?.cpu||(online&&s.round.turn!=='p'+online.me))return;const p=s.round.pens.find(q=>q.pid===s.round.turn&&!q.out);if(!p)return;if(['ArrowLeft','ArrowRight'].includes(e.key)){keyboardAngle+=(e.key==='ArrowLeft'?-1:1)*Math.PI/12;e.preventDefault();}else if(['ArrowUp','ArrowDown'].includes(e.key)){keyboardPower=Math.max(.15,Math.min(1,keyboardPower+(e.key==='ArrowUp'?.1:-.1)));e.preventDefault();}else if(e.key===' '||e.key==='Enter'){e.preventDefault();flick(p,p.x,p.y,Math.cos(keyboardAngle)*POWER*p.m*keyboardPower,Math.sin(keyboardAngle)*POWER*p.m*keyboardPower);}};
+  benchObserver?.disconnect();benchObserver=new ResizeObserver(sizeBench);benchObserver.observe($('#pen-arena'));
   c.onpointerup = release; c.onpointercancel = () => { aim = null; draw(); };
 }
 addEventListener('resize', () => sizeBench());
@@ -338,12 +334,11 @@ function drawPreview() {
   g.setTransform(2.6, 0, 0, 2.6, c.width / 2, c.height / 2); paintPen(g, pen, gear, st.L, playerColour(acc.name), false);
 }
 
+function lifeCards(){return s.players.map((p,i)=>{const pen=s.round.pens.find(q=>q.pid===p.id),life=pen?lifeOf(pen):100;return `<article class="pen-condition" data-pen-life="${p.id}" style="--player:${playerColour(p.name,i)}"><div><b data-no-translate>${esc(p.name)}</b><strong data-life-value>${bn(life)}%</strong></div><div class="pen-health" role="progressbar" aria-label="${esc(p.name)} · ${t('কলমের প্রাণ','Pen life')}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${life}"><i style="width:${life}%"></i></div><small><span data-pen-state>${pen?.broken?t('ভেঙে গেছে','Broken'):pen?.out?t('পড়ে গেছে','Fallen'):t('কলমের প্রাণ','Pen life')}</span><span>${bn(penWins(p))}/${bn(s.set.rounds)} ${t('রাউন্ড জয়','rounds won')}</span></small></article>`;}).join('');}
+function paintLife(){if(!s.round)return;for(const p of s.round.pens){const el=document.querySelector(`[data-pen-life="${p.pid}"]`);if(!el)continue;const life=lifeOf(p);el.querySelector('[data-life-value]').textContent=bn(life)+'%';const bar=el.querySelector('[role="progressbar"]');bar.setAttribute('aria-valuenow',life);bar.querySelector('i').style.width=life+'%';el.classList.toggle('is-worn',life<40);el.querySelector('[data-pen-state]').textContent=p.broken?t('ভেঙে গেছে','Broken'):p.out?t('পড়ে গেছে','Fallen'):t('কলমের প্রাণ','Pen life');}}
 function play() {
-  const r = s.round, p = byId(r.turn), i = s.players.indexOf(p);
-  return `<div class="pen-turn" style="--dot:${playerColour(p.name, i)}">${playerDot(p.name, i)}<span><b>${esc(p.name)}-এর চাল</b><small>${r.moving ? 'কলম চলছে…' : p.cpu ? 'কম্পিউটার নিশানা ঠিক করছে…' : 'নিজের কলম ধরে পেছনে টেনে ছেড়ে দিন'}</small></span><span class="pen-round">রাউন্ড ${bn(s.set.rounds + 1)}/${bn(s.set.total)}</span></div>
-  <div class="bench-wrap"><canvas id="bench" aria-label="বেঞ্চ: ${s.round.pens.filter(q => !q.out).map(q => byId(q.pid).name).join(', ')}-এর কলম আছে"></canvas></div>
-  <section class="pen-strike-ui"><label>${t('নিশানা · বোর্ডে যেদিকে মারবেন ছুঁয়ে দিন','Aim · tap the board in the direction you want to strike')}<span id="pen-direction" class="pen-direction" aria-hidden="true">➜</span><input id="pen-angle" type="range" min="0" max="359" value="${Math.round((strikeAngle*180/Math.PI+360)%360)}" aria-label="${t('মারার দিক','Strike direction')}"></label>${strengthControl('pen-strength')}</section><div class="pen-scores">${s.players.map((q, k) => `<span class="${r.pens.find(x => x.pid === q.id)?.out ? 'is-out' : ''}">${playerDot(q.name, k)}${esc(q.name)} <b>${bn(q.score)}</b></span>`).join('')}</div>
-  ${button('ম্যাচ শেষ করুন', 'end', 'text wide pen-end', 'trophy')}`;
+ const r=s.round,p=byId(r.turn),i=s.players.indexOf(p);
+ return `<section class="pen-play-zone"><div class="pen-turn" style="--dot:${playerColour(p.name,i)}">${playerDot(p.name,i)}<span><b data-no-translate>${esc(p.name)}</b><small>${r.moving?t('কলম চলছে…','Pens moving…'):p.cpu?t('কম্পিউটার নিশানা করছে…','Computer is aiming…'):t('কলম ধরে পেছনে টেনে ছেড়ে দিন','Pull your pen back and release')}</small></span><span class="pen-round">${t('রাউন্ড','Round')} ${bn(s.set.rounds+1)}/${bn(s.set.total)}</span></div><div class="pen-arena" id="pen-arena"><div class="bench-wrap"><canvas id="bench" tabindex="0" role="application" aria-label="${t('পেন ফাইটের বোর্ড। কলম টেনে মারুন। কিবোর্ডে বাম-ডানে নিশানা, ওপর-নিচে শক্তি, স্পেস দিয়ে মারুন।','Pen Fight board. Pull to shoot. Keyboard: left/right aim, up/down power, Space shoots.')}" aria-describedby="pen-keyboard-help"></canvas></div></div><div class="pen-condition-grid">${lifeCards()}</div><p id="pen-keyboard-help" class="sr-only">${t('বাম-ডানে নিশানা, ওপর-নিচে শক্তি, স্পেস দিয়ে মারুন।','Left/right aim, up/down power, Space shoots.')}</p></section>`;
 }
 const table = () => rankTable(s.players.map(p => ({ name: p.name, score: p.score, history: (p.history || []).map(h => ({ ...h })) })), labels);
 const labels = { caption: 'ম্যাচের ফল', rank: '#', player: 'খেলোয়াড় · শেষ পাঁচ রাউন্ড', points: 'পয়েন্ট', win: 'সবুজ: রাউন্ড জয়', loss: 'লাল: কলম পড়ে গেছে', order: 'নতুনটি বাঁ দিকে', empty: 'এখনও কোনো রাউন্ড শেষ হয়নি।', noGames: 'এখনও খেলেননি', number: bn };
@@ -377,7 +372,7 @@ function ranking() {
 const button = (label, action, cls, ic, extra = '') => `<button type="button" class="btn ${cls}" data-action="${action}" ${extra}>${icon(ic)}${label}</button>`;
 
 function screenKey() { return view + s.phase + (s.set?.rounds || 0); }
-function render() {disposeStrength();
+function render() {benchObserver?.disconnect();document.body.classList.toggle('pen-playing',view==='play'&&s.phase==='play');
   const key = screenKey(), changed = key !== lastScreen; lastScreen = key;
   const body = view === 'rules' ? rules() : view === 'ranking' ? ranking() : view === 'shop' ? shop() : s.phase === 'play' ? play() : s.phase === 'roundover' || s.phase === 'over' ? roundOver() : setup();
   $('#app').innerHTML = appShell({ brand: 'পেন ফাইট', brandSub: 'বেঞ্চের খেলা', brandIcon: 'edit', brandAction: 'tab-play', crumb: ({ rules: 'নিয়ম', ranking: 'র‍্যাঙ্কিং', shop: 'দোকান' })[view] || (s.phase === 'setup' ? 'কলম বাছাই' : `রাউন্ড ${bn(s.set.rounds + (s.phase === 'play' ? 1 : 0))}`), active: view, contentClass: 'game-content pen-content', labels: { back: 'সব খেলা', menu: 'মেনু', sections: 'খেলার অংশ' },
@@ -391,7 +386,8 @@ function render() {disposeStrength();
   if (view === 'play' && ONLINE && !online) bindOnlineEntry($('#screen'), { onCreate: name => enter({ op: 'create', name, pen: myPen }), onJoin: (name, code) => enter({ op: 'join', name, code, pen: myPen }) });
   if (view === 'play' && online && !online.started) bindLobby($('#screen'), { code: online.code, game: 'পেন ফাইট', onStart: () => send({ op: 'start' }), onLeave: () => leaveRoom() });
   if (view === 'shop') drawPreview();
-  if (view === 'play' && s.phase === 'play') { bindBench();const own=()=>s.round?.pens.find(p=>p.pid===s.round.turn&&!p.out),allowed=()=>!s.round?.moving&&!byId(s.round?.turn)?.cpu&&(!online||s.round.turn==='p'+online.me);const p=own(),target=s.round.pens.find(q=>!q.out&&q!==p);if(p&&target)strikeAngle=Math.atan2(target.y-p.y,target.x-p.x);$('#pen-angle').value=Math.round((strikeAngle*180/Math.PI+360)%360);$('#pen-direction').style.transform=`rotate(${strikeAngle}rad)`;$('#pen-angle').oninput=e=>{strikeAngle=Number(e.target.value)*Math.PI/180;$('#pen-direction').style.transform=`rotate(${strikeAngle}rad)`;};disposeStrength=bindStrength($('#pen-strength'),power=>{const p=own();if(!p||!allowed())return;aim=null;flick(p,p.x,p.y,Math.cos(strikeAngle)*POWER*p.m*power,Math.sin(strikeAngle)*POWER*p.m*power);},{enabled:allowed}); if (s.round.moving || bannerUp() || fx.length) loop(); cpuTurn(); }
+  if (view === 'play' && s.phase === 'play') {bindBench();if(s.round.moving||bannerUp()||fx.length)loop();cpuTurn();}
+
   if (changed) enterScreen($('#screen'));
 }
 function addPlayer(name) {
@@ -433,7 +429,7 @@ async function act(action, id) {
     case 'shop': shopFor = id || shopFor; if (view !== 'shop') { view = 'shop'; return transition(); } return render();
     case 'buy': try { buyGear(shopFor, id); sound('coin'); toast(GEAR[id].name + ' লাগানো হয়েছে।'); } catch (e) { toast(e.message === 'COINS' ? 'কয়েন কম। আরও লড়াই জিতে আসুন।' : 'এটা আর কেনা যাবে না।'); } return render();
     case 'wear': toggleGear(shopFor, id); return render();
-    case 'start': if (humans().length < (vsCpu() ? 1 : 2)) return; s.players.forEach(p => { p.score = 0; p.history = []; }); s.set = { id: crypto.randomUUID(), total: s.rounds || ROUNDS, rounds: 0 }; return startRound();
+    case 'start': if (humans().length < (vsCpu() ? 1 : 2)) return; s.players.forEach(p => { p.score = 0;p.roundWins=0; p.history = []; }); s.set = { id: crypto.randomUUID(), total: s.rounds || ROUNDS, rounds: 0 }; return startRound();
     case 'my-pen': myPen = PEN_KEYS[(PEN_KEYS.indexOf(myPen) + Number(id) + PEN_KEYS.length) % PEN_KEYS.length]; try { localStorage.setItem('pen.online.pen', myPen); } catch { } return render();
     case 'next': if (online && !online.host) return; startRound(); if (online) sync(null); return;
     case 'more': if (online && !online.host) return; s.set.total++; startRound(); if (online) sync(null); return;
@@ -530,4 +526,4 @@ render();
 
 addEventListener('app-language-change',()=>render());
 
-addEventListener('app-end-game',e=>{e.preventDefault();if(online){act('end');return;}if(s.set?.rounds)saveMatch({id:s.set.id,game:'pen',games:s.set.rounds,players:s.players.map(p=>({name:p.name,points:p.score,recent:p.history||[]}))});disposeStrength();stop();s={...fresh(),mode:s.mode,cpuLevel:s.cpuLevel,rounds:s.rounds,players:s.players.map(p=>({...p,score:0,history:[]}))};save();view='play';render();scrollTo({top:0,behavior:'auto'});});
+addEventListener('app-end-game',e=>{e.preventDefault();if(online){act('end');return;}if(s.set?.rounds)saveMatch({id:s.set.id,game:'pen',games:s.set.rounds,players:s.players.map(p=>({name:p.name,points:p.score,recent:p.history||[]}))});benchObserver?.disconnect();stop();s={...fresh(),mode:s.mode,cpuLevel:s.cpuLevel,rounds:s.rounds,players:s.players.map(p=>({...p,score:0,history:[]}))};save();view='play';render();scrollTo({top:0,behavior:'auto'});});

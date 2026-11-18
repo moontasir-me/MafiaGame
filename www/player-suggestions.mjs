@@ -1,0 +1,8 @@
+import {readAccounts} from './accounts.mjs';
+import {readHistory} from './history.mjs';
+import {readProfile} from './profile.mjs';
+export function savedPlayerNames(storage=globalThis.localStorage){const names=[...readAccounts(storage).map(p=>p.name),...readHistory(storage).flatMap(g=>g.players.map(p=>p.name))];try{const profile=readProfile(storage);if(profile.name)names.unshift(profile.name);}catch{}const used=new Set();return names.filter(name=>{const k=String(name).trim().toLocaleLowerCase();if(!k||used.has(k)||/^(কম্পিউটার|computer|cpu)(\s|$)/i.test(k))return false;used.add(k);return true;}).slice(0,80);}
+let signature='';
+export function enhancePlayerSuggestions(){const inputs=[...document.querySelectorAll('input')].filter(el=>!['number','range','password','file','radio','checkbox','hidden'].includes(el.type)&&/player|name|নাম|খেলোয়াড়/i.test([el.id,el.name,el.getAttribute('placeholder'),el.getAttribute('aria-label'),...Object.keys(el.dataset)].join(' '))&&!el.closest('#profile-form'));
+ if(!inputs.length)return;let list=document.getElementById('saved-player-names');if(!list){list=document.createElement('datalist');list.id='saved-player-names';list.dataset.noTranslate='';document.body.append(list);signature='';}const names=savedPlayerNames(),next=JSON.stringify(names);if(next!==signature){signature=next;list.replaceChildren(...names.map(name=>{const option=document.createElement('option');option.value=name;return option;}));}for(const input of inputs){input.setAttribute('list',list.id);input.setAttribute('autocomplete','off');input.setAttribute('spellcheck','false');}
+}
