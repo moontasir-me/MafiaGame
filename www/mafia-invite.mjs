@@ -1,0 +1,2 @@
+export function mafiaInvite(base,room,locale='bn',invite=''){if(!/^[A-F0-9]{6}$/i.test(room))throw Error('ROOM');const url=new URL('room.html',base.endsWith('/')?base:base+'/');url.searchParams.set('room',room.toUpperCase());url.searchParams.set('lang',['bn','en','classic'].includes(locale)?locale:'bn');if(invite)url.hash=new URLSearchParams({invite}).toString();return url.href;}
+export function invitedRoom(search){const room=new URLSearchParams(search).get('room')||'';return /^[A-F0-9]{6}$/i.test(room)?room.toUpperCase():null;}

@@ -1,5 +1,5 @@
 import {t} from './locale.mjs';
-import {lifeOf,MAX_PULL,pullImpulse,penWins} from './pen-life.mjs';
+import {MAX_PULL,pullImpulse,penWins,removePenDamage} from './pen-controls.mjs';
 import { translateText } from './localization.mjs';
 import { number as localeNumber } from './locale.mjs';
 import { sound, soundEnabled, toggleSound } from './sound.mjs';
@@ -54,7 +54,7 @@ const gearOf = p => p.cpu ? CPU[s.cpuLevel].gear : fitted(findAccount(p.name));
 function placePens(starter) {
   const n = s.players.length, pens = s.players.map((p, i) => {
     const t = Math.PI / 2 + (i / n) * Math.PI * 2, gear = gearOf(p);
-    return { pid: p.id, x: W / 2 + Math.cos(t) * 120, y: H / 2 + Math.sin(t) * 150, a: t + Math.PI / 2 + (Math.random() - .5) * .7, vx: 0, vy: 0, w: 0, out: false,life:100,hits:0,damageAt:-10, gear, ...penStats(p.pen, gear) };
+    return { pid: p.id, x: W / 2 + Math.cos(t) * 120, y: H / 2 + Math.sin(t) * 150, a: t + Math.PI / 2 + (Math.random() - .5) * .7, vx: 0, vy: 0, w: 0, out: false, gear, ...penStats(p.pen, gear) };
   });
   s.round = { pens, turn: starter, out: [], moving: false };
 }
@@ -64,9 +64,9 @@ const effects = {
     if (speed < 40) return;
     const n = Math.min(14, 3 + speed / 70 | 0);
     for (let i = 0; i < n; i++) { const a = Math.random() * 7, v = 40 + Math.random() * speed * .25; fx.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: .5 + Math.random() * .3, max: .8, kind: 'dust' }); }
-    paintLife();shake = Math.max(shake, Math.min(9, speed / 90)); if (speed > 160) sound('hit');
+    paintStandings();shake = Math.max(shake, Math.min(9, speed / 90)); if (speed > 160) sound('hit');
   },
-  out(p) {paintLife();sound('out'); shake = 10; navigator.vibrate?.(60); fx.push({ x: Math.max(30, Math.min(W - 30, p.x)), y: Math.max(40, Math.min(H - 20, p.y)), vx: 0, vy: -40, life: 1.4, max: 1.4, kind: 'text', text: byId(p.pid).name + (p.broken?' ভেঙে গেছে!':' পড়ে গেল!') }); }
+  out(p) {paintStandings();sound('out'); shake = 10; navigator.vibrate?.(60); fx.push({ x: Math.max(30, Math.min(W - 30, p.x)), y: Math.max(40, Math.min(H - 20, p.y)), vx: 0, vy: -40, life: 1.4, max: 1.4, kind: 'text', text: byId(p.pid).name + ' পড়ে গেল!' }); }
 };
 
 function flick(p, cx, cy, jx, jy) {
@@ -166,13 +166,16 @@ export function paintPen(g, penKey, gear, L, colour, active, f = 1) {
   const nib = (x0, dir, brass) => { g.fillStyle = brass ? '#c9a13b' : '#d9c9a8'; g.beginPath(); g.moveTo(x0, 0); g.lineTo(x0 + 16 * dir, -R + 2); g.lineTo(x0 + 16 * dir, R - 2); g.closePath(); g.fill(); if (brass) { g.fillStyle = '#f3dc8a'; g.fillRect(x0 + 6 * dir - (dir < 0 ? 4 : 0), -2, 4, 2); } g.fillStyle = '#222'; g.beginPath(); g.arc(x0 + dir, 0, 1.6, 0, 7); g.fill(); };
   nib(-L / 2, 1, gr.head);
   if (gr.back) nib(L / 2, -1, false);
-  g.fillStyle = spec.body; g.strokeStyle = '#00000040'; g.lineWidth = 1; g.beginPath(); g.roundRect(body0, -R, body1 - body0 - capL + 2, R * 2, 2); g.fill(); g.stroke();
+  g.fillStyle = spec.body; g.strokeStyle = '#263e49'; g.lineWidth = 1.5; g.beginPath(); g.roundRect(body0, -R, body1 - body0 - capL + 2, R * 2, 2); g.fill(); g.stroke();
   g.fillStyle = spec.cap; g.beginPath(); g.roundRect(body1 - capL, -R - 1, capL, R * 2 + 2, 4); g.fill(); g.stroke();
+  const barrel=g.createLinearGradient(0,-R,0,R);barrel.addColorStop(0,'#ffffffbb');barrel.addColorStop(.35,'#ffffff25');barrel.addColorStop(1,'#40536144');g.fillStyle=barrel;g.beginPath();g.roundRect(body0,-R,body1-body0-capL+2,R*2,3);g.fill();
+  g.fillStyle='#a8b7bf';g.fillRect(body1-capL-3,-R-1,4,R*2+2);g.strokeStyle='#263e49';g.lineWidth=1;g.strokeRect(body1-capL-3,-R-1,4,R*2+2);
+  g.save();g.beginPath();g.rect(body0+3,-R,body1-body0-capL-8,R*2);g.clip();g.fillStyle='#2f4854';g.font='600 5px Poppins';g.textAlign='center';g.fillText((spec.name.startsWith('Matador')?'MATADOR':'ECONO'),(body0+body1-capL)/2,2);g.restore();
   // Grippers: ribbed rubber bands near the nib.
   for (let i = 0; i < (gr.gripper || 0); i++) { const x = body0 + 2 + i * 12; g.fillStyle = '#2f3a33'; g.beginPath(); g.roundRect(x, -R - 1.5, 10, R * 2 + 3, 3); g.fill(); g.strokeStyle = '#5d6b61'; g.lineWidth = 1; for (let k = 2; k < 10; k += 3) { g.beginPath(); g.moveTo(x + k, -R); g.lineTo(x + k, R); g.stroke(); } }
   if (gr.tape) { g.save(); g.beginPath(); g.rect(body0 + 38, -R, 34, R * 2); g.clip(); g.fillStyle = '#f1e7b3aa'; g.fillRect(body0 + 38, -R, 34, R * 2); g.strokeStyle = '#c9b56e'; for (let k = -10; k < 44; k += 6) { g.beginPath(); g.moveTo(body0 + 38 + k, -R); g.lineTo(body0 + 46 + k, R); g.stroke(); } g.restore(); }
   if (gr.clip) { g.fillStyle = '#c7ccd2'; g.strokeStyle = '#7b8189'; g.beginPath(); g.roundRect(body1 - capL + 3, -R - 4.5, capL * .78, 3.6, 1.5); g.fill(); g.stroke(); }
-  else { g.fillStyle = spec.cap; g.fillRect(body1 - capL * .82, -R - 4, capL * .7, 3.5); }
+  else { g.fillStyle = '#d7e0e4';g.strokeStyle='#354c58';g.lineWidth=1;g.beginPath();g.roundRect(body1-capL*.86,-R-5,capL*.72,3.5,1.5);g.fill();g.stroke(); }
   if (gr.rubber) { g.fillStyle = '#ef8fa3'; g.strokeStyle = '#b4566b'; g.beginPath(); g.roundRect(body1 - 7, -R - 1.5, 9, R * 2 + 3, 3); g.fill(); g.stroke(); }
   const shine = g.createLinearGradient(0, -R, 0, R); shine.addColorStop(0, '#ffffffaa'); shine.addColorStop(.45, '#ffffff00'); shine.addColorStop(1, '#00000030');
   g.fillStyle = shine; g.beginPath(); g.roundRect(body0, -R, body1 - body0, R * 2, 3); g.fill();
@@ -182,7 +185,7 @@ function drawPen(g, p, colour, active) {
   const f = p.out ? 1 - (p.fall || 0) : 1; if (f <= 0) return;
   g.save(); g.translate(p.x, p.y); g.rotate(p.a); g.scale(f, f); g.globalAlpha = f;
   paintPen(g, byId(p.pid)?.pen, p.gear, p.L, colour, active, f);
-  if(lifeOf(p)<70||p.broken){g.strokeStyle='#492c25';g.lineWidth=1.7;for(let i=0;i<(lifeOf(p)<35?3:1);i++){const x=-p.L*.2+i*17;g.beginPath();g.moveTo(x,-R);g.lineTo(x+4,-2);g.lineTo(x-1,2);g.lineTo(x+5,R);g.stroke();}if(p.broken){g.clearRect(-2,-R-3,4,R*2+6);}}g.restore();
+  g.restore();
 }
 function draw() {
   const c = $('#bench'); if (!c || !s.round) return;
@@ -253,6 +256,7 @@ function bindBench() {
     const impulse=pullImpulse(dx,dy,a.pen.m);if(impulse)flick(a.pen,a.cx,a.cy,impulse.jx,impulse.jy);
   };
   c.onkeydown=e=>{if(s.round.moving||byId(s.round.turn)?.cpu||(online&&s.round.turn!=='p'+online.me))return;const p=s.round.pens.find(q=>q.pid===s.round.turn&&!q.out);if(!p)return;if(['ArrowLeft','ArrowRight'].includes(e.key)){keyboardAngle+=(e.key==='ArrowLeft'?-1:1)*Math.PI/12;e.preventDefault();}else if(['ArrowUp','ArrowDown'].includes(e.key)){keyboardPower=Math.max(.15,Math.min(1,keyboardPower+(e.key==='ArrowUp'?.1:-.1)));e.preventDefault();}else if(e.key===' '||e.key==='Enter'){e.preventDefault();flick(p,p.x,p.y,Math.cos(keyboardAngle)*POWER*p.m*keyboardPower,Math.sin(keyboardAngle)*POWER*p.m*keyboardPower);}};
+  const tapShot=$('#pen-tap-shoot');if(tapShot)tapShot.onclick=()=>{keyboardAngle=Number($('#pen-tap-angle').value)*Math.PI/180;const power=Number($('#pen-tap-power').value);if(!Number.isFinite(power)||power<15||power>100)return;keyboardPower=power/100;c.onkeydown({key:'Enter',preventDefault(){}});};
   benchObserver?.disconnect();benchObserver=new ResizeObserver(sizeBench);benchObserver.observe($('#pen-arena'));
   c.onpointerup = release; c.onpointercancel = () => { aim = null; draw(); };
 }
@@ -334,11 +338,12 @@ function drawPreview() {
   g.setTransform(2.6, 0, 0, 2.6, c.width / 2, c.height / 2); paintPen(g, pen, gear, st.L, playerColour(acc.name), false);
 }
 
-function lifeCards(){return s.players.map((p,i)=>{const pen=s.round.pens.find(q=>q.pid===p.id),life=pen?lifeOf(pen):100;return `<article class="pen-condition" data-pen-life="${p.id}" style="--player:${playerColour(p.name,i)}"><div><b data-no-translate>${esc(p.name)}</b><strong data-life-value>${bn(life)}%</strong></div><div class="pen-health" role="progressbar" aria-label="${esc(p.name)} · ${t('কলমের প্রাণ','Pen life')}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${life}"><i style="width:${life}%"></i></div><small><span data-pen-state>${pen?.broken?t('ভেঙে গেছে','Broken'):pen?.out?t('পড়ে গেছে','Fallen'):t('কলমের প্রাণ','Pen life')}</span><span>${bn(penWins(p))}/${bn(s.set.rounds)} ${t('রাউন্ড জয়','rounds won')}</span></small></article>`;}).join('');}
-function paintLife(){if(!s.round)return;for(const p of s.round.pens){const el=document.querySelector(`[data-pen-life="${p.pid}"]`);if(!el)continue;const life=lifeOf(p);el.querySelector('[data-life-value]').textContent=bn(life)+'%';const bar=el.querySelector('[role="progressbar"]');bar.setAttribute('aria-valuenow',life);bar.querySelector('i').style.width=life+'%';el.classList.toggle('is-worn',life<40);el.querySelector('[data-pen-state]').textContent=p.broken?t('ভেঙে গেছে','Broken'):p.out?t('পড়ে গেছে','Fallen'):t('কলমের প্রাণ','Pen life');}}
+function standingsCards(){return s.players.map((p,i)=>{const pen=s.round.pens.find(q=>q.pid===p.id);return `<article class="pen-standing" data-pen-standing="${p.id}"><span class="pen-standing-dot" style="--player:${playerColour(p.name,i)}" aria-hidden="true"></span><div><b data-no-translate>${esc(p.name)}</b><small data-pen-state>${pen?.out?t('পড়ে গেছে','Off the board'):t('খেলায় আছে','On the board')}</small></div><strong>${bn(penWins(p))}/${bn(s.set.rounds)}<small>${t('রাউন্ড জয়','rounds won')}</small></strong></article>`;}).join('');}
+function paintStandings(){if(!s.round)return;for(const p of s.round.pens){const el=document.querySelector(`[data-pen-standing="${p.pid}"] [data-pen-state]`);if(el)el.textContent=p.out?t('পড়ে গেছে','Off the board'):t('খেলায় আছে','On the board');}}
+
 function play() {
  const r=s.round,p=byId(r.turn),i=s.players.indexOf(p);
- return `<section class="pen-play-zone"><div class="pen-turn" style="--dot:${playerColour(p.name,i)}">${playerDot(p.name,i)}<span><b data-no-translate>${esc(p.name)}</b><small>${r.moving?t('কলম চলছে…','Pens moving…'):p.cpu?t('কম্পিউটার নিশানা করছে…','Computer is aiming…'):t('কলম ধরে পেছনে টেনে ছেড়ে দিন','Pull your pen back and release')}</small></span><span class="pen-round">${t('রাউন্ড','Round')} ${bn(s.set.rounds+1)}/${bn(s.set.total)}</span></div><div class="pen-arena" id="pen-arena"><div class="bench-wrap"><canvas id="bench" tabindex="0" role="application" aria-label="${t('পেন ফাইটের বোর্ড। কলম টেনে মারুন। কিবোর্ডে বাম-ডানে নিশানা, ওপর-নিচে শক্তি, স্পেস দিয়ে মারুন।','Pen Fight board. Pull to shoot. Keyboard: left/right aim, up/down power, Space shoots.')}" aria-describedby="pen-keyboard-help"></canvas></div></div><div class="pen-condition-grid">${lifeCards()}</div><p id="pen-keyboard-help" class="sr-only">${t('বাম-ডানে নিশানা, ওপর-নিচে শক্তি, স্পেস দিয়ে মারুন।','Left/right aim, up/down power, Space shoots.')}</p></section>`;
+ return `<section class="pen-play-zone"><div class="pen-turn" role="status" style="--dot:${playerColour(p.name,i)}">${playerDot(p.name,i)}<span><b data-no-translate>${esc(p.name)}</b><small>${r.moving?t('কলম চলছে…','Pens moving…'):p.cpu?t('কম্পিউটার নিশানা করছে…','Computer is aiming…'):t('কলম ধরে পেছনে টেনে ছেড়ে দিন','Pull your pen back and release')}</small></span><span class="pen-round">${t('রাউন্ড','Round')} ${bn(s.set.rounds+1)}/${bn(s.set.total)}</span></div><div class="pen-arena" id="pen-arena"><div class="bench-wrap"><canvas id="bench" tabindex="0" role="application" aria-label="${t('পেন ফাইটের বোর্ড। কলম টেনে মারুন। কিবোর্ডে বাম-ডানে নিশানা, ওপর-নিচে শক্তি, স্পেস দিয়ে মারুন।','Pen Fight board. Pull to shoot. Keyboard: left/right aim, up/down power, Space shoots.')}" aria-describedby="pen-keyboard-help"></canvas></div></div><div class="pen-standings">${standingsCards()}</div><details class="pen-tap-controls"><summary>${t('ট্যাপ করে মারুন','Tap controls')}</summary><div><label>${t('দিক','Direction')}<select id="pen-tap-angle">${[[-90,t('উপরে','Up')],[-45,t('উপরে ডানে','Up-right')],[0,t('ডানে','Right')],[45,t('নিচে ডানে','Down-right')],[90,t('নিচে','Down')],[135,t('নিচে বামে','Down-left')],[180,t('বামে','Left')],[-135,t('উপরে বামে','Up-left')]].map(([v,label])=>`<option value="${v}">${label}</option>`).join('')}</select></label><label>${t('শক্তি (%)','Power (%)')}<input id="pen-tap-power" type="number" min="15" max="100" value="65" inputmode="numeric"></label><button type="button" class="btn secondary" id="pen-tap-shoot">${t('টোকা দিন','Shoot')}</button></div></details><p id="pen-keyboard-help" class="sr-only">${t('বাম-ডানে নিশানা, ওপর-নিচে শক্তি, স্পেস দিয়ে মারুন।','Left/right aim, up/down power, Space shoots.')}</p></section>`;
 }
 const table = () => rankTable(s.players.map(p => ({ name: p.name, score: p.score, history: (p.history || []).map(h => ({ ...h })) })), labels);
 const labels = { caption: 'ম্যাচের ফল', rank: '#', player: 'খেলোয়াড় · শেষ পাঁচ রাউন্ড', points: 'পয়েন্ট', win: 'সবুজ: রাউন্ড জয়', loss: 'লাল: কলম পড়ে গেছে', order: 'নতুনটি বাঁ দিকে', empty: 'এখনও কোনো রাউন্ড শেষ হয়নি।', noGames: 'এখনও খেলেননি', number: bn };
@@ -372,7 +377,7 @@ function ranking() {
 const button = (label, action, cls, ic, extra = '') => `<button type="button" class="btn ${cls}" data-action="${action}" ${extra}>${icon(ic)}${label}</button>`;
 
 function screenKey() { return view + s.phase + (s.set?.rounds || 0); }
-function render() {benchObserver?.disconnect();document.body.classList.toggle('pen-playing',view==='play'&&s.phase==='play');
+function render() {removePenDamage(s.round);benchObserver?.disconnect();document.body.classList.toggle('pen-playing',view==='play'&&s.phase==='play');
   const key = screenKey(), changed = key !== lastScreen; lastScreen = key;
   const body = view === 'rules' ? rules() : view === 'ranking' ? ranking() : view === 'shop' ? shop() : s.phase === 'play' ? play() : s.phase === 'roundover' || s.phase === 'over' ? roundOver() : setup();
   $('#app').innerHTML = appShell({ brand: 'পেন ফাইট', brandSub: 'বেঞ্চের খেলা', brandIcon: 'edit', brandAction: 'tab-play', crumb: ({ rules: 'নিয়ম', ranking: 'র‍্যাঙ্কিং', shop: 'দোকান' })[view] || (s.phase === 'setup' ? 'কলম বাছাই' : `রাউন্ড ${bn(s.set.rounds + (s.phase === 'play' ? 1 : 0))}`), active: view, contentClass: 'game-content pen-content', labels: { back: 'সব খেলা', menu: 'মেনু', sections: 'খেলার অংশ' },

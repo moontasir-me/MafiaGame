@@ -1,11 +1,11 @@
-import {hitPen} from './pen-life.mjs';
+import {removePenDamage} from './pen-controls.mjs';
 /* পেন ফাইট physics: pens are capsules sliding on a rough wooden bench.
    Grip has three parts, so a pen stops like a real pen on wood instead of skating:
    - sliding friction (a steady brake, much stronger once a pen is slow) plus a speed drag, all scaled by the pen's grip;
    - spin friction, so a clipped pen turns a little and then stops turning;
    - static grip: a resting pen soaks up a light knock and only moves when it is hit hard. */
 
-export const W = 480, H = 780, R = 7, POWER = 1500;
+export const W = 480, H = 780, R = 9, POWER = 1500;
 const STICK = 5000, STICK_BELOW = 260;
 const SLIDE = 2600, DRAG = 0.8, SPIN = 34, SPIN_DRAG = 2.2, HOLD = 50, HOLD_SPIN = 2.4, MAX_SPIN = 18;
 
@@ -44,12 +44,12 @@ function collide(A, B, on, time) {
   A.vx -= j * nx / A.m; A.vy -= j * ny / A.m; A.w -= ca * j / A.I; B.vx += j * nx / B.m; B.vy += j * ny / B.m; B.w += cb * j / B.I;
   A.w = Math.max(-MAX_SPIN, Math.min(MAX_SPIN, A.w)); B.w = Math.max(-MAX_SPIN, Math.min(MAX_SPIN, B.w));
   if (restA) holdGround(A); if (restB) holdGround(B);
-  hitPen(A,-rel*(restA?1:restB?.72:1),time);hitPen(B,-rel*(restB?1:restA?.72:1),time);on?.hit?.((ax + bx) / 2, (ay + by) / 2, -rel,A,B);
+  on?.hit?.((ax + bx) / 2, (ay + by) / 2, -rel,A,B);
 }
 
 /* One small time step. on.out(pen) is called when a pen's middle leaves the bench. */
 export function step(r, dt, on) {
-  r.time=(r.time||0)+dt;const live = r.pens.filter(p => !p.out);
+  removePenDamage(r);r.time=(r.time||0)+dt;const live = r.pens.filter(p => !p.out);
   for (const p of r.pens) {
     if (p.out) { p.fall = Math.min(1, (p.fall || 0) + dt * 2.6); p.x += p.vx * dt * .4; p.y += p.vy * dt * .4; p.a += p.w * dt * .5; continue; }
     // Slow pens bite into the wood (STICK), so a slide ends crisply instead of gliding to a stop.
@@ -60,7 +60,7 @@ export function step(r, dt, on) {
     p.x += p.vx * dt; p.y += p.vy * dt; p.a += p.w * dt;
   }
   for (let i = 0; i < live.length; i++) for (let k = i + 1; k < live.length; k++) (!live[i].out&&!live[k].out)&&collide(live[i], live[k], on,r.time);
-  for (const p of live) if (p.x < 0 || p.x > W || p.y < 0 || p.y > H || p.life===0) {p.broken=p.life===0;p.life=0; p.out = true; p.fall = 0; r.out.push(p.pid); on?.out?.(p); }
+  for (const p of live) if (p.x < 0 || p.x > W || p.y < 0 || p.y > H) { p.out = true; p.fall = 0; r.out.push(p.pid); on?.out?.(p); }
 }
 
 export const resting = r => r.pens.every(p => p.out ? (p.fall || 0) >= 1 : Math.hypot(p.vx, p.vy) < 2 && Math.abs(p.w) < .05);
