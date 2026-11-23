@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {radioStep} from '../www/a11y.mjs';
+test('radio keyboard navigation wraps, supports boundaries and ignores unrelated keys',()=>{assert.equal(radioStep(0,3,'ArrowLeft'),2);assert.equal(radioStep(2,3,'ArrowRight'),0);assert.equal(radioStep(2,3,'Home'),0);assert.equal(radioStep(0,3,'End'),2);assert.equal(radioStep(0,3,'Enter'),-1);assert.equal(radioStep(0,0,'ArrowRight'),-1);});
+test('all game entry pages load the final shared design and accessibility runtime',async()=>{for(const slug of ['mafia','spy','kalidas','pen','fib','shotoronji','chor','ludo','carrom','dots','tinguti','rush','dhoni','baghaduli','poker']){const html=await readFile(new URL(`../www/${slug}.html`,import.meta.url),'utf8');assert.match(html,/welcome\.css/,slug);assert.match(html,/experience\.mjs/,slug);assert.ok(html.lastIndexOf('welcome.css')>html.lastIndexOf('experience.css'),slug);}const sw=await readFile(new URL('../www/sw.js',import.meta.url),'utf8');assert.match(sw,/"a11y.mjs"/);});
+import {boardPoint,pullPower} from '../www/bag-pull.mjs';
+import {newBag,bagShot} from '../www/baghaduli-engine.mjs';
+test('marble dragging maps letterboxed boards and cancels short or reversed pulls',()=>{assert.deepEqual(boardPoint(448,688,{left:0,top:0,width:480,height:760}),{x:448,y:688,scale:1});const p=boardPoint(424,344,{left:0,top:0,width:640,height:380});assert.equal(p.x,448);assert.equal(p.y,688);assert.equal(pullPower(100,90),0);assert.equal(pullPower(100,110),0);assert.equal(pullPower(100,155),.5);assert.equal(pullPower(100,900),1);});
+test('valid drag power launches one marble and preserves the input match',()=>{const m=newBag([{name:'Test'}]);const {match,flight}=bagShot(m,pullPower(100,160));assert.equal(match.seq,1);assert.equal(m.seq,0);assert.ok(flight.trace.length>2);});

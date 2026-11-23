@@ -902,3 +902,10 @@ const datesAndLabels=`
 UI_PAIRS.push(...datesAndLabels.trim().split('\n').map(line=>line.split('|')));
 
 UI_PAIRS.push(['টংয়ের আড্ডা','The village tea stall']);
+UI_PAIRS.push(
+ ['শব্দ গোপন রাখুন। সূত্র শুনে গুপ্তচরকে খুঁজুন।','Keep your word secret. Use the clues to find the spy.'],
+ ['নাম না দিলে দল হিসেবে খেলুন।','Leave names blank to play as a team.'],
+ ['আরেকবার খেলুন।','Play another round.'],
+ ['আলোচনা করুন, ভোট দিন, দরবারের গোপন ঘাতকদের খুঁজুন।','Discuss, vote, and uncover the palace assassins.'],
+ ['দ্বিতীয় খেলোয়াড়ের নাম','Second player name']
+);

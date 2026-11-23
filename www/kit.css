@@ -17,7 +17,7 @@
 @keyframes kit-rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 @keyframes kit-nudge{0%,100%{transform:none}50%{transform:translateX(4px)}}
 @keyframes kit-shimmer{from{background-position:-200% 0}to{background-position:200% 0}}
-.screen-in>*{animation:kit-in .38s cubic-bezier(.2,.7,.2,1) both}
+.screen-in>*{animation:kit-in .16s ease-out both}
 .screen-in>*:nth-child(2){animation-delay:.04s}.screen-in>*:nth-child(3){animation-delay:.08s}.screen-in>*:nth-child(4){animation-delay:.12s}.screen-in>*:nth-child(n+5){animation-delay:.16s}
 .screen-out>*{animation:kit-out .17s ease-in both}
 .scrim{animation:kit-fade .18s ease both}
