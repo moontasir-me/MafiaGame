@@ -151,6 +151,8 @@ async function act(action, id) {
       case 'next': {
         if (!seen) return;
         const card = $('[data-tap-card]');
+        if (card) card.disabled = true;
+        $('#screen').inert = true;
         if (shown) setTapCard(card, false, revealBack, open => shown = open);
         nextSpyReveal(s); seen = false; save();
         if (s.phase === 'discussion') sound('timer');

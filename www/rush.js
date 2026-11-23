@@ -66,7 +66,7 @@ function table() {
   const seatAt = (i, pos) => { const p = g.players[i]; return `<div class="rs-opp ${pos}${i === g.turn && g.winner === null ? ' is-turn' : ''}${p.out ? ' is-out' : ''}"><div class="rs-fan">${Array.from({ length: Math.min(p.count, 9) }, (_, k) => `<i style="--k:${k - (Math.min(p.count, 9) - 1) / 2}"></i>`).join('')}</div><div class="rs-who"><span class="rs-avatar a${i % 4}">${esc(p.name.charAt(0))}</span><b>${esc(p.name)}</b><span class="rs-count">${p.out ? 'out' : p.count}</span></div>${g.owe === i ? '<span class="rs-bubble">one card!</span>' : ''}</div>`; };
   const others = Array.from({ length: n - 1 }, (_, k) => (my + 1 + k) % n), spots = n === 2 ? ['top'] : n === 3 ? ['left', 'right'] : ['left', 'top', 'right'];
   return `<div class="rs-table${around ? ' rs-around' : ''}">
-  ${around ? others.map((i, k) => seatAt(i, spots[k])).join('') : `<ol class="rs-ring" aria-label="Players">${ring}</ol>`}
+  ${around ? '<div class="rs-opponents">'+others.map((i, k) => seatAt(i, spots[k])).join('')+'</div>' : `<ol class="rs-ring" aria-label="Players">${ring}</ol>`}
   <div class="rs-centre rs-${g.colour}"><div class="rs-dir ${g.dir > 0 ? 'cw' : 'ccw'}" aria-label="${g.dir > 0 ? 'Clockwise' : 'Anticlockwise'}">${g.dir > 0 ? '↻' : '↺'}</div>
    <button type="button" class="rs-deck" data-action="draw" ${mine && !g.drew && !busy ? '' : 'disabled'} aria-label="Draw">${g.pending ? `<b>+${g.pending}</b>` : '<b>Draw</b>'}</button>
    ${card(t, { cls: 'top', attrs: 'tabindex="-1"' })}
@@ -131,6 +131,7 @@ function handoff(){const p=local.players[local.turn];return `<section class="rs-
 /* ---------- Shell ---------- */
 function render() {
   const screen = !ONLINE ? (local ? needsRushHandoff(local,localSeats,localSeat,handReady)?'handoff':'table' : 'offline') : !online ? 'entry' : !online.started ? 'lobby' : 'table', key = view + screen, changed = key !== lastScreen; lastScreen = key;
+  document.body.classList.toggle('rush-playing',view==='play'&&screen==='table');
   const keepScroll = $('.rs-hand')?.scrollLeft;
   const body = view === 'rules' ? rules() : view === 'ranking' ? ranking() : screen === 'offline' ? offlineEntry() : screen === 'entry' ? entry() : screen === 'lobby' ? lobby() : screen === 'handoff' ? handoff() : table();
   $('#app').innerHTML = appShell({ brand: 'Colour Rush', brandSub: RULES[online?.rule || local?.mode || rule], brandIcon: 'cards', brandAction: 'tab-play', crumb: view === 'rules' ? 'Rules' : view === 'ranking' ? 'Ranking' : screen === 'table' && online ? `Room ${online.code}` : screen === 'table' ? `${humanSeats(localSeats).length} people · ${localSeats.filter(p=>p.cpu).length} computers` : '', active: view, hideTabs:screen==='handoff', contentClass: 'game-content rush-content', labels: { back: 'All games', menu: 'Menu', sections: 'Sections' }, backHref: 'index.html', tabs: [{ id: 'play', label: 'Play', icon: 'play', action: 'tab-play' }, { id: 'rules', label: 'Rules', icon: 'book', action: 'tab-rules' }, { id: 'ranking', label: 'Ranking', icon: 'trophy', action: 'tab-ranking' }], body });

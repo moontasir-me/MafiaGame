@@ -28,8 +28,10 @@ export function enterScreen(el) {
 /* Slides the current screen away, then runs the change. Keeps taps feeling deliberate. */
 export function leaveScreen(el, then, ms = 170) {
   if (!el || reduceMotion()) return then();
+  if (el.classList.contains('screen-out')) return;
+  el.inert = true;
   el.classList.add('screen-out');
-  setTimeout(then, ms);
+  setTimeout(() => { try { then(); } finally { if (el.isConnected) { el.inert = false; el.classList.remove('screen-out'); } } }, ms);
 }
 
 /* A private card: the face shows nothing until its owner taps it. */

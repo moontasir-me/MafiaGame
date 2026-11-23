@@ -46,7 +46,7 @@ function board(g) {
   const seg = (l, x1, y1, x2, y2) => {
     const who = g.lines[l], last = g.last?.line === l;
     if (who !== undefined) return `<line class="dt-line${last ? ' last' : ''}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${INK[who]}"/>`;
-    return can ? `<g class="dt-slot" data-line="${l}" role="button" tabindex="0" aria-label="দাগ টানুন"><line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="hit"/><line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="ghost" stroke="${INK[g.turn]}"/></g>` : '';
+    return can ? `<g class="dt-slot" data-line="${l}" role="button" tabindex="0" aria-label="দাগ টানুন ${l}"><rect x="${Math.min(x1,x2)-8}" y="${Math.min(y1,y2)-8}" width="${Math.max(16,Math.abs(x2-x1)+16)}" height="${Math.max(16,Math.abs(y2-y1)+16)}" fill="transparent" pointer-events="all"/><line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="hit"/><line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="ghost" stroke="${INK[g.turn]}"/></g>` : '';
   };
   for (let r = 0; r <= g.rows; r++) for (let c = 0; c < g.cols; c++) lines += seg(`h:${r}:${c}`, P + c * U, P + r * U, P + (c + 1) * U, P + r * U);
   for (let r = 0; r < g.rows; r++) for (let c = 0; c <= g.cols; c++) lines += seg(`v:${r}:${c}`, P + c * U, P + r * U, P + c * U, P + (r + 1) * U);
