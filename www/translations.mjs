@@ -909,3 +909,4 @@ UI_PAIRS.push(
  ['আলোচনা করুন, ভোট দিন, দরবারের গোপন ঘাতকদের খুঁজুন।','Discuss, vote, and uncover the palace assassins.'],
  ['দ্বিতীয় খেলোয়াড়ের নাম','Second player name']
 );
+UI_PAIRS.push(['স্ক্যান করে যোগ দিন','Scan to join'],['স্ক্যান করে শুধু নাম দিন।','Scan and enter your name.'],['যোগ দেওয়ার লিংক','Room join link']);

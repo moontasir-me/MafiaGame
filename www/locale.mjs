@@ -8,6 +8,6 @@ export function saveLanguage(value, storage = globalThis.localStorage) {
   storage?.setItem(LANGUAGE_KEY, value);
   return value;
 }
-export const t = (bn, en) => getLanguage() === 'en' ? en : bn;
-export const number = value => Number(value).toLocaleString(getLanguage() === 'en' ? 'en-US' : 'bn-BD');
+export const t = (bn, en) => pageLanguage() === 'en' ? en : bn;
+export const number = value => Number(value).toLocaleString(pageLanguage() === 'en' ? 'en-US' : 'bn-BD');
 export const pageLanguage = () => typeof location !== 'undefined' && /\/rush\.html$/.test(location.pathname) ? 'en' : getLanguage();

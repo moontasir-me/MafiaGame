@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {getLanguage,saveLanguage,LANGUAGE_KEY,pageLanguage} from '../www/locale.mjs';
+import {getLanguage,saveLanguage,LANGUAGE_KEY,pageLanguage,t,number} from '../www/locale.mjs';
 import {translateText} from '../www/localization.mjs';
 import {newSpySession,addSpyPlayer,dealSpy,spyIdentity,resetSpy,nextSpyReveal,endSpyDiscussion,voteSpy,nextCaughtSpyCase} from '../www/spy-local.mjs';
 import {SPY_EN_COMMON,SPY_EN_WORDS} from '../www/spy-words-en.mjs';
@@ -13,7 +13,7 @@ import {UNIVERSES} from '../www/universe.mjs';
 test('app language persists independently of a Mafia universe; Colour Rush stays English',()=>{
  const values=new Map([['mafia.universe','polashi']]);const storage={getItem:k=>values.get(k),setItem:(k,v)=>values.set(k,v)};
  assert.equal(getLanguage(storage),'bn');saveLanguage('en',storage);assert.equal(getLanguage(storage),'en');assert.equal(values.get('mafia.universe'),'polashi');assert.throws(()=>saveLanguage('fr',storage));
- globalThis.localStorage=storage;globalThis.location={pathname:'/rush.html'};saveLanguage('bn',storage);assert.equal(pageLanguage(),'en');location.pathname='/spy.html';assert.equal(pageLanguage(),'bn');
+ globalThis.localStorage=storage;globalThis.location={pathname:'/rush.html'};saveLanguage('bn',storage);assert.equal(pageLanguage(),'en');assert.equal(t('বাংলা','English'),'English');assert.equal(number(12),'12');assert.equal(translateText('স্ক্যান করে যোগ দিন'),'Scan to join');location.pathname='/spy.html';assert.equal(pageLanguage(),'bn');
  assert.equal(getLanguage({getItem(){throw Error('blocked');}}),'bn');delete globalThis.location;delete globalThis.localStorage;
 });
 test('Spy deals English words in English and Bangla words in Bangla, retaining scores across language changes',()=>{

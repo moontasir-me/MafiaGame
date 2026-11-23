@@ -1,3 +1,4 @@
+import {invitationCode,onlineRoomLink,qrSvg} from './online-invite.mjs';
 import { translateText } from './localization.mjs';
 /* The one online entry used by every আনোয়ার মামা টি স্টল game: your profile name, "open a room", or type a code in OTP-style boxes. */
 import { readProfile, saveProfile } from './profile.mjs';
@@ -10,7 +11,8 @@ export const isOnlineMode = () => { try { return localStorage.getItem('shitolpat
 
 /* Entry card. len: code length. allowed: regex for one character. */
 export function onlineEntry({ len = 5, note = '' } = {}) {
-  const name = onlineName();
+  const name = onlineName(),invited=invitationCode(location.search,len);
+  if(invited)return `<section class="ol-card ol-invited"><h1>${translateText('আসরে যোগ দিন')}</h1><p>${translateText('ঘরের কোড')} <b data-no-translate>${invited}</b></p><label class="ol-name">${translateText('আপনার নাম')}<input id="ol-name" maxlength="20" autocomplete="nickname" value="${esc(name)}" placeholder="${translateText('নাম লিখুন')}"></label><div class="otp" hidden>${[...invited].map(c=>`<input class="otp-box" value="${c}" tabindex="-1" aria-hidden="true">`).join('')}</div><button type="button" class="btn primary wide" data-ol="join">${translateText('যোগ দিন')}</button></section>`;
   return `<section class="ol-card">
   <div class="ol-me">${name ? `<span class="ol-face">${esc(name.charAt(0))}</span><span><small>আপনি খেলবেন এই নামে</small><b>${esc(name)}</b></span><button type="button" class="ol-link" data-ol="rename">বদলান</button>`
     : `<label class="ol-name"><small>প্রথমবার: আপনার নাম দিন, সব অনলাইন খেলায় এটাই থাকবে</small><input id="ol-name" maxlength="20" autocomplete="nickname" placeholder="আপনার নাম"></label>`}</div>
@@ -43,7 +45,7 @@ export function bindOnlineEntry(root, { onCreate, onJoin, allowed = /[A-Z0-9]/ }
     b.onpaste = e => { e.preventDefault(); fill(i, e.clipboardData.getData('text')); };
     b.onfocus = () => b.select();
   });
-  root.querySelector('[data-ol=create]').onclick = () => { const n = name(); if (n) onCreate(n); };
+  const create=root.querySelector('[data-ol=create]');if(create)create.onclick = () => { const n = name(); if (n) onCreate(n); };
   join.onclick = () => { const n = name(); if (n && code().length === boxes.length) onJoin(n, code()); };
   const rename = root.querySelector('[data-ol=rename]');
   if (rename) rename.onclick = () => {
@@ -53,11 +55,13 @@ export function bindOnlineEntry(root, { onCreate, onJoin, allowed = /[A-Z0-9]/ }
   };
 }
 
+export function roomInvite(code){const url=onlineRoomLink(API_BASE||location.origin,location.pathname,code);return `<div class="online-invite"><div class="online-qr" role="img" aria-label="${translateText('স্ক্যান করে যোগ দিন')}">${qrSvg(url)}</div><p>${translateText('স্ক্যান করে শুধু নাম দিন।')}</p><a class="ol-link" href="${esc(url)}">${translateText('যোগ দেওয়ার লিংক')}</a></div>`;}
+export const currentRoomLink=code=>onlineRoomLink(API_BASE||location.origin,location.pathname,code);
 /* Waiting room. */
 export function onlineLobby({ code, members, me, host, min = 2, max = 4, title = '' }) {
   return `<section class="ol-card ol-lobby"><span class="ol-eyebrow">${esc(title)}</span>
   <div class="otp otp-show" aria-label="ঘরের কোড ${esc(code)}">${[...code].map(c => `<b>${esc(c)}</b>`).join('')}</div>
-  <button type="button" class="ol-link" data-ol="share">কোড শেয়ার করুন</button>
+  ${roomInvite(code)}<button type="button" class="ol-link" data-ol="share">কোড শেয়ার করুন</button>
   <ul class="ol-members">${members.map((n, i) => `<li><span class="ol-face">${esc(n.charAt(0))}</span>${esc(n)}${i === 0 ? '<small>ঘর খুলেছেন</small>' : ''}${i === me ? '<small>আপনি</small>' : ''}</li>`).join('')}${members.length < max ? `<li class="ol-empty">অপেক্ষা… (${members.length}/${max})</li>` : ''}</ul>
   ${host ? `<button type="button" class="btn primary wide" data-ol="start" ${members.length < min ? 'disabled' : ''}>${members.length < min ? 'আরেকজনের অপেক্ষা…' : 'খেলা শুরু'}</button>` : '<p class="ol-note">ঘর যিনি খুলেছেন তিনি শুরু করবেন।</p>'}
   <button type="button" class="btn text wide" data-ol="leave">ঘর ছেড়ে দিন</button></section>`;
@@ -67,7 +71,7 @@ export function bindLobby(root, { code, game, onStart, onLeave }) {
   root.querySelector('[data-ol=leave]')?.addEventListener('click', onLeave);
   root.querySelector('[data-ol=share]')?.addEventListener('click', async () => {
     const text = `আনোয়ার মামা টি স্টলে ${game} খেলি! কোড: ${code}`;
-    try { if (navigator.share) await navigator.share({ text:translateText(text), url: location.href.split('?')[0] + '?online=1' }); else { await navigator.clipboard.writeText(translateText(text)); } } catch { }
+    try { if (navigator.share) await navigator.share({ text:translateText(text), url: currentRoomLink(code) }); else { await navigator.clipboard.writeText(translateText(text)+'\n'+currentRoomLink(code)); } } catch { }
   });
 }
 

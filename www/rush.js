@@ -1,3 +1,4 @@
+import {invitationCode} from './online-invite.mjs';
 import {mixedCounts,mixedRoster,mixedControls} from './offline-roster.mjs';
 import {humanSeats,prepareRushSeat,needsRushHandoff,privateRushView} from './rush-offline.mjs';
 import { COLOURS, COLOUR_NAME, LABEL, DRAW, newGame, act as engineAct, call as engineCall, playable } from './rush-engine.mjs';
@@ -5,7 +6,7 @@ import { sound } from './sound.mjs';
 import { saveMatch, readHistory, overallRanking, hallOfFame } from './history.mjs';
 import { esc, icon, appShell, pageHead, rankTable, fameTable, enterScreen, leaveScreen } from './ui-kit.mjs';
 import { $, $$, toast, confirmBox, openMenu } from './lamp.mjs';
-import { onlineName, tableApi, isOnlineMode } from './online-ui.mjs';
+import { onlineName, tableApi, isOnlineMode, roomInvite, currentRoomLink } from './online-ui.mjs';
 // The home page's Online/Offline switch decides: online rooms, or you against three bots on this phone.
 const ONLINE = isOnlineMode() || new URLSearchParams(location.search).has('online');
 const BOTS = ['Mina', 'Raju', 'Tara'];
@@ -30,7 +31,8 @@ function card(c, { cls = '', attrs = '' } = {}) {
 
 /* ---------- Screens ---------- */
 function entry() {
-  const name = onlineName();
+  const name = onlineName(),invite=invitationCode(location.search);
+  if(invite)return `<section class="ol-card"><h1>Join Colour Rush</h1><p>Room <b>${invite}</b></p><label>Your name<input id="rs-name" maxlength="20" autocomplete="nickname" value="${esc(name)}"></label><div class="otp" hidden>${[...invite].map(c=>`<input class="otp-box" value="${c}" tabindex="-1" aria-hidden="true">`).join('')}</div><button type="button" class="btn primary wide" data-action="join">Join</button></section>`;
   return `<header class="rs-head"><img src="${ART}" alt="" width="640" height="420"><div><h1>Colour Rush</h1><p>Match the colour or the symbol. Empty your hand first. 2–20 players, each on their own phone.</p></div></header>
   <section class="rs-panel"><h2>Rules</h2><div class="rs-seg" role="radiogroup">${Object.entries(RULES).map(([k, l]) => `<button type="button" role="radio" aria-checked="${rule === k}" class="${rule === k ? 'is-on' : ''}" data-action="rule" data-id="${k}"><b>${l}</b><small>${k === 'classic' ? 'The familiar game' : 'Stacking draws, swaps, knock-outs'}</small></button>`).join('')}</div></section>
   <section class="ol-card"><div class="ol-me">${name ? `<span class="ol-face">${esc(name.charAt(0))}</span><span><small>You'll play as</small><b>${esc(name)}</b></span>` : `<label class="ol-name"><small>Your name (used in every online game)</small><input id="rs-name" maxlength="20" autocomplete="nickname" placeholder="Your name"></label>`}</div>
@@ -49,7 +51,7 @@ function lobby() {
   const o = online;
   return `<section class="ol-card ol-lobby"><span class="ol-eyebrow">Colour Rush · ${RULES[o.rule] || 'Classic'}</span>
   <div class="otp otp-show" aria-label="Room code ${esc(o.code)}">${[...o.code].map(c => `<b>${esc(c)}</b>`).join('')}</div>
-  <button type="button" class="ol-link" data-action="share">Share the code</button>
+  ${roomInvite(o.code)}<button type="button" class="ol-link" data-action="share">Share the code</button>
   <ul class="ol-members">${o.members.map((n, i) => `<li><span class="ol-face">${esc(n.charAt(0))}</span>${esc(n)}${i === 0 ? '<small>host</small>' : ''}${i === o.me ? '<small>you</small>' : ''}</li>`).join('')}<li class="ol-empty">${o.members.length}/20 players</li></ul>
   ${o.host ? button(o.members.length < 2 ? 'Waiting for players…' : `Deal to ${o.members.length} players`, 'start', 'primary wide', 'play', o.members.length < 2 ? 'disabled' : '') : '<p class="ol-note">The host will start the game.</p>'}
   ${button('Leave room', 'leave', 'text wide', 'close')}</section>`;
@@ -255,7 +257,7 @@ async function act(action, id) {
     case 'offline-humans': case 'offline-cpus': {const c=mixedCounts(action==='offline-humans'?Number(id):people,action==='offline-cpus'?Number(id):computers,4,0);people=c.humans;computers=c.bots;return render();}
     case 'ready': if(local&&!localSeats[local.turn]?.cpu){localSeat=local.turn;handReady=true;return render();}return;
     case 'deal': try{localSeats=mixedRoster(localNames.slice(0,people),{bots:computers,max:4,botNames:BOTS});local=newGame(localSeats,rule);localSeat=0;handReady=people===1;saved=false;view='play';sound('notice');transition();return bots();}catch(e){return toast(e.message==='NAME'?'Enter a different name for each person (1–20 characters).':'Use 2–4 people and computers in total.');}
-    case 'share': { const text = `Play Colour Rush with me on Anwar Mama Tea Stall. Code: ${online.code}`; try { if (navigator.share) await navigator.share({ text, url: location.href.split('?')[0] }); else { await navigator.clipboard.writeText(text); toast('Code copied.'); } } catch { } return; }
+    case 'share': { const text = `Play Colour Rush with me on Anwar Mama Tea Stall. Code: ${online.code}`; try { if (navigator.share) await navigator.share({ text, url: currentRoomLink(online.code) }); else { await navigator.clipboard.writeText(text+'\n'+currentRoomLink(online.code)); toast('Join link copied.'); } } catch { } return; }
     case 'start': return send({ op: 'start' });
     case 'again': saved = false; return send({ op: 'again' });
     case 'call': navigator.vibrate?.(30); sound('notice'); return send({ op: 'call' });

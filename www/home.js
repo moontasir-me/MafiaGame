@@ -3,6 +3,7 @@ import { t } from './locale.mjs';
 import { readProfile, saveProfile, photoFromFile } from './profile.mjs';
 import { soundEnabled, toggleSound, sound, unlockSound } from './sound.mjs';
 const $ = q => document.querySelector(q);
+if($('.tong-hero')&&$('#lantern'))$('.tong-hero').append($('#lantern'));
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 function paintProfile() {

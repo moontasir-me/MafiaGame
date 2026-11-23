@@ -7,7 +7,7 @@ const escapeRE = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const en = new Map(pairs), bn = new Map(pairs.map(([a,b])=>[b,a]));
 const keys = [...en.keys()].sort((a,b)=>b.length-a.length);
 const phrases = new RegExp(`(?<![\\p{L}\\p{M}])(?:${keys.map(escapeRE).join('|')})(?![\\p{L}\\p{M}])`, 'gu');
-export function translateText(text, language=getLanguage()) {
+export function translateText(text, language=pageLanguage()) {
   if (text == null) return text;
   text=String(text);
   const raw=text.trim();
